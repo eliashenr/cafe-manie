@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"table_long"
+display_name = "Mesa longa"
+category = 0
+footprint = Vector2i(2, 1)
+needs_access = true
+price = 110
+min_level = 3
+beauty = 8
+efficiency = 0
+comfort = 12
+placeholder_color = Color(0.55, 0.33, 0.2, 1)
+placeholder_height = 26.0
