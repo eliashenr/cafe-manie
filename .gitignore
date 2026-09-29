@@ -1,0 +1,18 @@
+# Cache e arquivos gerados pela Godot (recriados automaticamente ao abrir o projeto)
+.godot/
+/android/
+
+# Builds exportados
+/build/
+*.apk
+*.aab
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.tmp
