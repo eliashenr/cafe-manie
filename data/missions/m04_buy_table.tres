@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"m04_buy_table"
+order = 4
+title = "Compre uma mesa"
+hint = "Na barra de baixo, escolha Mesa. Mesa só vira lugar com uma cadeira do lado."
+kind = 3
+target = 1
+furniture_category = 0
+reward_gold = 20
+reward_xp = 10

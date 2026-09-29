@@ -102,6 +102,21 @@ func next_serial() -> int:
 	return _next_serial
 
 
+## Aumenta a cafeteria. Só cresce (nunca corta móveis). Se a largura aumentar,
+## a entrada acompanha a borda da frente, na mesma fileira; a coluna nova é
+## sempre livre, então a entrada nova também é.
+func expand_to(new_size: Vector2i) -> bool:
+	var old_size := grid.size
+	if new_size.x < old_size.x or new_size.y < old_size.y or new_size == old_size:
+		return false
+	if not grid.resize(new_size):
+		return false
+	if new_size.x != old_size.x:
+		entrance = Vector2i(new_size.x - 1, entrance.y)
+	changed.emit()
+	return true
+
+
 # --- Save ------------------------------------------------------------------
 
 ## Recoloca um móvel salvo com o id original. Confere só limites e sobreposição:

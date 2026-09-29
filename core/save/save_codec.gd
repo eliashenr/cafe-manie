@@ -2,15 +2,16 @@ class_name SaveCodec
 extends RefCounted
 ## Converte o estado do jogo em dados simples (para JSON) e de volta.
 ##
-## O que é salvo: layout (móveis com os ids originais), cozinha (receita e
-## horário de início de cada fogão; porções de cada balcão), carteira, XP e
-## popularidade. Personagens não são salvos: ao voltar, a cafeteria reabre
+## O que é salvo: layout (móveis com os ids originais e tamanho da cafeteria),
+## cozinha (receita e horário de início de cada fogão; porções de cada balcão),
+## carteira, XP, popularidade, inventário e missões. Personagens não são salvos: ao voltar, a cafeteria reabre
 ## vazia, e as porções que estavam reservadas para pedidos voltam ao balcão.
 ##
 ## Todo save tem save_version (seção 64). Mudou o formato? Aumente
 ## CURRENT_VERSION e acrescente um passo em migrations().
 
-const CURRENT_VERSION := 1
+## Histórico: 1 = primeira versão; 2 = acrescenta inventário e missões.
+const CURRENT_VERSION := 2
 
 
 ## Resultado de decode(): a simulação (null se os dados forem inutilizáveis)
@@ -49,6 +50,8 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"wallet": simulation.wallet.to_data(),
 		"xp": simulation.progression.xp,
 		"popularity": simulation.popularity,
+		"inventory": simulation.inventory.to_data(),
+		"missions": simulation.missions.to_data(),
 	}
 
 
@@ -112,16 +115,26 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.wallet.restore(_dict(data.get("wallet")))
 	simulation.progression.restore_xp(int(data.get("xp", 0)))
 	simulation.restore_popularity(float(data.get("popularity", simulation.config.popularity_start)))
+	simulation.inventory.restore(_dict(data.get("inventory")))
+	simulation.missions.restore(_dict(data.get("missions")))
+	simulation.missions.refresh()
 	result.simulation = simulation
 	return result
 
 
 # --- Versões ---------------------------------------------------------------
 
-## Passos de migração: o índice N converte um save da versão N para N + 1.
-## Hoje não há nenhum, porque a versão 1 é a primeira.
+## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
+## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return []
+	return [_v1_to_v2]
+
+
+## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
+static func _v1_to_v2(data: Dictionary) -> Dictionary:
+	data["inventory"] = {}
+	data["missions"] = {"index": 0, "progress": 0}
+	return data
 
 
 ## Leva os dados até [param target_version]. Retorna {} se o save for de uma

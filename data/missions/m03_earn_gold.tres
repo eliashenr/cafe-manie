@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"m03_earn_gold"
+order = 3
+title = "Ganhe 100 Café Ouro em vendas"
+hint = "Mantenha os balcões abastecidos: cada cliente servido paga."
+kind = 2
+target = 100
+furniture_category = -1
+reward_gold = 40
+reward_xp = 10

@@ -13,6 +13,10 @@ signal payment_received(customer: Customer, amount: int)
 signal dish_collected(stove_id: StringName, recipe: RecipeDefinition)
 signal leveled_up(level: int)
 signal popularity_changed(popularity: float)
+## Um móvel foi comprado (não conta recolocar um guardado).
+signal furniture_bought(definition: FurnitureDefinition)
+signal cafe_expanded(new_size: Vector2i)
+signal mission_completed(mission: MissionDefinition)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção.
@@ -25,6 +29,8 @@ class Order:
 
 
 const CUSTOMERS_DIR := "res://data/customers"
+const MISSIONS_DIR := "res://data/missions"
+const EXPANSIONS_PATH := "res://data/config/expansions.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 
@@ -40,6 +46,12 @@ var progression: PlayerProgression
 var kitchen: Kitchen
 var navigation: Navigation
 var popularity := 50.0
+## Móveis guardados, que podem ser recolocados de graça.
+var inventory := Inventory.new()
+var missions: MissionTracker
+var expansions := ExpansionPlan.new()
+## Id do último móvel posicionado por acquire_and_place.
+var last_placed_id: StringName = &""
 
 var customers: Array[Customer] = []
 var waiters: Array[Waiter] = []
@@ -69,6 +81,8 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	layout.in_use_provider = is_in_use
 	layout.agent_cells_provider = agent_cells
 	popularity = config.popularity_start
+	var no_missions: Array[MissionDefinition] = []
+	set_missions(no_missions)
 	if random_seed != 0:
 		rng.seed = random_seed
 	else:
@@ -99,9 +113,30 @@ static func with_game_data(game_clock: GameClock, cafe_layout: CafeLayout, furni
 	types_store.load_dir(CUSTOMERS_DIR, CustomerType)
 	var types: Array[CustomerType] = []
 	types.assign(types_store.all())
-	return CafeSimulation.new(game_clock, cafe_layout, load("res://data/config/service.tres"),
+	var simulation := CafeSimulation.new(game_clock, cafe_layout, load("res://data/config/service.tres"),
 		furniture_catalog, RecipeCatalog.load_from(), load("res://data/progression/levels.tres"),
 		types, random_seed)
+	simulation.set_missions(default_missions())
+	simulation.expansions = load(EXPANSIONS_PATH)
+	return simulation
+
+
+## Missões iniciais de res://data/missions, na ordem do campo [code]order[/code].
+static func default_missions() -> Array[MissionDefinition]:
+	var store := DefinitionStore.new(
+		func(a: MissionDefinition, b: MissionDefinition) -> bool: return a.order < b.order)
+	store.load_dir(MISSIONS_DIR, MissionDefinition)
+	var mission_list: Array[MissionDefinition] = []
+	mission_list.assign(store.all())
+	return mission_list
+
+
+## Troca a sequência de missões (começa da primeira).
+func set_missions(mission_list: Array[MissionDefinition]) -> void:
+	missions = MissionTracker.new(mission_list)
+	missions.state_provider = _mission_state
+	missions.mission_completed.connect(_on_mission_completed)
+	missions.refresh()
 
 
 # --- Ações do jogador ------------------------------------------------------
@@ -132,7 +167,91 @@ func collect(stove_id: StringName) -> int:
 	if result == ServiceResult.OK:
 		progression.add_xp(recipe.xp_reward)
 		dish_collected.emit(stove_id, recipe)
+		missions.record(MissionDefinition.Kind.COLLECT_DISHES)
 	return result
+
+
+# --- Loja, inventário e expansão --------------------------------------------
+
+## Se dá para conseguir um móvel novo agora: guardado no inventário (grátis)
+## ou comprado (exige nível e ouro).
+func can_acquire(definition: FurnitureDefinition) -> int:
+	if inventory.count(definition.id) > 0:
+		return ServiceResult.OK
+	if definition.min_level > progression.level:
+		return ServiceResult.FURNITURE_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, definition.price):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	return ServiceResult.OK
+
+
+## Posiciona um móvel novo: usa um guardado, se houver; senão compra.
+## Nada é cobrado se a posição for inválida.
+func acquire_and_place(definition: FurnitureDefinition, origin: Vector2i, rotation: int) -> int:
+	var availability := can_acquire(definition)
+	if availability != ServiceResult.OK:
+		return availability
+	if layout.check_placement(definition, origin, rotation) != CafeLayout.Check.OK:
+		return ServiceResult.INVALID_PLACEMENT
+	var from_inventory := inventory.count(definition.id) > 0
+	last_placed_id = layout.place(definition, origin, rotation)
+	if from_inventory:
+		inventory.take(definition.id)
+		return ServiceResult.OK
+	if definition.price > 0:
+		wallet.spend(Wallet.SOFT, definition.price, "Compra: %s" % definition.display_name)
+	furniture_bought.emit(definition)
+	missions.record(MissionDefinition.Kind.BUY_FURNITURE, 1, definition.category)
+	return ServiceResult.OK
+
+
+## Tira o móvel da cafeteria e guarda no inventário (não perde o que pagou).
+func store_furniture(id: StringName) -> CafeLayout.Check:
+	var check := layout.can_remove(id)
+	if check != CafeLayout.Check.OK:
+		return check
+	var definition := layout.get_placement(id).definition
+	layout.remove(id)
+	inventory.add(definition.id)
+	return CafeLayout.Check.OK
+
+
+## Próxima etapa de expansão ({size, level, price}) ou {} se já está no máximo.
+func next_expansion() -> Dictionary:
+	return expansions.next_after(layout.grid.size)
+
+
+func can_expand() -> int:
+	var step := next_expansion()
+	if step.is_empty():
+		return ServiceResult.NO_MORE_EXPANSIONS
+	if int(step["level"]) > progression.level:
+		return ServiceResult.EXPANSION_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, int(step["price"])):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	return ServiceResult.OK
+
+
+## Aumenta a cafeteria para a próxima etapa, cobrando o preço.
+func expand() -> int:
+	var result := can_expand()
+	if result != ServiceResult.OK:
+		return result
+	var step := next_expansion()
+	if not layout.expand_to(step["size"]):
+		return ServiceResult.NO_MORE_EXPANSIONS
+	if int(step["price"]) > 0:
+		wallet.spend(Wallet.SOFT, int(step["price"]), "Expansão para %dx%d" % [step["size"].x, step["size"].y])
+	# A entrada pode ter mudado: garçom e quem já está saindo passam a usar a nova.
+	var exit: Array[Vector2i] = [layout.entrance]
+	for waiter in waiters:
+		waiter.home = layout.entrance
+	for customer in customers:
+		if customer.state == Customer.State.LEAVING:
+			customer.follow(navigation.path_to_any(customer.cell(), exit), exit)
+	cafe_expanded.emit(layout.grid.size)
+	missions.record(MissionDefinition.Kind.EXPAND_CAFE)
+	return ServiceResult.OK
 
 
 # --- Consultas -------------------------------------------------------------
@@ -292,6 +411,8 @@ func _pay(customer: Customer) -> void:
 	progression.add_xp(config.customer_xp)
 	_change_popularity(config.popularity_gain * lerpf(0.5, 1.0, customer.patience_when_served))
 	payment_received.emit(customer, amount)
+	missions.record(MissionDefinition.Kind.SERVE_CUSTOMERS)
+	missions.record(MissionDefinition.Kind.EARN_GOLD, amount)
 
 
 ## Tira o cliente da mesa e manda para a saída. Pedido não entregue é cancelado.
@@ -462,6 +583,19 @@ func _pick_customer_type() -> CustomerType:
 
 func _on_leveled_up(level: int) -> void:
 	leveled_up.emit(level)
+	missions.record(MissionDefinition.Kind.REACH_LEVEL, level)
+
+
+func _mission_state(kind: MissionDefinition.Kind) -> int:
+	return progression.level if kind == MissionDefinition.Kind.REACH_LEVEL else 0
+
+
+func _on_mission_completed(mission: MissionDefinition) -> void:
+	if mission.reward_gold > 0:
+		wallet.earn(Wallet.SOFT, mission.reward_gold, "Missão: %s" % mission.title)
+	mission_completed.emit(mission)
+	if mission.reward_xp > 0:
+		progression.add_xp(mission.reward_xp)
 
 
 func _change_popularity(delta: float) -> void:

@@ -1,7 +1,8 @@
 class_name GameHud
 extends CanvasLayer
 ## PLACEHOLDER_HUD: painel de cima com nível, XP, Café Ouro e popularidade,
-## mais um aviso central para mensagens curtas (subiu de nível, ação recusada).
+## cartão da missão atual (canto direito), e um aviso central para mensagens
+## curtas (subiu de nível, missão concluída, ação recusada).
 ##
 ## Os nomes exibidos das moedas ficam aqui, na interface; o código do jogo
 ## usa ids neutros (ver docs/economy.md).
@@ -12,6 +13,9 @@ signal restart_requested
 const SOFT_CURRENCY_NAME := "Café Ouro"
 const HINT := "Arraste para mover  •  Roda do mouse ou pinça para zoom  •  Toque num fogão para cozinhar"
 const TOAST_SECONDS := 2.8
+## Tempo extra de aviso por caractere, para textos longos darem tempo de ler.
+const TOAST_SECONDS_PER_CHAR := 0.05
+const MISSION_CARD_WIDTH := 330.0
 const XP_BAR_BACKGROUND := Color(1, 1, 1, 0.18)
 const XP_BAR_FILL := Color("8fd3ff")
 
@@ -25,6 +29,9 @@ var _popularity_label: Label
 var _toast: Label
 var _toast_time := 0.0
 var _restart_dialog: ConfirmationDialog
+var _mission_card: PanelContainer
+var _mission_title: Label
+var _mission_hint: Label
 
 
 func _ready() -> void:
@@ -111,13 +118,19 @@ func _build_restart_controls() -> void:
 	corner.add_theme_constant_override("margin_right", 16)
 	corner.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(corner)
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_theme_constant_override("separation", 10)
+	corner.add_child(column)
 	var button := Button.new()
 	button.name = "RestartButton"
 	button.text = "Recomeçar"
 	button.custom_minimum_size = Vector2(120, 44)
+	button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	button.focus_mode = Control.FOCUS_NONE
 	button.pressed.connect(ask_restart)
-	corner.add_child(button)
+	column.add_child(button)
+	_build_mission_card(column)
 
 	_restart_dialog = ConfirmationDialog.new()
 	_restart_dialog.name = "RestartDialog"
@@ -127,6 +140,38 @@ func _build_restart_controls() -> void:
 	_restart_dialog.cancel_button_text = "Cancelar"
 	_restart_dialog.confirmed.connect(func() -> void: restart_requested.emit())
 	add_child(_restart_dialog)
+
+
+## Cartão da missão atual: as missões iniciais são o tutorial (seção 143),
+## então a dica fica sempre à vista.
+func _build_mission_card(parent: Control) -> void:
+	_mission_card = PanelContainer.new()
+	_mission_card.name = "MissionCard"
+	_mission_card.custom_minimum_size = Vector2(MISSION_CARD_WIDTH, 0)
+	_mission_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.1, 0.07, 0.05, 0.8)
+	style.border_color = Color("ffd35c")
+	style.border_width_left = 4
+	style.set_corner_radius_all(10)
+	style.set_content_margin_all(10)
+	_mission_card.add_theme_stylebox_override("panel", style)
+	parent.add_child(_mission_card)
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_theme_constant_override("separation", 2)
+	_mission_card.add_child(column)
+	_mission_title = Label.new()
+	_mission_title.name = "MissionTitle"
+	_mission_title.add_theme_font_size_override("font_size", 17)
+	_mission_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(_mission_title)
+	_mission_hint = Label.new()
+	_mission_hint.name = "MissionHint"
+	_mission_hint.add_theme_font_size_override("font_size", 14)
+	_mission_hint.modulate = Color(1, 1, 1, 0.75)
+	_mission_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(_mission_hint)
 
 
 func ask_restart() -> void:
@@ -164,16 +209,34 @@ func refresh() -> void:
 		_xp_label.text = "%d / %d XP" % [progression.xp, progression.table.xp_for_next(progression.level)]
 	_gold_label.text = "%s: %d" % [SOFT_CURRENCY_NAME, simulation.wallet.balance(Wallet.SOFT)]
 	_popularity_label.text = "Popularidade: %d%%" % roundi(simulation.popularity)
+	_refresh_mission()
+
+
+func _refresh_mission() -> void:
+	var missions := simulation.missions
+	var mission := missions.current()
+	_mission_card.visible = mission != null
+	if mission == null:
+		return
+	var progress := mini(missions.progress(), mission.target)
+	_mission_title.text = "Missão %d/%d: %s  (%d/%d)" % [
+		missions.completed_count() + 1, missions.missions.size(), mission.title, progress, mission.target]
+	_mission_hint.text = mission.hint
 
 
 func show_message(text: String) -> void:
 	_toast.text = text
 	_toast.visible = true
-	_toast_time = TOAST_SECONDS
+	_toast_time = TOAST_SECONDS + text.length() * TOAST_SECONDS_PER_CHAR
 
 
 func toast_text() -> String:
 	return _toast.text if _toast.visible else ""
+
+
+## Texto do cartão de missão (vazio quando não há missão ativa).
+func mission_text() -> String:
+	return "%s\n%s" % [_mission_title.text, _mission_hint.text] if _mission_card.visible else ""
 
 
 func stats_text() -> String:

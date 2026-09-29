@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"m02_serve_customers"
+order = 2
+title = "Sirva 3 clientes"
+hint = "Com comida no balcão, os clientes chegam e o garçom serve sozinho."
+kind = 1
+target = 3
+furniture_category = -1
+reward_gold = 30
+reward_xp = 5

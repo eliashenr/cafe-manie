@@ -71,3 +71,59 @@ func _play(sim: CafeSimulation, stoves: Array[StringName]) -> void:
 					best = recipe
 			if best != null:
 				sim.start_cooking(stove, best.id)
+
+
+## A Vertical Slice inteira (seção 81) jogada pelo robô, com os dados reais:
+## cozinhar → servir → ganhar → subir de nível → comprar mesa → expandir.
+## Todas as missões iniciais precisam ser concluídas em até 40 minutos de jogo.
+func test_robot_finishes_every_starter_mission() -> void:
+	var clock := ManualClock.new()
+	var sim := CafeSimulation.create_new_game(clock, 81)
+	var completed: Array[StringName] = []
+	sim.mission_completed.connect(func(m: MissionDefinition) -> void: completed.append(m.id))
+	var elapsed := 0.0
+	var next_decision := 0.0
+	while not sim.missions.all_done() and elapsed < 40.0 * 60.0:
+		if elapsed >= next_decision:
+			_play(sim, _stoves_of(sim))
+			_buy_and_expand(sim)
+			next_decision += 1.0
+		clock.advance(STEP)
+		sim.tick(STEP)
+		elapsed += STEP
+	assert_true(sim.missions.all_done(), "missões concluídas: %s" % [completed])
+	assert_eq(sim.layout.grid.size, Vector2i(10, 8), "a expansão aconteceu")
+	print("          vertical slice: todas as %d missões em %.1f min, nível %d, ouro %d" % [
+		completed.size(), elapsed / 60.0, sim.progression.level, sim.wallet.balance(Wallet.SOFT)])
+
+
+func _stoves_of(sim: CafeSimulation) -> Array[StringName]:
+	var stoves: Array[StringName] = []
+	for placement in sim.layout.placements():
+		if sim.kitchen.is_stove(placement.id):
+			stoves.append(placement.id)
+	return stoves
+
+
+## Compra uma mesa com cadeira ao lado quando a missão pede, e expande quando der.
+func _buy_and_expand(sim: CafeSimulation) -> void:
+	var mission := sim.missions.current()
+	if mission == null:
+		return
+	if mission.kind == MissionDefinition.Kind.BUY_FURNITURE:
+		var table := sim.furniture.get_definition(&"table_round")
+		for cell in _free_cells(sim):
+			if sim.acquire_and_place(table, cell, 0) == ServiceResult.OK:
+				sim.acquire_and_place(sim.furniture.get_definition(&"chair_wood"), cell + Vector2i(-1, 0), 3)
+				return
+	if mission.kind == MissionDefinition.Kind.EXPAND_CAFE and sim.can_expand() == ServiceResult.OK:
+		sim.expand()
+
+
+func _free_cells(sim: CafeSimulation) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for y in range(1, sim.layout.grid.size.y - 1):
+		for x in range(1, sim.layout.grid.size.x - 1):
+			if sim.layout.grid.is_free(Vector2i(x, y)) and sim.layout.grid.is_free(Vector2i(x - 1, y)):
+				cells.append(Vector2i(x, y))
+	return cells

@@ -12,4 +12,8 @@ enum {
 	RECIPE_LOCKED,      ## nível insuficiente para a receita
 	NOT_ENOUGH_GOLD,    ## ouro insuficiente para os ingredientes
 	UNKNOWN_RECIPE,     ## receita inexistente
+	FURNITURE_LOCKED,   ## nível insuficiente para comprar o móvel
+	INVALID_PLACEMENT,  ## o móvel não pode ficar nessa posição (motivo no CafeLayout.Check)
+	NO_MORE_EXPANSIONS, ## a cafeteria já está no tamanho máximo
+	EXPANSION_LOCKED,   ## nível insuficiente para a próxima expansão
 }

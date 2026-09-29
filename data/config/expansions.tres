@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ExpansionPlan" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/expansion_plan.gd" id="1_plan"]
+
+[resource]
+script = ExtResource("1_plan")
+steps = Array[Dictionary]([{
+"size": Vector2i(10, 8),
+"level": 2,
+"price": 150
+}, {
+"size": Vector2i(10, 10),
+"level": 3,
+"price": 300
+}, {
+"size": Vector2i(12, 10),
+"level": 5,
+"price": 600
+}, {
+"size": Vector2i(12, 12),
+"level": 7,
+"price": 1000
+}])

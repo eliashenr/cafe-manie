@@ -134,6 +134,35 @@ func test_unusable_data_gives_no_simulation() -> void:
 	assert_eq(SaveCodec.decode(data, clock).simulation, null, "layout sem tamanho válido")
 
 
+func test_version_1_save_still_opens() -> void:
+	# Um save da versão 1 (zip anterior ao inventário e às missões) precisa abrir.
+	_setup()
+	sim.wallet.earn(Wallet.SOFT, 40, "teste")
+	var data := SaveCodec.encode(sim)
+	data["save_version"] = 1
+	data.erase("inventory")
+	data.erase("missions")
+	var migrated := SaveCodec.migrate(JSON.parse_string(JSON.stringify(data)))
+	assert_eq(migrated["save_version"], SaveCodec.CURRENT_VERSION)
+	var loaded := SaveCodec.decode(migrated, clock).simulation
+	assert_true(loaded != null)
+	assert_eq(loaded.wallet.balance(Wallet.SOFT), sim.wallet.balance(Wallet.SOFT))
+	assert_eq(loaded.inventory.total(), 0)
+	assert_eq(loaded.missions.completed_count(), 0)
+
+
+func test_round_trip_keeps_inventory_and_mission_progress() -> void:
+	_setup()
+	sim.inventory.add(&"plant_pot", 2)
+	sim.start_cooking(stove, &"coffee")
+	clock.advance(15.0)
+	sim.collect(stove)  # conta para a missão "Prepare 3 pratos"
+	var loaded := _round_trip().simulation
+	assert_eq(loaded.inventory.count(&"plant_pot"), 2)
+	assert_eq(loaded.missions.current().id, sim.missions.current().id)
+	assert_eq(loaded.missions.progress(), 1)
+
+
 func test_migration_runs_each_step_in_order() -> void:
 	var steps: Array[Callable] = [
 		func(d: Dictionary) -> Dictionary:

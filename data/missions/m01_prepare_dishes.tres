@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"m01_prepare_dishes"
+order = 1
+title = "Prepare 3 pratos"
+hint = "Toque num fogão e escolha Café. Quando ficar pronto, toque no fogão de novo para levar ao balcão."
+kind = 0
+target = 3
+furniture_category = -1
+reward_gold = 30
+reward_xp = 5

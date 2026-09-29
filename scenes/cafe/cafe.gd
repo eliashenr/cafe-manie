@@ -73,15 +73,13 @@ func _ready() -> void:
 		welcome = _load_or_start_game()
 	layout = simulation.layout
 	catalog = simulation.furniture
-	floor_view.grid_size = layout.grid.size
-	floor_view.entrance = layout.entrance
 	world_layer.bind(layout)
 	simulation.payment_received.connect(_on_payment_received)
 	simulation.leveled_up.connect(_on_leveled_up)
+	simulation.cafe_expanded.connect(_on_cafe_expanded)
+	simulation.mission_completed.connect(_on_mission_completed)
 
-	var bounds := IsoProjection.grid_bounds(layout.grid.size)
-	camera.set_bounds(bounds.grow(camera_margin))
-	camera.frame(bounds.grow_individual(0.0, furniture_headroom, 0.0, 0.0), ui_top_inset, ui_bottom_inset)
+	_fit_floor_and_camera()
 	camera.tapped.connect(_on_tapped)
 	camera.hovered.connect(_on_hovered)
 
@@ -173,6 +171,8 @@ func _watch_for_changes() -> void:
 	simulation.wallet.balance_changed.connect(_mark_dirty.unbind(2))
 	simulation.progression.xp_changed.connect(_mark_dirty.unbind(1))
 	simulation.popularity_changed.connect(_mark_dirty.unbind(1))
+	simulation.inventory.changed.connect(_mark_dirty)
+	simulation.missions.progress_changed.connect(_mark_dirty)
 
 
 func _mark_dirty() -> void:
@@ -239,6 +239,43 @@ func _on_leveled_up(level: int) -> void:
 	state_changed.emit()
 
 
+## Recompensa da missão: aviso no centro da tela (a próxima missão aparece no HUD).
+func _on_mission_completed(mission: MissionDefinition) -> void:
+	var rewards: Array[String] = []
+	if mission.reward_gold > 0:
+		rewards.append("+%d ouro" % mission.reward_gold)
+	if mission.reward_xp > 0:
+		rewards.append("+%d XP" % mission.reward_xp)
+	var text := "Missão concluída: %s" % mission.title
+	if not rewards.is_empty():
+		text += "  %s" % "  ".join(rewards)
+	if simulation.missions.all_done():
+		text += "\nVocê completou todas as missões iniciais!"
+	EventBus.message_posted.emit(text)
+	state_changed.emit()
+
+
+## Expande a cafeteria (a confirmação fica na barra de baixo).
+func expand_cafe() -> int:
+	last_service_result = simulation.expand()
+	state_changed.emit()
+	return last_service_result
+
+
+func _on_cafe_expanded(new_size: Vector2i) -> void:
+	_fit_floor_and_camera()
+	EventBus.message_posted.emit("Cafeteria ampliada para %d×%d!" % [new_size.x, new_size.y])
+
+
+## Ajusta o piso e a câmera ao tamanho atual do grid.
+func _fit_floor_and_camera() -> void:
+	floor_view.grid_size = layout.grid.size
+	floor_view.entrance = layout.entrance
+	var bounds := IsoProjection.grid_bounds(layout.grid.size)
+	camera.set_bounds(bounds.grow(camera_margin))
+	camera.frame(bounds.grow_individual(0.0, furniture_headroom, 0.0, 0.0), ui_top_inset, ui_bottom_inset)
+
+
 func _float_over(placement_id: StringName, text: String, color: Color, offset := Vector2.ZERO) -> void:
 	var placement := layout.get_placement(placement_id)
 	if placement == null:
@@ -284,9 +321,11 @@ func rotate_selected() -> CafeLayout.Check:
 	return last_check
 
 
+## Guarda o móvel selecionado no inventário (pode ser recolocado de graça).
 func remove_selected() -> bool:
-	if not layout.remove(selected_id):
-		last_check = layout.can_remove(selected_id)
+	var check := simulation.store_furniture(selected_id)
+	if check != CafeLayout.Check.OK:
+		last_check = check
 		state_changed.emit()
 		return false
 	clear_selection()
@@ -299,6 +338,11 @@ func remove_selected() -> bool:
 func start_placing(definition_id: StringName) -> bool:
 	var definition := catalog.get_definition(definition_id)
 	if definition == null:
+		return false
+	var availability := simulation.can_acquire(definition)
+	if availability != ServiceResult.OK:
+		last_service_result = availability
+		state_changed.emit()
 		return false
 	clear_selection()
 	_begin_session(PlacementSession.for_new(layout, definition))
@@ -330,11 +374,22 @@ func rotate_placement() -> void:
 func confirm_placement() -> bool:
 	if session == null:
 		return false
-	var placed_id := session.confirm()
+	var was_moving := session.is_moving()
+	var placed_id: StringName = &""
+	if was_moving:
+		placed_id = session.confirm()
+	elif session.can_confirm():
+		# Móvel novo: sai do inventário (grátis) ou é comprado agora.
+		var definition := session.definition
+		var from_inventory := simulation.inventory.count(definition.id) > 0
+		last_service_result = simulation.acquire_and_place(definition, session.target, session.rotation)
+		if last_service_result == ServiceResult.OK:
+			placed_id = simulation.last_placed_id
+			if not from_inventory and definition.price > 0:
+				_float_over(placed_id, "-%d" % definition.price, FEEDBACK_SPEND)
 	if placed_id == &"":
 		_refresh_preview()
 		return false
-	var was_moving := session.is_moving()
 	_end_session()
 	if was_moving:
 		_set_selected_id(placed_id)
@@ -358,6 +413,7 @@ func _end_session() -> void:
 	session = null
 	mode = Mode.VIEW
 	last_check = CafeLayout.Check.OK
+	last_service_result = ServiceResult.OK
 	world_layer.hidden_id = &""
 	world_layer.hide_ghost()
 	floor_view.clear_preview()
