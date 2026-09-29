@@ -34,18 +34,11 @@ func test_frame_shrinks_zoom_when_the_screen_is_short() -> void:
 	assert_almost_eq(cafe.camera.zoom.x, 0.5, 0.001)
 
 
-func test_click_on_a_tile_selects_it_and_notifies_the_event_bus() -> void:
+func test_click_on_a_tile_selects_it() -> void:
 	var cafe := await spawn_cafe()
-	var received: Array[Vector2i] = []
-	var listener := func(cell: Vector2i) -> void: received.append(cell)
-	EventBus.cell_selected.connect(listener)
-
 	click_cell(cafe, Vector2i(2, 5))
-
-	EventBus.cell_selected.disconnect(listener)
 	assert_eq(cafe.selected_cell, Vector2i(2, 5))
 	assert_eq(cafe.floor_view.selected_cell, Vector2i(2, 5), "o destaque acompanha a seleção")
-	assert_eq(received, [Vector2i(2, 5)] as Array[Vector2i], "EventBus avisado uma vez")
 
 
 func test_click_outside_the_grid_clears_the_selection() -> void:

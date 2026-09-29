@@ -9,14 +9,13 @@ func test_unknown_furniture_does_not_enter_build_mode() -> void:
 	assert_eq(cafe.mode, Cafe.Mode.VIEW)
 
 
-func test_entering_build_mode_clears_the_selection_panel() -> void:
-	# Regressão: o painel de cima continuava mostrando o piso selecionado antes de construir.
+func test_entering_build_mode_clears_the_selection() -> void:
+	# Regressão: a seleção anterior continuava aparecendo depois de entrar em construção.
 	var cafe := await spawn_cafe()
-	var hud := cafe.get_node("DebugHud")
 	tap_cell(cafe, Vector2i(4, 3))
-	assert_true(hud.cell_text().contains("(4, 3)"))
+	assert_eq(cafe.floor_view.selected_cell, Vector2i(4, 3))
 	cafe.start_placing(&"table_round")
-	assert_eq(hud.cell_text(), "Nenhum piso selecionado")
+	assert_eq(cafe.floor_view.selected_cell, CafeGrid.NO_CELL)
 
 
 func test_touch_places_with_two_taps_on_the_same_tile() -> void:
@@ -27,18 +26,18 @@ func test_touch_places_with_two_taps_on_the_same_tile() -> void:
 
 	tap_cell(cafe, Vector2i(1, 1))
 	assert_eq(cafe.layout.count(), 0, "o primeiro toque só mostra a prévia")
-	assert_true(cafe.furniture_layer.is_ghost_visible())
-	assert_eq(cafe.furniture_layer.ghost_look(), FurnitureView.Look.GHOST_VALID)
+	assert_true(cafe.world_layer.is_ghost_visible())
+	assert_eq(cafe.world_layer.ghost_look(), FurnitureView.Look.GHOST_VALID)
 	assert_eq(cafe.floor_view.preview_cells(), [Vector2i(1, 1)] as Array[Vector2i])
 
 	tap_cell(cafe, Vector2i(1, 1))
 	assert_eq(cafe.layout.count(), 1, "o segundo toque no mesmo piso confirma")
 	assert_eq(cafe.layout.placement_at(Vector2i(1, 1)).definition.id, &"stove_basic")
 	assert_eq(cafe.mode, Cafe.Mode.VIEW)
-	assert_false(cafe.furniture_layer.is_ghost_visible(), "prévia some ao confirmar")
+	assert_false(cafe.world_layer.is_ghost_visible(), "prévia some ao confirmar")
 	assert_eq(cafe.floor_view.preview_cells().size(), 0)
 	await settle()
-	assert_eq(cafe.furniture_layer.view_count(), 1)
+	assert_eq(cafe.world_layer.view_count(), 1)
 
 
 func test_tapping_another_tile_moves_the_preview_instead_of_confirming() -> void:
@@ -65,7 +64,7 @@ func test_invalid_spot_is_refused_with_a_reason_and_cancel_leaves_nothing() -> v
 	cafe.start_placing(&"plant_pot")
 	tap_cell(cafe, cafe.layout.entrance)
 	assert_eq(cafe.last_check, CafeLayout.Check.BLOCKS_ENTRANCE)
-	assert_eq(cafe.furniture_layer.ghost_look(), FurnitureView.Look.GHOST_INVALID)
+	assert_eq(cafe.world_layer.ghost_look(), FurnitureView.Look.GHOST_INVALID)
 	tap_cell(cafe, cafe.layout.entrance)
 	assert_eq(cafe.layout.count(), 0, "tocar de novo num lugar inválido não confirma")
 	assert_false(cafe.confirm_placement(), "confirmar direto também é recusado")
@@ -76,7 +75,7 @@ func test_invalid_spot_is_refused_with_a_reason_and_cancel_leaves_nothing() -> v
 
 	press_key(KEY_ESCAPE)
 	assert_eq(cafe.mode, Cafe.Mode.VIEW)
-	assert_false(cafe.furniture_layer.is_ghost_visible())
+	assert_false(cafe.world_layer.is_ghost_visible())
 	assert_eq(cafe.layout.count(), 0)
 
 
@@ -98,7 +97,7 @@ func test_tapping_furniture_selects_it_and_bar_shows_actions() -> void:
 	tap_cell(cafe, Vector2i(3, 3))
 	assert_eq(cafe.selected_id, id)
 	await settle()
-	assert_eq(cafe.furniture_layer.view_for(id).look, FurnitureView.Look.SELECTED)
+	assert_eq(cafe.world_layer.view_for(id).look, FurnitureView.Look.SELECTED)
 	for button_name in ["MoveButton", "RotateButton", "RemoveButton", "CloseButton"]:
 		assert_true(cafe.build_bar.find_button(button_name) != null, "falta o botão " + button_name)
 
@@ -114,13 +113,13 @@ func test_move_selected_furniture_through_the_bar() -> void:
 	cafe.build_bar.find_button("MoveButton").pressed.emit()
 
 	assert_eq(cafe.mode, Cafe.Mode.BUILD)
-	assert_false(cafe.furniture_layer.view_for(id).visible, "o original some enquanto é movido")
+	assert_false(cafe.world_layer.view_for(id).visible, "o original some enquanto é movido")
 	tap_cell(cafe, Vector2i(0, 6))
 	tap_cell(cafe, Vector2i(0, 6))
 
 	assert_eq(cafe.layout.count(), 1, "mover não duplica")
 	assert_eq(cafe.layout.get_placement(id).origin, Vector2i(0, 6))
-	assert_true(cafe.furniture_layer.view_for(id).visible)
+	assert_true(cafe.world_layer.view_for(id).visible)
 	assert_eq(cafe.selected_id, id, "continua selecionado depois de mover")
 
 
@@ -132,7 +131,7 @@ func test_cancelling_a_move_keeps_the_furniture_where_it_was() -> void:
 	tap_cell(cafe, Vector2i(0, 6))
 	cafe.cancel_placement()
 	assert_eq(cafe.layout.get_placement(id).origin, Vector2i(2, 2))
-	assert_true(cafe.furniture_layer.view_for(id).visible)
+	assert_true(cafe.world_layer.view_for(id).visible)
 
 
 func test_rotate_selected_in_place_and_refusal_is_explained() -> void:
@@ -159,7 +158,7 @@ func test_remove_selected_with_delete_key() -> void:
 	assert_eq(cafe.layout.count(), 0)
 	assert_eq(cafe.selected_id, &"")
 	await settle()
-	assert_eq(cafe.furniture_layer.view_count(), 0)
+	assert_eq(cafe.world_layer.view_count(), 0)
 
 
 func test_catalog_buttons_start_placement() -> void:

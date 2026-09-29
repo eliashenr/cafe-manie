@@ -2,9 +2,11 @@ class_name Cafe
 extends Node2D
 ## Cena principal do protótipo: a cafeteria.
 ##
-## Dona do layout (regras) e do catálogo (dados). Traduz a entrada do
-## jogador em ações e mantém a visualização em dia. Tem dois modos:
-## - VIEW: tocar num piso seleciona o piso e, se houver, o móvel em cima dele;
+## Dona da CafeSimulation (regras e estado do jogo). Avança a simulação a
+## cada frame, traduz a entrada do jogador em ações e mantém a
+## visualização em dia. Tem dois modos:
+## - VIEW: tocar num piso seleciona o piso e o móvel sobre ele; tocar num
+##   fogão com prato pronto leva o prato para o balcão;
 ## - BUILD: posicionando um móvel novo ou movendo um existente.
 
 ## Emitido sempre que algo que a interface mostra muda (modo, seleção, prévia).
@@ -12,8 +14,11 @@ signal state_changed
 
 enum Mode { VIEW, BUILD }
 
-## Tamanho inicial da cafeteria em células. Parâmetro de balanceamento.
-@export var initial_grid_size := Vector2i(8, 8)
+const FEEDBACK_GOLD := Color("ffd35c")
+const FEEDBACK_GOOD := Color("9be08f")
+const FEEDBACK_XP := Color("8fd3ff")
+const FEEDBACK_SPEND := Color("ff9b8a")
+
 ## Folga, em pixels de mundo, que a câmera pode passar da borda do grid.
 @export var camera_margin := 96.0
 ## Altura, em pixels de tela, ocupada pelo painel de cima (a câmera enquadra abaixo dele).
@@ -23,6 +28,9 @@ enum Mode { VIEW, BUILD }
 ## Espaço acima do grid reservado para a altura dos móveis da fileira de trás.
 @export var furniture_headroom := 60.0
 
+## Estado do jogo. Pode ser injetado antes de a cena entrar na árvore (testes);
+## se ficar vazio, começa um jogo novo com os dados de res://data.
+var simulation: CafeSimulation
 var layout: CafeLayout
 var catalog: FurnitureCatalog
 var mode := Mode.VIEW
@@ -33,23 +41,31 @@ var selected_cell := CafeGrid.NO_CELL
 var selected_id: StringName = &""
 ## Resultado da última checagem de posição, para a interface explicar recusas.
 var last_check := CafeLayout.Check.OK
+## Resultado da última ação de cozinha (ServiceResult), para a interface explicar recusas.
+var last_service_result := ServiceResult.OK
 
 var grid: CafeGrid:
 	get:
 		return layout.grid
 
 @onready var floor_view: FloorView = $FloorView
-@onready var furniture_layer: FurnitureLayer = $FurnitureLayer
+@onready var world_layer: WorldLayer = $WorldLayer
+@onready var effects: Node2D = $Effects
 @onready var camera: CafeCamera = $CafeCamera
+@onready var hud: GameHud = $GameHud
 @onready var build_bar: BuildBar = $BuildBar
 
 
 func _ready() -> void:
-	catalog = FurnitureCatalog.load_from()
-	layout = CafeLayout.new(initial_grid_size, CafeLayout.default_entrance(initial_grid_size))
+	if simulation == null:
+		simulation = CafeSimulation.create_new_game(GameClock.new())
+	layout = simulation.layout
+	catalog = simulation.furniture
 	floor_view.grid_size = layout.grid.size
 	floor_view.entrance = layout.entrance
-	furniture_layer.bind(layout)
+	world_layer.bind(layout)
+	simulation.payment_received.connect(_on_payment_received)
+	simulation.leveled_up.connect(_on_leveled_up)
 
 	var bounds := IsoProjection.grid_bounds(layout.grid.size)
 	camera.set_bounds(bounds.grow(camera_margin))
@@ -57,7 +73,68 @@ func _ready() -> void:
 	camera.tapped.connect(_on_tapped)
 	camera.hovered.connect(_on_hovered)
 
+	hud.bind(simulation)
 	build_bar.bind(self)
+	world_layer.refresh(simulation)
+
+
+func _process(delta: float) -> void:
+	simulation.tick(delta)
+	world_layer.refresh(simulation)
+
+
+# --- Cozinha ---------------------------------------------------------------
+
+## Começa a preparar uma receita no fogão selecionado.
+func cook_on_selected(recipe_id: StringName) -> int:
+	last_service_result = simulation.start_cooking(selected_id, recipe_id)
+	if last_service_result == ServiceResult.OK:
+		var recipe := simulation.recipes.get_definition(recipe_id)
+		if recipe.ingredient_cost > 0:
+			_float_over(selected_id, "-%d" % recipe.ingredient_cost, FEEDBACK_SPEND)
+	state_changed.emit()
+	return last_service_result
+
+
+## Leva o prato pronto do fogão para o balcão. Se não der, seleciona o fogão
+## para a barra explicar o motivo.
+func collect_stove(stove_id: StringName) -> int:
+	var recipe := simulation.kitchen.stove_recipe(stove_id)
+	var result := simulation.collect(stove_id)
+	if result == ServiceResult.OK:
+		_float_over(stove_id, "+%d %s" % [recipe.servings, recipe.display_name], FEEDBACK_GOOD)
+		_float_over(stove_id, "+%d XP" % recipe.xp_reward, FEEDBACK_XP, Vector2(0, 22))
+	else:
+		_set_selected_cell(layout.get_placement(stove_id).origin)
+		_set_selected_id(stove_id)
+		last_service_result = result
+	state_changed.emit()
+	return result
+
+
+func _on_payment_received(customer: Customer, amount: int) -> void:
+	var at := IsoProjection.grid_point_to_world(Vector2(customer.seat_cell)) + Vector2(0, -70)
+	FloatingText.spawn(effects, at, "+%d" % amount, FEEDBACK_GOLD)
+
+
+func _on_leveled_up(level: int) -> void:
+	var unlocked: Array[String] = []
+	for recipe in simulation.recipes.all():
+		if recipe.unlock_level == level:
+			unlocked.append(recipe.display_name)
+	var text := "Nível %d!" % level
+	if not unlocked.is_empty():
+		text += "  Nova receita: %s" % ", ".join(unlocked)
+	EventBus.message_posted.emit(text)
+	state_changed.emit()
+
+
+func _float_over(placement_id: StringName, text: String, color: Color, offset := Vector2.ZERO) -> void:
+	var placement := layout.get_placement(placement_id)
+	if placement == null:
+		return
+	var at := IsoProjection.cell_center(placement.origin) + Vector2(0, -60) + offset
+	FloatingText.spawn(effects, at, text, color)
 
 
 # --- Modo VIEW -------------------------------------------------------------
@@ -77,6 +154,16 @@ func clear_selection() -> void:
 	state_changed.emit()
 
 
+## Toque no modo VIEW: fogão com prato pronto serve direto; o resto seleciona.
+func tap_at_world(world_position: Vector2) -> void:
+	var placement := layout.placement_at(IsoProjection.world_to_cell(world_position))
+	if placement != null and simulation.kitchen.is_stove(placement.id) \
+			and simulation.kitchen.stove_status(placement.id) == Kitchen.StoveStatus.READY:
+		collect_stove(placement.id)
+	else:
+		select_at_world(world_position)
+
+
 ## Gira o móvel selecionado no lugar. Retorna o resultado (pode ser recusado).
 func rotate_selected() -> CafeLayout.Check:
 	var placement := layout.get_placement(selected_id)
@@ -89,6 +176,8 @@ func rotate_selected() -> CafeLayout.Check:
 
 func remove_selected() -> bool:
 	if not layout.remove(selected_id):
+		last_check = layout.can_remove(selected_id)
+		state_changed.emit()
 		return false
 	clear_selection()
 	return true
@@ -106,8 +195,12 @@ func start_placing(definition_id: StringName) -> bool:
 	return true
 
 
-## Começa a mover o móvel selecionado.
+## Começa a mover o móvel selecionado (se não estiver em uso).
 func start_moving_selected() -> bool:
+	if layout.is_in_use(selected_id):
+		last_check = CafeLayout.Check.IN_USE
+		state_changed.emit()
+		return false
 	var moving := PlacementSession.for_move(layout, selected_id)
 	if moving == null:
 		return false
@@ -147,7 +240,7 @@ func cancel_placement() -> void:
 func _begin_session(new_session: PlacementSession) -> void:
 	session = new_session
 	mode = Mode.BUILD
-	furniture_layer.hidden_id = session.moving_id
+	world_layer.hidden_id = session.moving_id
 	_refresh_preview()
 
 
@@ -155,8 +248,8 @@ func _end_session() -> void:
 	session = null
 	mode = Mode.VIEW
 	last_check = CafeLayout.Check.OK
-	furniture_layer.hidden_id = &""
-	furniture_layer.hide_ghost()
+	world_layer.hidden_id = &""
+	world_layer.hide_ghost()
 	floor_view.clear_preview()
 	state_changed.emit()
 
@@ -164,11 +257,11 @@ func _end_session() -> void:
 func _refresh_preview() -> void:
 	last_check = session.check()
 	if session.target == CafeGrid.NO_CELL:
-		furniture_layer.hide_ghost()
+		world_layer.hide_ghost()
 		floor_view.clear_preview()
 	else:
 		var valid := last_check == CafeLayout.Check.OK
-		furniture_layer.show_ghost(session.definition, session.target, session.rotation, valid)
+		world_layer.show_ghost(session.definition, session.target, session.rotation, valid)
 		floor_view.set_preview(CafeGrid.footprint_cells(session.target, session.footprint()), valid)
 	state_changed.emit()
 
@@ -177,7 +270,7 @@ func _refresh_preview() -> void:
 
 func _on_tapped(world_position: Vector2) -> void:
 	if mode == Mode.VIEW:
-		select_at_world(world_position)
+		tap_at_world(world_position)
 		return
 	var cell := IsoProjection.world_to_cell(world_position)
 	if not layout.grid.is_inside(cell):
@@ -225,17 +318,13 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
-## Atualiza a célula selecionada e avisa o EventBus só quando ela muda,
-## para quem escuta (como o HUD) nunca ficar com informação velha.
 func _set_selected_cell(cell: Vector2i) -> void:
-	var changed_cell := cell != selected_cell
 	selected_cell = cell
 	floor_view.selected_cell = cell
-	if changed_cell:
-		EventBus.cell_selected.emit(cell)
 
 
 func _set_selected_id(id: StringName) -> void:
 	selected_id = id
 	last_check = CafeLayout.Check.OK
-	furniture_layer.selected_id = id
+	last_service_result = ServiceResult.OK
+	world_layer.selected_id = id

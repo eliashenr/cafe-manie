@@ -1,7 +1,11 @@
-class_name FurnitureLayer
+class_name WorldLayer
 extends Node2D
-## Mostra os móveis do layout em ordem de profundidade (y-sort) e a prévia
-## ("fantasma") do modo de construção. Só desenha: quem manda é o CafeLayout.
+## Tudo que fica "no chão" da cafeteria: móveis, personagens e a prévia de
+## construção, na mesma camada com y-sort para a profundidade sair certa
+## (cliente atrás da mesa, garçom na frente do balcão...).
+##
+## Só desenha. Quem manda é o CafeLayout (móveis) e a CafeSimulation
+## (estados e personagens).
 
 var layout: CafeLayout
 
@@ -17,7 +21,8 @@ var selected_id: StringName = &"":
 		selected_id = value
 		sync()
 
-var _views: Dictionary = {}  # StringName -> FurnitureView
+var _views: Dictionary = {}  # id do móvel -> FurnitureView
+var _agents: Dictionary = {}  # serial do personagem -> AgentView
 var _ghost: FurnitureView
 
 
@@ -36,7 +41,7 @@ func bind(new_layout: CafeLayout) -> void:
 	sync()
 
 
-## Cria, atualiza e remove as vistas para bater com o layout.
+## Cria, atualiza e remove as vistas dos móveis para bater com o layout.
 func sync() -> void:
 	if layout == null:
 		return
@@ -56,6 +61,60 @@ func sync() -> void:
 		if not alive.has(id):
 			_views[id].queue_free()
 			_views.erase(id)
+
+
+## Atualiza o que muda a cada frame: etiquetas de fogões e balcões e os personagens.
+func refresh(simulation: CafeSimulation) -> void:
+	_refresh_furniture_status(simulation.kitchen)
+	_refresh_agents(simulation)
+
+
+func _refresh_furniture_status(kitchen: Kitchen) -> void:
+	for id: StringName in _views:
+		var view: FurnitureView = _views[id]
+		if kitchen.is_stove(id):
+			match kitchen.stove_status(id):
+				Kitchen.StoveStatus.COOKING:
+					view.set_status("%s %s" % [kitchen.stove_recipe(id).display_name,
+						format_time(kitchen.time_left(id))], kitchen.progress(id))
+				Kitchen.StoveStatus.READY:
+					view.set_status("%s pronto!" % kitchen.stove_recipe(id).display_name, -1.0, true)
+				_:
+					view.set_status("")
+		elif kitchen.is_counter(id):
+			var stack := kitchen.counter_stack(id)
+			view.set_status("" if stack == null else "%s ×%d" % [stack.recipe.display_name, stack.servings])
+
+
+func _refresh_agents(simulation: CafeSimulation) -> void:
+	var alive: Dictionary = {}
+	var everyone: Array[Agent] = []
+	everyone.append_array(simulation.customers)
+	everyone.append_array(simulation.waiters)
+	for agent in everyone:
+		alive[agent.serial] = true
+		var view: AgentView = _agents.get(agent.serial)
+		if view == null:
+			view = AgentView.new()
+			view.name = "Agent_%d" % agent.serial
+			add_child(view)
+			_agents[agent.serial] = view
+		view.refresh(agent)
+	for serial: int in _agents.keys():
+		if not alive.has(serial):
+			_agents[serial].queue_free()
+			_agents.erase(serial)
+
+
+## "0:45", "3:05", "1:02:10".
+static func format_time(seconds: float) -> String:
+	var total := ceili(seconds)
+	var hours := total / 3600
+	var minutes := (total % 3600) / 60
+	var secs := total % 60
+	if hours > 0:
+		return "%d:%02d:%02d" % [hours, minutes, secs]
+	return "%d:%02d" % [minutes, secs]
 
 
 func show_ghost(definition: FurnitureDefinition, origin: Vector2i, rotation_steps: int, valid: bool) -> void:
@@ -82,3 +141,7 @@ func view_for(id: StringName) -> FurnitureView:
 
 func view_count() -> int:
 	return _views.size()
+
+
+func agent_view_count() -> int:
+	return _agents.size()

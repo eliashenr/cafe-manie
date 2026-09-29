@@ -5,7 +5,7 @@ extends Node
 ## o que mantém os módulos desacoplados. Só declare aqui sinais que mais de
 ## um sistema precisa conhecer.
 
-## Emitido quando o jogador seleciona uma célula do grid.
-## Recebe CafeGrid.NO_CELL quando a seleção é limpa.
+## Uma mensagem curta para o jogador (subiu de nível, ação recusada...).
+## Quem mostra é o HUD; qualquer sistema pode publicar.
 @warning_ignore("unused_signal")
-signal cell_selected(cell: Vector2i)
+signal message_posted(text: String)

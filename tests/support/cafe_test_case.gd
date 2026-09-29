@@ -8,9 +8,28 @@ extends TestCase
 
 const CafeScene := preload("res://scenes/cafe/cafe.tscn")
 
+## Relógio da última cafeteria criada com quiet_simulation(); os testes o avançam à mão.
+var clock: ManualClock
 
-func spawn_cafe() -> Cafe:
-	var cafe: Cafe = add_to_tree(CafeScene.instantiate())
+
+## Cafeteria 8x8 vazia (entrada em (7,4)), relógio manual e sem clientes chegando:
+## nada acontece sozinho, então o teste controla tudo.
+func quiet_simulation() -> CafeSimulation:
+	clock = ManualClock.new()
+	var config: ServiceConfig = load("res://data/config/service.tres").duplicate()
+	var no_customers: Array[CustomerType] = []
+	var simulation := CafeSimulation.new(clock, CafeLayout.new(Vector2i(8, 8), Vector2i(7, 4)), config,
+		FurnitureCatalog.load_from(), RecipeCatalog.load_from(), load("res://data/progression/levels.tres"),
+		no_customers, 7)
+	simulation.wallet.earn(Wallet.SOFT, 200, "teste")
+	return simulation
+
+
+## Sobe a cena da cafeteria. Sem simulação informada, usa quiet_simulation().
+func spawn_cafe(simulation: CafeSimulation = null) -> Cafe:
+	var cafe: Cafe = CafeScene.instantiate()
+	cafe.simulation = simulation if simulation != null else quiet_simulation()
+	add_to_tree(cafe)
 	await tree.process_frame
 	return cafe
 
