@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/cafe/cafe.gd" id="1_cafe"]
+[ext_resource type="Script" path="res://scenes/cafe/floor_view.gd" id="2_floor"]
+[ext_resource type="Script" path="res://scenes/cafe/cafe_camera.gd" id="3_camera"]
+[ext_resource type="Script" path="res://scenes/ui/debug_hud.gd" id="4_hud"]
+
+[node name="Cafe" type="Node2D"]
+script = ExtResource("1_cafe")
+
+[node name="FloorView" type="Node2D" parent="."]
+script = ExtResource("2_floor")
+
+[node name="CafeCamera" type="Camera2D" parent="."]
+script = ExtResource("3_camera")
+
+[node name="DebugHud" type="CanvasLayer" parent="."]
+script = ExtResource("4_hud")
