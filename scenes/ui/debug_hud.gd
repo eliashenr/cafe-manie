@@ -43,6 +43,10 @@ func _ready() -> void:
 	EventBus.cell_selected.connect(_show_cell)
 
 
+func cell_text() -> String:
+	return _cell_label.text
+
+
 func _show_cell(cell: Vector2i) -> void:
 	if cell == CafeGrid.NO_CELL:
 		_cell_label.text = "Nenhum piso selecionado"

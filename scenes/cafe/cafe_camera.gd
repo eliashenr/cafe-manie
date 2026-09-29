@@ -8,6 +8,8 @@ extends Camera2D
 
 ## Emitido num clique/toque curto, com a posição no mundo onde ele aconteceu.
 signal tapped(world_position: Vector2)
+## Emitido quando o mouse se move sem botão pressionado (não existe em toque).
+signal hovered(world_position: Vector2)
 
 @export var min_zoom := 0.5
 @export var max_zoom := 2.0
@@ -34,6 +36,20 @@ var _pinch_last_center := Vector2.ZERO
 ## Área do mundo onde o centro da câmera pode ficar.
 func set_bounds(rect: Rect2) -> void:
 	_bounds = rect
+	_clamp_position()
+
+
+## Enquadra [param rect] na área da tela livre de interface: entre
+## [param top_inset] e [param bottom_inset] pixels das bordas. Nunca aproxima
+## além do zoom 1 (numa tela grande a cafeteria não fica gigante).
+func frame(rect: Rect2, top_inset: float, bottom_inset: float) -> void:
+	var viewport_size := get_viewport_rect().size
+	var available := Vector2(viewport_size.x, maxf(viewport_size.y - top_inset - bottom_inset, 1.0))
+	var fit := minf(available.x / rect.size.x, available.y / rect.size.y)
+	var z := clampf(minf(fit, 1.0), min_zoom, max_zoom)
+	zoom = Vector2(z, z)
+	# O centro da área livre fica deslocado do centro da tela quando as faixas têm alturas diferentes.
+	global_position = rect.get_center() - Vector2(0.0, (top_inset - bottom_inset) / 2.0) / z
 	_clamp_position()
 
 
@@ -64,6 +80,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion:
 		if _press_active:
 			_move_press(event.position)
+		else:
+			hovered.emit(screen_to_world(event.position))
 	elif event is InputEventScreenTouch:
 		_handle_touch(event)
 	elif event is InputEventScreenDrag:
