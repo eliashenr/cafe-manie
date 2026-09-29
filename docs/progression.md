@@ -1,6 +1,12 @@
 # Progressão
 
-Referência: seções 22–24 e 119–120 do master prompt. **Nada implementado ainda** (entra nas Fases 2 e 4).
+Referência: seções 22–24 e 119–120 do master prompt.
+
+## Implementado (Fase 2)
+
+- `data/progression/levels.tres` com os níveis 1–10. XP total por nível: 0, 30, 80, 160, 280, 450, 680, 980, 1360, 1830.
+- **Fontes de XP:** retirar prato pronto do fogão (XP da receita) e cliente servido (3 XP).
+- Subir de nível libera receitas (aviso "Nível N! Nova receita: …"). Móveis por nível chegam com a loja (Fase 3).
 
 ## Decisões
 

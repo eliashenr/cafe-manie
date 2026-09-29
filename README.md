@@ -45,6 +45,13 @@ Você só precisa fazer isto uma vez.
 | Confirmar / cancelar | **Enter** / **Esc** | **Confirmar** / **Cancelar** |
 | Mover ou remover um móvel | Selecione-o e use **Mover** / **Remover** (ou **Delete**) | Selecione-o e use **Mover** / **Remover** |
 
+### Cozinhar e atender
+
+1. Toque num **fogão** e escolha uma receita. Os ingredientes custam Café Ouro.
+2. Quando a etiqueta ficar verde ("pronto!"), toque no fogão para levar o prato ao **balcão**.
+3. Os clientes entram, sentam nas cadeiras ao lado das mesas e pedem o que houver no balcão. O garçom leva.
+4. Cliente servido paga, dá XP e popularidade. Cliente que espera demais vai embora irritado.
+
 O piso azul com a seta é a **entrada**. Ela não pode ser ocupada, e nenhum móvel que cliente ou garçom usam pode ficar sem caminho até ela. Quando uma posição é recusada, a prévia fica vermelha e a barra explica o motivo.
 
 ---
@@ -57,8 +64,17 @@ core/         regras do jogo sem tela — testáveis sozinhas
   grid/       grid lógico e projeção isométrica
   furniture/  definição de móvel e catálogo
   cafe/       layout da cafeteria (posicionamento) e sessão de construção
+  cooking/    receitas e cozinha (fogões e balcões)
+  service/    atendimento: simulação, clientes, garçom, navegação, configs
+  economy/    carteira de moedas
+  progression/ XP e níveis
+  time/       relógio do jogo
 data/         conteúdo editável no inspetor da Godot
   furniture/  um arquivo .tres por móvel (preço, nível, tamanho...)
+  recipes/    receitas (tempo, porções, custo, preço, XP, nível)
+  customers/  tipos de cliente
+  progression/ curva de níveis
+  config/     parâmetros do atendimento e do jogo novo
 scenes/       o que aparece na tela
   cafe/       cena principal, câmera, piso e móveis
   ui/         interface

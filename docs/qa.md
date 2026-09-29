@@ -11,67 +11,31 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual
+## Cobertura atual — 133 testes
 
-**`test_cafe_grid.gd` — 10 testes**
-- limites nas 4 bordas
-- ocupação de objetos com várias células
-- recusa de sobreposição, de objeto saindo do grid, de id repetido ou vazio e de tamanho inválido, sempre sem efeito colateral
-- remoção e recolocação
-- expansão, e recusa de expansão que cortaria objetos
-
-**`test_iso_projection.gd` — 6 testes**
-- origem e direção dos eixos
-- ida e volta célula → mundo → célula num grid 14×14, incluindo coordenadas negativas
-- pontos perto dos vértices ficam na própria célula
-- pontos logo além de uma borda caem no vizinho certo
-- o retângulo de limites contém todo o grid
-
-**`test_furniture_catalog.gd` — 6 testes**
-- carrega os 6 móveis de `data/furniture`, todos válidos e completos
-- móveis funcionais exigem acesso e decoração não
-- ordenação por nível e preço; recusa de id repetido, vazio, tamanho zero e nulo
-
-**`test_cafe_layout.gd` — 15 testes**
-- entrada padrão; tamanho girado
-- ids únicos e aviso de mudança por operação
-- recusas: fora do grid, sobreposto, na entrada — sem efeito colateral
-- decoração em canto fechado é permitida; móvel funcional sem acesso é recusado
-- não dá para emparedar uma mesa nem isolar a entrada quando alguém precisa dela
-- mover para piso livre e sobre as próprias células; movimento inválido não altera nada
-- giro muda as células; giro que sairia do grid é recusado
-- remoção e ids inexistentes
-
-**`test_placement_session.gd` — 7 testes**
-- precisa de alvo antes de confirmar; só posiciona ao confirmar
-- ciclo de rotação; alvo inválido não confirma
-- sessão de mover começa na posição atual; descartar a sessão equivale a cancelar
-
-**`test_build_mode.gd` — 14 testes**
-- entrar em construção limpa o painel de seleção *(regressão)*
-- toque: dois toques no mesmo piso posicionam; tocar em outro piso só move a prévia
-- mouse: a prévia segue o cursor e um clique posiciona
-- lugar inválido: prévia vermelha, motivo na barra, Confirmar desabilitado, Esc cancela sem deixar nada
-- girar durante a construção (tecla R) e confirmar com Enter
-- selecionar móvel mostra Mover/Girar/Remover/Fechar; mover pela barra; cancelar movimento
-- girar no lugar com recusa explicada; remover com Delete
-- botões do catálogo e Cancelar pela barra; arrastar a câmera em construção não posiciona
-
-**`test_cafe_scene.gd` — 11 testes**
-- a cena inicia com grid 8×8 vazio e entrada marcada
-- a câmera enquadra a cafeteria inteira entre as barras e reduz o zoom em tela baixa
-- clique seleciona o piso certo, atualiza o destaque e avisa o EventBus uma única vez
-- clique fora do grid limpa a seleção
-- arrastar o mouse move a câmera e não seleciona
-- tremida pequena do dedo ainda conta como toque
-- zoom pela roda respeita mínimo e máximo
-- o zoom mantém fixo o ponto sob o cursor
-- pinça com dois dedos dá zoom proporcional e não seleciona
-- a câmera não sai dos limites da cafeteria
+| Arquivo | Testes | O que garante |
+|---|---|---|
+| `unit/test_cafe_grid.gd` | 10 | limites, ocupação, colisão, expansão segura |
+| `unit/test_iso_projection.gd` | 7 | clique cai no piso certo, inclusive nas bordas; posições fracionárias dos personagens |
+| `unit/test_furniture_catalog.gd` | 6 | dados de móveis válidos; recusa de dados ruins |
+| `unit/test_cafe_layout.gd` | 15 | regras de posicionamento, entrada, acesso, mover/girar/remover sem efeito colateral |
+| `unit/test_placement_session.gd` | 7 | modo de construção só muda o layout ao confirmar |
+| `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
+| `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
+| `unit/test_progression.gd` | 7 | curva de níveis, subir vários níveis de uma vez, nível máximo |
+| `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
+| `unit/test_cafe_simulation.gd` | 17 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo |
+| `unit/test_long_shift.gd` | 1 | 30 min simulados com o jogo novo real e um "jogador robô": ninguém preso, sem erros, lucro, níveis |
+| `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento |
+| `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, remover, teclado |
+| `integration/test_service_scene.gd` | 11 | jogo novo a partir dos dados, HUD, painel do fogão, tempo ao vivo, coleta por toque, balcão cheio, personagens na tela, aviso de nível, textos flutuantes |
 
 ### Verificação dos próprios testes
 
-Para garantir que a suíte pega defeitos de verdade, cinco bugs foram inseridos de propósito, um de cada vez: segundo toque não confirma, sem checagem de acesso, entrada liberada, móvel movido continua visível, Confirmar sempre habilitado. Os testes reprovaram todos. A regressão do painel de seleção também falha quando a correção é removida.
+Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de propósito, um de cada vez, e os testes precisam reprovar:
+
+- **Fase 1 (5 de 5 pegos):** segundo toque não confirma, sem checagem de acesso, entrada liberada, móvel movido continua visível, Confirmar sempre habilitado.
+- **Fase 2 (7 de 7 pegos):** paciência nunca acaba, garçom não serve, cozinhar dá ouro em vez de cobrar, cadeira ocupada desprotegida, personagens ignoram mudança de layout, porção reservada se perde, comida pronta na hora.
 
 ## Roteiro de teste manual — Fase 1
 
@@ -92,6 +56,24 @@ Rode o jogo (F5) e confira:
 13. [ ] Clique num móvel: ele ganha contorno laranja e a barra mostra Mover/Girar/Remover/Fechar. Teste **Mover** (o original some e reaparece no novo lugar) e **Remover**.
 14. [ ] Esc cancela a construção sem deixar nada no piso.
 15. [ ] Sensação: arrasto, zoom e posicionamento são confortáveis? Rápidos ou lentos demais? Algo confuso? *(anote para ajuste)*
+
+## Roteiro de teste manual — Fase 2
+
+Rode o jogo (F5). O jogo novo já vem com 2 fogões, 2 balcões, 2 mesas com cadeiras e uma planta.
+
+1. [ ] O painel de cima mostra Nível 1, barra de XP, Café Ouro: 200 e Popularidade: 50%.
+2. [ ] Toque no fogão da esquerda: aparecem as receitas. Café e Pão de queijo liberados; as outras mostram "Nível N".
+3. [ ] Escolha **Café**: o ouro cai 6, aparece "-6" sobre o fogão, e a etiqueta mostra o tempo correndo.
+4. [ ] Tente **Remover** o fogão enquanto cozinha: a barra explica que está em uso.
+5. [ ] Em ~15 s a etiqueta fica verde ("Café pronto!"). Toque no fogão: sobem "+6 Café" e "+2 XP", e o balcão mostra "Café ×6".
+6. [ ] Clientes entram pela seta azul, sentam e mostram um balão com o pedido e uma barrinha de paciência.
+7. [ ] O garçom busca no balcão (aparece um prato na mão dele) e leva à mesa. O cliente come, sobe "+3" dourado, e ele vai embora.
+8. [ ] Deixe um cliente sem comida: a barrinha esvazia, aparece "Demorou!" e a popularidade cai.
+9. [ ] Cozinhe Café num fogão e Pão de queijo no outro: cada um vai para um balcão.
+10. [ ] Ao juntar 30 XP aparece "Nível 2! Nova receita: Misto-quente", e o botão dela é liberado.
+11. [ ] Tente pôr uma Planta no piso onde alguém está passando: a barra diz "Tem alguém passando aí".
+12. [ ] Mova uma mesa vazia no meio do movimento dos personagens: eles desviam e continuam.
+13. [ ] **Sensação (a pergunta mais importante):** dá vontade de continuar jogando? Esperar é chato ou gostoso? O garçom é rápido demais ou lento? *(anote para o balanceamento)*
 
 Os itens de toque (pinça, arrasto com dedo) serão conferidos no celular quando houver build Android.
 

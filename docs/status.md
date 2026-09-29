@@ -4,42 +4,61 @@
 
 🟢 **CONCLUÍDO**
 
-- **Fase 0 — Fundação:** projeto Godot 4.7.2 (renderer mobile, 1280×720 responsivo, paisagem), estrutura, `EventBus`, README, `CLAUDE.md` e `docs/` com o master prompt.
-- **Fase 1 — Protótipo (implementação completa, falta o teste do PO):**
-  - grid lógico e projeção isométrica com clique preciso;
-  - câmera com arrastar, zoom com roda e pinça, limites e enquadramento inicial que respeita as barras da interface;
-  - móveis como dados: 6 móveis em `data/furniture/*.tres` (Mesa, Cadeira, Fogão, Balcão 2×1, Planta, Mesa longa 2×1), editáveis no inspetor da Godot;
-  - modo de construção: prévia verde/vermelha com o motivo da recusa, girar, confirmar e cancelar, tanto no mouse quanto no toque;
-  - móvel selecionado: Mover, Girar no lugar, Remover;
-  - entrada da cafeteria e **validação de acesso** (nenhum fogão, mesa, cadeira ou balcão fica sem caminho até a entrada);
-  - móveis desenhados em ordem de profundidade (placeholder).
+- **Fase 0 — Fundação.**
+- **Fase 1 — Protótipo:** grid, câmera, construção com validação de acesso.
+- **Fase 2 — Core gameplay (implementada; falta o teste do PO):**
+  - relógio do jogo e preparo por horário (o prato fica pronto mesmo com o jogo fechado — vale de verdade quando houver save);
+  - 6 receitas, 2 tipos de cliente, curva de níveis 1–10, parâmetros do atendimento e jogo novo — tudo em `data/`;
+  - fogão com painel de receitas (custo, tempo, bloqueio por nível), tempo ao vivo, toque no fogão pronto leva ao balcão;
+  - balcões com porções empilhadas por receita;
+  - clientes que chegam conforme a popularidade, sentam, pedem, esperam com paciência, comem, pagam e vão embora (ou saem irritados);
+  - garçom com caminho A* que busca no balcão e entrega na mesa;
+  - Café Ouro com registro de transações, XP, níveis e desbloqueio de receitas;
+  - proteções: móvel em uso não sai do lugar; nada é posto em cima de quem anda; quem anda recalcula a rota;
+  - HUD (nível, XP, ouro, popularidade), avisos e textos flutuantes de feedback.
 
 🟡 **EM ANDAMENTO**
 
-- Marco de saída da Fase 1: o PO jogar o protótipo no PC seguindo o roteiro de [qa.md](qa.md).
+- Teste do PO no PC — roteiros das Fases 1 e 2 em [qa.md](qa.md). É o marco de saída das duas fases.
 
 🔴 **BLOQUEADO**
 
-- **Envio para o GitHub:** o push é recusado até o app do Claude ser instalado na conta `eliashenr`. Os commits estão prontos localmente.
+- **Envio para o GitHub:** push recusado até o app do Claude ser instalado na conta `eliashenr`. Commits prontos localmente; o projeto vai em zip enquanto isso.
 
 🧪 **TESTADO**
 
-- **69 testes automatizados: PASSOU** (grid 10, projeção 6, catálogo 6, layout 15, sessão 7, modo de construção 14, cena 11).
-- **Verificação da suíte: PASSOU.** Cinco bugs inseridos de propósito, todos reprovados pelos testes.
-- **Cena principal rodando 120 frames: PASSOU**, zero erros e zero avisos.
-- **Renderização real (OpenGL): PASSOU.** Capturas conferidas com 12 móveis: profundidade correta, contorno de seleção, prévia verde e vermelha, barra explicando a recusa.
-- **Toque em celular real: NÃO FOI POSSÍVEL TESTAR** (ainda sem build Android). Toque coberto por entrada simulada.
-- **Sensação e diversão (seção 122):** pendente do PO.
+- **133 testes automatizados: PASSOU.**
+- **Turno longo (30 min simulados, jogo novo real, clientes aleatórios): PASSOU** — 282 servidos, ninguém preso, sem erros, lucro e níveis.
+- **Verificação da suíte: PASSOU** — 7 bugs inseridos de propósito na simulação e na cozinha, todos reprovados.
+- **Cena principal rodando 300 frames: PASSOU**, zero erros e zero avisos. Sem vazamento de memória ao sair.
+- **Renderização real: PASSOU** — capturas do jogo novo em atendimento e do painel do fogão conferidas.
+- **Toque em celular real e desempenho em Android: NÃO FOI POSSÍVEL TESTAR** (sem build Android).
+- **Diversão (seção 122): pendente do PO.**
 
-🐞 **BUGS**
+🐞 **BUGS** (encontrados nesta fase e corrigidos, cada um com teste de regressão)
 
-- 🐞 **Corrigido (MEDIUM):** ao entrar no modo de construção, o painel de cima continuava mostrando o piso selecionado antes. Causa: limpar a seleção não avisava o `EventBus`. Agora toda mudança de seleção passa por um único método que avisa. Teste de regressão incluído.
-- 🐞 **Corrigido (LOW):** em 1280×720 a fileira de trás ficava sob o painel de cima e a frente sob a barra de baixo. A câmera agora enquadra a cafeteria na faixa livre entre as barras (DT-008).
+- 🐞 **HIGH — jogo novo com 2 fogões e 1 balcão:** o segundo prato ficava preso no fogão, porque um balcão guarda um tipo de prato por vez. Achado na captura de tela. O jogo novo agora tem 2 balcões, e um teste exige pelo menos um balcão por fogão.
+- 🐞 **MEDIUM — motivo da recusa sumia:** com o fogão cozinhando, a atualização do tempo apagava a explicação "está em uso". Achado por teste de integração.
+- 🐞 **MEDIUM — barra de XP ilegível:** sem fundo, parecia um traço cinza. Achado na captura.
+- 🐞 **LOW — vazamento de memória:** referências circulares (pedido ↔ garçom) impediam a memória de ser liberada. Achado no aviso de saída da Godot.
 
 🏗️ **DECISÕES TÉCNICAS**
 
-- DT-007 acesso garantido no posicionamento; DT-008 enquadramento considerando a interface; DT-009 ordem de desenho pelo vértice da frente. Detalhes em [decisions.md](decisions.md).
+- DT-010 a DT-014 em [decisions.md](decisions.md): catálogos por composição, simulação pura com relógio injetável, móvel em uso e personagem no caminho, personagens sem colisão entre si, porção reservada no pedido.
+
+💡 **SUGESTÃO DE PRODUTO — antecipar o save**
+
+O roadmap coloca o save na Fase 4. Só que, sem save:
+- fechar o jogo perde tudo, então os seus testes de jogo recomeçam do zero toda vez;
+- a mecânica "cozinhar, fechar e voltar depois", que já está pronta na lógica, não pode ser sentida.
+
+Proposta: fazer o **save local versionado** (seções 63–64) como primeira entrega da Fase 3, antes da loja.
+
+💡 **SUGESTÃO DE PRODUTO — balanceamento depois do seu teste**
+
+O "jogador robô" chegou ao nível 7 em 30 minutos, com 0 clientes irritados e popularidade 100%. Os números atuais parecem fáceis demais. Recomendo você jogar primeiro e depois pedir **FAÇA BALANCEAMENTO** com as suas impressões.
 
 ➡️ **PRÓXIMO PASSO**
 
-- Fase 2 — Core gameplay: `Clock` (tempo por timestamp), fogão com receita e preparo, balcão com porções, cliente básico (entrar → sentar → pedir → esperar → comer → pagar → sair), um garçom com pathfinding (`AStarGrid2D` sobre o mesmo grid), Café Ouro e XP.
+- Se aprovar a sugestão: save local versionado (layout, cozinha com horários, balcões, carteira, XP, popularidade), com migração de versão e teste de "fechar e reabrir".
+- Depois: Fase 3 — loja (móveis passam a custar ouro e exigir nível), inventário e expansão.

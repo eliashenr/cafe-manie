@@ -30,6 +30,8 @@ godot --headless --quit-after 120                # sobe a cena principal por 120
 - **Comunicação entre sistemas** passa pelo autoload `EventBus`. Só declare ali sinais que mais de um sistema usa.
 - **Placeholders** têm o prefixo `PLACEHOLDER_` no comentário do arquivo ou no nome do asset.
 - **Testes.** Todo sistema em `core/` tem testes em `tests/unit/`. Fluxos de cena têm testes em `tests/integration/`. Em testes, envie entrada com `tree.root.push_input(evento, true)`: a janela headless tem 64×64, e sem o `true` as posições são reescaladas.
+- **Testes de cena** usam `CafeTestCase.spawn_cafe()`, que injeta uma `quiet_simulation()` (cafeteria vazia, relógio manual, sem clientes). Para atendimento, avance `clock` e chame `simulation.tick()` à mão.
+- **Tempo:** nada de `Time`/`OS` direto na lógica; use o `GameClock` da simulação (com backend, vira horário do servidor).
 - **Scripts avulsos com `-s`** compilam antes dos autoloads existirem. Não use tipos que dependem do `EventBus` (como `Cafe`) com tipagem estática neles; carregue com `load()` e use variáveis sem tipo. O executor de testes já faz isso.
 - **Conteúdo novo** (móveis etc.) entra como `.tres` em `data/`, nunca como `if` no código.
 - **Nunca declare algo pronto sem rodar os testes** e subir a cena principal sem erros (seção 91).

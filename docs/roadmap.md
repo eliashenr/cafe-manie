@@ -5,8 +5,8 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | Fase | Entrega | Marco de saída | Status |
 |---|---|---|---|
 | 0 — Fundação | Git, projeto Godot, estrutura, docs, testes rodando | Projeto abre sem erros e os testes passam | ✅ Concluída |
-| 1 — Protótipo | Grid isométrico, câmera, seleção, móveis genéricos no grid | O PO posiciona móveis com mouse e toque | 🟡 Em andamento |
-| 2 — Core gameplay | Cozinha, balcão, cliente, garçom, Café Ouro, XP | O loop completo roda sozinho | ⏳ |
+| 1 — Protótipo | Grid isométrico, câmera, seleção, móveis genéricos no grid | O PO posiciona móveis com mouse e toque | 🟡 Falta o teste do PO |
+| 2 — Core gameplay | Cozinha, balcão, cliente, garçom, Café Ouro, XP | O loop completo roda sozinho | ✅ Implementada (falta o teste do PO) |
 | 3 — Cafeteria | Loja, inventário, decoração, expansão | Comprar → posicionar → salvar | ⏳ |
 | 4 — Progressão | Níveis 1–10, missões, tutorial, conquistas | **Vertical Slice validada** (seção 81) | ⏳ |
 | 5 — Social | Amigos, visitas, mapa, rankings | Só depois da slice validada e divertida | ⏳ |
@@ -29,6 +29,20 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] Validação: nenhum móvel funcional fica sem caminho até a entrada, e a entrada fica sempre livre
 - [ ] Teste do PO no PC (roteiro em [qa.md](qa.md)) — **marco de saída da fase**
 
+## Fase 2 — detalhamento
+
+- [x] Relógio do jogo (`GameClock`) e preparo por horário: o prato fica pronto mesmo com o jogo fechado
+- [x] 6 receitas em dados, com custo, preço, XP e nível de desbloqueio
+- [x] Fogão: escolher receita (cobra ingredientes), acompanhar o tempo, tocar para levar ao balcão
+- [x] Balcão com porções empilhadas por receita e capacidade
+- [x] Clientes (2 tipos em dados): entram, sentam em cadeira ao lado de mesa, pedem o que há no balcão, esperam com paciência, comem, pagam e saem
+- [x] Garçom com caminho (A*) que busca no balcão e entrega na mesa
+- [x] Café Ouro com registro de transações; XP e níveis 1–10 em dados; popularidade que acelera as chegadas
+- [x] Proteções: móvel em uso não sai do lugar; móvel não cai em cima de quem está andando; quem anda recalcula o caminho
+- [x] HUD (nível, XP, ouro, popularidade), avisos e textos flutuantes de feedback
+- [x] Teste de turno longo (30 min simulados com um "jogador robô")
+- [ ] Teste do PO no PC (roteiro em [qa.md](qa.md)) — **marco de saída da fase**
+
 ## Riscos acompanhados
 
 | Risco | Mitigação | Quando tratar |
@@ -38,4 +52,6 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | Menores + compras + chat (classificação 12 anos, ECA Digital) | Validação jurídica | Antes das Fases 5 e 7 |
 | Pathfinding com layout editável (garçom preso) | ✅ Mitigado: posicionamento recusa layouts sem acesso (DT-007) | Fases 1–2 |
 | Ordem de desenho com móveis longos cruzados | y-sort pelo vértice da frente; rever com arte final (DT-009) | Fase 8 |
-| Desempenho em Android de entrada | Medir num aparelho real a partir da Fase 2 | Fase 2 em diante |
+| Desempenho em Android de entrada | Medir num aparelho real (precisa de build Android) | Fase 2 em diante |
+| Progresso some ao fechar o jogo (ainda sem save) | Save local versionado; ver 💡 em [status.md](status.md) | Próxima etapa |
+| Balanceamento fácil demais no teste do robô (0 irritados, nível 7 em 30 min) | Comando **FAÇA BALANCEAMENTO** após o teste do PO | Após o teste do PO |

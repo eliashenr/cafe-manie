@@ -25,7 +25,23 @@ Regras de gameplay **decididas**. A visão completa está no [master prompt](mas
 - Um toque vira arrasto depois de 12 px de movimento (`drag_threshold`), para que a tremida do dedo não atrapalhe a seleção. **Implementado.**
 - Zoom entre 0,5× e 2×. **Implementado.**
 
-## Premissas assumidas no discovery (a implementar)
+## Cozinha
 
-- **Tempo real + tempo ausente:** a comida continua cozinhando com o jogo fechado. Clientes só são atendidos com o jogo aberto.
-- Loop alvo da Vertical Slice: cozinhar → balcão → cliente senta e pede → garçom entrega → cliente paga → XP → nível → comprar → posicionar → salvar.
+- Tocar num fogão livre mostra as receitas liberadas, com tempo e custo; as bloqueadas mostram o nível que falta. Escolher uma cobra os ingredientes em Café Ouro. **Implementado.**
+- O preparo é tempo real e continua com o jogo fechado (vale quando existir save). **Implementado na lógica.**
+- Prato pronto: a etiqueta do fogão fica verde; tocar no fogão leva as porções para um balcão (primeiro um com a mesma receita, senão um vazio) e dá XP. **Implementado.**
+- Um balcão guarda um tipo de prato por vez (até 40 porções). Sem balcão com espaço, o prato espera no fogão. **Implementado.**
+
+## Atendimento
+
+- Assento = cadeira encostada numa mesa. Clientes só chegam se houver assento livre. **Implementado.**
+- O cliente senta e pede algo que esteja no balcão; se não houver nada, espera ("?") até aparecer comida ou a paciência acabar. **Implementado.**
+- A barra no balão mostra a paciência. Servido: come, paga o preço da receita (tipo apressado paga +30%), dá XP e popularidade. Não servido: vai embora irritado e a popularidade cai. **Implementado.**
+- Um garçom automático busca no balcão e leva à mesa. O layout influencia: balcão longe das mesas = mais caminhada. **Implementado.**
+- Popularidade (0–100%) acelera ou desacelera as chegadas. **Implementado.**
+- Móvel em uso não pode ser movido nem removido; não dá para pôr móvel em cima de quem está andando. **Implementado.**
+
+## Premissas ainda a implementar
+
+- **Save:** hoje fechar o jogo perde o progresso. O preparo por horário já está pronto para funcionar com save.
+- Loop da Vertical Slice que falta: comprar (móveis ainda são grátis) → salvar → reabrir.

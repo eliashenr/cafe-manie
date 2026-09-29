@@ -29,7 +29,17 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 
 | Módulo | Arquivo | Papel |
 |---|---|---|
-| EventBus | `autoload/event_bus.gd` | Sinais compartilhados entre sistemas (`cell_selected`) |
+| EventBus | `autoload/event_bus.gd` | Sinais compartilhados entre sistemas (`message_posted` → aviso no HUD) |
+| DefinitionStore | `core/content/definition_store.gd` | Carregamento e validação genéricos de conteúdo em `data/` |
+| GameClock / ManualClock | `core/time/` | Fonte de tempo do jogo; relógio manual para testes |
+| RecipeDefinition / RecipeCatalog | `core/cooking/` | Receitas como dado |
+| Kitchen | `core/cooking/kitchen.gd` | Fogões por horário (pronto mesmo com o jogo fechado) e porções nos balcões |
+| Wallet | `core/economy/wallet.gd` | Saldos por moeda com registro de transações |
+| LevelTable / PlayerProgression | `core/progression/` | Curva de níveis em dado; XP e nível do jogador |
+| ServiceConfig / CustomerType / NewGameConfig | `core/service/` | Parâmetros do atendimento, tipos de cliente e jogo novo (todos em `data/`) |
+| Navigation | `core/service/navigation.gd` | A* (4 direções) sobre a mesma malha da validação de acesso |
+| Agent / Customer / Waiter | `core/service/` | Personagens e suas máquinas de estado |
+| CafeSimulation | `core/service/cafe_simulation.gd` | Orquestra tudo: chegadas, pedidos, garçom, pagamento, XP, popularidade, ações do jogador |
 | CafeGrid | `core/grid/cafe_grid.gd` | Fonte da verdade do grid: limites, ocupação, colisão, expansão |
 | IsoProjection | `core/grid/iso_projection.gd` | Conversão grid ↔ mundo isométrico 2:1 |
 | FurnitureDefinition | `core/furniture/furniture_definition.gd` | Tipo de móvel como dado (Resource): tamanho, categoria, preço, nível, atributos |
@@ -39,9 +49,10 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 | Cena Cafe (`Cafe`) | `scenes/cafe/cafe.gd` | Dona do layout e do catálogo; modos VIEW e BUILD; traduz entrada em ações |
 | CafeCamera | `scenes/cafe/cafe_camera.gd` | Pan, zoom (roda e pinça), tap, hover e enquadramento inicial |
 | FloorView | `scenes/cafe/floor_view.gd` | Desenha piso, entrada, seleção e prévia verde/vermelha (placeholder) |
-| FurnitureLayer / FurnitureView | `scenes/cafe/furniture_layer.gd`, `furniture_view.gd` | Móveis em ordem de profundidade (y-sort) e a prévia "fantasma" (placeholder) |
-| BuildBar | `scenes/ui/build_bar.gd` | Barra de construção: catálogo, ações do móvel selecionado, confirmar/cancelar |
-| DebugHud | `scenes/ui/debug_hud.gd` | Painel de protótipo com o piso selecionado (placeholder) |
+| WorldLayer / FurnitureView / AgentView | `scenes/cafe/` | Móveis, etiquetas de fogão e balcão, personagens com balão de pedido, tudo em y-sort (placeholders) |
+| FloatingText | `scenes/cafe/floating_text.gd` | "+3", "+6 Café", "+2 XP" subindo e sumindo |
+| GameHud | `scenes/ui/game_hud.gd` | Nível, barra de XP, Café Ouro, popularidade e avisos |
+| BuildBar | `scenes/ui/build_bar.gd` | Catálogo de construção, painel do fogão (receitas/tempo), ações do móvel, controles de construção |
 
 ## Grid e projeção
 
@@ -67,13 +78,27 @@ O alcance é uma busca em largura em 4 direções pelos pisos livres, partindo d
 
 `PlacementSession` guarda definição, rotação, alvo e — se for mover — o id do móvel. O layout só muda em `confirm()`; cancelar é descartar a sessão, sem estado para restaurar. Durante o movimento o original fica escondido na tela, mas continua no layout, e a checagem ignora as células dele.
 
+## Atendimento (CafeSimulation)
+
+```text
+chegada (intervalo ÷ popularidade) → reserva uma cadeira livre ao lado de mesa
+→ anda até ela → senta → pede o que houver no balcão (a porção fica reservada)
+→ garçom: busca no balcão → leva à mesa → cliente come → paga (ouro + XP + popularidade)
+→ vai embora
+
+paciência acaba antes de ser servido → vai embora irritado (−popularidade, porção volta ao balcão)
+```
+
+- A cena chama `simulation.tick(delta)` a cada frame e só desenha o resultado.
+- Ações do jogador passam pela simulação: `start_cooking` (cobra ingredientes) e `collect` (dá XP).
+- Tudo o que a simulação precisa vem de `data/`: receitas, clientes, níveis, parâmetros e o jogo novo.
+
 ## Módulos planejados (próximas fases)
 
 Criados apenas quando a fase precisar deles:
 
 | Fase | Módulos |
 |---|---|
-| 2 | `Clock` (tempo), cozinha e estações, balcão, clientes (máquina de estados), garçom (pathfinding com `AStarGrid2D`), `Economy` (transações com registro), XP |
 | 3 | Loja, inventário, decoração, expansão na interface |
 | 4 | Níveis 1–10, missões, conquistas, tutorial, `SaveService` versionado |
 
