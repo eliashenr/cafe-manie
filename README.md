@@ -10,10 +10,10 @@ O documento que manda em tudo é o [master prompt](docs/master-prompt.md). O est
 
 ## Jogar no Windows sem instalar nada (recomendado)
 
-1. Baixe o arquivo **`CafeManie-Windows.zip`** que o Claude enviou na conversa.
-2. Clique com o botão direito nele → **Extrair tudo…** → **Extrair**. Isso cria uma pasta com o `CafeManie.exe` dentro.
-3. Dê dois cliques em **`CafeManie.exe`**.
-4. Na primeira vez o Windows pode mostrar **"O Windows protegeu o computador"**. Isso acontece com todo programa que não tem uma assinatura digital paga, e não quer dizer que haja algo errado. Clique em **Mais informações** e depois em **Executar assim mesmo**. O aviso não volta depois.
+1. Baixe o arquivo **`CafeManie-Instalar.exe`** que o Claude enviou na conversa (tem cerca de 22 MB; o jogo vem compactado dentro dele).
+2. Dê dois cliques nele. Na primeira vez o Windows pode mostrar **"O Windows protegeu o computador"**. Isso acontece com todo programa sem uma assinatura digital paga, e não quer dizer que haja algo errado. Clique em **Mais informações** e depois em **Executar assim mesmo**.
+3. Abre uma janelinha do 7-Zip perguntando onde extrair. Deixe como está e clique em **Extract**. Aparece uma pasta **CafeManie** ao lado do instalador.
+4. Abra a pasta e dê dois cliques em **`CafeManie.exe`**. Daqui em diante, é só abrir este arquivo; o instalador pode ser apagado.
 
 O jogo salva sozinho em `%APPDATA%\Godot\app_userdata\Café Manie\` (cole esse caminho na barra de endereço do Explorador de Arquivos para ver a pasta). Um `.exe` novo continua o mesmo save.
 

@@ -12,6 +12,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - `export_presets.cfg` com **Windows** (um `CafeManie.exe` com o conteúdo embutido, sem arquivos soltos) e **Linux** (usado para testar o build na nuvem). Testes e docs ficam fora do pacote.
 - `SmokeCheck`: o jogo exportado aceita `-- --smoke-check`. Ele sobe a cafeteria, roda 600 quadros, confere se móveis, receitas, clientes, missões e expansões carregaram e se nenhum erro apareceu, e fecha com 0 ou 1. Não salva nada.
 - O conteúdo embutido no `.exe` do Windows é verificado carregando-o com o motor do Linux (`--main-pack CafeManie.exe`). O executável do Windows é o da própria Godot, sem modificação. Um teste com um build sem a pasta de missões confirmou que a checagem reprova.
+- **Entrega:** o `.exe` compactado em zip passa de 30 MB, o limite de envio de arquivos na conversa. Por isso, ele vai dentro de um autoextraível do 7-Zip (`CafeManie-Instalar.exe`, ~22 MB), feito com o módulo oficial `7z.sfx`. Testado: a extração gera um `CafeManie.exe` idêntico, byte a byte, ao exportado. Quando o GitHub estiver liberado, o build pode ir para a página de Releases.
 - O `.exe` não é assinado (custa um certificado pago). O Windows mostra "O Windows protegeu o computador" na primeira vez; o README explica o que fazer.
 
 ---

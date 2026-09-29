@@ -15,7 +15,7 @@
   - uma de cada vez, com dica sempre visível no canto direito;
   - ao concluir, aparece o aviso com a recompensa.
 - **Save versão 2** com inventário e missões. Um save antigo é migrado sozinho.
-- **Build para Windows:** `CafeManie.exe`, um arquivo só, sem precisar da Godot.
+- **Build para Windows:** `CafeManie.exe`, um arquivo só, sem precisar da Godot. Vai dentro do `CafeManie-Instalar.exe` (~22 MB), porque o arquivo compactado em zip passava do limite de envio da conversa.
 
 🟡 **EM ANDAMENTO**
 
@@ -40,6 +40,7 @@
   - todos os móveis, receitas, clientes, missões e expansões carregaram;
   - zero erros.
   - Um build de propósito sem a pasta de missões **reprovou** na mesma checagem, o que confirma que ela funciona.
+- **Instalador: PASSOU.** A extração gera um `CafeManie.exe` idêntico, byte a byte, ao exportado.
 - **Renderização real: PASSOU.** Capturas da loja com preços, do cartão de missão, da confirmação de expansão, da cafeteria ampliada e da compra.
 - **O `.exe` rodando num Windows de verdade: NÃO FOI POSSÍVEL TESTAR** aqui. O emulador de Windows da nuvem (Wine) trava até com a Godot original, sem nenhuma alteração nossa. O programa em si é o executável oficial da Godot, e o conteúdo que colocamos nele foi verificado. Falta só o seu clique duplo.
 
