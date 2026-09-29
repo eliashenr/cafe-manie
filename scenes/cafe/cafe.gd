@@ -27,10 +27,17 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 @export var ui_bottom_inset := 140.0
 ## Espaço acima do grid reservado para a altura dos móveis da fileira de trás.
 @export var furniture_headroom := 60.0
+## Intervalo mínimo, em segundos, entre salvamentos automáticos quando algo mudou.
+## Minimizar ou fechar o jogo salva na hora, sem esperar.
+@export var autosave_min_interval := 5.0
 
 ## Estado do jogo. Pode ser injetado antes de a cena entrar na árvore (testes);
-## se ficar vazio, começa um jogo novo com os dados de res://data.
+## se ficar vazio, é carregado do save ou vira um jogo novo.
 var simulation: CafeSimulation
+## Onde o jogo é salvo. Com uma simulação injetada e sem save_service, nada é salvo.
+var save_service: SaveService
+## Relógio do jogo. Injetável para testes; o padrão é o relógio do aparelho.
+var game_clock: GameClock
 var layout: CafeLayout
 var catalog: FurnitureCatalog
 var mode := Mode.VIEW
@@ -43,6 +50,10 @@ var selected_id: StringName = &""
 var last_check := CafeLayout.Check.OK
 ## Resultado da última ação de cozinha (ServiceResult), para a interface explicar recusas.
 var last_service_result := ServiceResult.OK
+
+var _save_dirty := false
+var _since_last_save := 0.0
+var _saving_enabled := true
 
 var grid: CafeGrid:
 	get:
@@ -57,8 +68,9 @@ var grid: CafeGrid:
 
 
 func _ready() -> void:
+	var welcome := ""
 	if simulation == null:
-		simulation = CafeSimulation.create_new_game(GameClock.new())
+		welcome = _load_or_start_game()
 	layout = simulation.layout
 	catalog = simulation.furniture
 	floor_view.grid_size = layout.grid.size
@@ -74,13 +86,111 @@ func _ready() -> void:
 	camera.hovered.connect(_on_hovered)
 
 	hud.bind(simulation)
+	hud.restart_requested.connect(restart_game)
 	build_bar.bind(self)
 	world_layer.refresh(simulation)
+	_watch_for_changes()
+	if not welcome.is_empty():
+		EventBus.message_posted.emit(welcome)
 
 
 func _process(delta: float) -> void:
 	simulation.tick(delta)
 	world_layer.refresh(simulation)
+	_since_last_save += delta
+	if _save_dirty and _since_last_save >= autosave_min_interval:
+		save_now()
+
+
+# --- Save ------------------------------------------------------------------
+
+## Carrega o save (ou começa um jogo novo). Retorna a mensagem de boas-vindas.
+func _load_or_start_game() -> String:
+	if game_clock == null:
+		game_clock = GameClock.new()
+	if save_service == null:
+		save_service = SaveService.new()
+	var loaded := save_service.load_game(game_clock)
+	for warning in loaded.warnings:
+		push_warning("Save: " + warning)
+	match loaded.status:
+		SaveService.Status.OK:
+			simulation = loaded.simulation
+			return _welcome_back(loaded.saved_at)
+		SaveService.Status.RECOVERED_FROM_BACKUP:
+			simulation = loaded.simulation
+			return "O save estava danificado; recuperamos a cópia anterior."
+		SaveService.Status.CORRUPT:
+			simulation = CafeSimulation.create_new_game(game_clock)
+			return "Não deu para ler o save. Começamos um jogo novo (o arquivo antigo foi guardado)."
+		SaveService.Status.NEWER_VERSION:
+			simulation = CafeSimulation.create_new_game(game_clock)
+			return "O save é de uma versão mais nova do jogo. Começamos um jogo novo (o save foi guardado)."
+	simulation = CafeSimulation.create_new_game(game_clock)
+	return ""
+
+
+## "Bem-vindo de volta!" contando os pratos que ficaram prontos enquanto o jogo estava fechado.
+func _welcome_back(saved_at: float) -> String:
+	var kitchen := simulation.kitchen
+	var ready_while_away := 0
+	for placement in simulation.layout.placements():
+		var ready_at := kitchen.stove_ready_at(placement.id)
+		if ready_at > saved_at and kitchen.stove_status(placement.id) == Kitchen.StoveStatus.READY:
+			ready_while_away += 1
+	match ready_while_away:
+		0:
+			return "Bem-vindo de volta!"
+		1:
+			return "Bem-vindo de volta! 1 prato ficou pronto enquanto você estava fora."
+	return "Bem-vindo de volta! %d pratos ficaram prontos enquanto você estava fora." % ready_while_away
+
+
+## Salva agora. Sem save_service (testes), não faz nada.
+func save_now() -> Error:
+	if save_service == null or not _saving_enabled:
+		return ERR_UNAVAILABLE
+	var error := save_service.save(simulation)
+	_save_dirty = false
+	_since_last_save = 0.0
+	if error != OK:
+		EventBus.message_posted.emit("Não foi possível salvar o jogo (erro %d)." % error)
+	return error
+
+
+## Apaga o save e reabre a cafeteria do zero. Pedido pelo jogador, com confirmação no HUD.
+func restart_game() -> void:
+	_saving_enabled = false
+	if save_service != null:
+		save_service.delete_save()
+	if is_inside_tree() and get_tree().current_scene == self:
+		get_tree().reload_current_scene()
+
+
+func _watch_for_changes() -> void:
+	simulation.layout.changed.connect(_mark_dirty)
+	simulation.kitchen.changed.connect(_mark_dirty)
+	simulation.wallet.balance_changed.connect(_mark_dirty.unbind(2))
+	simulation.progression.xp_changed.connect(_mark_dirty.unbind(1))
+	simulation.popularity_changed.connect(_mark_dirty.unbind(1))
+
+
+func _mark_dirty() -> void:
+	_save_dirty = true
+
+
+func _exit_tree() -> void:
+	if _save_dirty:
+		save_now()
+
+
+## No celular o sistema pode encerrar o jogo a qualquer momento depois de
+## minimizado, então salva assim que ele sai de foco, pausa ou vai fechar.
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT:
+			if simulation != null:
+				save_now()
 
 
 # --- Cozinha ---------------------------------------------------------------

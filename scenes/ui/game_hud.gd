@@ -6,6 +6,9 @@ extends CanvasLayer
 ## Os nomes exibidos das moedas ficam aqui, na interface; o código do jogo
 ## usa ids neutros (ver docs/economy.md).
 
+## O jogador confirmou que quer apagar o progresso e recomeçar.
+signal restart_requested
+
 const SOFT_CURRENCY_NAME := "Café Ouro"
 const HINT := "Arraste para mover  •  Roda do mouse ou pinça para zoom  •  Toque num fogão para cozinhar"
 const TOAST_SECONDS := 2.8
@@ -21,6 +24,7 @@ var _gold_label: Label
 var _popularity_label: Label
 var _toast: Label
 var _toast_time := 0.0
+var _restart_dialog: ConfirmationDialog
 
 
 func _ready() -> void:
@@ -82,12 +86,57 @@ func _ready() -> void:
 	_toast.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_toast.add_theme_font_size_override("font_size", 22)
-	_toast.add_theme_color_override("font_outline_color", Color(0.1, 0.06, 0.04))
-	_toast.add_theme_constant_override("outline_size", 6)
+	var toast_style := StyleBoxFlat.new()
+	toast_style.bg_color = Color(0.1, 0.07, 0.05, 0.88)
+	toast_style.set_corner_radius_all(12)
+	toast_style.content_margin_left = 20
+	toast_style.content_margin_right = 20
+	toast_style.content_margin_top = 10
+	toast_style.content_margin_bottom = 10
+	_toast.add_theme_stylebox_override("normal", toast_style)
 	_toast.visible = false
 	add_child(_toast)
 
+	_build_restart_controls()
 	EventBus.message_posted.connect(show_message)
+
+
+## Botão "Recomeçar" no canto de cima, sempre com confirmação: apagar progresso
+## não pode acontecer por um toque acidental (mesmo princípio da seção 32).
+func _build_restart_controls() -> void:
+	var corner := MarginContainer.new()
+	corner.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	corner.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	corner.add_theme_constant_override("margin_top", 16)
+	corner.add_theme_constant_override("margin_right", 16)
+	corner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(corner)
+	var button := Button.new()
+	button.name = "RestartButton"
+	button.text = "Recomeçar"
+	button.custom_minimum_size = Vector2(120, 44)
+	button.focus_mode = Control.FOCUS_NONE
+	button.pressed.connect(ask_restart)
+	corner.add_child(button)
+
+	_restart_dialog = ConfirmationDialog.new()
+	_restart_dialog.name = "RestartDialog"
+	_restart_dialog.title = "Recomeçar do zero?"
+	_restart_dialog.dialog_text = "Isso apaga todo o seu progresso: móveis, Café Ouro, nível e o que está cozinhando."
+	_restart_dialog.ok_button_text = "Apagar e recomeçar"
+	_restart_dialog.cancel_button_text = "Cancelar"
+	_restart_dialog.confirmed.connect(func() -> void: restart_requested.emit())
+	add_child(_restart_dialog)
+
+
+func ask_restart() -> void:
+	_restart_dialog.popup_centered()
+	# O botão já selecionado é o seguro: um Enter sem querer não apaga nada.
+	_restart_dialog.get_cancel_button().grab_focus()
+
+
+func restart_dialog() -> ConfirmationDialog:
+	return _restart_dialog
 
 
 func bind(target: CafeSimulation) -> void:
