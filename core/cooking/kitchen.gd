@@ -160,6 +160,48 @@ func return_serving(counter_id: StringName, recipe: RecipeDefinition) -> bool:
 	return true
 
 
+## Horário (do relógio do jogo) em que o prato do fogão fica pronto; -1 se livre.
+func stove_ready_at(id: StringName) -> float:
+	var state: StoveState = _stoves.get(id)
+	return state.started_at + state.recipe.cook_time if state != null else -1.0
+
+
+# --- Save ------------------------------------------------------------------
+
+## Estado dos fogões e balcões em tipos simples (para JSON).
+func to_data() -> Dictionary:
+	var stoves: Array[Dictionary] = []
+	for id: StringName in _stoves:
+		var state: StoveState = _stoves[id]
+		stoves.append({"id": String(id), "recipe": String(state.recipe.id), "started_at": state.started_at})
+	var counters: Array[Dictionary] = []
+	for id: StringName in _counters:
+		var stack: CounterStack = _counters[id]
+		counters.append({"id": String(id), "recipe": String(stack.recipe.id), "servings": stack.servings})
+	return {"stoves": stoves, "counters": counters}
+
+
+## Restaura um preparo salvo, com o horário original de início.
+func restore_stove(id: StringName, recipe: RecipeDefinition, started_at: float) -> bool:
+	if recipe == null or not is_stove(id) or _stoves.has(id):
+		return false
+	var state := StoveState.new()
+	state.recipe = recipe
+	state.started_at = started_at
+	_stoves[id] = state
+	changed.emit()
+	return true
+
+
+## Restaura porções num balcão (soma se já houver a mesma receita). Respeita a capacidade.
+func restore_counter(id: StringName, recipe: RecipeDefinition, servings: int) -> bool:
+	if recipe == null or servings <= 0 or not _fits(id, recipe, servings):
+		return false
+	_add_to_counter(id, recipe, servings)
+	changed.emit()
+	return true
+
+
 ## Um fogão com preparo ou um balcão com comida não pode ser movido nem removido.
 func is_in_use(id: StringName) -> bool:
 	return _stoves.has(id) or _counters.has(id)

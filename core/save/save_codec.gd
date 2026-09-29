@@ -1,0 +1,163 @@
+class_name SaveCodec
+extends RefCounted
+## Converte o estado do jogo em dados simples (para JSON) e de volta.
+##
+## O que é salvo: layout (móveis com os ids originais), cozinha (receita e
+## horário de início de cada fogão; porções de cada balcão), carteira, XP e
+## popularidade. Personagens não são salvos: ao voltar, a cafeteria reabre
+## vazia, e as porções que estavam reservadas para pedidos voltam ao balcão.
+##
+## Todo save tem save_version (seção 64). Mudou o formato? Aumente
+## CURRENT_VERSION e acrescente um passo em migrations().
+
+const CURRENT_VERSION := 1
+
+
+## Resultado de decode(): a simulação (null se os dados forem inutilizáveis)
+## e avisos sobre partes ignoradas (ex.: um móvel que não existe mais).
+class DecodeResult:
+	extends RefCounted
+	var simulation: CafeSimulation
+	var warnings: Array[String] = []
+	var saved_at := 0.0
+
+
+# --- Gravar ----------------------------------------------------------------
+
+static func encode(simulation: CafeSimulation) -> Dictionary:
+	var layout := simulation.layout
+	var placements: Array[Dictionary] = []
+	for placement in layout.placements():
+		placements.append({
+			"id": String(placement.id),
+			"furniture": String(placement.definition.id),
+			"origin": _vec_to_array(placement.origin),
+			"rotation": placement.rotation,
+		})
+	var kitchen: Dictionary = simulation.kitchen.to_data()
+	kitchen["counters"] = _with_reserved_servings(kitchen["counters"], simulation)
+	return {
+		"save_version": CURRENT_VERSION,
+		"saved_at": simulation.clock.now(),
+		"layout": {
+			"size": _vec_to_array(layout.grid.size),
+			"entrance": _vec_to_array(layout.entrance),
+			"next_serial": layout.next_serial(),
+			"placements": placements,
+		},
+		"kitchen": kitchen,
+		"wallet": simulation.wallet.to_data(),
+		"xp": simulation.progression.xp,
+		"popularity": simulation.popularity,
+	}
+
+
+## Soma de volta ao balcão de origem as porções reservadas para pedidos em andamento.
+static func _with_reserved_servings(counters: Array, simulation: CafeSimulation) -> Array:
+	var by_id := {}
+	for entry: Dictionary in counters:
+		by_id[entry["id"]] = entry
+	for reserved in simulation.reserved_servings():
+		var counter_id := String(reserved["counter_id"])
+		var recipe_id := String(reserved["recipe"].id)
+		var entry: Dictionary = by_id.get(counter_id, {})
+		if entry.is_empty():
+			by_id[counter_id] = {"id": counter_id, "recipe": recipe_id, "servings": 1}
+		elif entry["recipe"] == recipe_id and entry["servings"] < simulation.config.counter_capacity:
+			entry["servings"] += 1
+		# Senão o balcão já tem outra receita: a porção se perde (caso raro, aceitável).
+	return by_id.values()
+
+
+# --- Ler -------------------------------------------------------------------
+
+## Monta a simulação a partir de dados já migrados para CURRENT_VERSION.
+static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> DecodeResult:
+	var result := DecodeResult.new()
+	if int(data.get("save_version", -1)) != CURRENT_VERSION:
+		result.warnings.append("Versão de save inesperada: %s" % data.get("save_version"))
+		return result
+	var layout_data: Dictionary = _dict(data.get("layout"))
+	var size := _array_to_vec(layout_data.get("size"))
+	var entrance := _array_to_vec(layout_data.get("entrance"))
+	if size.x <= 0 or size.y <= 0 or entrance.x < 0 or entrance.x >= size.x or entrance.y < 0 or entrance.y >= size.y:
+		result.warnings.append("Layout do save inválido")
+		return result
+	result.saved_at = float(data.get("saved_at", 0.0))
+
+	var furniture := FurnitureCatalog.load_from()
+	var layout := CafeLayout.new(size, entrance)
+	for entry in _list(layout_data.get("placements")):
+		var placement: Dictionary = _dict(entry)
+		var definition := furniture.get_definition(StringName(str(placement.get("furniture", ""))))
+		var ok := definition != null and layout.restore_placement(StringName(str(placement.get("id", ""))),
+			definition, _array_to_vec(placement.get("origin")), int(placement.get("rotation", 0)))
+		if not ok:
+			result.warnings.append("Móvel ignorado: %s" % placement)
+	layout.restore_next_serial(int(layout_data.get("next_serial", 1)))
+
+	var simulation := CafeSimulation.with_game_data(clock, layout, furniture, random_seed)
+	var kitchen_data: Dictionary = _dict(data.get("kitchen"))
+	for entry in _list(kitchen_data.get("stoves")):
+		var stove: Dictionary = _dict(entry)
+		var recipe := simulation.recipes.get_definition(StringName(str(stove.get("recipe", ""))))
+		if not simulation.kitchen.restore_stove(StringName(str(stove.get("id", ""))), recipe, float(stove.get("started_at", 0.0))):
+			result.warnings.append("Preparo ignorado: %s" % stove)
+	for entry in _list(kitchen_data.get("counters")):
+		var counter: Dictionary = _dict(entry)
+		var recipe := simulation.recipes.get_definition(StringName(str(counter.get("recipe", ""))))
+		if not simulation.kitchen.restore_counter(StringName(str(counter.get("id", ""))), recipe, int(counter.get("servings", 0))):
+			result.warnings.append("Balcão ignorado: %s" % counter)
+
+	simulation.wallet.restore(_dict(data.get("wallet")))
+	simulation.progression.restore_xp(int(data.get("xp", 0)))
+	simulation.restore_popularity(float(data.get("popularity", simulation.config.popularity_start)))
+	result.simulation = simulation
+	return result
+
+
+# --- Versões ---------------------------------------------------------------
+
+## Passos de migração: o índice N converte um save da versão N para N + 1.
+## Hoje não há nenhum, porque a versão 1 é a primeira.
+static func migrations() -> Array[Callable]:
+	return []
+
+
+## Leva os dados até [param target_version]. Retorna {} se o save for de uma
+## versão mais nova que o jogo, não tiver versão ou faltar um passo.
+static func migrate(data: Dictionary, target_version := CURRENT_VERSION, steps: Array[Callable] = migrations()) -> Dictionary:
+	if not data.has("save_version"):
+		return {}
+	var migrated := data.duplicate(true)
+	var version := int(migrated["save_version"])
+	if version > target_version or version < 1:
+		return {}
+	while version < target_version:
+		var step_index := version - 1
+		if step_index >= steps.size():
+			return {}
+		migrated = steps[step_index].call(migrated)
+		version += 1
+		migrated["save_version"] = version
+	return migrated
+
+
+# --- Tipos simples -----------------------------------------------------------
+
+static func _vec_to_array(value: Vector2i) -> Array:
+	return [value.x, value.y]
+
+
+static func _array_to_vec(value: Variant) -> Vector2i:
+	if value is Array and value.size() == 2:
+		return Vector2i(int(value[0]), int(value[1]))
+	return Vector2i(-1, -1)
+
+
+static func _dict(value: Variant) -> Dictionary:
+	return value if value is Dictionary else {}
+
+
+static func _list(value: Variant) -> Array:
+	return value if value is Array else []

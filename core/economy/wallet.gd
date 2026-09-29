@@ -42,6 +42,25 @@ func spend(currency: StringName, amount: int, reason: String) -> bool:
 	return true
 
 
+## Saldos em tipos simples (para o save).
+func to_data() -> Dictionary:
+	var data := {}
+	for currency: StringName in _balances:
+		data[String(currency)] = _balances[currency]
+	return data
+
+
+## Restaura saldos salvos. Valores negativos viram 0. Registra a operação.
+func restore(balances: Dictionary) -> void:
+	for currency in balances:
+		var amount := maxi(int(balances[currency]), 0)
+		_balances[StringName(currency)] = amount
+		_log.append({"currency": StringName(currency), "delta": 0, "balance": amount, "reason": "Progresso carregado"})
+		if _log.size() > LOG_LIMIT:
+			_log.pop_front()
+		balance_changed.emit(StringName(currency), amount)
+
+
 ## Transações recentes, da mais antiga para a mais nova:
 ## [code]{currency, delta, balance, reason}[/code].
 func history() -> Array[Dictionary]:

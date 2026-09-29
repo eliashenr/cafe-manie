@@ -68,6 +68,15 @@ func test_basic_rejections() -> void:
 	assert_eq(layout.check_placement(_counter(), Vector2i(6, 4), 0), CafeLayout.Check.BLOCKS_ENTRANCE, "parte do balcão na entrada")
 
 
+func test_new_ids_never_repeat_even_if_the_counter_is_behind() -> void:
+	var layout := _layout()
+	assert_true(layout.restore_placement(&"table#1", _table(), Vector2i(0, 0), 0))
+	assert_true(layout.restore_placement(&"table#2", _table(), Vector2i(2, 0), 0))
+	var fresh := layout.place(_table(), Vector2i(4, 0))
+	assert_true(fresh != &"table#1" and fresh != &"table#2", "repetiu um id: %s" % fresh)
+	assert_eq(layout.count(), 3, "nenhum móvel foi sobrescrito")
+
+
 func test_rejected_place_changes_nothing() -> void:
 	var layout := _layout()
 	layout.place(_table(), Vector2i(2, 2))

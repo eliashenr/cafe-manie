@@ -31,6 +31,14 @@ func add_xp(amount: int) -> int:
 	return gained
 
 
+## Restaura o XP salvo; o nível é recalculado pela tabela (fonte da verdade).
+## Não emite leveled_up: carregar o jogo não é subir de nível.
+func restore_xp(saved_xp: int) -> void:
+	xp = maxi(saved_xp, 0)
+	level = table.level_for_xp(xp)
+	xp_changed.emit(xp)
+
+
 func is_max_level() -> bool:
 	return level >= table.max_level()
 

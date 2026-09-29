@@ -85,16 +85,23 @@ static func create_new_game(game_clock: GameClock, random_seed := 0) -> CafeSimu
 		var definition := furniture_catalog.get_definition(item["id"])
 		if definition == null or cafe_layout.place(definition, item["origin"], item["rotation"]) == &"":
 			push_error("Móvel inicial inválido em new_game.tres: %s" % item)
+	var simulation := with_game_data(game_clock, cafe_layout, furniture_catalog, random_seed)
+	simulation.wallet.earn(Wallet.SOFT, new_game.starting_gold, "Ouro inicial")
+	return simulation
+
+
+## Simulação sobre um layout já montado, com o conteúdo padrão de res://data
+## (receitas, clientes, níveis, parâmetros). Usada pelo jogo novo e pelo save.
+static func with_game_data(game_clock: GameClock, cafe_layout: CafeLayout, furniture_catalog: FurnitureCatalog,
+		random_seed := 0) -> CafeSimulation:
 	var types_store := DefinitionStore.new(
 		func(a: CustomerType, b: CustomerType) -> bool: return String(a.id) < String(b.id))
 	types_store.load_dir(CUSTOMERS_DIR, CustomerType)
 	var types: Array[CustomerType] = []
 	types.assign(types_store.all())
-	var simulation := CafeSimulation.new(game_clock, cafe_layout, load("res://data/config/service.tres"),
+	return CafeSimulation.new(game_clock, cafe_layout, load("res://data/config/service.tres"),
 		furniture_catalog, RecipeCatalog.load_from(), load("res://data/progression/levels.tres"),
 		types, random_seed)
-	simulation.wallet.earn(Wallet.SOFT, new_game.starting_gold, "Ouro inicial")
-	return simulation
 
 
 # --- Ações do jogador ------------------------------------------------------
@@ -179,6 +186,21 @@ func agent_cells() -> Dictionary:
 
 func pending_orders() -> int:
 	return _orders.size()
+
+
+## Porções tiradas do balcão para pedidos ainda não entregues: {counter_id, recipe}.
+## O save devolve essas porções ao balcão, já que os clientes não são salvos.
+func reserved_servings() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for order in _orders:
+		result.append({"counter_id": order.counter_id, "recipe": order.recipe})
+	return result
+
+
+## Restaura a popularidade salva (limitada a 0–100).
+func restore_popularity(value: float) -> void:
+	popularity = clampf(value, 0.0, 100.0)
+	popularity_changed.emit(popularity)
 
 
 # --- Tick ------------------------------------------------------------------

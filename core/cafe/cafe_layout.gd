@@ -97,6 +97,36 @@ func count() -> int:
 	return _placements.size()
 
 
+## Número usado no próximo id gerado. O save guarda isto para os ids continuarem únicos.
+func next_serial() -> int:
+	return _next_serial
+
+
+# --- Save ------------------------------------------------------------------
+
+## Recoloca um móvel salvo com o id original. Confere só limites e sobreposição:
+## o layout salvo já tinha passado por todas as regras. Retorna false se não couber.
+func restore_placement(id: StringName, definition: FurnitureDefinition, origin: Vector2i, rotation: int) -> bool:
+	if id == &"" or _placements.has(id) or definition == null:
+		return false
+	var footprint := rotated_footprint(definition.footprint, rotation)
+	if not grid.place(id, origin, footprint):
+		return false
+	var placement := Placement.new()
+	placement.id = id
+	placement.definition = definition
+	placement.origin = origin
+	placement.rotation = posmod(rotation, 4)
+	_placements[id] = placement
+	changed.emit()
+	return true
+
+
+## Garante que ids novos não colidam com os restaurados.
+func restore_next_serial(value: int) -> void:
+	_next_serial = maxi(_next_serial, value)
+
+
 func is_in_use(id: StringName) -> bool:
 	return id != &"" and in_use_provider.is_valid() and in_use_provider.call(id)
 
@@ -154,11 +184,10 @@ func place(definition: FurnitureDefinition, origin: Vector2i, rotation := 0) -> 
 	if check_placement(definition, origin, rotation) != Check.OK:
 		return &""
 	var placement := Placement.new()
-	placement.id = StringName("%s#%d" % [definition.id, _next_serial])
+	placement.id = _new_id(definition)
 	placement.definition = definition
 	placement.origin = origin
 	placement.rotation = posmod(rotation, 4)
-	_next_serial += 1
 	grid.place(placement.id, origin, placement.footprint())
 	_placements[placement.id] = placement
 	changed.emit()
@@ -188,6 +217,17 @@ func remove(id: StringName) -> bool:
 	_placements.erase(id)
 	changed.emit()
 	return true
+
+
+## Id novo e único. Mesmo que o contador esteja atrasado (save antigo ou com
+## defeito), nunca repete um id existente: isso sobrescreveria um móvel.
+func _new_id(definition: FurnitureDefinition) -> StringName:
+	var id := StringName("%s#%d" % [definition.id, _next_serial])
+	while _placements.has(id):
+		_next_serial += 1
+		id = StringName("%s#%d" % [definition.id, _next_serial])
+	_next_serial += 1
+	return id
 
 
 ## Pisos livres alcançáveis a partir da entrada (busca em largura, 4 direções).
