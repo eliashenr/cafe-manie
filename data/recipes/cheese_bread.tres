@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"cheese_bread"
+display_name = "Pão de queijo"
+cook_time = 40.0
+servings = 8
+ingredient_cost = 15
+sell_price = 4
+xp_reward = 4
+unlock_level = 1
+placeholder_color = Color(0.95, 0.8, 0.45, 1)

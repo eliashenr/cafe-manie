@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="NewGameConfig" format=3]
+
+[ext_resource type="Script" path="res://core/service/new_game_config.gd" id="1_new_game"]
+
+[resource]
+script = ExtResource("1_new_game")
+grid_size = Vector2i(8, 8)
+starting_gold = 200
+starter_items = Array[Dictionary]([{
+"id": &"stove_basic",
+"origin": Vector2i(0, 0),
+"rotation": 0
+}, {
+"id": &"stove_basic",
+"origin": Vector2i(1, 0),
+"rotation": 0
+}, {
+"id": &"counter_basic",
+"origin": Vector2i(3, 0),
+"rotation": 0
+}, {
+"id": &"counter_basic",
+"origin": Vector2i(5, 0),
+"rotation": 0
+}, {
+"id": &"table_round",
+"origin": Vector2i(4, 4),
+"rotation": 0
+}, {
+"id": &"chair_wood",
+"origin": Vector2i(3, 4),
+"rotation": 3
+}, {
+"id": &"chair_wood",
+"origin": Vector2i(5, 4),
+"rotation": 1
+}, {
+"id": &"table_round",
+"origin": Vector2i(2, 6),
+"rotation": 0
+}, {
+"id": &"chair_wood",
+"origin": Vector2i(1, 6),
+"rotation": 3
+}, {
+"id": &"chair_wood",
+"origin": Vector2i(3, 6),
+"rotation": 1
+}, {
+"id": &"plant_pot",
+"origin": Vector2i(0, 7),
+"rotation": 0
+}])

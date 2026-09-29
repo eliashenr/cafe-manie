@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"coffee"
+display_name = "Café"
+cook_time = 15.0
+servings = 6
+ingredient_cost = 6
+sell_price = 3
+xp_reward = 2
+unlock_level = 1
+placeholder_color = Color(0.36, 0.22, 0.13, 1)

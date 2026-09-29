@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"lasagna"
+display_name = "Lasanha"
+cook_time = 900.0
+servings = 20
+ingredient_cost = 120
+sell_price = 14
+xp_reward = 50
+unlock_level = 6
+placeholder_color = Color(0.8, 0.25, 0.15, 1)

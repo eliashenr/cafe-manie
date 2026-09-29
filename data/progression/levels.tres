@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="LevelTable" format=3]
+
+[ext_resource type="Script" path="res://core/progression/level_table.gd" id="1_levels"]
+
+[resource]
+script = ExtResource("1_levels")
+xp_to_reach = PackedInt32Array(0, 30, 80, 160, 280, 450, 680, 980, 1360, 1830)

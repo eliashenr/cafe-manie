@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"carrot_cake"
+display_name = "Bolo de cenoura"
+cook_time = 180.0
+servings = 12
+ingredient_cost = 40
+sell_price = 7
+xp_reward = 14
+unlock_level = 3
+placeholder_color = Color(0.93, 0.5, 0.2, 1)
