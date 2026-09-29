@@ -7,8 +7,8 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | 0 — Fundação | Git, projeto Godot, estrutura, docs, testes rodando | Projeto abre sem erros e os testes passam | ✅ Concluída |
 | 1 — Protótipo | Grid isométrico, câmera, seleção, móveis genéricos no grid | O PO posiciona móveis com mouse e toque | 🟡 Falta o teste do PO |
 | 2 — Core gameplay | Cozinha, balcão, cliente, garçom, Café Ouro, XP | O loop completo roda sozinho | ✅ Implementada (falta o teste do PO) |
-| 3 — Cafeteria | Loja, inventário, decoração, expansão | Comprar → posicionar → salvar | ⏳ |
-| 4 — Progressão | Níveis 1–10, missões, tutorial, conquistas | **Vertical Slice validada** (seção 81) | ⏳ |
+| 3 — Cafeteria | **Save (antecipado, aprovado pelo PO)** ✅, loja, inventário, decoração, expansão | Comprar → posicionar → salvar | 🟡 Save pronto; loja a seguir |
+| 4 — Progressão | Missões, tutorial, conquistas (níveis 1–10 já existem) | **Vertical Slice validada** (seção 81) | ⏳ |
 | 5 — Social | Amigos, visitas, mapa, rankings | Só depois da slice validada e divertida | ⏳ |
 | 6 — Backend | Autenticação, cloud save, economia no servidor | | ⏳ |
 | 7 — Monetização | Café Grana, loja premium, compras de teste | Revisão jurídica feita antes (ver riscos) | ⏳ |
@@ -28,6 +28,17 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] Ordenação de desenho isométrico (y-sort) com objetos de várias células
 - [x] Validação: nenhum móvel funcional fica sem caminho até a entrada, e a entrada fica sempre livre
 - [ ] Teste do PO no PC (roteiro em [qa.md](qa.md)) — **marco de saída da fase**
+
+## Fase 3 — detalhamento
+
+- [x] Save local versionado: layout, cozinha com horários, balcões, ouro, XP, popularidade
+- [x] Gravação atômica, cópia de segurança, recuperação de save danificado, proteção de save de versão mais nova
+- [x] Salvamento automático (ao mudar algo, no máximo a cada 5 s) e na hora ao minimizar ou fechar
+- [x] "Bem-vindo de volta" contando os pratos que ficaram prontos com o jogo fechado
+- [x] Botão Recomeçar com confirmação (Cancelar já selecionado)
+- [ ] Loja: móveis passam a custar Café Ouro e a exigir nível, com confirmação de compra (seção 32)
+- [ ] Inventário: remover guarda o móvel em vez de apagar
+- [ ] Expansão da cafeteria pela interface
 
 ## Fase 2 — detalhamento
 
@@ -53,5 +64,6 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | Pathfinding com layout editável (garçom preso) | ✅ Mitigado: posicionamento recusa layouts sem acesso (DT-007) | Fases 1–2 |
 | Ordem de desenho com móveis longos cruzados | y-sort pelo vértice da frente; rever com arte final (DT-009) | Fase 8 |
 | Desempenho em Android de entrada | Medir num aparelho real (precisa de build Android) | Fase 2 em diante |
-| Progresso some ao fechar o jogo (ainda sem save) | Save local versionado; ver 💡 em [status.md](status.md) | Próxima etapa |
+| Progresso some ao fechar o jogo | ✅ Mitigado: save local versionado (DT-015, DT-016) | — |
+| Relógio do aparelho pode ser adiantado para pular o preparo (seção 66) | Aceito enquanto o jogo é offline; o `GameClock` vira horário do servidor na Fase 6 | Fase 6 |
 | Balanceamento fácil demais no teste do robô (0 irritados, nível 7 em 30 min) | Comando **FAÇA BALANCEAMENTO** após o teste do PO | Após o teste do PO |

@@ -52,6 +52,10 @@ Você só precisa fazer isto uma vez.
 3. Os clientes entram, sentam nas cadeiras ao lado das mesas e pedem o que houver no balcão. O garçom leva.
 4. Cliente servido paga, dá XP e popularidade. Cliente que espera demais vai embora irritado.
 
+### Save
+
+O jogo salva sozinho: ao mudar algo (no máximo a cada 5 s) e na hora em que você minimiza ou fecha. Ao reabrir, tudo volta como estava, e o que estava no fogão continuou cozinhando. Para começar do zero, use **Recomeçar** no canto de cima (ele pede confirmação).
+
 O piso azul com a seta é a **entrada**. Ela não pode ser ocupada, e nenhum móvel que cliente ou garçom usam pode ficar sem caminho até ela. Quando uma posição é recusada, a prévia fica vermelha e a barra explica o motivo.
 
 ---
@@ -69,6 +73,7 @@ core/         regras do jogo sem tela — testáveis sozinhas
   economy/    carteira de moedas
   progression/ XP e níveis
   time/       relógio do jogo
+  save/       formato do save e gravação em disco
 data/         conteúdo editável no inspetor da Godot
   furniture/  um arquivo .tres por móvel (preço, nível, tamanho...)
   recipes/    receitas (tempo, porções, custo, preço, XP, nível)

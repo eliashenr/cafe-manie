@@ -11,14 +11,14 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 133 testes
+## Cobertura atual — 160 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
 | `unit/test_cafe_grid.gd` | 10 | limites, ocupação, colisão, expansão segura |
 | `unit/test_iso_projection.gd` | 7 | clique cai no piso certo, inclusive nas bordas; posições fracionárias dos personagens |
 | `unit/test_furniture_catalog.gd` | 6 | dados de móveis válidos; recusa de dados ruins |
-| `unit/test_cafe_layout.gd` | 15 | regras de posicionamento, entrada, acesso, mover/girar/remover sem efeito colateral |
+| `unit/test_cafe_layout.gd` | 16 | regras de posicionamento, entrada, acesso, mover/girar/remover sem efeito colateral |
 | `unit/test_placement_session.gd` | 7 | modo de construção só muda o layout ao confirmar |
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
@@ -26,6 +26,9 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
 | `unit/test_cafe_simulation.gd` | 17 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo |
 | `unit/test_long_shift.gd` | 1 | 30 min simulados com o jogo novo real e um "jogador robô": ninguém preso, sem erros, lucro, níveis |
+| `unit/test_save_codec.gd` | 11 | ida e volta por JSON de layout, ids, ouro, XP, popularidade; preparo continua com o jogo fechado; tempo exato; porções reservadas voltam; conteúdo desconhecido pulado; migração de versões |
+| `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, cópia de segurança, save danificado recupera o `.bak`, tudo danificado recomeça sem apagar arquivos, save de versão mais nova protegido, apagar |
+| `integration/test_save_scene.gd` | 8 | fechar e reabrir com tudo no lugar, pratos prontos com o jogo fechado e aviso, salvamento automático, minimizar salva, recuperação avisada, Recomeçar com confirmação, testes não mexem no disco |
 | `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento |
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, remover, teclado |
 | `integration/test_service_scene.gd` | 11 | jogo novo a partir dos dados, HUD, painel do fogão, tempo ao vivo, coleta por toque, balcão cheio, personagens na tela, aviso de nível, textos flutuantes |
@@ -35,6 +38,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de propósito, um de cada vez, e os testes precisam reprovar:
 
 - **Fase 1 (5 de 5 pegos):** segundo toque não confirma, sem checagem de acesso, entrada liberada, móvel movido continua visível, Confirmar sempre habilitado.
+- **Save (8 de 9 pegos, mais 1 equivalente):** preparo não salvo, porções reservadas perdidas, ids reiniciados após carregar (pego depois de fortalecer o teste; ver DT-015), `.bak` nunca usado, save mais novo sobrescrito, salvamento automático desligado, minimizar não salva, Recomeçar mantém o save. A mutação "sem precisão total no JSON" não muda nada observável: a precisão padrão já basta (erro < 1 ms).
 - **Fase 2 (7 de 7 pegos):** paciência nunca acaba, garçom não serve, cozinhar dá ouro em vez de cobrar, cadeira ocupada desprotegida, personagens ignoram mudança de layout, porção reservada se perde, comida pronta na hora.
 
 ## Roteiro de teste manual — Fase 1
@@ -74,6 +78,14 @@ Rode o jogo (F5). O jogo novo já vem com 2 fogões, 2 balcões, 2 mesas com cad
 11. [ ] Tente pôr uma Planta no piso onde alguém está passando: a barra diz "Tem alguém passando aí".
 12. [ ] Mova uma mesa vazia no meio do movimento dos personagens: eles desviam e continuam.
 13. [ ] **Sensação (a pergunta mais importante):** dá vontade de continuar jogando? Esperar é chato ou gostoso? O garçom é rápido demais ou lento? *(anote para o balanceamento)*
+
+## Roteiro de teste manual — Save
+
+1. [ ] Jogue um pouco: ponha um móvel, cozinhe algo demorado (Pão de queijo, 40 s) e junte ouro.
+2. [ ] Feche a janela do jogo **enquanto o Pão de queijo cozinha**.
+3. [ ] Espere mais de 40 s e rode de novo (F5): os móveis, o ouro e o nível estão iguais, o fogão mostra "Pão de queijo pronto!" e aparece "Bem-vindo de volta! 1 prato ficou pronto enquanto você estava fora."
+4. [ ] Toque em **Recomeçar** e depois em **Cancelar**: nada muda.
+5. [ ] Toque em **Recomeçar** e depois em **Apagar e recomeçar**: o jogo volta ao começo (Nível 1, 200 de ouro, móveis iniciais).
 
 Os itens de toque (pinça, arrasto com dedo) serão conferidos no celular quando houver build Android.
 

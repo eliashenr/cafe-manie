@@ -39,6 +39,8 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 | ServiceConfig / CustomerType / NewGameConfig | `core/service/` | Parâmetros do atendimento, tipos de cliente e jogo novo (todos em `data/`) |
 | Navigation | `core/service/navigation.gd` | A* (4 direções) sobre a mesma malha da validação de acesso |
 | Agent / Customer / Waiter | `core/service/` | Personagens e suas máquinas de estado |
+| SaveCodec | `core/save/save_codec.gd` | Estado do jogo ↔ dados simples (JSON), com versão e migração |
+| SaveService | `core/save/save_service.gd` | Save em disco: gravação atômica, `.bak`, recuperação e quarentena |
 | CafeSimulation | `core/service/cafe_simulation.gd` | Orquestra tudo: chegadas, pedidos, garçom, pagamento, XP, popularidade, ações do jogador |
 | CafeGrid | `core/grid/cafe_grid.gd` | Fonte da verdade do grid: limites, ocupação, colisão, expansão |
 | IsoProjection | `core/grid/iso_projection.gd` | Conversão grid ↔ mundo isométrico 2:1 |
@@ -93,6 +95,21 @@ paciência acaba antes de ser servido → vai embora irritado (−popularidade, 
 - Ações do jogador passam pela simulação: `start_cooking` (cobra ingredientes) e `collect` (dá XP).
 - Tudo o que a simulação precisa vem de `data/`: receitas, clientes, níveis, parâmetros e o jogo novo.
 
+## Save
+
+```text
+abrir o jogo → SaveService.load_game
+   ok ─────────────► simulação restaurada + "Bem-vindo de volta"
+   sem save ───────► jogo novo (data/config/new_game.tres)
+   save danificado ► usa o .bak (e guarda o ruim à parte)
+   versão mais nova► jogo novo (e guarda o save à parte)
+
+durante o jogo: algo mudou → salva (no máximo a cada 5 s)
+minimizar / fechar → salva na hora
+```
+
+O arquivo fica em `user://save.json`. No Windows: `%APPDATA%\Godot\app_userdata\Café Manie\`.
+
 ## Módulos planejados (próximas fases)
 
 Criados apenas quando a fase precisar deles:
@@ -100,6 +117,6 @@ Criados apenas quando a fase precisar deles:
 | Fase | Módulos |
 |---|---|
 | 3 | Loja, inventário, decoração, expansão na interface |
-| 4 | Níveis 1–10, missões, conquistas, tutorial, `SaveService` versionado |
+| 4 | Missões, conquistas, tutorial |
 
 A lista completa de sistemas alvo está na seção 10 do master prompt.

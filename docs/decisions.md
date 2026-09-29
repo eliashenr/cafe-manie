@@ -4,6 +4,29 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-016 — Quando salvar
+
+**Problema:** salvar a cada frame desgasta o armazenamento; salvar pouco perde progresso. No celular o sistema pode encerrar o jogo minimizado sem aviso.
+
+**Decisão:** o jogo marca "tem mudança" quando layout, cozinha, ouro, XP ou popularidade mudam, e salva no máximo a cada 5 s (`autosave_min_interval`). Ao minimizar, perder o foco, fechar ou sair da cena, salva na hora. "Recomeçar" apaga o save, desliga o salvamento e recarrega a cena, com confirmação e **Cancelar** como botão já selecionado.
+
+---
+
+## DT-015 — Formato e segurança do save
+
+**Problema:** seções 63–64 (save local versionado com migração) e a regra de nunca perder progresso.
+
+**Decisão:**
+- JSON legível em `user://save.json`, com `save_version` e `saved_at`. `SaveCodec` converte; `SaveService` grava e lê.
+- Salva: layout (com os ids originais dos móveis), cozinha (receita e **horário de início**, então o preparo continua com o jogo fechado), balcões, ouro, XP e popularidade.
+- Não salva personagens: a cafeteria reabre vazia, e as porções que estavam reservadas para pedidos voltam ao balcão.
+- **Gravação atômica:** escreve em `.tmp` e só então troca. O save anterior vira `.bak`.
+- **Leitura defensiva:** conteúdo desconhecido (um móvel que deixou de existir) é pulado com aviso, e o resto carrega. Save ilegível → usa o `.bak`. Save de versão mais nova que o jogo → guardado à parte, nunca sobrescrito. Nenhum arquivo é apagado automaticamente.
+- **Migração:** `SaveCodec.migrations()` guarda um passo por versão. Hoje está vazia, porque a versão 1 é a primeira; o mecanismo já tem teste.
+- **Ids nunca repetem:** o contador de ids é salvo, e o layout ainda confere se o id gerado já existe (defesa em profundidade; um teste de mutação mostrou que um id repetido sobrescreveria um móvel em silêncio).
+
+---
+
 ## DT-014 — Porção reservada no pedido
 
 **Problema:** dois clientes podem pedir a última porção ao mesmo tempo.

@@ -28,7 +28,7 @@ Regras de gameplay **decididas**. A visão completa está no [master prompt](mas
 ## Cozinha
 
 - Tocar num fogão livre mostra as receitas liberadas, com tempo e custo; as bloqueadas mostram o nível que falta. Escolher uma cobra os ingredientes em Café Ouro. **Implementado.**
-- O preparo é tempo real e continua com o jogo fechado (vale quando existir save). **Implementado na lógica.**
+- O preparo é tempo real e continua com o jogo fechado. **Implementado.**
 - Prato pronto: a etiqueta do fogão fica verde; tocar no fogão leva as porções para um balcão (primeiro um com a mesma receita, senão um vazio) e dá XP. **Implementado.**
 - Um balcão guarda um tipo de prato por vez (até 40 porções). Sem balcão com espaço, o prato espera no fogão. **Implementado.**
 
@@ -41,7 +41,13 @@ Regras de gameplay **decididas**. A visão completa está no [master prompt](mas
 - Popularidade (0–100%) acelera ou desacelera as chegadas. **Implementado.**
 - Móvel em uso não pode ser movido nem removido; não dá para pôr móvel em cima de quem está andando. **Implementado.**
 
-## Premissas ainda a implementar
+## Save
 
-- **Save:** hoje fechar o jogo perde o progresso. O preparo por horário já está pronto para funcionar com save.
-- Loop da Vertical Slice que falta: comprar (móveis ainda são grátis) → salvar → reabrir.
+- O jogo salva sozinho e reabre de onde parou. O que estava no fogão continua cozinhando com o jogo fechado. **Implementado.**
+- Ao voltar, o jogo avisa quantos pratos ficaram prontos enquanto você estava fora. **Implementado.**
+- A cafeteria reabre sem clientes; porções que estavam reservadas voltam ao balcão. **Implementado.**
+- **Recomeçar** (canto de cima) apaga o progresso, sempre com confirmação. **Implementado.**
+
+## Ainda a implementar
+
+- Loop da Vertical Slice que falta: **comprar** (móveis ainda são grátis) → posicionar → salvar → reabrir.
