@@ -3,10 +3,12 @@ extends RefCounted
 ## Móveis posicionados na cafeteria e as regras de onde cada um pode ficar.
 ##
 ## Regras de posicionamento, na ordem em que são checadas:
-## 1. o móvel inteiro cabe no grid;
-## 2. não sobrepõe outro móvel;
-## 3. não ocupa a entrada;
-## 4. ninguém fica sem acesso: todo móvel com needs_access precisa de uma
+## 1. um móvel em uso (fogão cozinhando, cadeira com cliente...) não sai do lugar;
+## 2. o móvel inteiro cabe no grid;
+## 3. não sobrepõe outro móvel;
+## 4. não ocupa a entrada;
+## 5. não cai em cima de alguém andando;
+## 6. ninguém fica sem acesso: todo móvel com needs_access precisa de uma
 ##    célula vizinha alcançável a partir da entrada, andando só por pisos livres.
 ##
 ## Toda operação recusada não altera nada.
@@ -23,6 +25,8 @@ enum Check {
 	NO_ACCESS,          ## o próprio móvel ficaria sem acesso
 	BLOCKS_ACCESS,      ## deixaria outro móvel sem acesso
 	UNKNOWN_PLACEMENT,  ## id de móvel posicionado inexistente
+	IN_USE,             ## o móvel está sendo usado agora
+	AGENT_IN_THE_WAY,   ## tem cliente ou garçom passando nessas células
 }
 
 const NEIGHBORS: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
@@ -47,6 +51,13 @@ class Placement:
 
 var grid: CafeGrid
 var entrance: Vector2i
+
+## Opcional. Recebe um id e diz se o móvel está em uso agora. Quem sabe disso
+## é a simulação do atendimento, que preenche este campo.
+var in_use_provider: Callable
+## Opcional. Retorna um Dictionary cujas chaves são as células (Vector2i)
+## ocupadas por personagens neste instante.
+var agent_cells_provider: Callable
 
 var _placements: Dictionary = {}  # StringName -> Placement
 var _next_serial := 1
@@ -86,10 +97,23 @@ func count() -> int:
 	return _placements.size()
 
 
+func is_in_use(id: StringName) -> bool:
+	return id != &"" and in_use_provider.is_valid() and in_use_provider.call(id)
+
+
+## Diz se o móvel pode ser removido agora.
+func can_remove(id: StringName) -> Check:
+	if not _placements.has(id):
+		return Check.UNKNOWN_PLACEMENT
+	return Check.IN_USE if is_in_use(id) else Check.OK
+
+
 ## Diz se o móvel pode ficar nessa posição. [param ignore_id] é o móvel que
 ## está sendo movido: as células dele contam como livres.
 func check_placement(definition: FurnitureDefinition, origin: Vector2i, rotation: int,
 		ignore_id: StringName = &"") -> Check:
+	if is_in_use(ignore_id):
+		return Check.IN_USE
 	var cells := CafeGrid.footprint_cells(origin, rotated_footprint(definition.footprint, rotation))
 	for cell in cells:
 		if not grid.is_inside(cell):
@@ -100,6 +124,11 @@ func check_placement(definition: FurnitureDefinition, origin: Vector2i, rotation
 			return Check.OCCUPIED
 	if cells.has(entrance):
 		return Check.BLOCKS_ENTRANCE
+	if agent_cells_provider.is_valid():
+		var agent_cells: Dictionary = agent_cells_provider.call()
+		for cell in cells:
+			if agent_cells.has(cell):
+				return Check.AGENT_IN_THE_WAY
 
 	# Simula o layout com o móvel na nova posição e confere o acesso de todos.
 	var blocked: Dictionary = {}
@@ -153,7 +182,7 @@ func move(id: StringName, origin: Vector2i, rotation: int) -> Check:
 
 
 func remove(id: StringName) -> bool:
-	if not _placements.has(id):
+	if can_remove(id) != Check.OK:
 		return false
 	grid.remove(id)
 	_placements.erase(id)

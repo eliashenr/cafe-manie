@@ -21,6 +21,12 @@ static func cell_center(cell: Vector2i) -> Vector2:
 	return cell_top_vertex(cell) + Vector2(0.0, HALF_TILE.y)
 
 
+## Ponto do mundo para uma posição fracionária no grid, em que o centro da
+## célula (x, y) é Vector2(x, y). Usado para personagens andando entre pisos.
+static func grid_point_to_world(point: Vector2) -> Vector2:
+	return Vector2((point.x - point.y) * HALF_TILE.x, (point.x + point.y + 1.0) * HALF_TILE.y)
+
+
 ## Célula que contém o ponto do mundo. Pode retornar células fora do grid;
 ## quem chama decide se ela é válida.
 static func world_to_cell(world: Vector2) -> Vector2i:

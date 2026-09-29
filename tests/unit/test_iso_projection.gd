@@ -46,3 +46,10 @@ func test_grid_bounds_contains_every_cell_polygon() -> void:
 		for x in grid_size.x:
 			for vertex in IsoProjection.cell_polygon(Vector2i(x, y)):
 				assert_true(bounds.has_point(vertex), "vértice %s fora dos limites" % vertex)
+
+
+func test_fractional_grid_points_match_cell_centers_and_interpolate() -> void:
+	assert_vec_almost_eq(IsoProjection.grid_point_to_world(Vector2(3, 5)), IsoProjection.cell_center(Vector2i(3, 5)))
+	var halfway := IsoProjection.grid_point_to_world(Vector2(3.5, 5))
+	var expected := (IsoProjection.cell_center(Vector2i(3, 5)) + IsoProjection.cell_center(Vector2i(4, 5))) / 2.0
+	assert_vec_almost_eq(halfway, expected, 0.01, "meio do caminho entre dois pisos")
