@@ -35,13 +35,16 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 | RecipeDefinition / RecipeCatalog | `core/cooking/` | Receitas como dado |
 | Kitchen | `core/cooking/kitchen.gd` | Fogões por horário (pronto mesmo com o jogo fechado) e porções nos balcões |
 | Wallet | `core/economy/wallet.gd` | Saldos por moeda com registro de transações |
+| Inventory | `core/economy/inventory.gd` | Móveis guardados (quantidade por tipo) |
 | LevelTable / PlayerProgression | `core/progression/` | Curva de níveis em dado; XP e nível do jogador |
+| MissionDefinition / MissionTracker | `core/progression/` | Missões como dado; uma ativa por vez, contando só os eventos do seu tipo (DT-019) |
+| ExpansionPlan | `core/cafe/expansion_plan.gd` | Etapas de expansão (tamanho, nível, preço) em dado |
 | ServiceConfig / CustomerType / NewGameConfig | `core/service/` | Parâmetros do atendimento, tipos de cliente e jogo novo (todos em `data/`) |
 | Navigation | `core/service/navigation.gd` | A* (4 direções) sobre a mesma malha da validação de acesso |
 | Agent / Customer / Waiter | `core/service/` | Personagens e suas máquinas de estado |
 | SaveCodec | `core/save/save_codec.gd` | Estado do jogo ↔ dados simples (JSON), com versão e migração |
 | SaveService | `core/save/save_service.gd` | Save em disco: gravação atômica, `.bak`, recuperação e quarentena |
-| CafeSimulation | `core/service/cafe_simulation.gd` | Orquestra tudo: chegadas, pedidos, garçom, pagamento, XP, popularidade, ações do jogador |
+| CafeSimulation | `core/service/cafe_simulation.gd` | Orquestra tudo: chegadas, pedidos, garçom, pagamento, XP, popularidade, missões, e as ações do jogador (cozinhar, comprar, guardar, expandir) |
 | CafeGrid | `core/grid/cafe_grid.gd` | Fonte da verdade do grid: limites, ocupação, colisão, expansão |
 | IsoProjection | `core/grid/iso_projection.gd` | Conversão grid ↔ mundo isométrico 2:1 |
 | FurnitureDefinition | `core/furniture/furniture_definition.gd` | Tipo de móvel como dado (Resource): tamanho, categoria, preço, nível, atributos |
@@ -53,8 +56,9 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 | FloorView | `scenes/cafe/floor_view.gd` | Desenha piso, entrada, seleção e prévia verde/vermelha (placeholder) |
 | WorldLayer / FurnitureView / AgentView | `scenes/cafe/` | Móveis, etiquetas de fogão e balcão, personagens com balão de pedido, tudo em y-sort (placeholders) |
 | FloatingText | `scenes/cafe/floating_text.gd` | "+3", "+6 Café", "+2 XP" subindo e sumindo |
-| GameHud | `scenes/ui/game_hud.gd` | Nível, barra de XP, Café Ouro, popularidade e avisos |
-| BuildBar | `scenes/ui/build_bar.gd` | Catálogo de construção, painel do fogão (receitas/tempo), ações do móvel, controles de construção |
+| GameHud | `scenes/ui/game_hud.gd` | Nível, barra de XP, Café Ouro, popularidade, cartão da missão, avisos e Recomeçar |
+| BuildBar | `scenes/ui/build_bar.gd` | Loja (preço, nível, guardados), Expandir com confirmação, painel do fogão, ações do móvel, controles de construção |
+| SmokeCheck | `scenes/debug/smoke_check.gd` | Checagem do jogo exportado com `-- --smoke-check` (DT-020) |
 
 ## Grid e projeção
 
@@ -116,7 +120,7 @@ Criados apenas quando a fase precisar deles:
 
 | Fase | Módulos |
 |---|---|
-| 3 | Loja, inventário, decoração, expansão na interface |
-| 4 | Missões, conquistas, tutorial |
+| 3 | Decoração (junto com a arte) |
+| 4 | Conquistas |
 
 A lista completa de sistemas alvo está na seção 10 do master prompt.

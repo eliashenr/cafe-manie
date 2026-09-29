@@ -16,7 +16,7 @@ Regras de gameplay **decididas**. A visão completa está no [master prompt](mas
 - A barra de baixo lista o catálogo. Escolher um móvel entra no modo de construção.
 - Prévia verde = pode; vermelha = não pode, com o motivo na barra.
 - No toque, o primeiro toque posiciona a prévia e o segundo no mesmo piso confirma (ou **Confirmar**). No mouse, a prévia segue o cursor e um clique confirma.
-- Tocar num móvel o seleciona: **Mover**, **Girar**, **Remover**, **Fechar**.
+- Tocar num móvel o seleciona: **Mover**, **Girar**, **Guardar** (vai para o inventário; recolocar é grátis), **Fechar**.
 - Nesta fase posicionar é gratuito e remover apaga o móvel. Na Fase 3 posicionar passa a ser uma compra (com confirmação, seção 32) e remover passa a guardar no inventário.
 
 ## Controles
@@ -48,6 +48,17 @@ Regras de gameplay **decididas**. A visão completa está no [master prompt](mas
 - A cafeteria reabre sem clientes; porções que estavam reservadas voltam ao balcão. **Implementado.**
 - **Recomeçar** (canto de cima) apaga o progresso, sempre com confirmação. **Implementado.**
 
+## Loja, inventário e expansão
+
+- Os botões da loja mostram preço, "Nível N" ou "N guardado(s)", e ficam apagados quando não dá para comprar. **Implementado.**
+- O móvel só é cobrado ao confirmar a posição; cancelar ou tentar um lugar inválido não cobra. **Implementado.**
+- **Guardar** leva o móvel ao inventário; recolocar é grátis e não exige nível. **Implementado.**
+- **Expandir** aumenta o piso em 4 etapas (nível e preço em dados), sempre com confirmação. Os móveis não mudam de lugar; a entrada acompanha a borda da direita. **Implementado.**
+
+## Missões iniciais (tutorial)
+
+- Seis missões, uma de cada vez, com dica sempre visível no canto direito. Concluir mostra a recompensa e já passa para a próxima. **Implementado.**
+
 ## Ainda a implementar
 
-- Loop da Vertical Slice que falta: **comprar** (móveis ainda são grátis) → posicionar → salvar → reabrir.
+- Conquistas, decoração com arte final e o resto das fases 5+ (ver [roadmap.md](roadmap.md)).

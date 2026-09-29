@@ -68,6 +68,9 @@ var grid: CafeGrid:
 
 
 func _ready() -> void:
+	if SmokeCheck.requested():
+		_saving_enabled = false
+		add_child(SmokeCheck.new())
 	var welcome := ""
 	if simulation == null:
 		welcome = _load_or_start_game()

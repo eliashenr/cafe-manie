@@ -7,7 +7,33 @@ Referência: seções 25–31 e 84–86 do master prompt.
 - `Wallet` com saldo por moeda e registro das últimas 200 transações (origem, valor, saldo).
 - **Entradas de Café Ouro:** ouro inicial (200) e pagamento dos clientes (preço da receita × multiplicador do tipo).
 - **Saídas:** ingredientes ao começar a cozinhar.
-- Móveis continuam **grátis** até a Fase 3 (loja).
+
+## Implementado (Fase 3)
+
+- **Entradas:** recompensas das missões iniciais.
+- **Saídas:** móveis (cobrados ao confirmar a posição) e expansões (com confirmação).
+- Móvel guardado vai para o inventário e volta de graça. Ainda não existe venda.
+
+### Móveis (em `data/furniture/`)
+
+| Móvel | Preço | Nível |
+|---|---|---|
+| Cadeira | 30 | 1 |
+| Planta | 40 | 1 |
+| Mesa | 60 | 1 |
+| Balcão | 120 | 1 |
+| Fogão | 150 | 1 |
+| Mesa longa | 110 | 3 |
+
+### Expansões (em `data/config/expansions.tres`)
+
+| Tamanho | Nível | Preço |
+|---|---|---|
+| 8×8 (inicial) | — | — |
+| 10×8 | 2 | 150 |
+| 10×10 | 3 | 300 |
+| 12×10 | 5 | 600 |
+| 12×12 | 7 | 1000 |
 
 ### Receitas (placeholders de balanceamento, em `data/recipes/`)
 

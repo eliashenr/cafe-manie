@@ -7,8 +7,8 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | 0 — Fundação | Git, projeto Godot, estrutura, docs, testes rodando | Projeto abre sem erros e os testes passam | ✅ Concluída |
 | 1 — Protótipo | Grid isométrico, câmera, seleção, móveis genéricos no grid | O PO posiciona móveis com mouse e toque | 🟡 Falta o teste do PO |
 | 2 — Core gameplay | Cozinha, balcão, cliente, garçom, Café Ouro, XP | O loop completo roda sozinho | ✅ Implementada (falta o teste do PO) |
-| 3 — Cafeteria | **Save (antecipado, aprovado pelo PO)** ✅, loja, inventário, decoração, expansão | Comprar → posicionar → salvar | 🟡 Save pronto; loja a seguir |
-| 4 — Progressão | Missões, tutorial, conquistas (níveis 1–10 já existem) | **Vertical Slice validada** (seção 81) | ⏳ |
+| 3 — Cafeteria | Save ✅, loja ✅, inventário ✅, expansão ✅, decoração (com arte) | Comprar → posicionar → salvar | ✅ Implementada (falta o teste do PO) |
+| 4 — Progressão | Missões iniciais ✅ e tutorial ✅; conquistas | **Vertical Slice validada** (seção 81) | 🟡 Slice jogável no `.exe`; falta a validação do PO |
 | 5 — Social | Amigos, visitas, mapa, rankings | Só depois da slice validada e divertida | ⏳ |
 | 6 — Backend | Autenticação, cloud save, economia no servidor | | ⏳ |
 | 7 — Monetização | Café Grana, loja premium, compras de teste | Revisão jurídica feita antes (ver riscos) | ⏳ |
@@ -36,9 +36,18 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] Salvamento automático (ao mudar algo, no máximo a cada 5 s) e na hora ao minimizar ou fechar
 - [x] "Bem-vindo de volta" contando os pratos que ficaram prontos com o jogo fechado
 - [x] Botão Recomeçar com confirmação (Cancelar já selecionado)
-- [ ] Loja: móveis passam a custar Café Ouro e a exigir nível, com confirmação de compra (seção 32)
-- [ ] Inventário: remover guarda o móvel em vez de apagar
-- [ ] Expansão da cafeteria pela interface
+- [x] Loja: móveis custam Café Ouro e exigem nível; cobrança só ao confirmar a posição (seção 32)
+- [x] Inventário: **Guardar** leva o móvel ao inventário; recolocar é grátis
+- [x] Expansão da cafeteria em 4 etapas, com confirmação
+- [x] Save versão 2 (inventário e missões), com migração da versão 1
+
+## Fase 4 — detalhamento
+
+- [x] 6 missões iniciais em dados, uma por vez, com dica sempre visível (tutorial)
+- [x] Cartão de missão no HUD e aviso de missão concluída com recompensa
+- [x] Build para Windows (`CafeManie.exe`, sem precisar da Godot) com checagem automática do build
+- [ ] Conquistas
+- [ ] **Validação da Vertical Slice pelo PO** — marco de saída da fase
 
 ## Fase 2 — detalhamento
 

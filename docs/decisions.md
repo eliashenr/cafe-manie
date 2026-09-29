@@ -4,11 +4,50 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-020 — Entrega para o PC: um .exe só, com checagem automática do build
+
+**Problema:** o PO precisa jogar sem instalar a Godot, e um build exportado pode se comportar diferente do editor (os arquivos de `data/` são convertidos e renomeados na exportação).
+
+**Decisão:**
+- `export_presets.cfg` com **Windows** (um `CafeManie.exe` com o conteúdo embutido, sem arquivos soltos) e **Linux** (usado para testar o build na nuvem). Testes e docs ficam fora do pacote.
+- `SmokeCheck`: o jogo exportado aceita `-- --smoke-check`. Ele sobe a cafeteria, roda 600 quadros, confere se móveis, receitas, clientes, missões e expansões carregaram e se nenhum erro apareceu, e fecha com 0 ou 1. Não salva nada.
+- O conteúdo embutido no `.exe` do Windows é verificado carregando-o com o motor do Linux (`--main-pack CafeManie.exe`). O executável do Windows é o da própria Godot, sem modificação. Um teste com um build sem a pasta de missões confirmou que a checagem reprova.
+- O `.exe` não é assinado (custa um certificado pago). O Windows mostra "O Windows protegeu o computador" na primeira vez; o README explica o que fazer.
+
+---
+
+## DT-019 — Missões iniciais como tutorial, uma de cada vez
+
+**Problema:** seção 143 (6 missões iniciais) e a Vertical Slice (seção 81) pedem um primeiro contato guiado.
+
+**Decisão:** as missões são dados (`data/missions/*.tres`, com tipo, alvo, recompensa e **dica**). O `MissionTracker` mantém **uma missão ativa por vez**, em ordem, e conta só os eventos daquele tipo. A dica fica sempre visível no cartão do canto direito, então as missões *são* o tutorial, sem telas extras. Uma missão de "chegar ao nível N" já cumprida conclui na hora em que fica ativa. A recompensa é paga antes de a próxima começar a contar, e o XP da recompensa já pode contar para ela.
+
+---
+
+## DT-018 — Expansão cresce para a direita e para trás
+
+**Problema:** ampliar o grid não pode quebrar nada que já está posicionado.
+
+**Decisão:** o grid só cresce (nunca diminui), mantendo a origem. Assim nenhum móvel muda de célula. A entrada fica sempre na borda da direita, na mesma linha: quando a largura cresce, ela acompanha a borda. Garçom e clientes saindo passam a usar a nova entrada. As etapas (tamanho, nível e preço) ficam em `data/config/expansions.tres`, e a compra pede confirmação (seção 32).
+
+---
+
+## DT-017 — Loja e inventário: guardar em vez de vender
+
+**Problema:** móveis precisam custar Café Ouro e nível (Fase 3), sem compra acidental e sem o jogador perder o que pagou.
+
+**Decisão:**
+- Móvel novo é **cobrado só ao confirmar** a posição. Antes disso, a prévia mostra o preço, e cancelar não custa nada. Posição inválida nunca cobra. A etapa de posicionar já funciona como confirmação da compra (seção 32).
+- O botão **Guardar** (antes "Remover") leva o móvel ao **inventário**. Recolocar um móvel guardado é grátis e não exige nível. Não existe venda por enquanto, então nenhum toque destrói ouro.
+- Os botões da loja mostram preço, "Nível N" ou "N guardado(s)", e ficam desabilitados quando não dá. Eles são atualizados no lugar a cada quadro, sem serem recriados, para um clique não se perder quando um cliente paga no meio dele.
+
+---
+
 ## DT-016 — Quando salvar
 
 **Problema:** salvar a cada frame desgasta o armazenamento; salvar pouco perde progresso. No celular o sistema pode encerrar o jogo minimizado sem aviso.
 
-**Decisão:** o jogo marca "tem mudança" quando layout, cozinha, ouro, XP ou popularidade mudam, e salva no máximo a cada 5 s (`autosave_min_interval`). Ao minimizar, perder o foco, fechar ou sair da cena, salva na hora. "Recomeçar" apaga o save, desliga o salvamento e recarrega a cena, com confirmação e **Cancelar** como botão já selecionado.
+**Decisão:** o jogo marca "tem mudança" quando layout, cozinha, ouro, XP, popularidade, inventário ou missões mudam, e salva no máximo a cada 5 s (`autosave_min_interval`). Ao minimizar, perder o foco, fechar ou sair da cena, salva na hora. "Recomeçar" apaga o save, desliga o salvamento e recarrega a cena, com confirmação e **Cancelar** como botão já selecionado.
 
 ---
 
@@ -22,7 +61,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - Não salva personagens: a cafeteria reabre vazia, e as porções que estavam reservadas para pedidos voltam ao balcão.
 - **Gravação atômica:** escreve em `.tmp` e só então troca. O save anterior vira `.bak`.
 - **Leitura defensiva:** conteúdo desconhecido (um móvel que deixou de existir) é pulado com aviso, e o resto carrega. Save ilegível → usa o `.bak`. Save de versão mais nova que o jogo → guardado à parte, nunca sobrescrito. Nenhum arquivo é apagado automaticamente.
-- **Migração:** `SaveCodec.migrations()` guarda um passo por versão. Hoje está vazia, porque a versão 1 é a primeira; o mecanismo já tem teste.
+- **Migração:** `SaveCodec.migrations()` guarda um passo por versão. A versão 2 acrescentou inventário e progresso das missões; um save da versão 1 é migrado sozinho (inventário vazio, primeira missão).
 - **Ids nunca repetem:** o contador de ids é salvo, e o layout ainda confere se o id gerado já existe (defesa em profundidade; um teste de mutação mostrou que um id repetido sobrescreveria um móvel em silêncio).
 
 ---
