@@ -4,6 +4,42 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-009 — Ordem de desenho dos móveis pelo vértice da frente
+
+**Problema:** no isométrico, móveis mais "à frente" precisam ser desenhados por cima.
+
+**Opção A:** `y_sort` da Godot com cada móvel posicionado no vértice da frente da sua base.
+**Opção B:** ordenação topológica própria entre as caixas.
+
+**Impactos:** A é nativo e barato, e funciona para os móveis atuais (conferido em captura com 12 móveis de 1×1 e 2×1). Pode errar em casos raros com móveis longos lado a lado em profundidades cruzadas. B é correto em todos os casos, mas custa código e desempenho.
+
+**Recomendação:** A agora, com revisão quando entrar a arte final e móveis maiores (Fase 8).
+**Motivo:** regra de simplicidade; o risco está registrado no roadmap.
+
+---
+
+## DT-008 — Enquadramento inicial da câmera considerando a interface
+
+**Problema:** em 1280×720, a fileira de trás ficava sob o painel de cima e o canto da frente sob a barra de baixo (achado na captura de tela).
+
+**Decisão:** a câmera enquadra o grid (mais uma folga para a altura dos móveis) só na faixa livre entre as barras, sem nunca passar de zoom 1. As alturas das barras e a folga são `@export` na cena da cafeteria.
+
+---
+
+## DT-007 — Acesso aos móveis garantido já no posicionamento
+
+**Problema:** o master prompt pede que garçons e clientes nunca fiquem presos (seção 16) e que o jogador não consiga travar a cafeteria (edge case "bloquear o caminho", seção 87).
+
+**Opção A:** deixar posicionar livremente e resolver no pathfinding (NPC fica parado quando não há caminho).
+**Opção B:** recusar no posicionamento qualquer layout em que um móvel funcional fique sem caminho até a entrada.
+
+**Impactos:** A cria estados quebrados que o jogador não entende. B explica na hora ("Isso deixaria outro móvel sem acesso") e garante que a Fase 2 sempre encontre caminho.
+
+**Recomendação:** B, com busca em largura sobre o grid lógico (mesma malha do futuro `AStarGrid2D`). Decoração (`needs_access = false`) pode ficar em cantos fechados.
+**Motivo:** layout estratégico continua possível (seção 16), só o layout impossível é barrado.
+
+---
+
 ## DT-006 — Entrada de toque sem emulação de mouse
 
 **Problema:** por padrão a Godot gera um evento de mouse para cada toque. A câmera trata mouse e toque separadamente, então cada gesto seria processado duas vezes.

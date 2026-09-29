@@ -35,11 +35,17 @@ Você só precisa fazer isto uma vez.
 
 ### O que dá para fazer hoje
 
-| Ação | Mouse | Toque |
+| Ação | Mouse / teclado | Toque |
 |---|---|---|
 | Mover a visão | Arrastar com o botão esquerdo | Arrastar com um dedo |
 | Zoom | Roda do mouse | Pinça com dois dedos |
-| Selecionar um piso | Clique rápido | Toque rápido |
+| Selecionar piso ou móvel | Clique rápido | Toque rápido |
+| Posicionar um móvel | Botão do móvel na barra de baixo, depois clique no piso | Botão do móvel, depois toque duas vezes no mesmo piso (ou toque e **Confirmar**) |
+| Girar | **R** ou botão **Girar** | Botão **Girar** |
+| Confirmar / cancelar | **Enter** / **Esc** | **Confirmar** / **Cancelar** |
+| Mover ou remover um móvel | Selecione-o e use **Mover** / **Remover** (ou **Delete**) | Selecione-o e use **Mover** / **Remover** |
+
+O piso azul com a seta é a **entrada**. Ela não pode ser ocupada, e nenhum móvel que cliente ou garçom usam pode ficar sem caminho até ela. Quando uma posição é recusada, a prévia fica vermelha e a barra explica o motivo.
 
 ---
 
@@ -49,10 +55,14 @@ Você só precisa fazer isto uma vez.
 autoload/     serviços globais (hoje: EventBus)
 core/         regras do jogo sem tela — testáveis sozinhas
   grid/       grid lógico e projeção isométrica
+  furniture/  definição de móvel e catálogo
+  cafe/       layout da cafeteria (posicionamento) e sessão de construção
+data/         conteúdo editável no inspetor da Godot
+  furniture/  um arquivo .tres por móvel (preço, nível, tamanho...)
 scenes/       o que aparece na tela
-  cafe/       cena principal, câmera e piso
+  cafe/       cena principal, câmera, piso e móveis
   ui/         interface
-tests/        testes automatizados (unit/ e integration/)
+tests/        testes automatizados (unit/, integration/ e support/)
 docs/         documentação do projeto
 ```
 

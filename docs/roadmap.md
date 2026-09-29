@@ -22,11 +22,12 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] Projeção isométrica com clique preciso
 - [x] Câmera: arrastar, zoom com roda e pinça, limites
 - [x] Seleção de piso com destaque
-- [ ] Definição de móvel por dados (Resource) e instância no grid
-- [ ] Modo de construção: escolher um móvel, ver prévia verde/vermelha e posicionar
-- [ ] Mover e remover móveis
-- [ ] Ordenação de desenho isométrico (y-sort) com objetos de várias células
-- [ ] Validação: nenhum móvel pode bloquear o caminho da entrada até mesas, balcão e fogões
+- [x] Definição de móvel por dados (Resource) e catálogo com 6 móveis
+- [x] Modo de construção: escolher um móvel, ver prévia verde/vermelha com motivo da recusa, girar e posicionar
+- [x] Mover, girar no lugar e remover móveis
+- [x] Ordenação de desenho isométrico (y-sort) com objetos de várias células
+- [x] Validação: nenhum móvel funcional fica sem caminho até a entrada, e a entrada fica sempre livre
+- [ ] Teste do PO no PC (roteiro em [qa.md](qa.md)) — **marco de saída da fase**
 
 ## Riscos acompanhados
 
@@ -35,5 +36,6 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | Nome "Café Manie" e moedas "Café Ouro/Grana" parecidos com o Café Mania original | IDs internos neutros; nomes na tela ficam em dados. Busca no INPI | Antes da Fase 7 |
 | Arte 2D isométrica consistente é o maior gargalo | Plano de arte (artista, pacote licenciado ou IA com revisão) | Antes da Fase 8 |
 | Menores + compras + chat (classificação 12 anos, ECA Digital) | Validação jurídica | Antes das Fases 5 e 7 |
-| Pathfinding com layout editável (garçom preso) | Validação de caminho ao posicionar + testes | Fases 1–2 |
+| Pathfinding com layout editável (garçom preso) | ✅ Mitigado: posicionamento recusa layouts sem acesso (DT-007) | Fases 1–2 |
+| Ordem de desenho com móveis longos cruzados | y-sort pelo vértice da frente; rever com arte final (DT-009) | Fase 8 |
 | Desempenho em Android de entrada | Medir num aparelho real a partir da Fase 2 | Fase 2 em diante |

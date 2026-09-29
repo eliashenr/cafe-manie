@@ -32,10 +32,16 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 | EventBus | `autoload/event_bus.gd` | Sinais compartilhados entre sistemas (`cell_selected`) |
 | CafeGrid | `core/grid/cafe_grid.gd` | Fonte da verdade do grid: limites, ocupação, colisão, expansão |
 | IsoProjection | `core/grid/iso_projection.gd` | Conversão grid ↔ mundo isométrico 2:1 |
-| Cena Cafe | `scenes/cafe/cafe.gd` | Dona do grid; liga câmera, piso e seleção |
-| CafeCamera | `scenes/cafe/cafe_camera.gd` | Pan, zoom (roda e pinça) e detecção de tap |
-| FloorView | `scenes/cafe/floor_view.gd` | Desenha o piso (placeholder) e o destaque da seleção |
-| DebugHud | `scenes/ui/debug_hud.gd` | HUD de protótipo (placeholder) |
+| FurnitureDefinition | `core/furniture/furniture_definition.gd` | Tipo de móvel como dado (Resource): tamanho, categoria, preço, nível, atributos |
+| FurnitureCatalog | `core/furniture/furniture_catalog.gd` | Carrega e valida os `.tres` de `data/furniture/` |
+| CafeLayout | `core/cafe/cafe_layout.gd` | Móveis posicionados e as regras de onde podem ficar (inclui validação de acesso) |
+| PlacementSession | `core/cafe/placement_session.gd` | Estado do modo de construção (móvel novo ou movido); nada muda até confirmar |
+| Cena Cafe (`Cafe`) | `scenes/cafe/cafe.gd` | Dona do layout e do catálogo; modos VIEW e BUILD; traduz entrada em ações |
+| CafeCamera | `scenes/cafe/cafe_camera.gd` | Pan, zoom (roda e pinça), tap, hover e enquadramento inicial |
+| FloorView | `scenes/cafe/floor_view.gd` | Desenha piso, entrada, seleção e prévia verde/vermelha (placeholder) |
+| FurnitureLayer / FurnitureView | `scenes/cafe/furniture_layer.gd`, `furniture_view.gd` | Móveis em ordem de profundidade (y-sort) e a prévia "fantasma" (placeholder) |
+| BuildBar | `scenes/ui/build_bar.gd` | Barra de construção: catálogo, ações do móvel selecionado, confirmar/cancelar |
+| DebugHud | `scenes/ui/debug_hud.gd` | Painel de protótipo com o piso selecionado (placeholder) |
 
 ## Grid e projeção
 
@@ -45,13 +51,28 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 - Objetos ocupam um retângulo de células (`footprint`). O grid recusa colocação fora dos limites, sobreposta, com id repetido ou com tamanho inválido, sempre sem efeito colateral.
 - Expansão (`resize`) nunca corta objetos já posicionados.
 
+## Regras de posicionamento (CafeLayout)
+
+Checadas nesta ordem; a primeira que falhar é o motivo mostrado ao jogador:
+
+1. `OUT_OF_BOUNDS` — o móvel inteiro precisa caber no grid.
+2. `OCCUPIED` — não pode sobrepor outro móvel (o próprio móvel, quando está sendo movido, não conta).
+3. `BLOCKS_ENTRANCE` — a entrada fica sempre livre.
+4. `NO_ACCESS` — se o móvel precisa de acesso (`needs_access`), algum vizinho dele tem que ser alcançável a partir da entrada.
+5. `BLOCKS_ACCESS` — depois de posicioná-lo, todo outro móvel que precisa de acesso continua tendo.
+
+O alcance é uma busca em largura em 4 direções pelos pisos livres, partindo da entrada. É a mesma malha que o pathfinding dos garçons e clientes vai usar na Fase 2, então o que passa aqui é garantidamente navegável.
+
+## Modo de construção
+
+`PlacementSession` guarda definição, rotação, alvo e — se for mover — o id do móvel. O layout só muda em `confirm()`; cancelar é descartar a sessão, sem estado para restaurar. Durante o movimento o original fica escondido na tela, mas continua no layout, e a checagem ignora as células dele.
+
 ## Módulos planejados (próximas fases)
 
 Criados apenas quando a fase precisar deles:
 
 | Fase | Módulos |
 |---|---|
-| 1 | Sistema genérico de móveis (definição de dados + instância no grid), validação de caminho |
 | 2 | `Clock` (tempo), cozinha e estações, balcão, clientes (máquina de estados), garçom (pathfinding com `AStarGrid2D`), `Economy` (transações com registro), XP |
 | 3 | Loja, inventário, decoração, expansão na interface |
 | 4 | Níveis 1–10, missões, conquistas, tutorial, `SaveService` versionado |

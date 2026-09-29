@@ -4,37 +4,42 @@
 
 🟢 **CONCLUÍDO**
 
-- Fase 0 — Fundação: projeto Godot 4.7.2 (renderer mobile, 1280×720 responsivo, paisagem), estrutura de pastas, `EventBus`, `.gitignore`/`.gitattributes`/`.editorconfig`, README, `CLAUDE.md` e `docs/` com o master prompt.
-- Grid lógico `CafeGrid`: limites, ocupação por retângulo, colisão, remoção e expansão segura.
-- Projeção isométrica `IsoProjection` com clique preciso até as bordas dos losangos.
-- Cena da cafeteria: piso 8×8 isométrico (placeholder), câmera com arrastar, zoom com roda e pinça e limites, seleção de piso com destaque, HUD de protótipo.
-- Executor de testes próprio, sem interface, que reprova teste com erro de script.
+- **Fase 0 — Fundação:** projeto Godot 4.7.2 (renderer mobile, 1280×720 responsivo, paisagem), estrutura, `EventBus`, README, `CLAUDE.md` e `docs/` com o master prompt.
+- **Fase 1 — Protótipo (implementação completa, falta o teste do PO):**
+  - grid lógico e projeção isométrica com clique preciso;
+  - câmera com arrastar, zoom com roda e pinça, limites e enquadramento inicial que respeita as barras da interface;
+  - móveis como dados: 6 móveis em `data/furniture/*.tres` (Mesa, Cadeira, Fogão, Balcão 2×1, Planta, Mesa longa 2×1), editáveis no inspetor da Godot;
+  - modo de construção: prévia verde/vermelha com o motivo da recusa, girar, confirmar e cancelar, tanto no mouse quanto no toque;
+  - móvel selecionado: Mover, Girar no lugar, Remover;
+  - entrada da cafeteria e **validação de acesso** (nenhum fogão, mesa, cadeira ou balcão fica sem caminho até a entrada);
+  - móveis desenhados em ordem de profundidade (placeholder).
 
 🟡 **EM ANDAMENTO**
 
-- Fase 1: sistema genérico de móveis e modo de construção.
+- Marco de saída da Fase 1: o PO jogar o protótipo no PC seguindo o roteiro de [qa.md](qa.md).
 
 🔴 **BLOQUEADO**
 
-- Nada no código.
+- **Envio para o GitHub:** o push é recusado até o app do Claude ser instalado na conta `eliashenr`. Os commits estão prontos localmente.
 
 🧪 **TESTADO**
 
-- 26 testes automatizados: **PASSOU** (10 do grid, 6 da projeção, 10 de integração da cena com mouse e toque simulados).
-- Executor: **PASSOU** no teste de sanidade (um teste com erro de script proposital foi reprovado, e o processo saiu com código 1).
-- Cena principal rodando 120 frames: **PASSOU**, zero erros e zero avisos.
-- Renderização real (OpenGL): **PASSOU**. Captura conferida: piso centralizado, destaque na célula correta, HUD legível.
-- Toque real em celular: **NÃO FOI POSSÍVEL TESTAR**, pois ainda não há build Android. Toque coberto só por entrada simulada.
-- Sensação de arrasto e zoom: **pendente do PO** (roteiro em [qa.md](qa.md)).
+- **69 testes automatizados: PASSOU** (grid 10, projeção 6, catálogo 6, layout 15, sessão 7, modo de construção 14, cena 11).
+- **Verificação da suíte: PASSOU.** Cinco bugs inseridos de propósito, todos reprovados pelos testes.
+- **Cena principal rodando 120 frames: PASSOU**, zero erros e zero avisos.
+- **Renderização real (OpenGL): PASSOU.** Capturas conferidas com 12 móveis: profundidade correta, contorno de seleção, prévia verde e vermelha, barra explicando a recusa.
+- **Toque em celular real: NÃO FOI POSSÍVEL TESTAR** (ainda sem build Android). Toque coberto por entrada simulada.
+- **Sensação e diversão (seção 122):** pendente do PO.
 
 🐞 **BUGS**
 
-- Nenhum no jogo. Um problema do próprio harness de testes foi corrigido antes do commit: a janela headless tem 64×64 e reescalava as posições simuladas.
+- 🐞 **Corrigido (MEDIUM):** ao entrar no modo de construção, o painel de cima continuava mostrando o piso selecionado antes. Causa: limpar a seleção não avisava o `EventBus`. Agora toda mudança de seleção passa por um único método que avisa. Teste de regressão incluído.
+- 🐞 **Corrigido (LOW):** em 1280×720 a fileira de trás ficava sob o painel de cima e a frente sob a barra de baixo. A câmera agora enquadra a cafeteria na faixa livre entre as barras (DT-008).
 
 🏗️ **DECISÕES TÉCNICAS**
 
-- DT-003 a DT-006 registradas em [decisions.md](decisions.md): grid cartesiano + projeção separada, piso desenhado por código, executor de testes próprio no lugar do GUT e toque sem emulação de mouse.
+- DT-007 acesso garantido no posicionamento; DT-008 enquadramento considerando a interface; DT-009 ordem de desenho pelo vértice da frente. Detalhes em [decisions.md](decisions.md).
 
 ➡️ **PRÓXIMO PASSO**
 
-- Móvel como dado (`FurnitureDefinition` Resource: id, nome, footprint, categoria, preço, nível mínimo, beleza e eficiência) + instância no grid + modo de construção com prévia verde/vermelha, mover e remover.
+- Fase 2 — Core gameplay: `Clock` (tempo por timestamp), fogão com receita e preparo, balcão com porções, cliente básico (entrar → sentar → pedir → esperar → comer → pagar → sair), um garçom com pathfinding (`AStarGrid2D` sobre o mesmo grid), Café Ouro e XP.
