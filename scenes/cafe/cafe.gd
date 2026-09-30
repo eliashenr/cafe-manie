@@ -49,8 +49,13 @@ var selected_cell := CafeGrid.NO_CELL
 var selected_id: StringName = &""
 ## Resultado da última checagem de posição, para a interface explicar recusas.
 var last_check := CafeLayout.Check.OK
-## Resultado da última ação de cozinha (ServiceResult), para a interface explicar recusas.
-var last_service_result := ServiceResult.OK
+## Resultado da última ação (ServiceResult), para a interface explicar recusas.
+## Toda recusa toca o som de erro.
+var last_service_result := ServiceResult.OK:
+	set(value):
+		last_service_result = value
+		if value != ServiceResult.OK and sound_board != null:
+			sound_board.play(&"error")
 
 var _save_dirty := false
 var _since_last_save := 0.0
@@ -67,6 +72,7 @@ var grid: CafeGrid:
 @onready var camera: CafeCamera = $CafeCamera
 @onready var hud: GameHud = $GameHud
 @onready var build_bar: BuildBar = $BuildBar
+@onready var sound_board: SoundBoard = $SoundBoard
 
 
 func _ready() -> void:
@@ -84,6 +90,7 @@ func _ready() -> void:
 	simulation.cafe_expanded.connect(_on_cafe_expanded)
 	simulation.mission_completed.connect(_on_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
+	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
 
@@ -215,6 +222,26 @@ func _notification(what: int) -> void:
 				offer_daily_reward()
 
 
+# --- Sons ------------------------------------------------------------------------
+
+## Cada acontecimento do jogo com o seu som (seção 123: toda ação tem resposta).
+func _connect_sounds() -> void:
+	var play := sound_board.play
+	simulation.payment_received.connect(play.bind(&"coin").unbind(2))
+	simulation.furniture_sold.connect(play.bind(&"coin").unbind(2))
+	simulation.dish_collected.connect(play.bind(&"dish_ready").unbind(2))
+	simulation.leveled_up.connect(play.bind(&"level_up").unbind(1))
+	simulation.mission_completed.connect(play.bind(&"achievement").unbind(1))
+	simulation.achievement_unlocked.connect(play.bind(&"achievement").unbind(2))
+	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
+	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
+	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
+	simulation.cafe_expanded.connect(play.bind(&"purchase").unbind(1))
+	hud.mute_toggled.connect(sound_board.set_muted)
+	sound_board.muted_changed.connect(hud.show_sound_state)
+	hud.show_sound_state(sound_board.muted)
+
+
 # --- Recompensa diária ------------------------------------------------------
 
 ## Mostra a recompensa diária se ainda não foi recebida hoje.
@@ -271,6 +298,7 @@ func claim_daily_reward() -> Dictionary:
 func cook_on_selected(recipe_id: StringName) -> int:
 	last_service_result = simulation.start_cooking(selected_id, recipe_id)
 	if last_service_result == ServiceResult.OK:
+		sound_board.play(&"tap")
 		var recipe := simulation.recipes.get_definition(recipe_id)
 		if recipe.ingredient_cost > 0:
 			_float_over(selected_id, "-%d" % recipe.ingredient_cost, FEEDBACK_SPEND)
@@ -428,6 +456,7 @@ func remove_selected() -> bool:
 	var check := simulation.store_furniture(selected_id)
 	if check != CafeLayout.Check.OK:
 		last_check = check
+		sound_board.play(&"error")
 		state_changed.emit()
 		return false
 	clear_selection()
@@ -472,6 +501,7 @@ func start_placing(definition_id: StringName) -> bool:
 func start_moving_selected() -> bool:
 	if layout.is_in_use(selected_id):
 		last_check = CafeLayout.Check.IN_USE
+		sound_board.play(&"error")
 		state_changed.emit()
 		return false
 	var moving := PlacementSession.for_move(layout, selected_id)
@@ -508,6 +538,8 @@ func confirm_placement() -> bool:
 				_float_over(placed_id, "-%d" % definition.price, FEEDBACK_SPEND)
 	if placed_id == &"":
 		_refresh_preview()
+		if last_service_result == ServiceResult.OK:
+			sound_board.play(&"error")  # posição inválida (sem ouro já tocou pelo resultado)
 		return false
 	_end_session()
 	if was_moving:

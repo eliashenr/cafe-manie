@@ -29,6 +29,7 @@ func quiet_simulation() -> CafeSimulation:
 ## Sobe a cena da cafeteria. Sem simulação informada, usa quiet_simulation().
 func spawn_cafe(simulation: CafeSimulation = null) -> Cafe:
 	var cafe: Cafe = CafeScene.instantiate()
+	cafe.get_node("SoundBoard").settings_path = ""  # testes não mexem nas preferências do aparelho
 	cafe.simulation = simulation if simulation != null else quiet_simulation()
 	add_to_tree(cafe)
 	await tree.process_frame

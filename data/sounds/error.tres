@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SoundCue" format=3]
+
+[ext_resource type="Script" path="res://core/audio/sound_cue.gd" id="1_cue"]
+
+[resource]
+script = ExtResource("1_cue")
+id = &"error"
+notes = PackedFloat32Array(196.0, 174.61)
+note_duration = 0.09
+gap = 0.0
+waveform = 2
+attack = 0.003
+release = 0.03
+volume = 0.18

@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scenes/cafe/world_layer.gd" id="5_world"]
 [ext_resource type="Script" path="res://scenes/ui/build_bar.gd" id="6_build_bar"]
 [ext_resource type="Script" path="res://scenes/cafe/wall_view.gd" id="7_wall"]
+[ext_resource type="Script" path="res://scenes/audio/sound_board.gd" id="8_sound"]
 
 [node name="Cafe" type="Node2D"]
 script = ExtResource("1_cafe")
@@ -32,3 +33,6 @@ script = ExtResource("4_hud")
 
 [node name="BuildBar" type="CanvasLayer" parent="."]
 script = ExtResource("6_build_bar")
+
+[node name="SoundBoard" type="Node" parent="."]
+script = ExtResource("8_sound")

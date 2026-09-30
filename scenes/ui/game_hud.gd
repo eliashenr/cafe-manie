@@ -15,6 +15,8 @@ signal daily_claim_requested
 signal name_chosen(text: String)
 ## O jogador fechou a pergunta do nome sem escolher.
 signal name_skipped
+## O jogador tocou no botão de som. [param muted] é o novo estado.
+signal mute_toggled(muted: bool)
 
 const SOFT_CURRENCY_NAME := "Café Ouro"
 const HINT := "Arraste para mover  •  Roda do mouse ou pinça para zoom  •  Toque num fogão para cozinhar"
@@ -28,6 +30,8 @@ const XP_BAR_FILL := Color("8fd3ff")
 var simulation: CafeSimulation
 
 var _name_button: Button
+var _sound_button: Button
+var _muted := false
 var _name_dialog: ConfirmationDialog
 var _name_edit: LineEdit
 var _level_label: Label
@@ -168,7 +172,14 @@ func _build_restart_controls() -> void:
 	achievements.focus_mode = Control.FOCUS_NONE
 	achievements.pressed.connect(show_achievements)
 	buttons.add_child(achievements)
+	_sound_button = Button.new()
+	_sound_button.name = "SoundButton"
+	_sound_button.custom_minimum_size = Vector2(150, 44)
+	_sound_button.focus_mode = Control.FOCUS_NONE
+	_sound_button.pressed.connect(func() -> void: mute_toggled.emit(not _muted))
+	buttons.add_child(_sound_button)
 	buttons.add_child(button)
+	show_sound_state(false)
 	_build_achievements_dialog()
 	_build_daily_dialog()
 	_build_name_dialog()
@@ -259,6 +270,11 @@ func achievement_text(achievement: AchievementDefinition) -> String:
 	var target: int = achievement.tier_targets[tiers]
 	return "%s\n    Próximo: %s — %d/%d %s (+%d ouro)" % [first_line, achievement.tier_titles[tiers],
 		mini(value, target), target, achievement.description, achievement.tier_rewards[tiers]]
+
+
+func show_sound_state(muted: bool) -> void:
+	_muted = muted
+	_sound_button.text = "Som: desligado" if muted else "Som: ligado"
 
 
 func _build_name_dialog() -> void:

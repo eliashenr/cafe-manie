@@ -178,3 +178,49 @@ func test_name_rules() -> void:
 	assert_eq(CafeSimulation.clean_cafe_name("x".repeat(25)), "", "longo demais")
 	assert_eq(CafeSimulation.clean_cafe_name("Café\nNovo"), "Café Novo")
 	assert_eq(CafeSimulation.clean_cafe_name("   "), "")
+
+
+# --- Sons ---------------------------------------------------------------------------
+
+func test_game_events_play_their_sounds() -> void:
+	var cafe := await spawn_cafe()
+	var stove := cafe.layout.place(cafe.catalog.get_definition(&"stove_basic"), Vector2i(0, 0))
+	cafe.layout.place(cafe.catalog.get_definition(&"counter_basic"), Vector2i(2, 0))
+	tap_cell(cafe, Vector2i(0, 0))
+	cafe.cook_on_selected(&"coffee")
+	clock.advance(15.0)
+	cafe.collect_stove(stove)
+	cafe.simulation.progression.add_xp(100)
+	cafe.start_placing(&"plant_pot")
+	tap_cell(cafe, Vector2i(0, 7))
+	tap_cell(cafe, Vector2i(0, 7))
+	var history := cafe.sound_board.history
+	for cue in [&"tap", &"dish_ready", &"level_up", &"purchase"]:
+		assert_true(cue in history, "sem som para %s: %s" % [cue, history])
+	for cue in history:
+		assert_true(cafe.sound_board.has_cue(cue), "som pedido não existe: %s" % cue)
+
+
+func test_refusals_play_the_error_sound() -> void:
+	var cafe := await spawn_cafe()
+	cafe.simulation.wallet.spend(Wallet.SOFT, 200, "teste")
+	cafe.start_placing(&"table_round")
+	assert_eq(cafe.sound_board.history.back(), &"error")
+
+
+func test_mute_button_silences_and_remembers() -> void:
+	var cafe := await spawn_cafe()
+	var path := "user://test_settings.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	cafe.sound_board.settings_path = path
+	var button := cafe.hud.find_child("SoundButton", true, false) as Button
+	assert_eq(button.text, "Som: ligado")
+	button.pressed.emit()
+	assert_true(cafe.sound_board.muted)
+	assert_eq(button.text, "Som: desligado")
+	var config := ConfigFile.new()
+	assert_eq(config.load(path), OK, "preferência guardada no aparelho")
+	assert_eq(config.get_value("audio", "muted"), true)
+	button.pressed.emit()
+	assert_false(cafe.sound_board.muted)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
