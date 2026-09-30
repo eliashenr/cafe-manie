@@ -55,6 +55,19 @@ Regras de gameplay **decididas**. A visão completa está no [master prompt](mas
 - **Guardar** leva o móvel ao inventário; recolocar é grátis e não exige nível. **Implementado.**
 - **Expandir** aumenta o piso em 4 etapas (nível e preço em dados), sempre com confirmação. Os móveis não mudam de lugar; a entrada acompanha a borda da direita. **Implementado.**
 
+## Paredes, revestimentos e beleza
+
+- A cafeteria tem duas paredes no fundo. Piso e parede se trocam nas abas **Piso** e **Parede**: comprar pede confirmação, e trocar entre os já comprados é grátis. **Implementado.**
+- Cada móvel e cada revestimento tem **Beleza**. O HUD mostra o total. Uma cafeteria mais bonita deixa os clientes mais pacientes e atrai clientes com mais frequência. **Implementado.**
+- **Vender** um móvel devolve metade do preço, sempre com confirmação. O último fogão e o último balcão não podem ser vendidos. **Implementado.**
+
+## Conquistas, recompensa diária e nome
+
+- O botão **Conquistas** mostra 7 conquistas com 3 degraus cada e o progresso até o próximo. Cada degrau paga Café Ouro e aparece como aviso. **Implementado.**
+- **Recompensa diária:** ao abrir o jogo (ou voltar a ele) num dia novo, aparece o calendário de 7 dias. **Implementado.**
+- No primeiro acesso, o jogo pergunta o **nome da cafeteria**, que aparece no topo. Tocar nele permite trocar. **Implementado.**
+- **Sons** de feedback em toda ação, com botão para desligar. **Implementado.**
+
 ## Missões iniciais (tutorial)
 
 - Seis missões, uma de cada vez, com dica sempre visível no canto direito. Concluir mostra a recompensa e já passa para a próxima. **Implementado.**

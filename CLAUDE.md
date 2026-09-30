@@ -34,6 +34,10 @@ godot --headless --quit-after 120                # sobe a cena principal por 120
 - **Tempo:** nada de `Time`/`OS` direto na lógica; use o `GameClock` da simulação (com backend, vira horário do servidor).
 - **Scripts avulsos com `-s`** compilam antes dos autoloads existirem. Não use tipos que dependem do `EventBus` (como `Cafe`) com tipagem estática neles; carregue com `load()` e use variáveis sem tipo. O executor de testes já faz isso.
 - **Conteúdo novo** (móveis etc.) entra como `.tres` em `data/`, nunca como `if` no código.
+- **Mensagens na tela** entram numa fila no HUD. Em testes, use `all_messages(cafe)` para ver o aviso atual e os que esperam.
+- **Janelas de pergunta:** só uma por vez (`Cafe.is_dialog_open()`). Toda compra imediata pede confirmação com Cancelar já selecionado.
+- **O executor reprova arquivo de teste que não compila.** Se a contagem de testes cair, investigue.
+- **Exportar:** `godot --headless --export-release "Windows" build/windows/CafeManie.exe` e confira com `godot --headless --main-pack build/windows/CafeManie.exe -- --smoke-check`. Android: ver README (chave por variáveis de ambiente, nunca no repositório).
 - **Nunca declare algo pronto sem rodar os testes** e subir a cena principal sem erros (seção 91).
 - **Commits** no padrão `feat:`, `fix:`, `test:`, `docs:`, `refactor:`, `chore:` (seção 96).
 - **Ao terminar uma etapa**, atualize [docs/status.md](docs/status.md) no formato da seção 102 e registre decisões novas em [docs/decisions.md](docs/decisions.md).

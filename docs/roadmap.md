@@ -7,8 +7,8 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | 0 — Fundação | Git, projeto Godot, estrutura, docs, testes rodando | Projeto abre sem erros e os testes passam | ✅ Concluída |
 | 1 — Protótipo | Grid isométrico, câmera, seleção, móveis genéricos no grid | O PO posiciona móveis com mouse e toque | 🟡 Falta o teste do PO |
 | 2 — Core gameplay | Cozinha, balcão, cliente, garçom, Café Ouro, XP | O loop completo roda sozinho | ✅ Implementada (falta o teste do PO) |
-| 3 — Cafeteria | Save ✅, loja ✅, inventário ✅, expansão ✅, decoração (com arte) | Comprar → posicionar → salvar | ✅ Implementada (falta o teste do PO) |
-| 4 — Progressão | Missões iniciais ✅ e tutorial ✅; conquistas | **Vertical Slice validada** (seção 81) | 🟡 Slice jogável no `.exe`; falta a validação do PO |
+| 3 — Cafeteria | Save ✅, loja ✅, inventário ✅, venda ✅, expansão ✅, paredes e revestimentos ✅, decoração com beleza ✅ | Comprar → posicionar → salvar | ✅ Concluída (arte final na Fase 8) |
+| 4 — Progressão | Missões iniciais ✅, tutorial ✅, conquistas ✅, recompensa diária ✅ | **Vertical Slice validada** (seção 81) | ✅ Slice validada pelo PO ("joguei e gostei"); falta o balanceamento |
 | 5 — Social | Amigos, visitas, mapa, rankings | Só depois da slice validada e divertida | ⏳ |
 | 6 — Backend | Autenticação, cloud save, economia no servidor | | ⏳ |
 | 7 — Monetização | Café Grana, loja premium, compras de teste | Revisão jurídica feita antes (ver riscos) | ⏳ |
@@ -46,8 +46,19 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] 6 missões iniciais em dados, uma por vez, com dica sempre visível (tutorial)
 - [x] Cartão de missão no HUD e aviso de missão concluída com recompensa
 - [x] Build para Windows (`CafeManie.exe`, sem precisar da Godot) com checagem automática do build
-- [ ] Conquistas
-- [ ] **Validação da Vertical Slice pelo PO** — marco de saída da fase
+- [x] Conquistas progressivas (7 × 3 degraus)
+- [x] Recompensa diária de 7 dias
+- [x] Nome da cafeteria, sons de feedback
+- [x] **Validação da Vertical Slice pelo PO**, em 29/09/2026
+- [x] Primeiro APK Android (arm64), falta testar num celular de verdade
+- [ ] **FAÇA BALANCEAMENTO** com as impressões do PO
+
+## Fase 3 — complementos desta etapa
+
+- [x] Paredes do fundo e revestimentos de piso e parede (compra única, troca grátis)
+- [x] Beleza (móveis + revestimentos) aumentando a paciência e as chegadas (seção 35)
+- [x] Venda de móveis com confirmação; o último fogão e o último balcão são protegidos
+- [x] 3 itens de decoração novos; loja em abas
 
 ## Fase 2 — detalhamento
 
@@ -75,4 +86,6 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | Desempenho em Android de entrada | Medir num aparelho real (precisa de build Android) | Fase 2 em diante |
 | Progresso some ao fechar o jogo | ✅ Mitigado: save local versionado (DT-015, DT-016) | — |
 | Relógio do aparelho pode ser adiantado para pular o preparo (seção 66) | Aceito enquanto o jogo é offline; o `GameClock` vira horário do servidor na Fase 6 | Fase 6 |
-| Balanceamento fácil demais no teste do robô (0 irritados, nível 7 em 30 min) | Comando **FAÇA BALANCEAMENTO** após o teste do PO | Após o teste do PO |
+| Balanceamento fácil demais no teste do robô (0 irritados, nível 8 em 30 min; a beleza facilita ainda mais) | Comando **FAÇA BALANCEAMENTO** | Próxima etapa |
+| Chave de teste do APK só existe na nuvem de trabalho | Se ela se perder, desinstalar e instalar de novo (o jogo ainda é de teste). A chave oficial é criada e guardada pelo PO na Fase 10 | Fase 10 |
+| Nome da cafeteria visível para outros jogadores sem moderação | Moderação no servidor antes de qualquer recurso social (DT-026) | Fase 5 |

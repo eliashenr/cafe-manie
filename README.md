@@ -2,7 +2,7 @@
 
 Jogo de gerenciamento de cafeteria, mobile-first (Android), feito em **Godot 4.7.2** com **GDScript**.
 
-> Nome provisório. Status: **Vertical Slice jogável** (cozinhar, atender, loja, inventário, expansão e missões iniciais), aguardando a validação do PO.
+> Nome provisório. Status: **Vertical Slice validada**, com paredes e revestimentos, decoração com beleza, venda, conquistas, recompensa diária, sons e o primeiro APK Android.
 
 O documento que manda em tudo é o [master prompt](docs/master-prompt.md). O estado atual está em [docs/status.md](docs/status.md).
 
@@ -16,6 +16,17 @@ O documento que manda em tudo é o [master prompt](docs/master-prompt.md). O est
 4. Abra a pasta e dê dois cliques em **`CafeManie.exe`**. Daqui em diante, é só abrir este arquivo; o instalador pode ser apagado.
 
 O jogo salva sozinho em `%APPDATA%\Godot\app_userdata\Café Manie\` (cole esse caminho na barra de endereço do Explorador de Arquivos para ver a pasta). Um `.exe` novo continua o mesmo save.
+
+## Jogar no celular Android
+
+1. No celular, baixe o arquivo **`CafeManie.apk`** que o Claude enviou na conversa (abra a conversa no app ou no navegador do celular e toque no arquivo).
+2. Toque no arquivo baixado. O Android vai avisar que o app **não é da Play Store** e pedir permissão para **"instalar apps desconhecidos"** para o navegador ou gerenciador de arquivos que você usou. Toque em **Configurações**, ative a permissão e volte.
+3. Toque em **Instalar**. Se o **Play Protect** mostrar um aviso, toque em **Mais detalhes → Instalar assim mesmo**. O aviso aparece porque o app ainda não foi publicado na loja.
+4. Abra o **Café Manie** pela lista de apps. O jogo abre com a tela deitada.
+
+Para atualizar, instale o APK novo por cima: o progresso é mantido. Se aparecer "conflito com um pacote existente", desinstale o antigo primeiro (o progresso, nesse caso, recomeça).
+
+O APK funciona em celulares de 64 bits (praticamente todos desde 2017) com Android 7 ou mais novo.
 
 ## Abrir o projeto na Godot (para quem vai editar)
 
@@ -53,6 +64,8 @@ Você só precisa fazer isto uma vez.
 | Girar | **R** ou botão **Girar** | Botão **Girar** |
 | Confirmar / cancelar | **Enter** / **Esc** | **Confirmar** / **Cancelar** |
 | Mover ou guardar um móvel | Selecione-o e use **Mover** / **Guardar** (ou **Delete**) | Selecione-o e use **Mover** / **Guardar** |
+| Vender um móvel | Selecione-o e use **Vender** (pede confirmação) | Igual |
+| Trocar piso ou parede | Abas **Piso** / **Parede** na loja | Igual |
 
 ### Cozinhar e atender
 
@@ -67,6 +80,13 @@ Você só precisa fazer isto uma vez.
 - A **barra de baixo** é a loja: cada botão mostra o preço, o nível necessário ou quantos você tem guardados. O móvel só é cobrado quando você confirma o lugar dele. Cancelar não custa nada.
 - **Guardar** tira o móvel da cafeteria e leva para o inventário. Colocar de volta é grátis.
 - **Expandir** aumenta a cafeteria (a partir do nível 2). Antes de cobrar, o jogo pergunta, e o botão já selecionado é o **Cancelar**.
+
+### Beleza, conquistas e recompensa diária
+
+- **Beleza** (no topo): soma da decoração, do piso e da parede. Uma cafeteria bonita deixa os clientes mais pacientes e atrai mais gente.
+- **Conquistas** (botão no canto de cima): 7 conquistas com 3 degraus cada, que pagam Café Ouro.
+- **Recompensa diária:** entre um dia por vez, 7 dias seguidos. Perder um dia volta ao Dia 1.
+- **Som:** o botão no canto de cima liga e desliga os sons. A escolha fica guardada no aparelho.
 
 ### Save
 
@@ -90,16 +110,21 @@ core/         regras do jogo sem tela — testáveis sozinhas
   progression/ XP, níveis e missões
   time/       relógio do jogo
   save/       formato do save e gravação em disco
+  audio/      sons de feedback (gerados por código)
 data/         conteúdo editável no inspetor da Godot
   furniture/  um arquivo .tres por móvel (preço, nível, tamanho...)
   recipes/    receitas (tempo, porções, custo, preço, XP, nível)
   customers/  tipos de cliente
   progression/ curva de níveis
   missions/   missões iniciais (tutorial)
+  achievements/ conquistas
+  surfaces/   revestimentos de piso e parede
+  sounds/     sons de feedback
   config/     parâmetros do atendimento, do jogo novo e das expansões
 scenes/       o que aparece na tela
   cafe/       cena principal, câmera, piso e móveis
   ui/         interface
+  audio/      tocador de sons
   debug/      checagem automática do jogo exportado
 tests/        testes automatizados (unit/, integration/ e support/)
 docs/         documentação do projeto
@@ -132,6 +157,19 @@ godot --headless --main-pack build/windows/CafeManie.exe -- --smoke-check
 - O primeiro comando gera um `.exe` único, com todo o conteúdo dentro.
 - O segundo abre o conteúdo desse `.exe` sem janela, roda alguns segundos de jogo e imprime `SMOKE OK` (ou `SMOKE FALHOU` com o motivo). Ele não mexe no save.
 
+### Android (APK)
+
+Precisa do JDK 17+, do `apksigner` e de uma chave de assinatura. A senha da chave nunca vai para o repositório: ela entra por variáveis de ambiente.
+
+```bash
+export GODOT_ANDROID_KEYSTORE_RELEASE_PATH=/caminho/da/chave.keystore
+export GODOT_ANDROID_KEYSTORE_RELEASE_USER=cafemanie
+export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=...
+godot --headless --export-release "Android" build/android/CafeManie.apk
+```
+
+Para conferir o conteúdo, descompacte a pasta `assets/` do APK e rode `godot --headless --path <pasta>/assets -- --smoke-check`.
+
 ## Documentação
 
 | Documento | Conteúdo |
@@ -146,3 +184,4 @@ godot --headless --main-pack build/windows/CafeManie.exe -- --smoke-check
 | [economy.md](docs/economy.md) | Economia e moedas |
 | [progression.md](docs/progression.md) | Níveis, XP e desbloqueios |
 | [social.md](docs/social.md) | Sistemas sociais (futuro) |
+| [art-direction.md](docs/art-direction.md) | Direção de arte: princípios e plano para a arte final |

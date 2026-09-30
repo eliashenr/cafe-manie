@@ -4,6 +4,74 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-028 — APK Android sem Gradle, com chave de teste fora do repositório
+
+**Problema:** o jogo é Android-first (seção 7) e nunca tinha rodado num celular. A nuvem de trabalho não alcança os servidores do Google, então o Android SDK completo não pode ser baixado.
+
+**Decisão:**
+- Exportação **sem Gradle**, usando o modelo pronto da Godot (`android_release.apk`). Ela só precisa do JDK e do `apksigner`, que vêm dos pacotes do Ubuntu. Uma pasta de SDK mínima aponta para eles.
+- Só **arm64-v8a**: cobre praticamente todos os celulares desde 2017 e deixa o APK com ~26 MB.
+- **Chave de assinatura de teste** (`cafemanie-test.keystore`), guardada **fora do repositório**. A senha entra por variáveis de ambiente (`GODOT_ANDROID_KEYSTORE_RELEASE_*`) e nunca fica em `export_presets.cfg`. Para atualizar o app por cima do anterior, a chave precisa ser a mesma; se ela se perder, basta desinstalar e instalar de novo, porque o jogo ainda é de teste. A chave oficial da Play Store fica para a Fase 10.
+- O conteúdo de dentro do APK é verificado rodando o `--smoke-check` com o motor de Linux.
+- Testes provam que os botões e as janelas respondem a **toque de verdade**, e não só a clique, o que importa porque a emulação de mouse está desligada (DT-006).
+
+---
+
+## DT-027 — Sons gerados por código
+
+**Problema:** a seção 123 pede feedback em toda ação, e não há sons originais nem licenciados.
+
+**Decisão:** cada som é um dado (`data/sounds/*.tres`: notas, duração, forma de onda, envelope, volume). Na abertura do jogo, o `SoundSynth` gera o áudio. São sons 100% originais, sem nenhum arquivo de áudio, e fáceis de trocar por sons finais depois. Ligar ou desligar o som é uma **preferência do aparelho** (`user://settings.cfg`) e não faz parte do save: recomeçar o jogo não liga o som de volta. Toda recusa (sem ouro, lugar inválido, em uso) toca o som de erro.
+
+---
+
+## DT-026 — Nome da cafeteria
+
+**Decisão:** o nome é pedido no primeiro acesso, antes da recompensa diária, e tem de 2 a 24 letras, com espaços arrumados. "Depois" usa "Minha Cafeteria". Tocar no nome, no topo, permite trocar. Um save antigo recebe o nome padrão, em vez de interromper quem já jogava.
+**Pendência registrada:** quando o nome ficar visível para outros jogadores (Fase 5), ele passa por moderação no servidor (seções 58 e 114). Hoje ele só aparece para o próprio jogador.
+
+---
+
+## DT-025 — Recompensa diária pelo dia local do jogador
+
+**Problema:** seção 51. Qual "dia" vale, e como evitar abuso do relógio.
+
+**Decisão:**
+- O dia muda à **meia-noite local**: `GameClock.local_day()` usa o fuso do aparelho. Com servidor, o relógio passa a ser o dele (seção 66).
+- O calendário tem 7 dias e fica em `data/config/daily_rewards.tres`. Perder um dia volta ao Dia 1; isso é configurável.
+- **Relógio para trás não rende nada**: só um dia *maior* que o último recebido libera recompensa.
+- Os prêmios podem ser ouro, XP, um móvel (vai para o inventário) ou um revestimento. Um revestimento que o jogador já tem vira ouro no valor do preço.
+- A janela aparece ao abrir o jogo e ao voltar para ele, nunca por cima de outra pergunta aberta. Fechar sem receber mantém o prêmio disponível.
+
+---
+
+## DT-024 — Conquistas por contadores
+
+**Decisão:** o `PlayerStats` conta o que o jogador faz: clientes, pratos, ouro de vendas, compras, expansões e o maior nível e a maior beleza já alcançados. Cada conquista (`data/achievements`) acompanha um contador e tem 3 degraus, cada um com título e prêmio. Um contador que pula vários degraus desbloqueia cada um, em ordem. Ao carregar um save, nenhum prêmio é pago de novo. Um save antigo, porém, **recebe os degraus que já merecia** (quem já estava no nível 5 ganha "Aprendiz" e "Gerente").
+Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o aviso de subir de nível.
+
+---
+
+## DT-023 — Venda com proteção contra travar o jogo
+
+**Decisão:** vender devolve **50%** do preço (`data/config/economy.tres`) e sempre pede confirmação. Móvel em uso não é vendido. Também não dá para vender o **último fogão ou o último balcão**, contando os guardados: sem eles o jogador não teria como ganhar ouro de novo. Guardar continua livre, porque o móvel guardado ainda é do jogador.
+
+---
+
+## DT-022 — Beleza com efeito no jogo
+
+**Problema:** seção 35. A decoração não deve ser só visual, mas também não pode obrigar um estilo.
+
+**Decisão:** a beleza é a soma dos móveis posicionados com o piso e a parede aplicados. Ela vira um fator de 0 a 1 (bônus máximo com 200 de beleza): clientes até **30% mais pacientes** e chegadas até **25% mais frequentes**. Todos os números ficam em `service.tres`. A beleza aparece no HUD. Qualquer combinação de decoração conta, então nenhum estilo é obrigatório.
+
+---
+
+## DT-021 — Paredes e revestimentos
+
+**Decisão:** duas paredes, nas bordas de trás do grid, desenhadas por código (`WallView`, PLACEHOLDER), crescem junto com a expansão. Piso e parede são **revestimentos** (`data/surfaces`): compra única com confirmação, e trocar entre os já comprados é grátis. A loja ganhou abas (Móveis, Decoração, Piso, Parede), porque todos os itens não cabiam numa linha só.
+
+---
+
 ## DT-020 — Entrega para o PC: um .exe só, com checagem automática do build
 
 **Problema:** o PO precisa jogar sem instalar a Godot, e um build exportado pode se comportar diferente do editor (os arquivos de `data/` são convertidos e renomeados na exportação).

@@ -39,6 +39,12 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 | LevelTable / PlayerProgression | `core/progression/` | Curva de níveis em dado; XP e nível do jogador |
 | MissionDefinition / MissionTracker | `core/progression/` | Missões como dado; uma ativa por vez, contando só os eventos do seu tipo (DT-019) |
 | ExpansionPlan | `core/cafe/expansion_plan.gd` | Etapas de expansão (tamanho, nível, preço) em dado |
+| SurfaceDefinition / SurfaceCatalog / CafeStyle | `core/cafe/` | Revestimentos de piso e parede: dados, catálogo, comprados e aplicados |
+| EconomyConfig | `core/economy/economy_config.gd` | Parâmetros da loja (fração da venda, categorias essenciais) |
+| PlayerStats | `core/progression/player_stats.gd` | Contadores do que o jogador já fez (base das conquistas) |
+| AchievementDefinition / AchievementTracker | `core/progression/` | Conquistas progressivas em dados e o acompanhamento delas |
+| DailyRewardCalendar / DailyRewards | `core/progression/` | Calendário da recompensa diária e a sequência do jogador |
+| SoundCue / SoundSynth | `core/audio/` | Sons de feedback como dados, gerados em áudio por código |
 | ServiceConfig / CustomerType / NewGameConfig | `core/service/` | Parâmetros do atendimento, tipos de cliente e jogo novo (todos em `data/`) |
 | Navigation | `core/service/navigation.gd` | A* (4 direções) sobre a mesma malha da validação de acesso |
 | Agent / Customer / Waiter | `core/service/` | Personagens e suas máquinas de estado |
@@ -59,6 +65,8 @@ dados    ── Resources de conteúdo / save em JSON (a implementar)
 | GameHud | `scenes/ui/game_hud.gd` | Nível, barra de XP, Café Ouro, popularidade, cartão da missão, avisos e Recomeçar |
 | BuildBar | `scenes/ui/build_bar.gd` | Loja (preço, nível, guardados), Expandir com confirmação, painel do fogão, ações do móvel, controles de construção |
 | SmokeCheck | `scenes/debug/smoke_check.gd` | Checagem do jogo exportado com `-- --smoke-check` (DT-020) |
+| WallView | `scenes/cafe/wall_view.gd` | Paredes do fundo com o revestimento aplicado (placeholder) |
+| SoundBoard | `scenes/audio/sound_board.gd` | Toca os sons e guarda a preferência de som do aparelho |
 
 ## Grid e projeção
 
@@ -120,7 +128,7 @@ Criados apenas quando a fase precisar deles:
 
 | Fase | Módulos |
 |---|---|
-| 3 | Decoração (junto com a arte) |
-| 4 | Conquistas |
+| 5 | Amigos, visitas, mapa, rankings (depende do backend da Fase 6) |
+| 8 | Arte final, animações, música |
 
 A lista completa de sistemas alvo está na seção 10 do master prompt.

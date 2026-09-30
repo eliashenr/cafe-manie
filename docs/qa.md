@@ -12,13 +12,13 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 191 testes
+## Cobertura atual — 260 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
 | `unit/test_cafe_grid.gd` | 10 | limites, ocupação, colisão, expansão segura |
 | `unit/test_iso_projection.gd` | 7 | clique cai no piso certo, inclusive nas bordas; posições fracionárias dos personagens |
-| `unit/test_furniture_catalog.gd` | 6 | dados de móveis válidos; recusa de dados ruins |
+| `unit/test_furniture_catalog.gd` | 6 | dados de móveis válidos (9 móveis); recusa de dados ruins |
 | `unit/test_cafe_layout.gd` | 16 | regras de posicionamento, entrada, acesso, mover/girar/remover sem efeito colateral |
 | `unit/test_placement_session.gd` | 7 | modo de construção só muda o layout ao confirmar |
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
@@ -26,15 +26,24 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_progression.gd` | 7 | curva de níveis, subir vários níveis de uma vez, nível máximo |
 | `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
 | `unit/test_cafe_simulation.gd` | 17 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo |
-| `unit/test_long_shift.gd` | 2 | 30 min simulados com o jogo novo real e um "jogador robô": ninguém preso, sem erros, lucro, níveis; o robô conclui as 6 missões iniciais (a Vertical Slice inteira) |
-| `unit/test_save_codec.gd` | 13 | ida e volta por JSON de layout, ids, ouro, XP, popularidade, inventário e missões; preparo continua com o jogo fechado; tempo exato; porções reservadas voltam; conteúdo desconhecido pulado; migração da versão 1 |
-| `unit/test_shop_and_missions.gd` | 17 | compra cobra só quando posiciona; nível e ouro; guardar e recolocar grátis; móvel em uso não é guardado; expansão (nível, ouro, entrada, garçom, acesso, tamanho máximo); missões em ordem, recompensas, categoria certa, nível já cumprido |
-| `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, cópia de segurança, save danificado recupera o `.bak`, tudo danificado recomeça sem apagar arquivos, save de versão mais nova protegido, apagar |
-| `integration/test_save_scene.gd` | 8 | fechar e reabrir com tudo no lugar, pratos prontos com o jogo fechado e aviso, salvamento automático, minimizar salva, recuperação avisada, Recomeçar com confirmação, testes não mexem no disco |
-| `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento |
-| `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, remover, teclado |
-| `integration/test_service_scene.gd` | 11 | jogo novo a partir dos dados, HUD, painel do fogão, tempo ao vivo, coleta por toque, balcão cheio, personagens na tela, aviso de nível, textos flutuantes |
-| `integration/test_shop_scene.gd` | 11 | preço e bloqueio nos botões, botões atualizados no lugar, confirmar compra, sem ouro no meio da construção, Guardar e recolocar, expansão com confirmação (Cancelar selecionado), piso e câmera acompanham, cartão de missão, aviso de missão concluída, salvamento automático do inventário |
+| `unit/test_long_shift.gd` | 2 | 30 min simulados com o "jogador robô": ninguém preso, lucro, níveis; o robô conclui as 6 missões iniciais |
+| `unit/test_save_codec.gd` | 14 | ida e volta por JSON de tudo o que é salvo; preparo continua com o jogo fechado; conteúdo desconhecido pulado; migração das versões 1 e 2; nome da cafeteria |
+| `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, `.bak`, save danificado, save de versão mais nova protegido, apagar |
+| `unit/test_shop_and_missions.gd` | 21 | compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
+| `unit/test_style_and_beauty.gd` | 11 | revestimentos (um inicial por tipo, compra única, troca grátis, bloqueios); beleza soma móveis e revestimentos; beleza aumenta a paciência; save e migração |
+| `unit/test_achievements.gd` | 9 | dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
+| `unit/test_daily_rewards.gd` | 10 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
+| `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
+| `integration/test_save_scene.gd` | 8 | fechar e reabrir com tudo no lugar, pratos prontos com o jogo fechado, salvamento automático, minimizar salva, Recomeçar com confirmação |
+| `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento (com as paredes) |
+| `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
+| `integration/test_service_scene.gd` | 11 | jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
+| `integration/test_shop_scene.gd` | 13 | loja, compra, Guardar, expansão com confirmação, missões; **Vender com confirmação** e recusa do último fogão |
+| `integration/test_style_scene.gd` | 8 | abas, piso e parede desenhados, compra com confirmação, troca sem perguntar, bloqueio, Beleza no HUD, paredes crescem com a expansão |
+| `integration/test_progress_scene.gd` | 17 | avisos de conquista em fila, painel de conquistas, recompensa diária (abre, paga, volta no dia seguinte, não empilha janelas), nome da cafeteria, sons e botão de som |
+| `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade**; toque no botão não vaza para o piso |
+
+O executor também **reprova um arquivo de teste que nem compila**. Antes, ele sumia da contagem em silêncio (encontrado nesta etapa).
 
 ### Verificação dos próprios testes
 
@@ -42,6 +51,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 
 - **Fase 1 (5 de 5 pegos):** segundo toque não confirma, sem checagem de acesso, entrada liberada, móvel movido continua visível, Confirmar sempre habilitado.
 - **Save (8 de 9 pegos, mais 1 equivalente):** preparo não salvo, porções reservadas perdidas, ids reiniciados após carregar (pego depois de fortalecer o teste; ver DT-015), `.bak` nunca usado, save mais novo sobrescrito, salvamento automático desligado, minimizar não salva, Recomeçar mantém o save. A mutação "sem precisão total no JSON" não muda nada observável: a precisão padrão já basta (erro < 1 ms).
+- **Paredes, beleza, venda, conquistas, recompensa diária e sons (20 de 20 pegos):** revestimento de graça, beleza ignorando revestimentos, piso sem atualizar, beleza sem efeito na paciência, revestimento não salvo, venda do último fogão, venda sem confirmação, guardados ignorados na venda, conquista de um degrau por vez, conquistas não restauradas, aviso apagando outro, clientes não contados (pego depois de um teste novo), relógio para trás liberando prêmio, sequência sem reinício, dia em UTC em vez do local, sequência não salva, recusa sem som, som desligado não lembrado, nota sem entrada suave, prato pronto sem som.
 - **Loja, expansão e missões (5 de 5 pegos):** móvel novo posicionado de graça, inventário sem salvamento automático, piso não acompanha a expansão, expansão sem confirmação, Guardar destruindo o móvel.
 - **Fase 2 (7 de 7 pegos):** paciência nunca acaba, garçom não serve, cozinhar dá ouro em vez de cobrar, cadeira ocupada desprotegida, personagens ignoram mudança de layout, porção reservada se perde, comida pronta na hora.
 
@@ -90,6 +100,30 @@ Rode o jogo (F5). O jogo novo já vem com 2 fogões, 2 balcões, 2 mesas com cad
 3. [ ] Espere mais de 40 s e rode de novo (F5): os móveis, o ouro e o nível estão iguais, o fogão mostra "Pão de queijo pronto!" e aparece "Bem-vindo de volta! 1 prato ficou pronto enquanto você estava fora."
 4. [ ] Toque em **Recomeçar** e depois em **Cancelar**: nada muda.
 5. [ ] Toque em **Recomeçar** e depois em **Apagar e recomeçar**: o jogo volta ao começo (Nível 1, 200 de ouro, móveis iniciais).
+
+## Roteiro de teste manual — Novidades (paredes, conquistas, diária, sons)
+
+1. [ ] Jogo novo: pergunta o nome da cafeteria. Digite um nome e toque em **Abrir as portas**. O nome aparece no topo, e em seguida vem a **Recompensa diária** (Dia 1: 50 ouro).
+2. [ ] Toque em **Receber**: o ouro sobe 50, com aviso e som.
+3. [ ] Na loja, aba **Parede** → **Tijolinho** (120). Aparece a pergunta com Cancelar selecionado. Compre: a parede muda e a **Beleza** no topo sobe 10.
+4. [ ] Volte para **Parede creme** (é grátis e não pergunta) e depois para Tijolinho de novo (também grátis).
+5. [ ] Aba **Decoração** → **Vaso de flores**: posicione e veja a Beleza subir.
+6. [ ] Selecione uma mesa → **Vender**: a pergunta mostra o valor (metade do preço). Venda. Depois tente vender um fogão até sobrar um só: o último é recusado, com explicação.
+7. [ ] Toque em **Conquistas**: a lista mostra o progresso. Ao servir o primeiro cliente, aparece "Conquista: Primeiro Cliente! +10 ouro".
+8. [ ] Toque em **Som: ligado** para desligar. Feche e abra o jogo: o som continua desligado.
+9. [ ] Toque no nome da cafeteria no topo e troque o nome.
+10. [ ] **Sensação:** os sons agradam ou incomodam? A beleza faz você querer decorar?
+
+## Roteiro de teste manual — Android (o `.apk`)
+
+1. [ ] Instale seguindo o README ("Jogar no celular Android").
+2. [ ] O ícone do café aparece na lista de apps. O jogo abre deitado (paisagem).
+3. [ ] Um dedo arrasta a visão; dois dedos (pinça) dão zoom; toque rápido seleciona.
+4. [ ] Todos os botões respondem ao toque, inclusive os das janelas (Receber, Comprar, Cancelar).
+5. [ ] O teclado do celular aparece ao digitar o nome da cafeteria.
+6. [ ] Minimize o jogo (botão de início), espere e volte: tudo continua igual. Feche pelo botão "voltar" e abra de novo: o progresso está lá.
+7. [ ] Os textos e botões têm tamanho confortável para o dedo? Algo fica pequeno demais?
+8. [ ] O celular esquenta ou a bateria cai rápido em 10 minutos de jogo? *(anote o modelo do aparelho)*
 
 ## Roteiro de teste manual — Vertical Slice (o `.exe`)
 

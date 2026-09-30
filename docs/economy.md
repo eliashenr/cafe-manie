@@ -25,6 +25,34 @@ Referência: seções 25–31 e 84–86 do master prompt.
 | Fogão | 150 | 1 |
 | Mesa longa | 110 | 3 |
 
+### Decoração nova (Fase 3)
+
+| Item | Preço | Nível | Beleza |
+|---|---|---|---|
+| Vaso de flores | 55 | 1 | 18 |
+| Luminária | 70 | 2 | 20 |
+| Estante de livros (2×1) | 150 | 3 | 35 |
+
+### Revestimentos (em `data/surfaces/`)
+
+| Revestimento | Tipo | Preço | Nível | Beleza |
+|---|---|---|---|---|
+| Piso bege | piso | inicial | — | 0 |
+| Assoalho de madeira | piso | 90 | 1 | 10 |
+| Azulejo azul | piso | 160 | 2 | 15 |
+| Xadrez bistrô | piso | 220 | 3 | 20 |
+| Mármore | piso | 400 | 5 | 30 |
+| Parede creme | parede | inicial | — | 0 |
+| Tijolinho | parede | 120 | 1 | 10 |
+| Listras menta | parede | 180 | 2 | 15 |
+| Azul-marinho | parede | 250 | 4 | 20 |
+
+### Outras entradas e saídas
+
+- **Venda de móveis:** devolve 50% do preço. O último fogão e o último balcão não podem ser vendidos.
+- **Conquistas:** 7 conquistas com 3 degraus cada, de 10 a 500 de ouro por degrau (ver [progression.md](progression.md)).
+- **Recompensa diária:** 7 dias. 50 ouro → 20 XP → Vaso de flores → 100 ouro → Tijolinho → 150 ouro + 30 XP → Estante de livros + 200 ouro.
+
 ### Expansões (em `data/config/expansions.tres`)
 
 | Tamanho | Nível | Preço |

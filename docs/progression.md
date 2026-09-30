@@ -24,6 +24,22 @@ Referência: seções 22–24 e 119–120 do master prompt.
 
 O "jogador robô" do teste automático conclui as 6 em cerca de 5,5 minutos de jogo, chegando ao nível 4.
 
+## Conquistas (seção 49)
+
+| Conquista | Mede | Degraus (meta → título, ouro) |
+|---|---|---|
+| Clientes | clientes servidos | 1 → Primeiro Cliente (10) · 50 → Anfitrião (50) · 500 → Celebridade (200) |
+| Pratos | pratos preparados | 10 → Chef Iniciante (15) · 100 → Chef Experiente (75) · 1000 → Chef Lendário (300) |
+| Vendas | Café Ouro ganho em vendas | 500 → Empreendedor (25) · 5000 → Magnata (100) · 50000 → Lenda (500) |
+| Expansões | expansões feitas | 1 → Primeira Expansão (20) · 2 → Crescendo (60) · 4 → Casa Cheia (150) |
+| Beleza | maior beleza alcançada | 50 → Caprichoso (20) · 150 → Charmoso (60) · 300 → Deslumbrante (150) |
+| Nível | maior nível | 3 → Aprendiz (20) · 5 → Gerente (50) · 10 → Dono de Sucesso (200) |
+| Compras | móveis comprados | 1 → Primeira Compra (10) · 15 → Decorador (40) · 50 → Colecionador (150) |
+
+## Recompensa diária (seção 51)
+
+Sete dias seguidos, com o dia contado pela meia-noite local. Perder um dia volta ao Dia 1. Detalhes em [economy.md](economy.md) e DT-025.
+
 ## Decisões
 
 - O sistema suporta até o nível 100, mas o conteúdo começa com os **níveis 1–10** e só expande depois de validado (seção 119).
