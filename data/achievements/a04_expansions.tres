@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/achievement_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"a04_expansions"
+order = 4
+stat = &"expansions"
+description = "expansões"
+tier_titles = Array[String](["Primeira Expansão", "Crescendo", "Casa Cheia"])
+tier_targets = Array[int]([1, 2, 4])
+tier_rewards = Array[int]([20, 60, 150])

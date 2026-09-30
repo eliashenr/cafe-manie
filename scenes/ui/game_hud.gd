@@ -30,6 +30,10 @@ var _beauty_label: Label
 var _toast: Label
 var _toast_time := 0.0
 var _restart_dialog: ConfirmationDialog
+var _achievements_dialog: AcceptDialog
+var _achievements_list: VBoxContainer
+## Avisos esperando a vez: um aviso nunca apaga o outro.
+var _toast_queue: Array[String] = []
 var _mission_card: PanelContainer
 var _mission_title: Label
 var _mission_hint: Label
@@ -131,7 +135,19 @@ func _build_restart_controls() -> void:
 	button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	button.focus_mode = Control.FOCUS_NONE
 	button.pressed.connect(ask_restart)
-	column.add_child(button)
+	var buttons := HBoxContainer.new()
+	buttons.size_flags_horizontal = Control.SIZE_SHRINK_END
+	buttons.add_theme_constant_override("separation", 8)
+	column.add_child(buttons)
+	var achievements := Button.new()
+	achievements.name = "AchievementsButton"
+	achievements.text = "Conquistas"
+	achievements.custom_minimum_size = Vector2(120, 44)
+	achievements.focus_mode = Control.FOCUS_NONE
+	achievements.pressed.connect(show_achievements)
+	buttons.add_child(achievements)
+	buttons.add_child(button)
+	_build_achievements_dialog()
 	_build_mission_card(column)
 
 	_restart_dialog = ConfirmationDialog.new()
@@ -176,6 +192,55 @@ func _build_mission_card(parent: Control) -> void:
 	column.add_child(_mission_hint)
 
 
+func _build_achievements_dialog() -> void:
+	_achievements_dialog = AcceptDialog.new()
+	_achievements_dialog.name = "AchievementsDialog"
+	_achievements_dialog.ok_button_text = "Fechar"
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(560, 380)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_achievements_dialog.add_child(scroll)
+	_achievements_list = VBoxContainer.new()
+	_achievements_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_achievements_list.add_theme_constant_override("separation", 10)
+	scroll.add_child(_achievements_list)
+	add_child(_achievements_dialog)
+
+
+## Abre a lista de conquistas com o progresso de cada uma.
+func show_achievements() -> void:
+	for child in _achievements_list.get_children():
+		_achievements_list.remove_child(child)
+		child.queue_free()
+	var tracker := simulation.achievements
+	_achievements_dialog.title = "Conquistas (%d de %d)" % [tracker.unlocked_total(), tracker.tiers_total()]
+	for achievement in tracker.achievements:
+		var label := Label.new()
+		label.name = "Achievement_" + String(achievement.id)
+		label.text = achievement_text(achievement)
+		label.add_theme_font_size_override("font_size", 16)
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_achievements_list.add_child(label)
+	_achievements_dialog.popup_centered()
+
+
+## Duas linhas: o título já conquistado (ou "Ainda não") e o próximo degrau.
+func achievement_text(achievement: AchievementDefinition) -> String:
+	var tiers := simulation.achievements.unlocked_tiers(achievement.id)
+	var value := simulation.stats.value(achievement.stat)
+	var done := "Ainda não conquistada" if tiers == 0 else achievement.tier_titles[tiers - 1]
+	var first_line := "%s  (degrau %d de %d)" % [done, tiers, achievement.tier_count()]
+	if tiers >= achievement.tier_count():
+		return "%s\n    Completa! %d %s" % [first_line, value, achievement.description]
+	var target: int = achievement.tier_targets[tiers]
+	return "%s\n    Próximo: %s — %d/%d %s (+%d ouro)" % [first_line, achievement.tier_titles[tiers],
+		mini(value, target), target, achievement.description, achievement.tier_rewards[tiers]]
+
+
+func achievements_dialog() -> AcceptDialog:
+	return _achievements_dialog
+
+
 func ask_restart() -> void:
 	_restart_dialog.popup_centered()
 	# O botão já selecionado é o seguro: um Enter sem querer não apaga nada.
@@ -197,6 +262,8 @@ func _process(delta: float) -> void:
 		_toast_time -= delta
 		if _toast_time <= 0.0:
 			_toast.visible = false
+			if not _toast_queue.is_empty():
+				_show_now(_toast_queue.pop_front())
 
 
 func refresh() -> void:
@@ -227,10 +294,23 @@ func _refresh_mission() -> void:
 	_mission_hint.text = mission.hint
 
 
+## Mostra um aviso. Se já houver um na tela, este espera a vez.
 func show_message(text: String) -> void:
+	if _toast.visible:
+		_toast_queue.append(text)
+	else:
+		_show_now(text)
+
+
+func _show_now(text: String) -> void:
 	_toast.text = text
 	_toast.visible = true
 	_toast_time = TOAST_SECONDS + text.length() * TOAST_SECONDS_PER_CHAR
+
+
+## Avisos esperando a vez (para testes).
+func queued_messages() -> Array[String]:
+	return _toast_queue.duplicate()
 
 
 func toast_text() -> String:

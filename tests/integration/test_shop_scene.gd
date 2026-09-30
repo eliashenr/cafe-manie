@@ -126,7 +126,7 @@ func test_expand_asks_first_then_grows_floor_and_camera() -> void:
 	var bounds := IsoProjection.grid_bounds(Vector2i(10, 8))
 	assert_true(cafe.camera.get_viewport_rect().size.x > 0)
 	assert_true(bounds.has_point(IsoProjection.cell_center(Vector2i(9, 7))), "novo canto dentro dos limites")
-	assert_true(cafe.hud.toast_text().contains("10×8"), cafe.hud.toast_text())
+	assert_true(all_messages(cafe).contains("10×8"), all_messages(cafe))
 
 	tap_cell(cafe, Vector2i(9, 0))
 	assert_eq(cafe.selected_cell, Vector2i(9, 0), "dá para tocar nos pisos novos")

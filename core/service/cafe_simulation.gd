@@ -19,6 +19,7 @@ signal cafe_expanded(new_size: Vector2i)
 signal mission_completed(mission: MissionDefinition)
 signal surface_bought(definition: SurfaceDefinition)
 signal furniture_sold(definition: FurnitureDefinition, amount: int)
+signal achievement_unlocked(achievement: AchievementDefinition, tier: int)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção.
@@ -32,6 +33,7 @@ class Order:
 
 const CUSTOMERS_DIR := "res://data/customers"
 const MISSIONS_DIR := "res://data/missions"
+const ACHIEVEMENTS_DIR := "res://data/achievements"
 const EXPANSIONS_PATH := "res://data/config/expansions.tres"
 const ECONOMY_PATH := "res://data/config/economy.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
@@ -52,6 +54,8 @@ var popularity := 50.0
 ## Móveis guardados, que podem ser recolocados de graça.
 var inventory := Inventory.new()
 var missions: MissionTracker
+var stats := PlayerStats.new()
+var achievements: AchievementTracker
 var expansions := ExpansionPlan.new()
 var economy: EconomyConfig = load(ECONOMY_PATH)
 var surfaces: SurfaceCatalog
@@ -90,6 +94,8 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	set_surfaces(SurfaceCatalog.load_from())
 	var no_missions: Array[MissionDefinition] = []
 	set_missions(no_missions)
+	var no_achievements: Array[AchievementDefinition] = []
+	set_achievements(no_achievements)
 	if random_seed != 0:
 		rng.seed = random_seed
 	else:
@@ -124,8 +130,20 @@ static func with_game_data(game_clock: GameClock, cafe_layout: CafeLayout, furni
 		furniture_catalog, RecipeCatalog.load_from(), load("res://data/progression/levels.tres"),
 		types, random_seed)
 	simulation.set_missions(default_missions())
+	simulation.set_achievements(default_achievements())
+	simulation.record_progress_stats()
 	simulation.expansions = load(EXPANSIONS_PATH)
 	return simulation
+
+
+## Conquistas de res://data/achievements, na ordem do campo [code]order[/code].
+static func default_achievements() -> Array[AchievementDefinition]:
+	var store := DefinitionStore.new(
+		func(a: AchievementDefinition, b: AchievementDefinition) -> bool: return a.order < b.order)
+	store.load_dir(ACHIEVEMENTS_DIR, AchievementDefinition)
+	var list: Array[AchievementDefinition] = []
+	list.assign(store.all())
+	return list
 
 
 ## Missões iniciais de res://data/missions, na ordem do campo [code]order[/code].
@@ -142,11 +160,27 @@ static func default_missions() -> Array[MissionDefinition]:
 func set_surfaces(catalog: SurfaceCatalog) -> void:
 	surfaces = catalog
 	style = CafeStyle.new()
+	style.changed.connect(_record_beauty)
 	for kind in [SurfaceDefinition.Kind.FLOOR, SurfaceDefinition.Kind.WALL]:
 		var start := surfaces.default_for(kind)
 		if start != null:
 			style.own(start.id)
 			style.apply(start)
+
+
+## Troca a lista de conquistas (os contadores continuam).
+func set_achievements(list: Array[AchievementDefinition]) -> void:
+	if achievements != null:
+		achievements.detach()
+	achievements = AchievementTracker.new(list, stats)
+	achievements.achievement_unlocked.connect(_on_achievement_unlocked)
+	achievements.refresh()
+
+
+## Registra os contadores de "maior valor" (nível e beleza) com o estado atual.
+func record_progress_stats() -> void:
+	stats.record_max(PlayerStats.LEVEL, progression.level)
+	stats.record_max(PlayerStats.BEAUTY, beauty())
 
 
 ## Troca a sequência de missões (começa da primeira).
@@ -186,6 +220,7 @@ func collect(stove_id: StringName) -> int:
 		progression.add_xp(recipe.xp_reward)
 		dish_collected.emit(stove_id, recipe)
 		missions.record(MissionDefinition.Kind.COLLECT_DISHES)
+		stats.add(PlayerStats.DISHES_COOKED)
 	return result
 
 
@@ -220,6 +255,7 @@ func acquire_and_place(definition: FurnitureDefinition, origin: Vector2i, rotati
 		wallet.spend(Wallet.SOFT, definition.price, "Compra: %s" % definition.display_name)
 	furniture_bought.emit(definition)
 	missions.record(MissionDefinition.Kind.BUY_FURNITURE, 1, definition.category)
+	stats.add(PlayerStats.FURNITURE_BOUGHT)
 	return ServiceResult.OK
 
 
@@ -356,6 +392,7 @@ func expand() -> int:
 			customer.follow(navigation.path_to_any(customer.cell(), exit), exit)
 	cafe_expanded.emit(layout.grid.size)
 	missions.record(MissionDefinition.Kind.EXPAND_CAFE)
+	stats.add(PlayerStats.EXPANSIONS)
 	return ServiceResult.OK
 
 
@@ -520,6 +557,8 @@ func _pay(customer: Customer) -> void:
 	payment_received.emit(customer, amount)
 	missions.record(MissionDefinition.Kind.SERVE_CUSTOMERS)
 	missions.record(MissionDefinition.Kind.EARN_GOLD, amount)
+	stats.add(PlayerStats.CUSTOMERS_SERVED)
+	stats.add(PlayerStats.GOLD_EARNED, amount)
 
 
 ## Tira o cliente da mesa e manda para a saída. Pedido não entregue é cancelado.
@@ -637,7 +676,12 @@ func _waiter_of(order: Order) -> Waiter:
 ## Quando o layout muda, quem está andando recalcula o caminho até a mesma meta.
 ## Se a meta ficou inalcançável (caso raro: o personagem foi cercado), ele
 ## volta para a entrada em vez de ficar preso.
+func _record_beauty() -> void:
+	stats.record_max(PlayerStats.BEAUTY, beauty())
+
+
 func _on_layout_changed() -> void:
+	_record_beauty()
 	var agents: Array[Agent] = []
 	agents.append_array(customers)
 	agents.append_array(waiters)
@@ -691,6 +735,15 @@ func _pick_customer_type() -> CustomerType:
 func _on_leveled_up(level: int) -> void:
 	leveled_up.emit(level)
 	missions.record(MissionDefinition.Kind.REACH_LEVEL, level)
+	stats.record_max(PlayerStats.LEVEL, level)
+
+
+## Degrau de conquista desbloqueado: paga a recompensa e avisa.
+func _on_achievement_unlocked(achievement: AchievementDefinition, tier: int) -> void:
+	var reward: int = achievement.tier_rewards[tier]
+	if reward > 0:
+		wallet.earn(Wallet.SOFT, reward, "Conquista: %s" % achievement.tier_titles[tier])
+	achievement_unlocked.emit(achievement, tier)
 
 
 func _mission_state(kind: MissionDefinition.Kind) -> int:

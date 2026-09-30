@@ -11,7 +11,7 @@ extends RefCounted
 ## CURRENT_VERSION e acrescente um passo em migrations().
 
 ## Histórico: 1 = primeira versão; 2 = acrescenta inventário e missões;
-## 3 = acrescenta revestimentos (piso e parede).
+## 3 = acrescenta revestimentos (piso e parede), contadores e conquistas.
 const CURRENT_VERSION := 3
 
 
@@ -54,6 +54,8 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"inventory": simulation.inventory.to_data(),
 		"missions": simulation.missions.to_data(),
 		"style": simulation.style.to_data(),
+		"stats": simulation.stats.to_data(),
+		"achievements": simulation.achievements.to_data(),
 	}
 
 
@@ -121,6 +123,12 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.missions.restore(_dict(data.get("missions")))
 	simulation.missions.refresh()
 	_restore_style(simulation, _dict(data.get("style")), result)
+	simulation.stats.restore(_dict(data.get("stats")))
+	simulation.achievements.restore(_dict(data.get("achievements")))
+	# Contadores de nível e beleza acompanham o estado carregado; degraus que um
+	# save antigo já merecia são desbloqueados (e pagos) agora.
+	simulation.record_progress_stats()
+	simulation.achievements.refresh()
 	result.simulation = simulation
 	return result
 
@@ -159,9 +167,12 @@ static func _v1_to_v2(data: Dictionary) -> Dictionary:
 	return data
 
 
-## Versão 3 acrescentou revestimentos: saves antigos ficam com os iniciais.
+## Versão 3 acrescentou revestimentos, contadores e conquistas: saves antigos
+## ficam com os revestimentos iniciais e os contadores zerados.
 static func _v2_to_v3(data: Dictionary) -> Dictionary:
 	data["style"] = {}
+	data["stats"] = {}
+	data["achievements"] = {}
 	return data
 
 

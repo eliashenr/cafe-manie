@@ -11,6 +11,9 @@ func _setup(gold := 1000) -> void:
 	var furniture := FurnitureCatalog.load_from()
 	sim = CafeSimulation.with_game_data(clock, CafeLayout.new(Vector2i(8, 8), Vector2i(7, 4)), furniture, 9)
 	sim.customer_types.clear()
+	# Conquistas pagam ouro e mudariam as contas destes testes (elas têm testes próprios).
+	var no_achievements: Array[AchievementDefinition] = []
+	sim.set_achievements(no_achievements)
 	sim.wallet.earn(Wallet.SOFT, gold, "teste")
 
 

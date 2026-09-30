@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/achievement_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"a07_furniture"
+order = 7
+stat = &"furniture_bought"
+description = "móveis comprados"
+tier_titles = Array[String](["Primeira Compra", "Decorador", "Colecionador"])
+tier_targets = Array[int]([1, 15, 50])
+tier_rewards = Array[int]([10, 40, 150])

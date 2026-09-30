@@ -91,6 +91,11 @@ func press_key(keycode: Key) -> void:
 	send(event)
 
 
+## Aviso na tela e os que esperam a vez, num texto só.
+func all_messages(cafe: Cafe) -> String:
+	return "\n".join([cafe.hud.toast_text()] + cafe.hud.queued_messages())
+
+
 ## Espera a barra de construção se reconstruir (ela reconstrói no fim do frame).
 func settle() -> void:
 	await tree.process_frame

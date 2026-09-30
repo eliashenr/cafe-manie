@@ -83,6 +83,7 @@ func _ready() -> void:
 	simulation.leveled_up.connect(_on_leveled_up)
 	simulation.cafe_expanded.connect(_on_cafe_expanded)
 	simulation.mission_completed.connect(_on_mission_completed)
+	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
 
@@ -181,6 +182,7 @@ func _watch_for_changes() -> void:
 	simulation.inventory.changed.connect(_mark_dirty)
 	simulation.style.changed.connect(_mark_dirty)
 	simulation.missions.progress_changed.connect(_mark_dirty)
+	simulation.stats.changed.connect(_mark_dirty.unbind(2))
 
 
 func _mark_dirty() -> void:
@@ -261,6 +263,14 @@ func _on_mission_completed(mission: MissionDefinition) -> void:
 		text += "\nVocê completou todas as missões iniciais!"
 	EventBus.message_posted.emit(text)
 	state_changed.emit()
+
+
+func _on_achievement_unlocked(achievement: AchievementDefinition, tier: int) -> void:
+	var text := "Conquista: %s!" % achievement.tier_titles[tier]
+	var reward: int = achievement.tier_rewards[tier]
+	if reward > 0:
+		text += "  +%d ouro" % reward
+	EventBus.message_posted.emit(text)
 
 
 ## Expande a cafeteria (a confirmação fica na barra de baixo).

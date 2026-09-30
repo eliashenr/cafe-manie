@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/achievement_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"a05_beauty"
+order = 5
+stat = &"beauty"
+description = "de beleza na cafeteria"
+tier_titles = Array[String](["Caprichoso", "Charmoso", "Deslumbrante"])
+tier_targets = Array[int]([50, 150, 300])
+tier_rewards = Array[int]([20, 60, 150])

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/achievement_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"a03_gold"
+order = 3
+stat = &"gold_earned"
+description = "Café Ouro ganho em vendas"
+tier_titles = Array[String](["Empreendedor", "Magnata", "Lenda"])
+tier_targets = Array[int]([500, 5000, 50000])
+tier_rewards = Array[int]([25, 100, 500])
