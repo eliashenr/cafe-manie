@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="DailyRewardCalendar" format=3]
+
+[ext_resource type="Script" path="res://core/progression/daily_reward_calendar.gd" id="1_cal"]
+
+[resource]
+script = ExtResource("1_cal")
+days = Array[Dictionary]([{
+"gold": 50
+}, {
+"xp": 20
+}, {
+"furniture": &"flower_vase"
+}, {
+"gold": 100
+}, {
+"surface": &"wall_brick"
+}, {
+"gold": 150,
+"xp": 30
+}, {
+"furniture": &"bookshelf",
+"gold": 200
+}])
+reset_when_missed = true

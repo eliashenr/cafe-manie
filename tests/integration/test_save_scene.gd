@@ -119,6 +119,7 @@ func test_damaged_save_recovers_the_backup_and_says_so() -> void:
 
 func test_restart_asks_first_and_then_wipes_the_save() -> void:
 	var cafe := await _open_game(ManualClock.new())
+	cafe.hud.daily_dialog().hide()  # o jogo novo abre com a recompensa diária
 	cafe.save_now()
 	cafe.hud.find_child("RestartButton", true, false).pressed.emit()
 	assert_true(cafe.hud.restart_dialog().visible, "pede confirmação antes de apagar")

@@ -4,6 +4,8 @@ extends GameClock
 ## Usado nos testes para simular minutos ou horas em milissegundos.
 
 var time := 1_000_000.0
+## Fuso usado nos testes (em segundos).
+var offset := 0
 
 
 func now() -> float:
@@ -12,3 +14,7 @@ func now() -> float:
 
 func advance(seconds: float) -> void:
 	time += seconds
+
+
+func utc_offset_seconds() -> int:
+	return offset

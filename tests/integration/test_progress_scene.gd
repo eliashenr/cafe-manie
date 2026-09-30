@@ -73,3 +73,56 @@ func test_stat_changes_trigger_autosave() -> void:
 
 func _find(root: Node, node_name: String) -> Node:
 	return root.find_child(node_name, true, false)
+
+
+# --- Recompensa diária ---------------------------------------------------------
+
+func _cafe_with_daily() -> Cafe:
+	var simulation := quiet_simulation()
+	simulation.daily = DailyRewards.new(load(CafeSimulation.DAILY_REWARDS_PATH))
+	return await spawn_cafe(simulation)
+
+
+func test_daily_reward_pops_up_on_start_and_pays() -> void:
+	var cafe := await _cafe_with_daily()
+	var dialog := cafe.hud.daily_dialog()
+	assert_true(dialog.visible, "aparece ao abrir o jogo")
+	var today := _find(dialog, "Day1").get_child(0) as Label
+	assert_true(today.text.contains("50 ouro"), today.text)
+	dialog.get_ok_button().pressed.emit()
+	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 250)
+	assert_true(all_messages(cafe).contains("Recompensa do dia 1: 50 ouro"), all_messages(cafe))
+	assert_false(cafe.offer_daily_reward(), "não aparece de novo no mesmo dia")
+
+
+func test_closing_without_claiming_keeps_the_reward() -> void:
+	var cafe := await _cafe_with_daily()
+	cafe.hud.daily_dialog().hide()
+	assert_true(cafe.simulation.can_claim_daily())
+	assert_true(cafe.offer_daily_reward(), "volta a oferecer depois")
+
+
+func test_next_day_shows_while_the_game_stays_open() -> void:
+	var cafe := await _cafe_with_daily()
+	cafe.hud.daily_dialog().get_ok_button().pressed.emit()
+	clock.advance(86400.0)
+	cafe._notification(Node.NOTIFICATION_APPLICATION_FOCUS_IN)
+	assert_true(cafe.hud.daily_dialog().visible, "voltar ao jogo no dia seguinte oferece o dia 2")
+	var day2 := _find(cafe.hud.daily_dialog(), "Day2").get_child(0) as Label
+	assert_true(day2.text.contains("20 XP"), day2.text)
+
+
+func test_quiet_simulation_has_no_daily_popup() -> void:
+	var cafe := await spawn_cafe()
+	assert_false(cafe.hud.daily_dialog().visible)
+
+
+func test_daily_reward_waits_for_an_open_question() -> void:
+	var simulation := quiet_simulation()
+	simulation.expansions = load(CafeSimulation.EXPANSIONS_PATH)
+	simulation.progression.add_xp(30)
+	var cafe := await spawn_cafe(simulation)
+	cafe.build_bar.ask_expand()
+	simulation.daily = DailyRewards.new(load(CafeSimulation.DAILY_REWARDS_PATH))
+	cafe._notification(Node.NOTIFICATION_APPLICATION_FOCUS_IN)
+	assert_false(cafe.hud.daily_dialog().visible, "não empilha janelas: a pergunta aberta vem primeiro")

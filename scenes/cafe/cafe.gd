@@ -93,11 +93,13 @@ func _ready() -> void:
 
 	hud.bind(simulation)
 	hud.restart_requested.connect(restart_game)
+	hud.daily_claim_requested.connect(claim_daily_reward)
 	build_bar.bind(self)
 	world_layer.refresh(simulation)
 	_watch_for_changes()
 	if not welcome.is_empty():
 		EventBus.message_posted.emit(welcome)
+	offer_daily_reward()
 
 
 func _process(delta: float) -> void:
@@ -183,6 +185,7 @@ func _watch_for_changes() -> void:
 	simulation.style.changed.connect(_mark_dirty)
 	simulation.missions.progress_changed.connect(_mark_dirty)
 	simulation.stats.changed.connect(_mark_dirty.unbind(2))
+	simulation.daily.changed.connect(_mark_dirty)
 
 
 func _mark_dirty() -> void:
@@ -201,6 +204,37 @@ func _notification(what: int) -> void:
 		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT:
 			if simulation != null:
 				save_now()
+		NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN:
+			# O jogo pode ter ficado aberto (ou minimizado) de um dia para o outro.
+			if simulation != null and is_node_ready():
+				offer_daily_reward()
+
+
+# --- Recompensa diária ------------------------------------------------------
+
+## Mostra a recompensa diária se ainda não foi recebida hoje.
+func offer_daily_reward() -> bool:
+	if not simulation.can_claim_daily() or is_dialog_open():
+		return false
+	hud.show_daily_reward()
+	return true
+
+
+## Alguma janela de pergunta aberta? Só cabe uma por vez na tela.
+func is_dialog_open() -> bool:
+	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(), build_bar.confirm_dialog()]:
+		if dialog.visible:
+			return true
+	return false
+
+
+func claim_daily_reward() -> Dictionary:
+	var day := simulation.daily_day_number()
+	var delivered := simulation.claim_daily()
+	if not delivered.is_empty():
+		EventBus.message_posted.emit("Recompensa do dia %d: %s" % [day, hud.reward_text(delivered).replace("\n", ", ")])
+		state_changed.emit()
+	return delivered
 
 
 # --- Cozinha ---------------------------------------------------------------

@@ -10,3 +10,13 @@ extends RefCounted
 
 func now() -> float:
 	return Time.get_unix_time_from_system()
+
+
+## Diferença do fuso horário local para o UTC, em segundos (Brasília: -10800).
+func utc_offset_seconds() -> int:
+	return int(Time.get_time_zone_from_system().get("bias", 0)) * 60
+
+
+## Número do dia no calendário local (muda à meia-noite do jogador).
+func local_day() -> int:
+	return floori((now() + utc_offset_seconds()) / 86400.0)

@@ -20,6 +20,9 @@ signal mission_completed(mission: MissionDefinition)
 signal surface_bought(definition: SurfaceDefinition)
 signal furniture_sold(definition: FurnitureDefinition, amount: int)
 signal achievement_unlocked(achievement: AchievementDefinition, tier: int)
+## [param day] começa em 1. [param reward] é o que foi entregue de fato
+## (um revestimento que o jogador já tinha vira ouro).
+signal daily_reward_claimed(day: int, reward: Dictionary)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção.
@@ -36,6 +39,7 @@ const MISSIONS_DIR := "res://data/missions"
 const ACHIEVEMENTS_DIR := "res://data/achievements"
 const EXPANSIONS_PATH := "res://data/config/expansions.tres"
 const ECONOMY_PATH := "res://data/config/economy.tres"
+const DAILY_REWARDS_PATH := "res://data/config/daily_rewards.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 
@@ -55,6 +59,8 @@ var popularity := 50.0
 var inventory := Inventory.new()
 var missions: MissionTracker
 var stats := PlayerStats.new()
+## Recompensa diária. Desligada (sem calendário) até with_game_data carregar os dados.
+var daily := DailyRewards.new()
 var achievements: AchievementTracker
 var expansions := ExpansionPlan.new()
 var economy: EconomyConfig = load(ECONOMY_PATH)
@@ -131,6 +137,7 @@ static func with_game_data(game_clock: GameClock, cafe_layout: CafeLayout, furni
 		types, random_seed)
 	simulation.set_missions(default_missions())
 	simulation.set_achievements(default_achievements())
+	simulation.daily = DailyRewards.new(load(DAILY_REWARDS_PATH))
 	simulation.record_progress_stats()
 	simulation.expansions = load(EXPANSIONS_PATH)
 	return simulation
@@ -311,6 +318,46 @@ func beauty() -> int:
 func beauty_factor() -> float:
 	return clampf(beauty() / config.beauty_for_max_bonus, 0.0, 1.0)
 
+
+# --- Recompensa diária -------------------------------------------------------
+
+func can_claim_daily() -> bool:
+	return daily.can_claim(clock.local_day())
+
+
+## Dia da sequência (1 a 7) que seria recebido hoje.
+func daily_day_number() -> int:
+	return daily.index_for(clock.local_day()) + 1
+
+
+## Entrega a recompensa de hoje. Retorna o que foi entregue, ou {} se já recebeu.
+func claim_daily() -> Dictionary:
+	var today := clock.local_day()
+	var day := daily.index_for(today) + 1
+	var reward := daily.claim(today)
+	if reward.is_empty():
+		return {}
+	var delivered := {"gold": int(reward.get("gold", 0)), "xp": int(reward.get("xp", 0))}
+	var furniture_id := StringName(reward.get("furniture", &""))
+	if furniture.get_definition(furniture_id) != null:
+		inventory.add(furniture_id)
+		delivered["furniture"] = furniture_id
+	var surface := surfaces.get_definition(StringName(reward.get("surface", &"")))
+	if surface != null:
+		if style.owns(surface.id):
+			delivered["gold"] += surface.price
+		else:
+			style.own(surface.id)
+			delivered["surface"] = surface.id
+	if delivered["gold"] > 0:
+		wallet.earn(Wallet.SOFT, delivered["gold"], "Recompensa diária (dia %d)" % day)
+	if delivered["xp"] > 0:
+		progression.add_xp(delivered["xp"])
+	daily_reward_claimed.emit(day, delivered)
+	return delivered
+
+
+# --- Venda ---------------------------------------------------------------------
 
 ## Quanto o jogador recebe ao vender este móvel.
 func sell_price(definition: FurnitureDefinition) -> int:

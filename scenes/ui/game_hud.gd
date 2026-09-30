@@ -9,6 +9,8 @@ extends CanvasLayer
 
 ## O jogador confirmou que quer apagar o progresso e recomeçar.
 signal restart_requested
+## O jogador tocou em Receber na recompensa diária.
+signal daily_claim_requested
 
 const SOFT_CURRENCY_NAME := "Café Ouro"
 const HINT := "Arraste para mover  •  Roda do mouse ou pinça para zoom  •  Toque num fogão para cozinhar"
@@ -31,6 +33,8 @@ var _toast: Label
 var _toast_time := 0.0
 var _restart_dialog: ConfirmationDialog
 var _achievements_dialog: AcceptDialog
+var _daily_dialog: AcceptDialog
+var _daily_days: HBoxContainer
 var _achievements_list: VBoxContainer
 ## Avisos esperando a vez: um aviso nunca apaga o outro.
 var _toast_queue: Array[String] = []
@@ -148,6 +152,7 @@ func _build_restart_controls() -> void:
 	buttons.add_child(achievements)
 	buttons.add_child(button)
 	_build_achievements_dialog()
+	_build_daily_dialog()
 	_build_mission_card(column)
 
 	_restart_dialog = ConfirmationDialog.new()
@@ -235,6 +240,71 @@ func achievement_text(achievement: AchievementDefinition) -> String:
 	var target: int = achievement.tier_targets[tiers]
 	return "%s\n    Próximo: %s — %d/%d %s (+%d ouro)" % [first_line, achievement.tier_titles[tiers],
 		mini(value, target), target, achievement.description, achievement.tier_rewards[tiers]]
+
+
+func _build_daily_dialog() -> void:
+	_daily_dialog = AcceptDialog.new()
+	_daily_dialog.name = "DailyDialog"
+	_daily_dialog.title = "Recompensa diária"
+	_daily_dialog.ok_button_text = "Receber"
+	_daily_dialog.confirmed.connect(func() -> void: daily_claim_requested.emit())
+	_daily_days = HBoxContainer.new()
+	_daily_days.add_theme_constant_override("separation", 6)
+	_daily_dialog.add_child(_daily_days)
+	add_child(_daily_dialog)
+
+
+## Mostra os dias da sequência, com o de hoje em destaque.
+func show_daily_reward() -> void:
+	for child in _daily_days.get_children():
+		_daily_days.remove_child(child)
+		child.queue_free()
+	var days := simulation.daily.calendar.days
+	var today := simulation.daily_day_number()
+	for i in days.size():
+		var card := PanelContainer.new()
+		card.name = "Day%d" % (i + 1)
+		card.custom_minimum_size = Vector2(96, 96)
+		var style := StyleBoxFlat.new()
+		style.set_corner_radius_all(8)
+		style.set_content_margin_all(6)
+		style.bg_color = Color(1, 1, 1, 0.08)
+		if i + 1 == today:
+			style.bg_color = Color("ffd35c", 0.25)
+			style.border_color = Color("ffd35c")
+			style.set_border_width_all(3)
+		card.add_theme_stylebox_override("panel", style)
+		var label := Label.new()
+		label.text = "Dia %d\n%s" % [i + 1, reward_text(days[i])]
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.add_theme_font_size_override("font_size", 14)
+		if i + 1 < today:
+			label.modulate = Color(1, 1, 1, 0.45)
+		card.add_child(label)
+		_daily_days.add_child(card)
+	_daily_dialog.popup_centered()
+	_daily_dialog.get_ok_button().grab_focus()
+
+
+## "50 ouro", "20 XP", "Vaso de flores"... (uma linha por parte da recompensa).
+func reward_text(reward: Dictionary) -> String:
+	var parts: Array[String] = []
+	if int(reward.get("gold", 0)) > 0:
+		parts.append("%d ouro" % int(reward["gold"]))
+	if int(reward.get("xp", 0)) > 0:
+		parts.append("%d XP" % int(reward["xp"]))
+	var furniture := simulation.furniture.get_definition(StringName(reward.get("furniture", &"")))
+	if furniture != null:
+		parts.append(furniture.display_name)
+	var surface := simulation.surfaces.get_definition(StringName(reward.get("surface", &"")))
+	if surface != null:
+		parts.append(surface.display_name)
+	return "\n".join(parts)
+
+
+func daily_dialog() -> AcceptDialog:
+	return _daily_dialog
 
 
 func achievements_dialog() -> AcceptDialog:
