@@ -1,0 +1,11 @@
+<!-- PLACEHOLDER_ICON: ícone provisório do Café Manie, desenho original simples até existir arte final. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#7a4a2e"/>
+  <circle cx="256" cy="256" r="196" fill="#8f5a38"/>
+  <path d="M200 120 q-24 32 0 64 q24 32 0 64" fill="none" stroke="#f6e7cf" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+  <path d="M268 104 q-24 32 0 64 q24 32 0 64" fill="none" stroke="#f6e7cf" stroke-width="18" stroke-linecap="round" opacity="0.9"/>
+  <path d="M120 264 h240 v48 a88 88 0 0 1 -88 88 h-64 a88 88 0 0 1 -88 -88 z" fill="#fff8ec"/>
+  <path d="M360 284 h24 a44 44 0 0 1 0 88 h-36" fill="none" stroke="#fff8ec" stroke-width="26" stroke-linecap="round"/>
+  <rect x="104" y="408" width="288" height="26" rx="13" fill="#ffd35c"/>
+  <rect x="136" y="278" width="208" height="22" rx="11" fill="#c8894f"/>
+</svg>

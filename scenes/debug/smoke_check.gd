@@ -45,6 +45,14 @@ func _process(_delta: float) -> void:
 		_finish()
 
 
+func sim_sounds(cafe: Cafe) -> int:
+	var count := 0
+	for cue in [&"coin", &"dish_ready", &"level_up", &"purchase", &"error", &"achievement", &"tap"]:
+		if cafe.sound_board.has_cue(cue):
+			count += 1
+	return count
+
+
 func _finish() -> void:
 	var cafe := get_parent() as Cafe
 	var sim := cafe.simulation
@@ -55,6 +63,10 @@ func _finish() -> void:
 		"clientes": sim.customer_types.size(),
 		"missoes": sim.missions.missions.size(),
 		"expansoes": sim.expansions.steps.size(),
+		"revestimentos": sim.surfaces.size(),
+		"conquistas": sim.achievements.achievements.size(),
+		"recompensas_diarias": sim.daily.calendar.days.size() if sim.daily.enabled() else 0,
+		"sons": sim_sounds(cafe),
 		"moveis_na_cafeteria": sim.layout.count(),
 	}
 	for key in counts:

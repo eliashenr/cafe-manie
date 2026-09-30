@@ -213,7 +213,8 @@ func _exit_tree() -> void:
 ## minimizado, então salva assim que ele sai de foco, pausa ou vai fechar.
 func _notification(what: int) -> void:
 	match what:
-		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT:
+		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_WM_GO_BACK_REQUEST, NOTIFICATION_APPLICATION_PAUSED, \
+				NOTIFICATION_APPLICATION_FOCUS_OUT:
 			if simulation != null:
 				save_now()
 		NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN:
