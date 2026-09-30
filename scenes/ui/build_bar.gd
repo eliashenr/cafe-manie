@@ -48,6 +48,8 @@ const SERVICE_MESSAGES := {
 	ServiceResult.EXPANSION_LOCKED: "Expansão ainda bloqueada",
 	ServiceResult.SURFACE_LOCKED: "Revestimento ainda bloqueado",
 	ServiceResult.UNKNOWN_ITEM: "Item desconhecido",
+	ServiceResult.IN_USE: "Está em uso agora, espere terminar",
+	ServiceResult.LAST_ESSENTIAL: "É o último: sem ele não dá para cozinhar ou servir",
 }
 
 ## Abas da loja.
@@ -306,6 +308,21 @@ func ask_expand() -> void:
 		"Expandir", func() -> void: cafe.expand_cafe())
 
 
+## Venda sempre pede confirmação: ela não tem volta.
+func ask_sell_selected() -> void:
+	var placement := cafe.layout.get_placement(cafe.selected_id)
+	if placement == null:
+		return
+	var check := cafe.simulation.can_sell(placement.id)
+	if check != ServiceResult.OK:
+		cafe.last_service_result = check
+		_refresh_in_place()
+		return
+	var definition := placement.definition
+	_ask("Vender móvel?", "Vender %s por %d Café Ouro? Ele sai da cafeteria de vez. (Para só tirar do lugar, use Guardar.)" % [
+		definition.display_name, cafe.simulation.sell_price(definition)], "Vender", cafe.sell_selected)
+
+
 ## Revestimento já comprado: aplica na hora. Ainda não comprado: pede confirmação.
 func ask_use_surface(surface_id: StringName) -> void:
 	var surface := cafe.simulation.surfaces.get_definition(surface_id)
@@ -347,6 +364,7 @@ func _show_selection_controls() -> void:
 	_add_button(_buttons, "MoveButton", "Mover", cafe.start_moving_selected)
 	_add_button(_buttons, "RotateButton", "Girar", cafe.rotate_selected)
 	_add_button(_buttons, "RemoveButton", "Guardar", cafe.remove_selected)
+	_add_button(_buttons, "SellButton", "Vender", ask_sell_selected)
 	_add_button(_buttons, "CloseButton", "Fechar", cafe.clear_selection)
 
 

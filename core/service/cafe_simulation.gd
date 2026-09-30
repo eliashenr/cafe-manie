@@ -18,6 +18,7 @@ signal furniture_bought(definition: FurnitureDefinition)
 signal cafe_expanded(new_size: Vector2i)
 signal mission_completed(mission: MissionDefinition)
 signal surface_bought(definition: SurfaceDefinition)
+signal furniture_sold(definition: FurnitureDefinition, amount: int)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção.
@@ -32,6 +33,7 @@ class Order:
 const CUSTOMERS_DIR := "res://data/customers"
 const MISSIONS_DIR := "res://data/missions"
 const EXPANSIONS_PATH := "res://data/config/expansions.tres"
+const ECONOMY_PATH := "res://data/config/economy.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 
@@ -51,6 +53,7 @@ var popularity := 50.0
 var inventory := Inventory.new()
 var missions: MissionTracker
 var expansions := ExpansionPlan.new()
+var economy: EconomyConfig = load(ECONOMY_PATH)
 var surfaces: SurfaceCatalog
 var style := CafeStyle.new()
 ## Id do último móvel posicionado por acquire_and_place.
@@ -271,6 +274,51 @@ func beauty() -> int:
 ## De 0 a 1: quanto do bônus máximo de beleza a cafeteria já alcançou.
 func beauty_factor() -> float:
 	return clampf(beauty() / config.beauty_for_max_bonus, 0.0, 1.0)
+
+
+## Quanto o jogador recebe ao vender este móvel.
+func sell_price(definition: FurnitureDefinition) -> int:
+	return floori(definition.price * economy.sell_fraction)
+
+
+## Pode vender o móvel posicionado? Não se estiver em uso nem se for o último
+## fogão ou balcão (contando os guardados): sem eles não há como ganhar ouro.
+func can_sell(id: StringName) -> int:
+	var placement := layout.get_placement(id)
+	if placement == null:
+		return ServiceResult.UNKNOWN_ITEM
+	if is_in_use(id):
+		return ServiceResult.IN_USE
+	var category := placement.definition.category
+	if category in economy.essential_categories and _count_of_category(category) <= 1:
+		return ServiceResult.LAST_ESSENTIAL
+	return ServiceResult.OK
+
+
+## Vende o móvel posicionado. Recebe [method sell_price] em Café Ouro.
+func sell_furniture(id: StringName) -> int:
+	var result := can_sell(id)
+	if result != ServiceResult.OK:
+		return result
+	var definition := layout.get_placement(id).definition
+	layout.remove(id)
+	var amount := sell_price(definition)
+	if amount > 0:
+		wallet.earn(Wallet.SOFT, amount, "Venda: %s" % definition.display_name)
+	furniture_sold.emit(definition, amount)
+	return ServiceResult.OK
+
+
+## Móveis de uma categoria, posicionados ou guardados.
+func _count_of_category(category: FurnitureDefinition.Category) -> int:
+	var total := 0
+	for placement in layout.placements():
+		if placement.definition.category == category:
+			total += 1
+	for definition in furniture.all():
+		if definition.category == category:
+			total += inventory.count(definition.id)
+	return total
 
 
 ## Próxima etapa de expansão ({size, level, price}) ou {} se já está no máximo.

@@ -362,6 +362,23 @@ func remove_selected() -> bool:
 	return true
 
 
+## Vende o móvel selecionado (a confirmação fica na barra). Recusa explica o motivo.
+func sell_selected() -> int:
+	var placement := layout.get_placement(selected_id)
+	if placement == null:
+		return ServiceResult.UNKNOWN_ITEM
+	var definition := placement.definition
+	var origin := placement.origin
+	last_service_result = simulation.sell_furniture(selected_id)
+	if last_service_result == ServiceResult.OK:
+		var amount := simulation.sell_price(definition)
+		FloatingText.spawn(effects, IsoProjection.cell_center(origin) + Vector2(0, -60), "+%d" % amount, FEEDBACK_GOLD)
+		clear_selection()
+	else:
+		state_changed.emit()
+	return last_service_result
+
+
 # --- Modo BUILD ------------------------------------------------------------
 
 ## Começa a posicionar um móvel novo do catálogo.

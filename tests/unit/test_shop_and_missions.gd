@@ -194,3 +194,48 @@ func test_all_missions_done() -> void:
 	assert_true(sim.missions.all_done())
 	assert_eq(sim.missions.current(), null)
 	sim.missions.record(MissionDefinition.Kind.COLLECT_DISHES)  # não quebra
+
+
+# --- Venda -----------------------------------------------------------------------
+
+func test_selling_returns_half_the_price_and_removes() -> void:
+	_setup(200)
+	var sold := []
+	sim.furniture_sold.connect(func(d: FurnitureDefinition, amount: int) -> void: sold.append([d.id, amount]))
+	sim.acquire_and_place(_def(&"table_round"), Vector2i(2, 2), 0)
+	var id := sim.last_placed_id
+	assert_eq(sim.sell_price(_def(&"table_round")), 30)
+	assert_eq(sim.sell_furniture(id), ServiceResult.OK)
+	assert_eq(sim.layout.get_placement(id), null)
+	assert_eq(sim.wallet.balance(Wallet.SOFT), 200 - 60 + 30)
+	assert_eq(sim.inventory.total(), 0, "vendido não vai para o inventário")
+	assert_eq(sold, [[&"table_round", 30]])
+
+
+func test_cannot_sell_the_last_stove_or_counter() -> void:
+	_setup()
+	sim.acquire_and_place(_def(&"stove_basic"), Vector2i(0, 0), 0)
+	var first := sim.last_placed_id
+	assert_eq(sim.sell_furniture(first), ServiceResult.LAST_ESSENTIAL, "sem fogão não há como ganhar ouro")
+	sim.inventory.add(&"stove_basic")
+	assert_eq(sim.can_sell(first), ServiceResult.OK, "um guardado conta")
+	sim.inventory.take(&"stove_basic")
+	sim.acquire_and_place(_def(&"stove_basic"), Vector2i(2, 0), 0)
+	assert_eq(sim.sell_furniture(first), ServiceResult.OK, "com outro fogão, pode")
+
+
+func test_furniture_in_use_cannot_be_sold() -> void:
+	_setup()
+	sim.acquire_and_place(_def(&"stove_basic"), Vector2i(0, 0), 0)
+	var stove := sim.last_placed_id
+	sim.acquire_and_place(_def(&"stove_basic"), Vector2i(2, 0), 0)
+	sim.start_cooking(stove, &"coffee")
+	var gold := sim.wallet.balance(Wallet.SOFT)
+	assert_eq(sim.sell_furniture(stove), ServiceResult.IN_USE)
+	assert_eq(sim.wallet.balance(Wallet.SOFT), gold)
+
+
+func test_economy_data_is_valid() -> void:
+	var economy: EconomyConfig = load(CafeSimulation.ECONOMY_PATH)
+	assert_true(economy.is_valid())
+	assert_true(economy.sell_fraction < 1.0, "vender nunca dá lucro sobre a compra")

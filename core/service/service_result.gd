@@ -18,4 +18,6 @@ enum {
 	EXPANSION_LOCKED,   ## nível insuficiente para a próxima expansão
 	SURFACE_LOCKED,     ## nível insuficiente para o revestimento
 	UNKNOWN_ITEM,       ## item (móvel, revestimento) inexistente
+	IN_USE,             ## o móvel está sendo usado agora
+	LAST_ESSENTIAL,     ## é o último fogão ou balcão: sem ele o jogo trava
 }

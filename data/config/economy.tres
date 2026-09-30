@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EconomyConfig" format=3]
+
+[ext_resource type="Script" path="res://core/economy/economy_config.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+sell_fraction = 0.5
+essential_categories = Array[int]([2, 3])

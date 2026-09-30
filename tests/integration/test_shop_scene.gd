@@ -191,3 +191,33 @@ func test_inventory_and_mission_changes_trigger_autosave() -> void:
 	var loaded := service.load_game(ManualClock.new())
 	assert_eq(loaded.simulation.inventory.count(&"plant_pot"), 1)
 	service.delete_save()
+
+
+# --- Venda -------------------------------------------------------------------------
+
+func test_sell_asks_first_then_pays() -> void:
+	var cafe := await spawn_cafe()
+	cafe.layout.place(cafe.catalog.get_definition(&"table_round"), Vector2i(2, 2))
+	tap_cell(cafe, Vector2i(2, 2))
+	await settle()
+	cafe.build_bar.find_button("SellButton").pressed.emit()
+	var dialog := cafe.build_bar.confirm_dialog()
+	assert_true(dialog.visible and dialog.dialog_text.contains("30 Café Ouro"), dialog.dialog_text)
+	assert_true(dialog.get_cancel_button().has_focus())
+	assert_eq(cafe.layout.count(), 1, "nada some antes de confirmar")
+	dialog.get_ok_button().pressed.emit()
+	assert_eq(cafe.layout.count(), 0)
+	assert_eq(_gold(cafe), 230)
+	assert_eq(cafe.selected_id, &"")
+
+
+func test_selling_the_last_stove_is_explained_without_asking() -> void:
+	var cafe := await spawn_cafe()
+	cafe.layout.place(cafe.catalog.get_definition(&"stove_basic"), Vector2i(0, 0))
+	tap_cell(cafe, Vector2i(0, 0))
+	await settle()
+	cafe.build_bar.find_button("SellButton").pressed.emit()
+	assert_false(cafe.build_bar.confirm_dialog().visible)
+	await settle()
+	assert_true(cafe.build_bar.message_text().contains("último"), cafe.build_bar.message_text())
+	assert_eq(cafe.layout.count(), 1)
