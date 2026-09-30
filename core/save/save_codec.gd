@@ -11,7 +11,8 @@ extends RefCounted
 ## CURRENT_VERSION e acrescente um passo em migrations().
 
 ## Histórico: 1 = primeira versão; 2 = acrescenta inventário e missões;
-## 3 = acrescenta revestimentos (piso e parede), contadores, conquistas e recompensa diária.
+## 3 = acrescenta revestimentos (piso e parede), contadores, conquistas,
+## recompensa diária e nome da cafeteria.
 const CURRENT_VERSION := 3
 
 
@@ -57,6 +58,7 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"stats": simulation.stats.to_data(),
 		"achievements": simulation.achievements.to_data(),
 		"daily": simulation.daily.to_data(),
+		"cafe_name": simulation.cafe_name,
 	}
 
 
@@ -127,6 +129,9 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.stats.restore(_dict(data.get("stats")))
 	simulation.achievements.restore(_dict(data.get("achievements")))
 	simulation.daily.restore(_dict(data.get("daily")))
+	var saved_name := str(data.get("cafe_name", ""))
+	if not saved_name.is_empty() and not simulation.set_cafe_name(saved_name):
+		result.warnings.append("Nome da cafeteria ignorado: %s" % saved_name)
 	# Contadores de nível e beleza acompanham o estado carregado; degraus que um
 	# save antigo já merecia são desbloqueados (e pagos) agora.
 	simulation.record_progress_stats()
@@ -176,6 +181,8 @@ static func _v2_to_v3(data: Dictionary) -> Dictionary:
 	data["stats"] = {}
 	data["achievements"] = {}
 	data["daily"] = {}
+	# Quem já jogava ganha um nome padrão (e pode trocar tocando nele), em vez de ser interrompido.
+	data["cafe_name"] = CafeSimulation.DEFAULT_CAFE_NAME
 	return data
 
 

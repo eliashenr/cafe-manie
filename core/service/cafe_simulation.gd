@@ -23,6 +23,7 @@ signal achievement_unlocked(achievement: AchievementDefinition, tier: int)
 ## [param day] começa em 1. [param reward] é o que foi entregue de fato
 ## (um revestimento que o jogador já tinha vira ouro).
 signal daily_reward_claimed(day: int, reward: Dictionary)
+signal cafe_name_changed(cafe_name: String)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção.
@@ -42,6 +43,10 @@ const ECONOMY_PATH := "res://data/config/economy.tres"
 const DAILY_REWARDS_PATH := "res://data/config/daily_rewards.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
+## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
+const CAFE_NAME_MIN := 2
+const CAFE_NAME_MAX := 24
+const DEFAULT_CAFE_NAME := "Minha Cafeteria"
 
 var clock: GameClock
 var layout: CafeLayout
@@ -59,6 +64,8 @@ var popularity := 50.0
 var inventory := Inventory.new()
 var missions: MissionTracker
 var stats := PlayerStats.new()
+## Nome escolhido pelo jogador. Vazio = ainda não escolheu (o jogo pergunta).
+var cafe_name := ""
 ## Recompensa diária. Desligada (sem calendário) até with_game_data carregar os dados.
 var daily := DailyRewards.new()
 var achievements: AchievementTracker
@@ -317,6 +324,28 @@ func beauty() -> int:
 ## De 0 a 1: quanto do bônus máximo de beleza a cafeteria já alcançou.
 func beauty_factor() -> float:
 	return clampf(beauty() / config.beauty_for_max_bonus, 0.0, 1.0)
+
+
+# --- Nome ------------------------------------------------------------------------
+
+## Nome aceito? Tira espaços das pontas e junta espaços repetidos. Retorna "" se inválido.
+static func clean_cafe_name(text: String) -> String:
+	var cleaned := text.strip_edges()
+	cleaned = cleaned.replace("\n", " ").replace("\t", " ")
+	while cleaned.contains("  "):
+		cleaned = cleaned.replace("  ", " ")
+	if cleaned.length() < CAFE_NAME_MIN or cleaned.length() > CAFE_NAME_MAX:
+		return ""
+	return cleaned
+
+
+func set_cafe_name(text: String) -> bool:
+	var cleaned := clean_cafe_name(text)
+	if cleaned.is_empty():
+		return false
+	cafe_name = cleaned
+	cafe_name_changed.emit(cafe_name)
+	return true
 
 
 # --- Recompensa diária -------------------------------------------------------

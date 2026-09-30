@@ -22,6 +22,7 @@ func quiet_simulation() -> CafeSimulation:
 		FurnitureCatalog.load_from(), RecipeCatalog.load_from(), load("res://data/progression/levels.tres"),
 		no_customers, 7)
 	simulation.wallet.earn(Wallet.SOFT, 200, "teste")
+	simulation.cafe_name = "Cafeteria de Teste"
 	return simulation
 
 

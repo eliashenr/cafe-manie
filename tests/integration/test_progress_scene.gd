@@ -126,3 +126,55 @@ func test_daily_reward_waits_for_an_open_question() -> void:
 	simulation.daily = DailyRewards.new(load(CafeSimulation.DAILY_REWARDS_PATH))
 	cafe._notification(Node.NOTIFICATION_APPLICATION_FOCUS_IN)
 	assert_false(cafe.hud.daily_dialog().visible, "não empilha janelas: a pergunta aberta vem primeiro")
+
+
+# --- Nome da cafeteria --------------------------------------------------------------
+
+func _unnamed_cafe_with_daily() -> Cafe:
+	var simulation := quiet_simulation()
+	simulation.cafe_name = ""
+	simulation.daily = DailyRewards.new(load(CafeSimulation.DAILY_REWARDS_PATH))
+	return await spawn_cafe(simulation)
+
+
+func test_first_launch_asks_the_name_before_the_daily_reward() -> void:
+	var cafe := await _unnamed_cafe_with_daily()
+	var dialog := cafe.hud.name_dialog()
+	assert_true(dialog.visible, "pergunta o nome")
+	assert_false(cafe.hud.daily_dialog().visible, "uma janela por vez")
+	assert_true(dialog.get_ok_button().disabled, "sem nome não dá para confirmar")
+	cafe.hud.name_edit().text = "  Café   da Esquina "
+	cafe.hud.name_edit().text_changed.emit(cafe.hud.name_edit().text)
+	assert_false(dialog.get_ok_button().disabled)
+	dialog.get_ok_button().pressed.emit()
+	assert_eq(cafe.simulation.cafe_name, "Café da Esquina", "espaços arrumados")
+	assert_true(cafe.hud.daily_dialog().visible, "agora sim, a recompensa diária")
+	await settle()
+	var name_button := cafe.hud.find_child("CafeNameButton", true, false) as Button
+	assert_eq(name_button.text, "Café da Esquina")
+
+
+func test_skipping_the_name_uses_a_default() -> void:
+	var cafe := await _unnamed_cafe_with_daily()
+	cafe.hud.name_dialog().get_cancel_button().pressed.emit()
+	assert_eq(cafe.simulation.cafe_name, CafeSimulation.DEFAULT_CAFE_NAME)
+	await settle()
+	assert_true(cafe.hud.daily_dialog().visible)
+
+
+func test_tapping_the_name_renames() -> void:
+	var cafe := await spawn_cafe()
+	(cafe.hud.find_child("CafeNameButton", true, false) as Button).pressed.emit()
+	var dialog := cafe.hud.name_dialog()
+	assert_true(dialog.visible)
+	assert_eq(cafe.hud.name_edit().text, "Cafeteria de Teste", "começa com o nome atual")
+	cafe.hud.name_edit().text = "Doce Grão"
+	dialog.get_ok_button().pressed.emit()
+	assert_eq(cafe.simulation.cafe_name, "Doce Grão")
+
+
+func test_name_rules() -> void:
+	assert_eq(CafeSimulation.clean_cafe_name("A"), "", "curto demais")
+	assert_eq(CafeSimulation.clean_cafe_name("x".repeat(25)), "", "longo demais")
+	assert_eq(CafeSimulation.clean_cafe_name("Café\nNovo"), "Café Novo")
+	assert_eq(CafeSimulation.clean_cafe_name("   "), "")

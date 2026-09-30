@@ -11,6 +11,10 @@ extends CanvasLayer
 signal restart_requested
 ## O jogador tocou em Receber na recompensa diária.
 signal daily_claim_requested
+## O jogador escolheu um nome (ainda não validado).
+signal name_chosen(text: String)
+## O jogador fechou a pergunta do nome sem escolher.
+signal name_skipped
 
 const SOFT_CURRENCY_NAME := "Café Ouro"
 const HINT := "Arraste para mover  •  Roda do mouse ou pinça para zoom  •  Toque num fogão para cozinhar"
@@ -23,6 +27,9 @@ const XP_BAR_FILL := Color("8fd3ff")
 
 var simulation: CafeSimulation
 
+var _name_button: Button
+var _name_dialog: ConfirmationDialog
+var _name_edit: LineEdit
 var _level_label: Label
 var _xp_bar: ProgressBar
 var _xp_label: Label
@@ -64,6 +71,17 @@ func _ready() -> void:
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(column)
+
+	_name_button = Button.new()
+	_name_button.name = "CafeNameButton"
+	_name_button.flat = true
+	_name_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_name_button.add_theme_font_size_override("font_size", 22)
+	_name_button.add_theme_color_override("font_color", Color("ffd35c"))
+	_name_button.focus_mode = Control.FOCUS_NONE
+	_name_button.tooltip_text = "Toque para trocar o nome"
+	_name_button.pressed.connect(func() -> void: ask_cafe_name(false))
+	column.add_child(_name_button)
 
 	var stats := HBoxContainer.new()
 	stats.add_theme_constant_override("separation", 20)
@@ -153,6 +171,7 @@ func _build_restart_controls() -> void:
 	buttons.add_child(button)
 	_build_achievements_dialog()
 	_build_daily_dialog()
+	_build_name_dialog()
 	_build_mission_card(column)
 
 	_restart_dialog = ConfirmationDialog.new()
@@ -242,6 +261,56 @@ func achievement_text(achievement: AchievementDefinition) -> String:
 		mini(value, target), target, achievement.description, achievement.tier_rewards[tiers]]
 
 
+func _build_name_dialog() -> void:
+	_name_dialog = ConfirmationDialog.new()
+	_name_dialog.name = "NameDialog"
+	_name_dialog.title = "Sua cafeteria"
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 8)
+	_name_dialog.add_child(column)
+	var question := Label.new()
+	question.text = "Como vai se chamar a sua cafeteria?"
+	column.add_child(question)
+	_name_edit = LineEdit.new()
+	_name_edit.name = "NameEdit"
+	_name_edit.max_length = CafeSimulation.CAFE_NAME_MAX
+	_name_edit.placeholder_text = "Ex.: Café da Esquina"
+	_name_edit.custom_minimum_size = Vector2(360, 44)
+	_name_edit.text_changed.connect(func(text: String) -> void:
+		_name_dialog.get_ok_button().disabled = CafeSimulation.clean_cafe_name(text).is_empty())
+	_name_edit.text_submitted.connect(func(text: String) -> void:
+		if not CafeSimulation.clean_cafe_name(text).is_empty():
+			_name_dialog.hide()
+			name_chosen.emit(text))
+	column.add_child(_name_edit)
+	var rules := Label.new()
+	rules.text = "De %d a %d letras. Dá para trocar depois tocando no nome." % [CafeSimulation.CAFE_NAME_MIN, CafeSimulation.CAFE_NAME_MAX]
+	rules.add_theme_font_size_override("font_size", 13)
+	rules.modulate = Color(1, 1, 1, 0.7)
+	column.add_child(rules)
+	_name_dialog.confirmed.connect(func() -> void: name_chosen.emit(_name_edit.text))
+	_name_dialog.canceled.connect(func() -> void: name_skipped.emit())
+	add_child(_name_dialog)
+
+
+## Pergunta o nome. Na primeira vez, o botão é "Abrir as portas".
+func ask_cafe_name(first_time: bool) -> void:
+	_name_edit.text = "" if first_time else simulation.cafe_name
+	_name_dialog.ok_button_text = "Abrir as portas" if first_time else "Salvar"
+	_name_dialog.cancel_button_text = "Depois" if first_time else "Cancelar"
+	_name_dialog.get_ok_button().disabled = CafeSimulation.clean_cafe_name(_name_edit.text).is_empty()
+	_name_dialog.popup_centered()
+	_name_edit.grab_focus()
+
+
+func name_dialog() -> ConfirmationDialog:
+	return _name_dialog
+
+
+func name_edit() -> LineEdit:
+	return _name_edit
+
+
 func _build_daily_dialog() -> void:
 	_daily_dialog = AcceptDialog.new()
 	_daily_dialog.name = "DailyDialog"
@@ -278,11 +347,14 @@ func show_daily_reward() -> void:
 		label.text = "Dia %d\n%s" % [i + 1, reward_text(days[i])]
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		# Largura fixa: sem ela o texto quebraria letra a letra e a janela cresceria.
+		label.custom_minimum_size = Vector2(84, 0)
 		label.add_theme_font_size_override("font_size", 14)
 		if i + 1 < today:
 			label.modulate = Color(1, 1, 1, 0.45)
 		card.add_child(label)
 		_daily_days.add_child(card)
+	_daily_dialog.reset_size()
 	_daily_dialog.popup_centered()
 	_daily_dialog.get_ok_button().grab_focus()
 
@@ -340,6 +412,8 @@ func refresh() -> void:
 	if simulation == null:
 		return
 	var progression := simulation.progression
+	_name_button.text = simulation.cafe_name
+	_name_button.visible = not simulation.cafe_name.is_empty()
 	_level_label.text = "Nível %d" % progression.level
 	_xp_bar.value = progression.level_progress()
 	if progression.is_max_level():

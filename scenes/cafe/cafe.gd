@@ -22,7 +22,7 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 ## Folga, em pixels de mundo, que a câmera pode passar da borda do grid.
 @export var camera_margin := 96.0
 ## Altura, em pixels de tela, ocupada pelo painel de cima (a câmera enquadra abaixo dele).
-@export var ui_top_inset := 110.0
+@export var ui_top_inset := 140.0
 ## Altura, em pixels de tela, ocupada pela barra de baixo.
 @export var ui_bottom_inset := 200.0
 ## Espaço acima do grid reservado para a altura dos móveis da fileira de trás
@@ -94,12 +94,17 @@ func _ready() -> void:
 	hud.bind(simulation)
 	hud.restart_requested.connect(restart_game)
 	hud.daily_claim_requested.connect(claim_daily_reward)
+	hud.name_chosen.connect(_on_name_chosen)
+	hud.name_skipped.connect(_on_name_skipped)
 	build_bar.bind(self)
 	world_layer.refresh(simulation)
 	_watch_for_changes()
 	if not welcome.is_empty():
 		EventBus.message_posted.emit(welcome)
-	offer_daily_reward()
+	if simulation.cafe_name.is_empty():
+		hud.ask_cafe_name(true)  # a recompensa diária vem depois do nome
+	else:
+		offer_daily_reward()
 
 
 func _process(delta: float) -> void:
@@ -222,10 +227,33 @@ func offer_daily_reward() -> bool:
 
 ## Alguma janela de pergunta aberta? Só cabe uma por vez na tela.
 func is_dialog_open() -> bool:
-	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(), build_bar.confirm_dialog()]:
+	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(),
+			hud.name_dialog(), build_bar.confirm_dialog()]:
 		if dialog.visible:
 			return true
 	return false
+
+
+func _on_name_chosen(text: String) -> void:
+	var first_time := simulation.cafe_name.is_empty()
+	if not simulation.set_cafe_name(text):
+		EventBus.message_posted.emit("Nome inválido: use de %d a %d letras." % [CafeSimulation.CAFE_NAME_MIN, CafeSimulation.CAFE_NAME_MAX])
+		if first_time:
+			_on_name_skipped()
+		return
+	_mark_dirty()
+	if first_time:
+		EventBus.message_posted.emit("Bem-vindo ao %s!" % simulation.cafe_name)
+		offer_daily_reward()
+
+
+## Fechou sem escolher na primeira vez: fica com o nome padrão (dá para trocar depois).
+func _on_name_skipped() -> void:
+	if simulation.cafe_name.is_empty():
+		simulation.set_cafe_name(CafeSimulation.DEFAULT_CAFE_NAME)
+		_mark_dirty()
+		# No fim do frame: a janela do nome ainda está fechando neste momento.
+		offer_daily_reward.call_deferred()
 
 
 func claim_daily_reward() -> Dictionary:

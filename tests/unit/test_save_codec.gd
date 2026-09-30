@@ -183,3 +183,14 @@ func test_migration_refuses_newer_missing_or_incomplete_versions() -> void:
 	assert_eq(SaveCodec.migrate({"gold": 1}, 3, no_steps), {}, "sem versão")
 	assert_eq(SaveCodec.migrate({"save_version": 1}, 3, no_steps), {}, "falta o passo de migração")
 	assert_eq(SaveCodec.migrate({"save_version": 3, "x": 1}, 3, no_steps), {"save_version": 3, "x": 1}, "já atual")
+
+
+func test_round_trip_keeps_the_cafe_name_and_old_saves_get_a_default() -> void:
+	_setup()
+	sim.set_cafe_name("Doce Grão")
+	assert_eq(_round_trip().simulation.cafe_name, "Doce Grão")
+	var data := SaveCodec.encode(sim)
+	data["save_version"] = 2
+	data.erase("cafe_name")
+	var loaded := SaveCodec.decode(SaveCodec.migrate(JSON.parse_string(JSON.stringify(data))), clock).simulation
+	assert_eq(loaded.cafe_name, CafeSimulation.DEFAULT_CAFE_NAME, "quem já jogava não é interrompido")
