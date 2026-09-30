@@ -16,4 +16,6 @@ enum {
 	INVALID_PLACEMENT,  ## o móvel não pode ficar nessa posição (motivo no CafeLayout.Check)
 	NO_MORE_EXPANSIONS, ## a cafeteria já está no tamanho máximo
 	EXPANSION_LOCKED,   ## nível insuficiente para a próxima expansão
+	SURFACE_LOCKED,     ## nível insuficiente para o revestimento
+	UNKNOWN_ITEM,       ## item (móvel, revestimento) inexistente
 }

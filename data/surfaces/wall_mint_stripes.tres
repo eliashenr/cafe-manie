@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"wall_mint_stripes"
+display_name = "Listras menta"
+kind = 1
+is_default = false
+price = 180
+min_level = 2
+beauty = 15
+pattern = 5
+color_a = Color(0.72,0.88,0.8, 1)
+color_b = Color(0.95,0.97,0.94, 1)

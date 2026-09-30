@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"floor_bistro"
+display_name = "Xadrez bistrô"
+kind = 0
+is_default = false
+price = 220
+min_level = 3
+beauty = 20
+pattern = 0
+color_a = Color(0.95,0.93,0.88, 1)
+color_b = Color(0.45,0.16,0.18, 1)

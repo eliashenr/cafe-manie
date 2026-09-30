@@ -36,6 +36,14 @@ extends Resource
 ## Multiplicador do intervalo de chegada com popularidade 100 (mais rápido).
 @export var spawn_multiplier_at_max := 0.6
 
+@export_group("Beleza")
+## Beleza total (móveis + revestimentos) que dá o bônus máximo.
+@export var beauty_for_max_bonus := 200.0
+## Paciência extra dos clientes com o bônus máximo (0.3 = +30%).
+@export_range(0.0, 2.0) var beauty_patience_bonus := 0.3
+## Redução do intervalo entre chegadas com o bônus máximo (0.25 = 25% mais rápido).
+@export_range(0.0, 0.9) var beauty_spawn_bonus := 0.25
+
 @export_group("Cozinha")
 ## Porções que cabem em um balcão.
 @export var counter_capacity := 40
@@ -44,7 +52,7 @@ extends Resource
 func is_valid() -> bool:
 	return spawn_interval > 0.0 and max_customers > 0 and customer_patience > 0.0 \
 		and customer_walk_speed > 0.0 and waiter_walk_speed > 0.0 and eat_time >= 0.0 \
-		and handling_time >= 0.0 and counter_capacity > 0
+		and handling_time >= 0.0 and counter_capacity > 0 and beauty_for_max_bonus > 0.0
 
 
 ## Intervalo médio entre chegadas para uma popularidade (0 a 100).

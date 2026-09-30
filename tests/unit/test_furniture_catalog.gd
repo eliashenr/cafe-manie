@@ -13,8 +13,9 @@ func _definition(id: StringName, level := 1, price := 10) -> FurnitureDefinition
 
 func test_loads_every_furniture_file_from_data_folder() -> void:
 	var catalog := FurnitureCatalog.load_from()
-	assert_eq(catalog.size(), 6)
-	for id in [&"table_round", &"chair_wood", &"stove_basic", &"counter_basic", &"plant_pot", &"table_long"]:
+	assert_eq(catalog.size(), 9)
+	for id in [&"table_round", &"chair_wood", &"stove_basic", &"counter_basic", &"plant_pot", &"table_long",
+			&"flower_vase", &"floor_lamp", &"bookshelf"]:
 		assert_true(catalog.get_definition(id) != null, "falta %s" % id)
 
 

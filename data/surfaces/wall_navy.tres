@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"wall_navy"
+display_name = "Azul-marinho"
+kind = 1
+is_default = false
+price = 250
+min_level = 4
+beauty = 20
+pattern = 3
+color_a = Color(0.2,0.27,0.42, 1)
+color_b = Color(0.88,0.72,0.35, 1)

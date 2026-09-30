@@ -46,6 +46,11 @@ func _run() -> void:
 		for file_name in _test_files(dir_path):
 			var script: GDScript = load(dir_path.path_join(file_name))
 			print("\n", file_name)
+			if script == null or not script.can_instantiate():
+				# Arquivo de teste que nem compila reprova, em vez de sumir da contagem.
+				failed += 1
+				print("  FALHOU  (o arquivo não compila)")
+				continue
 			for method_name in _test_methods(script):
 				var result := await _run_one(script, method_name)
 				if result.is_empty():

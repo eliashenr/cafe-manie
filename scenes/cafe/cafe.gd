@@ -24,8 +24,9 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 ## Altura, em pixels de tela, ocupada pelo painel de cima (a câmera enquadra abaixo dele).
 @export var ui_top_inset := 110.0
 ## Altura, em pixels de tela, ocupada pela barra de baixo.
-@export var ui_bottom_inset := 140.0
-## Espaço acima do grid reservado para a altura dos móveis da fileira de trás.
+@export var ui_bottom_inset := 200.0
+## Espaço acima do grid reservado para a altura dos móveis da fileira de trás
+## (as paredes podem pedir mais; vale o maior).
 @export var furniture_headroom := 60.0
 ## Intervalo mínimo, em segundos, entre salvamentos automáticos quando algo mudou.
 ## Minimizar ou fechar o jogo salva na hora, sem esperar.
@@ -60,6 +61,7 @@ var grid: CafeGrid:
 		return layout.grid
 
 @onready var floor_view: FloorView = $FloorView
+@onready var wall_view: WallView = $WallView
 @onready var world_layer: WorldLayer = $WorldLayer
 @onready var effects: Node2D = $Effects
 @onready var camera: CafeCamera = $CafeCamera
@@ -81,6 +83,8 @@ func _ready() -> void:
 	simulation.leveled_up.connect(_on_leveled_up)
 	simulation.cafe_expanded.connect(_on_cafe_expanded)
 	simulation.mission_completed.connect(_on_mission_completed)
+	simulation.style.changed.connect(_apply_style)
+	_apply_style()
 
 	_fit_floor_and_camera()
 	camera.tapped.connect(_on_tapped)
@@ -175,6 +179,7 @@ func _watch_for_changes() -> void:
 	simulation.progression.xp_changed.connect(_mark_dirty.unbind(1))
 	simulation.popularity_changed.connect(_mark_dirty.unbind(1))
 	simulation.inventory.changed.connect(_mark_dirty)
+	simulation.style.changed.connect(_mark_dirty)
 	simulation.missions.progress_changed.connect(_mark_dirty)
 
 
@@ -274,9 +279,31 @@ func _on_cafe_expanded(new_size: Vector2i) -> void:
 func _fit_floor_and_camera() -> void:
 	floor_view.grid_size = layout.grid.size
 	floor_view.entrance = layout.entrance
-	var bounds := IsoProjection.grid_bounds(layout.grid.size)
+	wall_view.grid_size = layout.grid.size
+	var headroom := maxf(furniture_headroom, wall_view.wall_height)
+	var bounds := IsoProjection.grid_bounds(layout.grid.size).grow_individual(0.0, headroom, 0.0, 0.0)
 	camera.set_bounds(bounds.grow(camera_margin))
-	camera.frame(bounds.grow_individual(0.0, furniture_headroom, 0.0, 0.0), ui_top_inset, ui_bottom_inset)
+	camera.frame(bounds, ui_top_inset, ui_bottom_inset)
+
+
+## Piso e parede com os revestimentos aplicados.
+func _apply_style() -> void:
+	var surfaces := simulation.surfaces
+	floor_view.floor_style = surfaces.get_definition(simulation.style.floor_id)
+	wall_view.wall_style = surfaces.get_definition(simulation.style.wall_id)
+
+
+## Compra (se preciso) e aplica um revestimento. A confirmação da compra fica na barra.
+func use_surface(surface_id: StringName) -> int:
+	var definition := simulation.surfaces.get_definition(surface_id)
+	if definition == null:
+		return ServiceResult.UNKNOWN_ITEM
+	var buying := not simulation.style.owns(surface_id) and definition.price > 0
+	last_service_result = simulation.use_surface(definition)
+	if last_service_result == ServiceResult.OK and buying:
+		EventBus.message_posted.emit("%s aplicado! -%d ouro" % [definition.display_name, definition.price])
+	state_changed.emit()
+	return last_service_result
 
 
 func _float_over(placement_id: StringName, text: String, color: Color, offset := Vector2.ZERO) -> void:

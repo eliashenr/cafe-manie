@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"wall_brick"
+display_name = "Tijolinho"
+kind = 1
+is_default = false
+price = 120
+min_level = 1
+beauty = 10
+pattern = 4
+color_a = Color(0.72,0.38,0.28, 1)
+color_b = Color(0.9,0.82,0.74, 1)

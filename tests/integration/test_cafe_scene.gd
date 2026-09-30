@@ -131,5 +131,6 @@ func test_pinch_apart_zooms_in_and_does_not_select() -> void:
 func test_camera_cannot_be_dragged_away_from_the_cafe() -> void:
 	var cafe := await spawn_cafe()
 	cafe.camera.pan_by_screen(Vector2(100000, 100000))
-	var limits := IsoProjection.grid_bounds(Vector2i(8, 8)).grow(cafe.camera_margin)
+	var headroom := maxf(cafe.furniture_headroom, cafe.wall_view.wall_height)
+	var limits := IsoProjection.grid_bounds(Vector2i(8, 8)).grow_individual(0.0, headroom, 0.0, 0.0).grow(cafe.camera_margin)
 	assert_vec_almost_eq(cafe.camera.global_position, limits.position, 0.01, "preso no canto do limite")

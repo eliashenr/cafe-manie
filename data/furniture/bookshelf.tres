@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"bookshelf"
+display_name = "Estante de livros"
+category = 4
+footprint = Vector2i(2, 1)
+needs_access = false
+price = 150
+min_level = 3
+beauty = 35
+efficiency = 0
+comfort = 0
+placeholder_color = Color(0.48, 0.3, 0.22, 1)
+placeholder_height = 70.0

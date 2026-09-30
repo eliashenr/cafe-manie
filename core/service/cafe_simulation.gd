@@ -17,6 +17,7 @@ signal popularity_changed(popularity: float)
 signal furniture_bought(definition: FurnitureDefinition)
 signal cafe_expanded(new_size: Vector2i)
 signal mission_completed(mission: MissionDefinition)
+signal surface_bought(definition: SurfaceDefinition)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção.
@@ -50,6 +51,8 @@ var popularity := 50.0
 var inventory := Inventory.new()
 var missions: MissionTracker
 var expansions := ExpansionPlan.new()
+var surfaces: SurfaceCatalog
+var style := CafeStyle.new()
 ## Id do último móvel posicionado por acquire_and_place.
 var last_placed_id: StringName = &""
 
@@ -81,6 +84,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	layout.in_use_provider = is_in_use
 	layout.agent_cells_provider = agent_cells
 	popularity = config.popularity_start
+	set_surfaces(SurfaceCatalog.load_from())
 	var no_missions: Array[MissionDefinition] = []
 	set_missions(no_missions)
 	if random_seed != 0:
@@ -129,6 +133,17 @@ static func default_missions() -> Array[MissionDefinition]:
 	var mission_list: Array[MissionDefinition] = []
 	mission_list.assign(store.all())
 	return mission_list
+
+
+## Troca o catálogo de revestimentos e aplica os iniciais (que já vêm comprados).
+func set_surfaces(catalog: SurfaceCatalog) -> void:
+	surfaces = catalog
+	style = CafeStyle.new()
+	for kind in [SurfaceDefinition.Kind.FLOOR, SurfaceDefinition.Kind.WALL]:
+		var start := surfaces.default_for(kind)
+		if start != null:
+			style.own(start.id)
+			style.apply(start)
 
 
 ## Troca a sequência de missões (começa da primeira).
@@ -214,6 +229,48 @@ func store_furniture(id: StringName) -> CafeLayout.Check:
 	layout.remove(id)
 	inventory.add(definition.id)
 	return CafeLayout.Check.OK
+
+
+## Pode aplicar este revestimento? Os já comprados sempre podem.
+func can_use_surface(definition: SurfaceDefinition) -> int:
+	if style.owns(definition.id):
+		return ServiceResult.OK
+	if definition.min_level > progression.level:
+		return ServiceResult.SURFACE_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, definition.price):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	return ServiceResult.OK
+
+
+## Aplica um revestimento, comprando antes se ainda não for do jogador.
+func use_surface(definition: SurfaceDefinition) -> int:
+	var result := can_use_surface(definition)
+	if result != ServiceResult.OK:
+		return result
+	if not style.owns(definition.id):
+		if definition.price > 0:
+			wallet.spend(Wallet.SOFT, definition.price, "Compra: %s" % definition.display_name)
+		style.own(definition.id)
+		surface_bought.emit(definition)
+	style.apply(definition)
+	return ServiceResult.OK
+
+
+## Beleza total: móveis posicionados mais o piso e a parede aplicados (seção 35).
+func beauty() -> int:
+	var total := 0
+	for placement in layout.placements():
+		total += placement.definition.beauty
+	for kind in [SurfaceDefinition.Kind.FLOOR, SurfaceDefinition.Kind.WALL]:
+		var surface := surfaces.get_definition(style.current(kind)) if surfaces != null else null
+		if surface != null:
+			total += surface.beauty
+	return total
+
+
+## De 0 a 1: quanto do bônus máximo de beleza a cafeteria já alcançou.
+func beauty_factor() -> float:
+	return clampf(beauty() / config.beauty_for_max_bonus, 0.0, 1.0)
 
 
 ## Próxima etapa de expansão ({size, level, price}) ou {} se já está no máximo.
@@ -337,7 +394,8 @@ func _update_arrivals(delta: float) -> void:
 	_spawn_timer -= delta
 	if _spawn_timer > 0.0:
 		return
-	_spawn_timer = config.spawn_interval_for(popularity) * rng.randf_range(1.0 - config.spawn_jitter, 1.0 + config.spawn_jitter)
+	_spawn_timer = config.spawn_interval_for(popularity) * (1.0 - beauty_factor() * config.beauty_spawn_bonus) \
+		* rng.randf_range(1.0 - config.spawn_jitter, 1.0 + config.spawn_jitter)
 	if customers.size() >= config.max_customers or customer_types.is_empty():
 		return
 	var candidates := free_seats()
@@ -355,7 +413,8 @@ func _update_arrivals(delta: float) -> void:
 	customer.position = Vector2(layout.entrance)
 	customer.seat_id = seat_id
 	customer.seat_cell = layout.get_placement(seat_id).origin
-	customer.patience_total = config.customer_patience * customer.type.patience_multiplier
+	customer.patience_total = config.customer_patience * customer.type.patience_multiplier \
+		* (1.0 + beauty_factor() * config.beauty_patience_bonus)
 	customer.patience_left = customer.patience_total
 	customer.follow(path, navigation.access_cells(seat_id))
 	customers.append(customer)

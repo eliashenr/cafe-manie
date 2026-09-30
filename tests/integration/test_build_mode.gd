@@ -164,9 +164,13 @@ func test_remove_selected_with_delete_key() -> void:
 func test_catalog_buttons_start_placement() -> void:
 	var cafe := await spawn_cafe()
 	await settle()
-	for definition in cafe.catalog.all():
-		assert_true(cafe.build_bar.find_button("Build_" + String(definition.id)) != null,
-			"sem botão para " + definition.display_name)
+	for tab in [BuildBar.ShopTab.DECOR, BuildBar.ShopTab.FURNITURE]:
+		cafe.build_bar.show_shop_tab(tab)
+		await settle()
+		for definition in cafe.catalog.all():
+			var in_tab: bool = (definition.category == FurnitureDefinition.Category.DECOR) == (tab == BuildBar.ShopTab.DECOR)
+			assert_eq(cafe.build_bar.find_button("Build_" + String(definition.id)) != null, in_tab,
+				"%s na aba certa" % definition.display_name)
 	cafe.build_bar.find_button("Build_chair_wood").pressed.emit()
 	assert_eq(cafe.mode, Cafe.Mode.BUILD)
 	assert_eq(cafe.session.definition.id, &"chair_wood")

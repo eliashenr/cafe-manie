@@ -3,7 +3,7 @@ extends CanvasLayer
 ## PLACEHOLDER_UI: barra inferior do protótipo.
 ##
 ## Mostra, conforme o estado da cafeteria:
-## - nada selecionado: loja de móveis (preço, nível, guardados) e Expandir;
+## - nada selecionado: loja em abas (Móveis, Decoração, Piso, Parede) e Expandir;
 ## - fogão selecionado: receitas para cozinhar (ou o tempo que falta), e as ações do móvel;
 ## - balcão selecionado: o que tem nele, e as ações do móvel;
 ## - outro móvel selecionado: Mover, Girar, Guardar e Fechar;
@@ -46,6 +46,18 @@ const SERVICE_MESSAGES := {
 	ServiceResult.INVALID_PLACEMENT: "Não dá para colocar aqui",
 	ServiceResult.NO_MORE_EXPANSIONS: "A cafeteria já está no tamanho máximo",
 	ServiceResult.EXPANSION_LOCKED: "Expansão ainda bloqueada",
+	ServiceResult.SURFACE_LOCKED: "Revestimento ainda bloqueado",
+	ServiceResult.UNKNOWN_ITEM: "Item desconhecido",
+}
+
+## Abas da loja.
+enum ShopTab { FURNITURE, DECOR, FLOOR, WALL }
+
+const SHOP_TAB_NAMES := {
+	ShopTab.FURNITURE: "Móveis",
+	ShopTab.DECOR: "Decoração",
+	ShopTab.FLOOR: "Piso",
+	ShopTab.WALL: "Parede",
 }
 
 var cafe: Cafe
@@ -55,7 +67,10 @@ var _message: Label
 var _primary: HBoxContainer
 ## Linha de baixo: loja, ações do móvel ou controles de construção.
 var _buttons: HBoxContainer
-var _expand_dialog: ConfirmationDialog
+## Confirmação de compras que acontecem na hora (expansão, revestimento): seção 32.
+var _confirm_dialog: ConfirmationDialog
+var _pending_confirm: Callable
+var shop_tab := ShopTab.FURNITURE
 
 var _rebuild_pending := false
 ## Identifica o tipo de painel mostrado; só muda de painel quando isto muda.
@@ -108,13 +123,13 @@ func _ready() -> void:
 	_buttons.add_theme_constant_override("separation", 8)
 	column.add_child(_buttons)
 
-	_expand_dialog = ConfirmationDialog.new()
-	_expand_dialog.name = "ExpandDialog"
-	_expand_dialog.title = "Expandir a cafeteria?"
-	_expand_dialog.ok_button_text = "Expandir"
-	_expand_dialog.cancel_button_text = "Cancelar"
-	_expand_dialog.confirmed.connect(func() -> void: cafe.expand_cafe())
-	add_child(_expand_dialog)
+	_confirm_dialog = ConfirmationDialog.new()
+	_confirm_dialog.name = "ConfirmDialog"
+	_confirm_dialog.cancel_button_text = "Cancelar"
+	_confirm_dialog.confirmed.connect(func() -> void:
+		if _pending_confirm.is_valid():
+			_pending_confirm.call())
+	add_child(_confirm_dialog)
 
 
 func bind(target_cafe: Cafe) -> void:
@@ -133,8 +148,18 @@ func find_button(button_name: String) -> Button:
 	return button if button != null else _buttons.get_node_or_null(button_name) as Button
 
 
+func confirm_dialog() -> ConfirmationDialog:
+	return _confirm_dialog
+
+
+## Mesma janela de confirmação (mantido para os testes da expansão).
 func expand_dialog() -> ConfirmationDialog:
-	return _expand_dialog
+	return _confirm_dialog
+
+
+func show_shop_tab(tab: ShopTab) -> void:
+	shop_tab = tab
+	_request_rebuild()
 
 
 func _process(_delta: float) -> void:
@@ -182,7 +207,7 @@ func _signature() -> Array:
 	if _has_selection() and cafe.simulation.kitchen.is_stove(cafe.selected_id):
 		stove_status = cafe.simulation.kitchen.stove_status(cafe.selected_id)
 	return [cafe.mode, cafe.selected_id if _has_selection() else &"", stove_status,
-		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty()]
+		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty(), shop_tab]
 
 
 func _refresh_in_place() -> void:
@@ -199,9 +224,30 @@ func _has_selection() -> bool:
 # --- Loja ------------------------------------------------------------------
 
 func _show_shop() -> void:
-	_message_source = func() -> String: return _with_problem("Loja de móveis")
+	_message_source = func() -> String: return _with_problem("Loja")
+	for tab in SHOP_TAB_NAMES:
+		var this_tab: ShopTab = tab
+		var button := _add_button(_primary, "Tab_" + ShopTab.keys()[tab], SHOP_TAB_NAMES[tab],
+			func() -> void: show_shop_tab(this_tab))
+		button.toggle_mode = true
+		button.button_pressed = tab == shop_tab
+	_add_expand_button()
+	match shop_tab:
+		ShopTab.FURNITURE:
+			_show_furniture(false)
+		ShopTab.DECOR:
+			_show_furniture(true)
+		ShopTab.FLOOR:
+			_show_surfaces(SurfaceDefinition.Kind.FLOOR)
+		ShopTab.WALL:
+			_show_surfaces(SurfaceDefinition.Kind.WALL)
+
+
+func _show_furniture(decor: bool) -> void:
 	var simulation := cafe.simulation
 	for definition in cafe.catalog.all():
+		if (definition.category == FurnitureDefinition.Category.DECOR) != decor:
+			continue
 		var furniture := definition
 		var button := _add_button(_buttons, "Build_" + String(furniture.id), "", func() -> void: cafe.start_placing(furniture.id), true)
 		_updaters.append(func() -> void:
@@ -214,19 +260,40 @@ func _show_shop() -> void:
 				button.text = "%s\n%d ouro" % [furniture.display_name, furniture.price]
 			button.disabled = simulation.can_acquire(furniture) != ServiceResult.OK)
 
-	var step := simulation.next_expansion()
-	if not step.is_empty():
-		var expand := _add_button(_buttons, "ExpandButton", "", ask_expand, true)
+
+func _show_surfaces(kind: SurfaceDefinition.Kind) -> void:
+	var simulation := cafe.simulation
+	for definition in simulation.surfaces.all(kind):
+		var surface := definition
+		var button := _add_button(_buttons, "Surface_" + String(surface.id), "", func() -> void: ask_use_surface(surface.id), true)
 		_updaters.append(func() -> void:
-			var next := simulation.next_expansion()
-			if next.is_empty():
-				return
-			var size: Vector2i = next["size"]
-			if int(next["level"]) > simulation.progression.level:
-				expand.text = "Expandir\nNível %d" % int(next["level"])
+			var in_use := simulation.style.current(surface.kind) == surface.id
+			if in_use:
+				button.text = "%s\nEm uso" % surface.display_name
+			elif simulation.style.owns(surface.id):
+				button.text = "%s\nAplicar" % surface.display_name
+			elif surface.min_level > simulation.progression.level:
+				button.text = "%s\nNível %d" % [surface.display_name, surface.min_level]
 			else:
-				expand.text = "Expandir\n%d×%d · %d" % [size.x, size.y, int(next["price"])]
-			expand.disabled = simulation.can_expand() != ServiceResult.OK)
+				button.text = "%s\n%d ouro" % [surface.display_name, surface.price]
+			button.disabled = in_use or simulation.can_use_surface(surface) != ServiceResult.OK)
+
+
+func _add_expand_button() -> void:
+	var simulation := cafe.simulation
+	if simulation.next_expansion().is_empty():
+		return
+	var expand := _add_button(_primary, "ExpandButton", "", ask_expand, true)
+	_updaters.append(func() -> void:
+		var next := simulation.next_expansion()
+		if next.is_empty():
+			return
+		var size: Vector2i = next["size"]
+		if int(next["level"]) > simulation.progression.level:
+			expand.text = "Expandir\nNível %d" % int(next["level"])
+		else:
+			expand.text = "Expandir\n%d×%d · %d" % [size.x, size.y, int(next["price"])]
+		expand.disabled = simulation.can_expand() != ServiceResult.OK)
 
 
 ## Pede confirmação antes de gastar com a expansão (seção 32: nada de compra acidental).
@@ -235,9 +302,30 @@ func ask_expand() -> void:
 	if step.is_empty():
 		return
 	var size: Vector2i = step["size"]
-	_expand_dialog.dialog_text = "Aumentar a cafeteria para %d×%d por %d Café Ouro?" % [size.x, size.y, int(step["price"])]
-	_expand_dialog.popup_centered()
-	_expand_dialog.get_cancel_button().grab_focus()
+	_ask("Expandir a cafeteria?", "Aumentar a cafeteria para %d×%d por %d Café Ouro?" % [size.x, size.y, int(step["price"])],
+		"Expandir", func() -> void: cafe.expand_cafe())
+
+
+## Revestimento já comprado: aplica na hora. Ainda não comprado: pede confirmação.
+func ask_use_surface(surface_id: StringName) -> void:
+	var surface := cafe.simulation.surfaces.get_definition(surface_id)
+	if surface == null:
+		return
+	if cafe.simulation.style.owns(surface_id) or surface.price == 0:
+		cafe.use_surface(surface_id)
+		return
+	_ask("Comprar revestimento?", "Comprar %s por %d Café Ouro? Depois de comprado, trocar é grátis." % [surface.display_name, surface.price],
+		"Comprar", func() -> void: cafe.use_surface(surface_id))
+
+
+func _ask(title: String, text: String, ok_text: String, action: Callable) -> void:
+	_pending_confirm = action
+	_confirm_dialog.title = title
+	_confirm_dialog.dialog_text = text
+	_confirm_dialog.ok_button_text = ok_text
+	_confirm_dialog.popup_centered()
+	# O botão já selecionado é o seguro: um Enter sem querer não gasta nada.
+	_confirm_dialog.get_cancel_button().grab_focus()
 
 
 # --- Móvel selecionado ---------------------------------------------------------

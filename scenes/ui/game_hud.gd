@@ -26,6 +26,7 @@ var _xp_bar: ProgressBar
 var _xp_label: Label
 var _gold_label: Label
 var _popularity_label: Label
+var _beauty_label: Label
 var _toast: Label
 var _toast_time := 0.0
 var _restart_dialog: ConfirmationDialog
@@ -79,6 +80,7 @@ func _ready() -> void:
 	xp_box.add_child(_xp_label)
 	_gold_label = _stat_label(stats, "Gold")
 	_popularity_label = _stat_label(stats, "Popularity")
+	_beauty_label = _stat_label(stats, "Beauty")
 
 	var hint := Label.new()
 	hint.text = HINT
@@ -209,6 +211,7 @@ func refresh() -> void:
 		_xp_label.text = "%d / %d XP" % [progression.xp, progression.table.xp_for_next(progression.level)]
 	_gold_label.text = "%s: %d" % [SOFT_CURRENCY_NAME, simulation.wallet.balance(Wallet.SOFT)]
 	_popularity_label.text = "Popularidade: %d%%" % roundi(simulation.popularity)
+	_beauty_label.text = "Beleza: %d" % simulation.beauty()
 	_refresh_mission()
 
 
@@ -240,7 +243,7 @@ func mission_text() -> String:
 
 
 func stats_text() -> String:
-	return "%s | %s | %s | %s" % [_level_label.text, _xp_label.text, _gold_label.text, _popularity_label.text]
+	return "%s | %s | %s | %s | %s" % [_level_label.text, _xp_label.text, _gold_label.text, _popularity_label.text, _beauty_label.text]
 
 
 func _bar_style(color: Color) -> StyleBoxFlat:

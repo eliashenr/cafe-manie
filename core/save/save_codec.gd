@@ -10,8 +10,9 @@ extends RefCounted
 ## Todo save tem save_version (seção 64). Mudou o formato? Aumente
 ## CURRENT_VERSION e acrescente um passo em migrations().
 
-## Histórico: 1 = primeira versão; 2 = acrescenta inventário e missões.
-const CURRENT_VERSION := 2
+## Histórico: 1 = primeira versão; 2 = acrescenta inventário e missões;
+## 3 = acrescenta revestimentos (piso e parede).
+const CURRENT_VERSION := 3
 
 
 ## Resultado de decode(): a simulação (null se os dados forem inutilizáveis)
@@ -52,6 +53,7 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"popularity": simulation.popularity,
 		"inventory": simulation.inventory.to_data(),
 		"missions": simulation.missions.to_data(),
+		"style": simulation.style.to_data(),
 	}
 
 
@@ -118,8 +120,28 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.inventory.restore(_dict(data.get("inventory")))
 	simulation.missions.restore(_dict(data.get("missions")))
 	simulation.missions.refresh()
+	_restore_style(simulation, _dict(data.get("style")), result)
 	result.simulation = simulation
 	return result
+
+
+## Revestimentos comprados e aplicados. Os iniciais continuam sempre do jogador;
+## um revestimento que deixou de existir volta para o inicial.
+static func _restore_style(simulation: CafeSimulation, data: Dictionary, result: DecodeResult) -> void:
+	if data.is_empty():
+		return
+	var style := simulation.style
+	var defaults: Array[StringName] = style.owned()
+	style.restore(data)
+	for id in defaults:
+		style.own(id)
+	for kind in [SurfaceDefinition.Kind.FLOOR, SurfaceDefinition.Kind.WALL]:
+		var applied := simulation.surfaces.get_definition(style.current(kind))
+		if applied == null or applied.kind != kind or not style.owns(applied.id):
+			result.warnings.append("Revestimento ignorado: %s" % style.current(kind))
+			applied = simulation.surfaces.default_for(kind)
+		if applied != null:
+			style.apply(applied)
 
 
 # --- Versões ---------------------------------------------------------------
@@ -127,13 +149,19 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2]
+	return [_v1_to_v2, _v2_to_v3]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
 static func _v1_to_v2(data: Dictionary) -> Dictionary:
 	data["inventory"] = {}
 	data["missions"] = {"index": 0, "progress": 0}
+	return data
+
+
+## Versão 3 acrescentou revestimentos: saves antigos ficam com os iniciais.
+static func _v2_to_v3(data: Dictionary) -> Dictionary:
+	data["style"] = {}
 	return data
 
 
