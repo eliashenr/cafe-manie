@@ -29,6 +29,17 @@ Nenhum sprite, logo, personagem, ícone ou texto do jogo antigo foi usado, e as 
 
 Os desenhos das pranchas são gerados por código (`tools/art_direction/`, Python gerando SVG). O mesmo gerador pode exportar os sprites do jogo, então a próxima etapa é trocar os placeholders da Godot por essa arte.
 
+### Versão 2 (30/09/2026)
+
+O PO reprovou a versão 1: móveis de caixa, pessoas estranhas, cabelos feios e comidas irreconhecíveis. A versão 2 refez tudo peça por peça, com luz de cima à esquerda, sombra no chão e brilho nas quinas:
+
+- **Móveis:** mesa redonda com toalha xadrez, babado e vasinho; cadeira de bistrô com pernas, assento estofado e encosto de ripas; fogão industrial com bocas, botões, forno aceso e a panela mostrando a comida; balcão de madeira com tampo de mármore e pilhas de pratos com a contagem; vitrine de vidro com bolos; máquina de expresso; vaso com folhagem cheia.
+- **Pessoas:** vista 3/4 com olhos grandes e brilho, sobrancelhas, nariz, boca com expressão, orelhas, gola, mangas e sapatos. São 9 penteados com volume e reflexo (rabo de cavalo, black, chanel, longo, coque, topete, curto, boné e careca) e poses em pé, andando e sentado.
+- **Comidas** grandes e reconhecíveis: café com espuma e coração de leite, pão de queijo dourado e rachado, misto-quente com presunto e queijo escorrendo, bolo de cenoura com cobertura de chocolate e granulado, coxinha (uma mordida mostrando o recheio) e lasanha em camadas.
+- **Cena:** papel de parede listrado, lambri, janelas com cortina e sanefa, lousa de cardápio, arandelas, azulejo e coifa na cozinha, piso xadrez, tapete na entrada, rua com meio-fio e faixa, árvores, arbustos floridos, banco e cavalete "Aberto".
+
+O gerador v2 está em `tools/art_direction/v2/`.
+
 ## Onde estamos
 
 Tudo o que aparece na tela hoje é **placeholder desenhado por código** (caixas coloridas, piso e parede com padrões simples, bonequinhos básicos). Isso é proposital: as regras de jogo ainda estão mudando, e arte final feita agora teria de ser refeita.
