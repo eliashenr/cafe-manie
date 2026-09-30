@@ -40,6 +40,34 @@ O PO reprovou a versão 1: móveis de caixa, pessoas estranhas, cabelos feios e 
 
 O gerador v2 está em `tools/art_direction/v2/`.
 
+### Versão 3 (30/09/2026) — a direção atual
+
+O PO achou a v2 **apagada** ("não dá vontade de continuar no jogo") e mandou mais capturas: tela cheia com interface, a loja em quadradinhos e uma cafeteria temática. Os pedidos foram: estilo mais jovial, menos árvores, a formatação e as cores do jogo antigo, o formato da loja e das missões laterais, mais realismo e bonecos melhores (olhos falsos, cabeça "corcunda", cabelo fraco).
+
+**O que mudou:**
+
+- **Cores de dia claro e saturadas:** gramado verde-vivo, paredes brancas e menta, piso de madeira mel, cozinha em xadrez preto e branco, móveis vermelhos, amarelos, rosa e turquesa. Os marrons da v2 saíram. As sombras escurecem a cor sem "sujar" de marrom (`shade` em `core3.py`).
+- **Sem árvores.** Fora do salão ficam só gramado, rua com faixa, calçada, postes, canteiros de flores e cerquinha branca.
+- **Salão grande e lotado:** 12×12 casas, 5 fogões, 5 balcões com pilhas de pratos e contagem, duas mesas compridas e mesas redondas, 17 clientes sentados, 3 chegando pela porta, chef e garçom.
+- **Interface no formato do jogo de 2010** (convenções do gênero, desenho nosso):
+  - contadores escuros com botão verde de "+" e o botão "Moedas e grãos";
+  - barra de XP listrada com selo de estrela e o número do nível grande;
+  - barra da Beleza e o relógio do presente diário no alto;
+  - **missões laterais em medalhões redondos com fita** (Missões com a Chef Bia, Presente, Festival, Conquistas) e o cartão da missão atual;
+  - botões quadrados azuis à direita (zoom, tela cheia, esconder, música, som);
+  - barra de ícones embaixo (Loja, Decorar, Expandir, Cardápio, Missões, Presentes, Conquistas, Correio) e a faixa de vizinhos com setas azuis, nível na estrela e os cartões "Convidar amigos" e "Adicionar vizinho".
+- **Loja em quadradinhos:** abas grandes, fileira de categorias, grade de itens brancos com a etiqueta de preço embaixo, selos (Novo, −20%, favorito, "Nível 4" com cadeado), setas azuis, prévia do item com a Beleza e o botão verde de comprar. Ao fundo, o móvel sendo posicionado no salão, com piso verde e os botões girar, confirmar e cancelar.
+- **Personagens refeitos:**
+  - cabeça redonda **centrada no pescoço** (o "corcunda" vinha da cabeça em 3/4 sobrando para trás);
+  - olhos de desenho com pálpebra grossa, íris recortada pela pálpebra, sombra da pálpebra e dois brilhos;
+  - sobrancelhas que mudam com o humor, bochechas, nariz e boca por expressão (feliz, sorriso, esperando, bravo, comendo), gota de suor e veia de raiva;
+  - 12 penteados em mechas pontudas, com sombra do cabelo na testa, fios e reflexo em anel;
+  - braços com mãos de verdade, roupas com gola, botões, capuz e dobras.
+
+**Originalidade (seção 5):** o PO liberou copiar, porque o Café Mania acabou. Mesmo assim, **não copiamos** personagens, logo, ícones, sprites nem telas: o direito autoral continua depois que um jogo sai do ar, e uma cópia pode tirar o Café Manie das lojas. O que traz a nostalgia são as convenções do gênero (layout da interface, salão isométrico lotado, cores vivas), redesenhadas do zero.
+
+O gerador v3 está em `tools/art_direction/v3/` (ver o README de lá).
+
 ## Onde estamos
 
 Tudo o que aparece na tela hoje é **placeholder desenhado por código** (caixas coloridas, piso e parede com padrões simples, bonequinhos básicos). Isso é proposital: as regras de jogo ainda estão mudando, e arte final feita agora teria de ser refeita.

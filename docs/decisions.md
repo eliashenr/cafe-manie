@@ -4,6 +4,19 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-029 — Direção visual v3: formato do jogo antigo, desenho próprio
+
+**Problema:** o PO reprovou o visual da v2 por ser apagado e pediu para chegar o mais perto possível do Café Mania original, liberando até copiar, já que o jogo foi encerrado.
+
+**Opção A:** copiar sprites, personagens, ícones e telas do jogo antigo.
+**Opção B:** reproduzir as convenções do gênero (cores, densidade do salão, posição e formato dos elementos da interface) com arte 100% nova.
+
+**Impactos:** a opção A cria risco jurídico real: o direito autoral não acaba quando o jogo sai do ar, e as lojas removem jogos denunciados. A seção 5 do master prompt proíbe essa cópia de forma expressa ("não assumir que algo é livre apenas porque o jogo foi encerrado"). A opção B entrega a mesma sensação de nostalgia sem esse risco.
+
+**Decisão:** B. A v3 usa as convenções que ninguém possui (contadores no alto à esquerda, XP no centro, missões em medalhões na lateral, botões quadrados à direita, vizinhos embaixo, loja em grade com preço sob cada item) e desenha tudo do zero: personagens próprios (Chef Bia, Léo e os clientes), ícones, móveis e cenário. As capturas do PO servem só de referência e não entram no repositório.
+
+---
+
 ## DT-028 — APK Android sem Gradle, com chave de teste fora do repositório
 
 **Problema:** o jogo é Android-first (seção 7) e nunca tinha rodado num celular. A nuvem de trabalho não alcança os servidores do Google, então o Android SDK completo não pode ser baixado.

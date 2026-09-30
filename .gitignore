@@ -16,3 +16,7 @@ desktop.ini
 .vscode/
 .idea/
 *.tmp
+
+# Python (ferramentas de arte)
+__pycache__/
+*.pyc

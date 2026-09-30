@@ -1,30 +1,24 @@
 # Status
 
-## CAFÉ MANIE — STATUS (29/09/2026)
+## CAFÉ MANIE — STATUS (30/09/2026)
 
 🟢 **CONCLUÍDO**
 
-- **Vertical Slice validada pelo PO** ("joguei e gostei").
-- **Paredes e revestimentos:**
-  - duas paredes no fundo, que crescem com a expansão;
-  - 5 pisos e 4 paredes, com compra única (pede confirmação) e troca grátis entre os já comprados;
-  - a loja agora tem abas: Móveis, Decoração, Piso e Parede.
-- **Decoração que conta (seção 35):**
-  - 3 itens novos: vaso de flores, luminária e estante;
-  - a **Beleza** aparece no HUD e deixa os clientes até 30% mais pacientes e as chegadas até 25% mais frequentes.
-- **Vender móveis:** metade do preço, sempre com confirmação. O último fogão e o último balcão não podem ser vendidos, para o jogador nunca ficar sem como ganhar ouro.
-- **Conquistas (seção 49):** 7 conquistas com 3 degraus cada (de "Primeiro Cliente" a "Lenda"), com prêmios em Café Ouro e um painel de progresso.
-- **Recompensa diária (seção 51):** calendário de 7 dias, contado pela meia-noite local, com proteção contra relógio voltando para trás.
-- **Nome da cafeteria** no primeiro acesso, mostrado no topo. Tocar nele troca o nome.
-- **Sons de feedback** originais, gerados por código, com botão para ligar e desligar.
-- **APK Android** (arm64, Android 7 ou mais novo, ~26 MB), com ícone provisório original.
-- **Avisos em fila:** uma mensagem não apaga mais a outra.
-- **Direção de arte:** plano em [art-direction.md](art-direction.md).
+- **Direção visual v3** no canvas "Café Manie — Direção Visual", refeita a partir das capturas e do retorno do PO:
+  - **cores de dia claro e saturadas**: gramado verde-vivo, paredes brancas e menta, piso de madeira mel, cozinha em xadrez, móveis coloridos;
+  - **sem árvores**: fora do salão ficam gramado, rua, calçada, canteiros e cerquinha;
+  - **salão grande e lotado** (12×12), com cozinha completa, mesas compridas, 17 clientes sentados e gente chegando pela porta;
+  - **interface no formato do jogo de 2010**: contadores com "+", barra de XP com estrela e nível, missões laterais em medalhões com fita, botões quadrados azuis, barra de ícones e faixa de vizinhos;
+  - **loja em quadradinhos** com etiqueta de preço, selos, setas azuis, prévia e botão verde de comprar, e o móvel sendo posicionado no salão;
+  - **personagens refeitos**: cabeça redonda centrada (sem o "corcunda"), olhos de desenho com pálpebra e brilho, 12 penteados em mechas, expressões, mãos e roupas com detalhe;
+  - 6 pranchas: tela do jogo, loja, cardápio e cozinha, personagens, guia de estilo e cenário sem interface.
+- **Gerador da arte v3** no repositório (`tools/art_direction/v3/`). O mesmo código vai exportar os sprites do jogo depois da aprovação.
+- **Tudo do jogo que já existia continua igual**: paredes e revestimentos, beleza, venda, conquistas, recompensa diária, nome da cafeteria, sons e o APK Android.
 
 🟡 **EM ANDAMENTO**
 
+- **Aprovação da v3 pelo PO**, prancha por prancha.
 - **Teste no celular de verdade:** roteiro "Android" em [qa.md](qa.md).
-- **Capturas do Café Mania:** aguardando o PO para completar o guia de estilo.
 
 🔴 **BLOQUEADO**
 
@@ -32,40 +26,25 @@
 
 🧪 **TESTADO**
 
-- **260 testes automatizados: PASSOU** (eram 191).
-- **Verificação da suíte: PASSOU (20 de 20).** Bugs inseridos de propósito nas novidades foram todos pegos. Um deles (clientes não contados nas conquistas) só foi pego depois de eu escrever um teste novo.
-- **Toque de verdade: PASSOU.** Botões da loja e das janelas respondem a toque, sem emulação de mouse, e o toque num botão não vaza para o piso.
-- **Jogos exportados: PASSOU.** O conteúdo de dentro do `.exe` e do `.apk` foi aberto e jogado por 600 quadros sem janela: 9 móveis, 6 receitas, 9 revestimentos, 7 conquistas, 7 dias de recompensa e 7 sons carregados, zero erros.
-- **Assinatura do APK: PASSOU** (`apksigner verify`, esquemas v2 e v3).
+- **260 testes automatizados: PASSOU.**
 - **Cena principal rodando 300 frames: PASSOU**, zero erros.
-- **Renderização real: PASSOU.** Capturas dos 4 estilos de piso e parede, do nome, da recompensa diária e do painel de conquistas.
+- **Pranchas da v3 conferidas por renderização:** cada prancha foi desenhada num navegador sem janela, com as fontes certas, e conferida por imagem antes de publicar. Os defeitos achados assim (brilhos opacos demais, letreiro de neon escondido atrás da janela, selos se sobrepondo, cartões de vizinhos cortados) foram corrigidos.
+- **Gerador rodando de dentro do repositório: PASSOU.** As pranchas geradas ali são idênticas, byte a byte, às publicadas.
 - **Celular Android de verdade: NÃO FOI POSSÍVEL TESTAR** aqui. Não há celular nem emulador na nuvem.
-- **`.exe` num Windows de verdade: confirmado por você** na entrega anterior; o processo de geração é o mesmo.
 
-🐞 **BUGS** (corrigidos, com teste)
+🐞 **BUGS**
 
-- 🐞 **HIGH (encontrado antes de chegar a você) — janela da recompensa diária ocupando a tela inteira:** o texto quebrava letra a letra e esticava a janela. A largura dos cartões agora é fixa.
-- 🐞 **MEDIUM — duas janelas de pergunta ao mesmo tempo:** se a recompensa diária aparecesse com outra pergunta aberta (por exemplo, "Expandir?"), a Godot dava erro. Agora só abre uma janela por vez.
-- 🐞 **MEDIUM (ferramenta de testes) — teste que não compila sumia da contagem:** um arquivo de teste com erro era ignorado em silêncio, e a suíte continuava "verde". Agora ele reprova a execução.
-- 🐞 **LOW — avisos se apagando:** "Subiu de nível" era trocado na hora por outro aviso. Agora os avisos entram numa fila.
-- ⚠️ **Balanceamento:** o robô continua rápido: 6 missões em 5,2 min, e nível 8 com 0 clientes irritados em 30 min. A beleza facilitou ainda mais. Fica para o **FAÇA BALANCEAMENTO**.
+- Nenhum bug novo no jogo: esta etapa mexeu só em arte e documentação.
+- ⚠️ **Balanceamento:** o robô continua rápido (6 missões em 5,2 min; nível 8 com 0 clientes irritados em 30 min). Fica para o **FAÇA BALANCEAMENTO**.
 
 🏗️ **DECISÕES TÉCNICAS**
 
 Detalhes em [decisions.md](decisions.md):
 
-- **DT-021:** paredes e revestimentos.
-- **DT-022:** efeito da beleza.
-- **DT-023:** venda protegida.
-- **DT-024:** conquistas por contadores.
-- **DT-025:** recompensa diária pelo dia local.
-- **DT-026:** nome da cafeteria.
-- **DT-027:** sons gerados por código.
-- **DT-028:** APK sem Gradle, com a chave de teste fora do repositório.
+- **DT-029:** direção visual v3 no formato do jogo antigo, com desenho 100% próprio (seção 5).
 
 ➡️ **PRÓXIMO PASSO**
 
-- **Seu teste:** instale o APK no celular (README, "Jogar no celular Android") e siga os roteiros "Novidades" e "Android" em [qa.md](qa.md).
-- **Mande as capturas do Café Mania** para eu completar o guia de estilo original.
-- **FAÇA BALANCEAMENTO**, com as suas impressões de ritmo, dificuldade e preços.
-- Depois disso: preparar o **backend** (Fase 6), porque amigos, visitas e rankings (Fase 5) dependem de servidor.
+- **Seu retorno sobre a v3**, prancha por prancha: cores, interface, loja, personagens e cenário.
+- Com a direção aprovada: **levar a arte para o jogo**, exportando os sprites do gerador e trocando os placeholders da Godot.
+- **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.
