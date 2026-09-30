@@ -2,6 +2,33 @@
 
 Referência: seções 5, 43, 77, 78, 130–132 do master prompt. Documento vivo: vai ser completado com as impressões do PO sobre as capturas do jogo antigo.
 
+## Direção escolhida: "Esquina Nostálgica" (30/09/2026)
+
+O PO mandou capturas do jogo antigo e pediu **nostalgia acima de modernidade**: quem procurar o Café Manie quer a sensação do jogo de 2010, não um jogo "moderninho". A direção visual foi montada no Claude Design, no canvas **"Café Manie — Direção Visual"**, com 5 pranchas: tela do jogo, loja, personagens, guia de estilo e o cenário sem interface.
+
+**O que traz a nostalgia** (convenções do gênero, que ninguém possui):
+
+- a cafeteria na **esquina de um quarteirão**, com rua, calçada, grama e poste;
+- a sala **isométrica com duas paredes no fundo**, com janelas, cortinas e quadros;
+- o salão **lotado**, com clientes **cabeçudos**, balões de pedido e carinhas de humor;
+- as **cores quentes e saturadas**, com contorno escuro;
+- **contadores de moeda no alto à esquerda**, **nível com barra de XP no centro**, **barra de ícones grandes embaixo** e **faixa de vizinhos** à direita;
+- os números subindo ("+18", "+8 XP").
+
+**O que é nosso** (para não copiar, seção 5):
+
+- **personagens próprios**: Chef Bia (mascote) e o garçom Léo;
+- ícones desenhados do zero;
+- paleta "café": espresso, chocolate, canela, mel, creme, tomate, menta;
+- fontes Fredoka e Nunito;
+- a placa-lousa com o nome da cafeteria;
+- o grão verde como moeda premium;
+- a disposição própria da interface.
+
+Nenhum sprite, logo, personagem, ícone ou texto do jogo antigo foi usado, e as capturas **não entram no repositório**.
+
+Os desenhos das pranchas são gerados por código (`tools/art_direction/`, Python gerando SVG). O mesmo gerador pode exportar os sprites do jogo, então a próxima etapa é trocar os placeholders da Godot por essa arte.
+
 ## Onde estamos
 
 Tudo o que aparece na tela hoje é **placeholder desenhado por código** (caixas coloridas, piso e parede com padrões simples, bonequinhos básicos). Isso é proposital: as regras de jogo ainda estão mudando, e arte final feita agora teria de ser refeita.
