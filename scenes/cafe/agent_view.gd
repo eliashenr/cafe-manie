@@ -187,7 +187,7 @@ func _draw_customer_overlay(head_top: Vector2) -> void:
 
 ## Balão branco de borda azul, com o prato (ou um texto) e a barra de paciência.
 func _draw_balloon(tip: Vector2, food: ArtSprites.Sprite, text: String, patience: float) -> void:
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font(UiTheme.BOLD)
 	var text_size := 0 if food != null else (QUESTION_SIZE if text == "?" else BALLOON_TEXT_SIZE)
 	var inner := Vector2(BALLOON_FOOD, BALLOON_FOOD)
 	if food == null and text != "?":

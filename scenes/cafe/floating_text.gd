@@ -29,7 +29,7 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font(UiTheme.BOLD)
 	var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE).x
 	var at := Vector2(-width / 2.0, 0.0)
 	draw_string_outline(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, 4, Color(0.1, 0.06, 0.04, 0.8))

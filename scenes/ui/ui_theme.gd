@@ -19,8 +19,16 @@ const GOLD_TEXT := Color("ffe34d")
 const DISABLED := Color("aebdd0")
 const SHADOW := Color(0, 0, 0, 0.16)
 const FONT_SIZE := 16
+## Letras das pranchas (licença OFL, em art/fonts com a licença): Fredoka para quase
+## tudo, como no HUD do canvas; Nunito para textos corridos.
+const FREDOKA_PATH := "res://art/fonts/Fredoka-Variable.ttf"
+const NUNITO_PATH := "res://art/fonts/Nunito-Variable.ttf"
+## Peso padrão da interface (as fontes são variáveis: 300 a 700 na Fredoka).
+const WEIGHT := 600
+const BOLD := 700
 
 static var _theme: Theme
+static var _fonts: Dictionary = {}
 
 
 ## Tema comum de toda a interface (cacheado).
@@ -28,6 +36,7 @@ static func theme() -> Theme:
 	if _theme != null:
 		return _theme
 	_theme = Theme.new()
+	_theme.default_font = font()
 	_theme.default_font_size = FONT_SIZE
 	_theme.set_color("font_color", "Label", TEXT)
 	for state in ["normal", "hover", "pressed", "disabled", "focus", "hover_pressed"]:
@@ -49,6 +58,23 @@ static func theme() -> Theme:
 	_theme.set_color("font_placeholder_color", "LineEdit", TEXT_SOFT)
 	_theme.set_color("caret_color", "LineEdit", TEXT)
 	return _theme
+
+
+## Fonte das pranchas no peso pedido (Fredoka; [param body] = Nunito, para textos corridos).
+## Sem os arquivos, cai na fonte padrão da Godot.
+static func font(weight := WEIGHT, body := false) -> Font:
+	var key := "%s_%d" % ["nunito" if body else "fredoka", weight]
+	if _fonts.has(key):
+		return _fonts[key]
+	var path := NUNITO_PATH if body else FREDOKA_PATH
+	var result: Font = ThemeDB.fallback_font
+	if ResourceLoader.exists(path):
+		var variation := FontVariation.new()
+		variation.base_font = load(path)
+		variation.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"): weight}
+		result = variation
+	_fonts[key] = result
+	return result
 
 
 ## Botão brilhante: cor cheia, borda mais escura e uma "sola" embaixo, cantos redondos.

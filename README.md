@@ -188,3 +188,8 @@ Para conferir o conteúdo, descompacte a pasta `assets/` do APK e rode `godot --
 | [progression.md](docs/progression.md) | Níveis, XP e desbloqueios |
 | [social.md](docs/social.md) | Sistemas sociais (futuro) |
 | [art-direction.md](docs/art-direction.md) | Direção de arte: princípios e plano para a arte final |
+
+## Créditos
+
+- Arte, sons e código: feitos para o Café Manie (ver [direção de arte](docs/art-direction.md)).
+- Fontes **Fredoka** (The Fredoka Project Authors) e **Nunito** (The Nunito Project Authors), do Google Fonts, sob a licença SIL Open Font License 1.1. Os arquivos e as licenças estão em `art/fonts/`.

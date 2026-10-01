@@ -312,7 +312,7 @@ func _draw_count_badge(center: Vector2) -> void:
 
 
 func _draw_centered_text(text: String, box: Rect2, size: int, color: Color) -> void:
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font(UiTheme.BOLD)
 	var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
 	var baseline := box.position.y + (box.size.y + font.get_ascent(size) - font.get_descent(size)) / 2.0
 	_overlay.draw_string(font, Vector2(box.get_center().x - width / 2.0, baseline), text, HORIZONTAL_ALIGNMENT_LEFT, -1,
@@ -334,7 +334,7 @@ func _pill_style(fill: Color, edge: Color) -> StyleBoxFlat:
 func _draw_status(top_center: Vector2) -> void:
 	if status_text.is_empty():
 		return
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font(UiTheme.BOLD)
 	var text_size := font.get_string_size(status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_SIZE)
 	var has_bar := status_progress >= 0.0
 	var box_size := Vector2(text_size.x + 14.0, 20.0 + (6.0 if has_bar else 0.0))
@@ -367,7 +367,7 @@ func _draw_front_marker(top: PackedVector2Array) -> void:
 
 
 func _draw_label(top: PackedVector2Array) -> void:
-	var font := ThemeDB.fallback_font
+	var font := UiTheme.font(UiTheme.BOLD)
 	var text := definition.display_name
 	var text_width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, LABEL_SIZE).x
 	var center := (top[0] + top[2]) / 2.0

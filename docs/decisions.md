@@ -15,7 +15,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Arte e texto:** ícones, botões e medalhões vêm do gerador (folha `interface`, com 2 pixels de textura por pixel da tela). O texto é escrito pela Godot, para os números mudarem e continuarem nítidos.
 - **O que não existe no jogo fica de fora:** vizinhos, correio, grãos (moeda premium), festival e cardápio. Eles voltam com as fases deles.
 - Os textos que os testes usam continuam iguais ("60 ouro", "Nível 3", "Em uso", "10×8"...). O botão de som mostra o símbolo e diz o estado na dica.
-- **Fonte:** a interface usa a fonte padrão da Godot. As pranchas usam Fredoka e Nunito (licença livre OFL). Trazer essas fontes para o jogo depende de um download, que fica para o PO autorizar.
+- **Fonte (autorizada pelo PO em 01/10/2026):** Fredoka, a letra arredondada das pranchas, em toda a interface e nos textos do salão. A Nunito fica disponível para textos corridos. As duas vêm do repositório oficial do Google Fonts, com a licença SIL OFL 1.1, que permite usar e distribuir no jogo. Os arquivos e as licenças ficam em `art/fonts/`, e as licenças entram no build exportado.
 
 ---
 

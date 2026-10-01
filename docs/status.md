@@ -71,6 +71,7 @@
 - **Foto do jogo** com uma cópia do save do PO: a arte aparece no lugar certo e fica nítida com zoom de 1,8×.
 - **Sprites conferidos contra as pranchas:** cada um foi comparado lado a lado com o SVG desenhado pelo Chrome.
 - **Pranchas do canvas:** geradas antes e depois da mudança no gerador e comparadas, byte a byte idênticas.
+- **Fontes das pranchas no jogo** (autorizadas pelo PO): Fredoka em toda a interface e nos textos do salão, com as licenças OFL no projeto e no build.
 - **`.exe` novo gerado no PC do PO** (`build\windows\CafeManie.exe`, 117 MB). A checagem automática do build exportado **PASSOU** (`SMOKE OK`), e agora ela também confere se a arte entrou no `.exe` (6 de 6 peças).
 - **APK Android: NÃO GERADO** nesta etapa (precisa do JDK e do Android SDK no PC; ver o README).
 
@@ -93,6 +94,6 @@ Detalhes em [decisions.md](decisions.md):
 ➡️ **PRÓXIMO PASSO**
 
 - **Conferência visual do PO** dos móveis e dos personagens (roteiro "Arte v3" em [qa.md](qa.md)).
-- **A troca dos placeholders pela arte v3 terminou e o `.exe` novo está pronto.** Próximos: a **conferência do PO** (roteiro "Arte v3" em [qa.md](qa.md)), as fontes das pranchas (Fredoka e Nunito, com autorização do PO) e o **FAÇA BALANCEAMENTO**.
+- **A troca dos placeholders pela arte v3 terminou e o `.exe` novo está pronto.** Próximos: a **conferência do PO** (roteiro "Arte v3" em [qa.md](qa.md)) e o **FAÇA BALANCEAMENTO**.
 - **Export templates 4.7.2 instalados** neste PC (baixados do GitHub oficial da Godot e conferidos pela soma SHA-512).
 - **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.
