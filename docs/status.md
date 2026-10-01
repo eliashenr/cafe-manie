@@ -4,7 +4,7 @@
 
 🟢 **CONCLUÍDO**
 
-- **Direção visual v3** no canvas "Café Manie — Direção Visual", refeita a partir das capturas e do retorno do PO:
+- **Direção visual v3 aprovada pelo PO** ("Gostei! Agora sim começamos conversar"), no canvas "Café Manie — Direção Visual", refeita a partir das capturas e do retorno do PO:
   - **cores de dia claro e saturadas**: gramado verde-vivo, paredes brancas e menta, piso de madeira mel, cozinha em xadrez, móveis coloridos;
   - **sem árvores**: fora do salão ficam gramado, rua, calçada, canteiros e cerquinha;
   - **salão grande e lotado** (12×12), com cozinha completa, mesas compridas, 17 clientes sentados e gente chegando pela porta;
@@ -17,7 +17,7 @@
 
 🟡 **EM ANDAMENTO**
 
-- **Aprovação da v3 pelo PO**, prancha por prancha.
+- **Mudança para o Claude Code no PC do PO:** o projeto inteiro, com histórico, vai para uma pasta própria. O que veio da conversa e o que muda no Windows estão em [passagem.md](passagem.md).
 - **Teste no celular de verdade:** roteiro "Android" em [qa.md](qa.md).
 
 🔴 **BLOQUEADO**
@@ -45,6 +45,6 @@ Detalhes em [decisions.md](decisions.md):
 
 ➡️ **PRÓXIMO PASSO**
 
-- **Seu retorno sobre a v3**, prancha por prancha: cores, interface, loja, personagens e cenário.
-- Com a direção aprovada: **levar a arte para o jogo**, exportando os sprites do gerador e trocando os placeholders da Godot.
+- **Levar a arte v3 para o jogo**, exportando os sprites do gerador e trocando os placeholders da Godot.
+- Do PC do PO, tentar de novo o **envio para o GitHub** com o login dele.
 - **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.

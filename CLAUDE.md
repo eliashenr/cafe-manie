@@ -8,6 +8,7 @@ Instruções para qualquer sessão do Claude (Claude Code ou chat) que trabalhe 
 - O dono do repositório é o **Product Owner**. Ele define visão e prioridades; você define a engenharia (seção 103).
 - Comandos do PO (seções 162–167): **CONTINUE**, **TESTE**, **FAÇA QA**, **FAÇA CODE REVIEW**, **FAÇA BALANCEAMENTO**, **PREPARE RELEASE**.
 - Em **CONTINUE**, comece lendo [docs/status.md](docs/status.md) e [docs/roadmap.md](docs/roadmap.md). Não recomece o projeto.
+- **Primeira sessão no PC do PO?** Leia antes [docs/passagem.md](docs/passagem.md): o que veio da conversa na nuvem e o que muda no Windows.
 - O PO não usa terminal. Toda instrução para ele explica o que cada passo faz e por quê.
 
 ## Stack
@@ -22,6 +23,8 @@ godot --headless --import                        # prepara o projeto (rodar apó
 godot --headless -s res://tests/run_tests.gd     # roda todos os testes; sai com 1 se algo falhar
 godot --headless --quit-after 120                # sobe a cena principal por 120 frames (checa erros)
 ```
+
+No Windows, troque `godot` pelo caminho do executável `Godot_v4.7.2-stable_win64_console.exe` (a versão `_console` mostra a saída no terminal).
 
 ## Regras de engenharia do projeto
 
