@@ -23,10 +23,16 @@
 - **Vitrine dos personagens** (`tools/showcase.gd`): monta uma cafeteria com gente em cada situação, para conferir a arte de uma vez.
 - **A cadeira vira sozinha para a mesa** (decisão do PO): ao ser levada para o lado de uma mesa, ela já vem virada. Saves antigos viram as cadeiras uma vez, ao abrir (save versão 4). No save do PO as 4 cadeiras já olhavam para as mesas, então nada mudou nele.
 - **Commits enviados ao GitHub** (`main`), com a autorização do PO.
+- **Arte v3 no cenário (3ª parte da troca dos placeholders):**
+  - piso de verdade nos 5 revestimentos (xadrez bege, assoalho cor de mel, xadrez bistrô, azulejo azul e mármore), com tapete listrado na entrada e a borda branca da laje na frente;
+  - paredes nos 4 revestimentos (creme, listras menta, tijolinho e azul-marinho), com janelas de cortina, quadros, relógio e prateleira; a luz das janelas aparece no chão;
+  - fora do salão: gramado, calçada, rua e um caminho de pedras até a entrada, cerquinha branca na frente (aberta no caminho), canteiros de flores e postes;
+  - tudo acompanha a expansão da cafeteria.
+- **Vitrine aceita piso e parede** (`tools/showcase.gd -- foto.png 0.75 floor_wood wall_mint_stripes`), para conferir cada revestimento.
 
 🟡 **EM ANDAMENTO**
 
-- **Troca dos placeholders pela arte v3:** faltam piso e paredes, os pratos no balcão e no fogão, e a interface (HUD e loja).
+- **Troca dos placeholders pela arte v3:** faltam os pratos no balcão e no fogão e a interface (HUD e loja).
 - **Teste no celular de verdade:** roteiro "Android" em [qa.md](qa.md).
 
 🔴 **BLOQUEADO**
@@ -35,15 +41,18 @@
 
 🧪 **TESTADO**
 
-- **284 testes automatizados: PASSOU** no Windows. Os testes novos conferem:
+- **291 testes automatizados: PASSOU** no Windows. Os testes novos conferem:
   - se todo móvel tem arte nas 4 rotações, com a âncora e a escala certas, e se a cena e a prévia usam essa arte;
   - se todo cliente e o garçom têm todas as poses e toda receita tem prato;
   - se a direção e o espelho seguem o movimento e os passos se alternam;
   - se quem senta segue a cadeira e a expressão segue a paciência;
   - se o prato vai para a mesa certa e sai quando o cliente levanta;
   - se o balão fica por cima de tudo;
-  - se a cadeira vira para a mesa no modo de construção e nos saves antigos, uma vez só, e respeita a escolha do jogador nos saves novos.
-- **Defeitos inseridos de propósito: 13 de 13 pegos** pelos testes novos (lista em [qa.md](qa.md)).
+  - se a cadeira vira para a mesa no modo de construção e nos saves antigos, uma vez só, e respeita a escolha do jogador nos saves novos;
+  - se todo revestimento tem arte, o xadrez alterna, as variações não mudam sozinhas e a parede tem janelas;
+  - se a cena usa a arte e enquadra a parede mais alta, se a cerca abre só na entrada e se o exterior acompanha a expansão.
+- **Defeitos inseridos de propósito: 21 de 21 pegos** pelos testes novos (lista em [qa.md](qa.md)).
+- **Revestimentos conferidos por foto:** os 4 conjuntos de piso e parede na vitrine e o save do PO com o cenário novo.
 - **Vitrine dos personagens** fotografada e conferida: cada situação aparece como nas pranchas.
 - **Cena principal rodando 300 frames: PASSOU**, zero erros.
 - **Foto do jogo** com uma cópia do save do PO: a arte aparece no lugar certo e fica nítida com zoom de 1,8×.
@@ -63,10 +72,11 @@ Detalhes em [decisions.md](decisions.md):
 - **DT-030:** sprites gerados do código da arte v3. O Chrome ou o Edge converte para PNG, porque a Godot deixa vazio o gradiente de formas curvas. A Godot recorta e grava a âncora.
 - **DT-031:** personagens com poses desenhadas e espelhadas no jogo. Quem senta segue a cadeira. Balões desenhados por código e sempre por cima.
 - **DT-032:** a cadeira vira sozinha para a mesa (decisão do PO). Save versão 4 vira as cadeiras dos saves antigos uma vez.
+- **DT-033:** cenário da v3 montado por célula (piso, parede e enfeites). Rua e calçada do lado da entrada, por onde os clientes chegam. Cerca e canteiros na frente do salão.
 
 ➡️ **PRÓXIMO PASSO**
 
 - **Conferência visual do PO** dos móveis e dos personagens (roteiro "Arte v3" em [qa.md](qa.md)).
-- Continuar a troca: **piso e paredes**, depois **pratos e interface**.
+- Continuar a troca: **pratos no balcão e no fogão**, depois a **interface** (HUD e loja).
 - Instalar os export templates e gerar um `.exe` novo para o PO jogar.
 - **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.

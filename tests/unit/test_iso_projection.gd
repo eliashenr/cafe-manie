@@ -53,3 +53,10 @@ func test_fractional_grid_points_match_cell_centers_and_interpolate() -> void:
 	var halfway := IsoProjection.grid_point_to_world(Vector2(3.5, 5))
 	var expected := (IsoProjection.cell_center(Vector2i(3, 5)) + IsoProjection.cell_center(Vector2i(4, 5))) / 2.0
 	assert_vec_almost_eq(halfway, expected, 0.01, "meio do caminho entre dois pisos")
+
+
+func test_vertex_to_world_matches_cell_vertices_and_interpolates() -> void:
+	assert_vec_almost_eq(IsoProjection.vertex_to_world(Vector2(3, 2)), IsoProjection.cell_top_vertex(Vector2i(3, 2)))
+	assert_vec_almost_eq(IsoProjection.vertex_to_world(Vector2(1, 1)), IsoProjection.cell_center(Vector2i(0, 0)) + Vector2(0, IsoProjection.HALF_TILE.y))
+	var middle := IsoProjection.vertex_to_world(Vector2(2.5, 0.0))
+	assert_vec_almost_eq(middle, (IsoProjection.cell_top_vertex(Vector2i(2, 0)) + IsoProjection.cell_top_vertex(Vector2i(3, 0))) / 2.0)

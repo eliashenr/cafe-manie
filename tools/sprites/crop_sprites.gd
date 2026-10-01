@@ -31,6 +31,11 @@ func _initialize() -> void:
 		var sheet: Image = sheets[sheet_name]
 		var rect := Rect2i(info["rect"][0], info["rect"][1], info["rect"][2], info["rect"][3])
 		var cell := sheet.get_region(rect)
+		if info.get("tile", false):
+			# Textura de repetir: sai inteira, do tamanho exato, sem recorte.
+			cell.save_png(TARGET_DIR.path_join(sprite_name + ".png"))
+			sprites[sprite_name] = {"anchor": [0.0, 0.0], "tile": true}
+			continue
 		var used := cell.get_used_rect()
 		if used.size == Vector2i.ZERO:
 			printerr("Figura vazia: ", sprite_name)

@@ -1122,6 +1122,212 @@
     32.07,
     32.07
    ]
+  },
+  "piso_floor_beige_a": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_beige_b": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_bistro_0": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_blue_tiles_0": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_marble_0": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_marble_1": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_marble_2": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_wood_0": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_wood_1": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_wood_2": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_floor_wood_3": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_entrada": {
+   "anchor": [
+    107.19,
+    -9.81
+   ]
+  },
+  "parede_wall_cream_R": {
+   "anchor": [
+    5.48,
+    306.24
+   ]
+  },
+  "parede_wall_cream_L": {
+   "anchor": [
+    5.48,
+    370.33
+   ]
+  },
+  "parede_wall_mint_stripes_R": {
+   "anchor": [
+    3.48,
+    306.24
+   ]
+  },
+  "parede_wall_mint_stripes_L": {
+   "anchor": [
+    3.48,
+    370.33
+   ]
+  },
+  "parede_wall_brick_R": {
+   "anchor": [
+    3.48,
+    306.24
+   ]
+  },
+  "parede_wall_brick_L": {
+   "anchor": [
+    3.48,
+    370.33
+   ]
+  },
+  "parede_wall_navy_R": {
+   "anchor": [
+    3.48,
+    306.24
+   ]
+  },
+  "parede_wall_navy_L": {
+   "anchor": [
+    3.48,
+    370.33
+   ]
+  },
+  "enfeite_janela_R": {
+   "anchor": [
+    11.48,
+    302.24
+   ]
+  },
+  "enfeite_janela_L": {
+   "anchor": [
+    10.48,
+    366.33
+   ]
+  },
+  "enfeite_quadro_cupcake_R": {
+   "anchor": [
+    -16.52,
+    234.24
+   ]
+  },
+  "enfeite_quadro_cupcake_L": {
+   "anchor": [
+    -16.52,
+    298.33
+   ]
+  },
+  "enfeite_quadro_paisagem_R": {
+   "anchor": [
+    -6.52,
+    227.24
+   ]
+  },
+  "enfeite_quadro_paisagem_L": {
+   "anchor": [
+    -6.52,
+    291.33
+   ]
+  },
+  "enfeite_relogio_R": {
+   "anchor": [
+    -22.52,
+    240.24
+   ]
+  },
+  "enfeite_relogio_L": {
+   "anchor": [
+    -22.52,
+    304.33
+   ]
+  },
+  "enfeite_prateleira_R": {
+   "anchor": [
+    -7.52,
+    211.24
+   ]
+  },
+  "enfeite_prateleira_L": {
+   "anchor": [
+    -7.52,
+    296.33
+   ]
+  },
+  "gramado": {
+   "anchor": [
+    0.0,
+    0.0
+   ],
+   "tile": true
+  },
+  "asfalto": {
+   "anchor": [
+    0.0,
+    0.0
+   ],
+   "tile": true
+  },
+  "poste": {
+   "anchor": [
+    72.62,
+    341.38
+   ]
+  },
+  "canteiro": {
+   "anchor": [
+    82.81,
+    64.71
+   ]
   }
  },
  "furniture": {
@@ -1215,5 +1421,93 @@
   "coxinha": "prato_coxinha",
   "lasagna": "prato_lasagna"
  },
- "food_width": 64.0
+ "food_width": 64.0,
+ "floors": {
+  "floor_beige": {
+   "mode": "xadrez",
+   "sprites": [
+    "piso_floor_beige_a",
+    "piso_floor_beige_b"
+   ]
+  },
+  "floor_bistro": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_bistro_0"
+   ]
+  },
+  "floor_blue_tiles": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_blue_tiles_0"
+   ]
+  },
+  "floor_marble": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_marble_0",
+    "piso_floor_marble_1",
+    "piso_floor_marble_2"
+   ]
+  },
+  "floor_wood": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_wood_0",
+    "piso_floor_wood_1",
+    "piso_floor_wood_2",
+    "piso_floor_wood_3"
+   ]
+  }
+ },
+ "floor_entrance": "piso_entrada",
+ "walls": {
+  "wall_cream": {
+   "R": "parede_wall_cream_R",
+   "L": "parede_wall_cream_L"
+  },
+  "wall_mint_stripes": {
+   "R": "parede_wall_mint_stripes_R",
+   "L": "parede_wall_mint_stripes_L"
+  },
+  "wall_brick": {
+   "R": "parede_wall_brick_R",
+   "L": "parede_wall_brick_L"
+  },
+  "wall_navy": {
+   "R": "parede_wall_navy_R",
+   "L": "parede_wall_navy_L"
+  }
+ },
+ "wall_height": 152.38,
+ "wall_decorations": {
+  "R": [
+   "relogio",
+   "",
+   "janela",
+   "prateleira",
+   "quadro_cupcake",
+   "",
+   "janela",
+   ""
+  ],
+  "L": [
+   "",
+   "quadro_paisagem",
+   "janela",
+   "",
+   "prateleira",
+   "janela",
+   "",
+   "quadro_cupcake"
+  ]
+ },
+ "exterior": {
+  "lawn": "gramado",
+  "lawn_world": 128.0,
+  "asphalt": "asfalto",
+  "asphalt_world": 64.0,
+  "lamp": "poste",
+  "flower_bed": "canteiro"
+ }
 }

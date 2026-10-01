@@ -27,6 +27,12 @@ static func grid_point_to_world(point: Vector2) -> Vector2:
 	return Vector2((point.x - point.y) * HALF_TILE.x, (point.x + point.y + 1.0) * HALF_TILE.y)
 
 
+## Ponto do mundo para um vértice fracionário da malha, em que o vértice de cima
+## da célula (x, y) é Vector2(x, y). Serve para desenhar fora do grid (calçada, cerca).
+static func vertex_to_world(point: Vector2) -> Vector2:
+	return Vector2((point.x - point.y) * HALF_TILE.x, (point.x + point.y) * HALF_TILE.y)
+
+
 ## Célula que contém o ponto do mundo. Pode retornar células fora do grid;
 ## quem chama decide se ela é válida.
 static func world_to_cell(world: Vector2) -> Vector2i:

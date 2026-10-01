@@ -1,6 +1,8 @@
 class_name FloorView
 extends Node2D
-## PLACEHOLDER_FLOOR: piso desenhado por código até existir arte final.
+## Piso da cafeteria com a arte v3 (ArtSprites): uma peça do revestimento por
+## célula, o tapete da entrada e a laje branca nas bordas da frente. Revestimento
+## sem arte cai no PLACEHOLDER_FLOOR, desenhado por código.
 ##
 ## Só desenha. Não guarda regra de jogo; recebe do dono da cena o tamanho
 ## do grid, a entrada, a célula selecionada e a prévia de construção.
@@ -16,6 +18,13 @@ const COLOR_SELECTED_FILL := Color(1.0, 0.82, 0.3, 0.5)
 const COLOR_SELECTED_LINE := Color("f29f1f")
 const COLOR_PREVIEW_VALID := Color(0.3, 0.8, 0.35, 0.45)
 const COLOR_PREVIEW_INVALID := Color(0.9, 0.25, 0.2, 0.45)
+## Laje da arte v3: espessura (pixels de mundo) e cores das duas faces da frente.
+const SLAB_THICKNESS := 10.7
+const SLAB_LEFT_TOP := Color("ffffff")
+const SLAB_LEFT_BOTTOM := Color("d7dee8")
+const SLAB_RIGHT_TOP := Color("e8edf4")
+const SLAB_RIGHT_BOTTOM := Color("c3ccd8")
+const ART_INK := Color("33283a")
 
 var grid_size := Vector2i.ZERO:
 	set(value):
@@ -58,7 +67,59 @@ func preview_cells() -> Array[Vector2i]:
 	return _preview_cells
 
 
+func _init() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+
+
+## Há arte para o revestimento atual?
+func has_art() -> bool:
+	return floor_style != null and ArtSprites.floor_tile(floor_style.id, Vector2i.ZERO) != null
+
+
 func _draw() -> void:
+	if has_art():
+		_draw_art_floor()
+	else:
+		_draw_placeholder_floor()
+	var preview_color := COLOR_PREVIEW_VALID if _preview_valid else COLOR_PREVIEW_INVALID
+	for cell in _preview_cells:
+		if _is_inside(cell):
+			draw_colored_polygon(IsoProjection.cell_polygon(cell), preview_color)
+
+	if _is_inside(selected_cell):
+		var polygon := IsoProjection.cell_polygon(selected_cell)
+		draw_colored_polygon(polygon, COLOR_SELECTED_FILL)
+		draw_polyline(_closed(polygon), COLOR_SELECTED_LINE, 3.0, true)
+
+
+## Laje, uma peça por célula (de trás para a frente), tapete da entrada e contorno.
+func _draw_art_floor() -> void:
+	var n := Vector2(grid_size)
+	var down := Vector2(0.0, SLAB_THICKNESS)
+	var front_left := [IsoProjection.vertex_to_world(Vector2(0.0, n.y)), IsoProjection.vertex_to_world(n)]
+	var front_right := [IsoProjection.vertex_to_world(n), IsoProjection.vertex_to_world(Vector2(n.x, 0.0))]
+	_draw_slab_face(front_left[0], front_left[1], down, SLAB_LEFT_TOP, SLAB_LEFT_BOTTOM)
+	_draw_slab_face(front_right[0], front_right[1], down, SLAB_RIGHT_TOP, SLAB_RIGHT_BOTTOM)
+	for y in grid_size.y:
+		for x in grid_size.x:
+			var cell := Vector2i(x, y)
+			var tile := ArtSprites.floor_tile(floor_style.id, cell)
+			draw_texture_rect(tile.texture, tile.rect_at(IsoProjection.cell_top_vertex(cell)), false)
+	var mat := ArtSprites.floor_entrance()
+	if mat != null and _is_inside(entrance):
+		draw_texture_rect(mat.texture, mat.rect_at(IsoProjection.cell_top_vertex(entrance)), false)
+	var outline := PackedVector2Array([IsoProjection.vertex_to_world(Vector2.ZERO), front_right[1], front_right[0],
+		front_left[0], IsoProjection.vertex_to_world(Vector2.ZERO)])
+	draw_polyline(outline, ART_INK, 2.0, true)
+
+
+func _draw_slab_face(from: Vector2, to: Vector2, down: Vector2, top: Color, bottom: Color) -> void:
+	var face := PackedVector2Array([from, to, to + down, from + down])
+	draw_polygon(face, PackedColorArray([top, top, bottom, bottom]))
+	draw_polyline(_closed(face), ART_INK, 1.5, true)
+
+
+func _draw_placeholder_floor() -> void:
 	for y in grid_size.y:
 		for x in grid_size.x:
 			var cell := Vector2i(x, y)
@@ -71,16 +132,6 @@ func _draw() -> void:
 
 	if _is_inside(entrance):
 		_draw_entrance_arrow()
-
-	var preview_color := COLOR_PREVIEW_VALID if _preview_valid else COLOR_PREVIEW_INVALID
-	for cell in _preview_cells:
-		if _is_inside(cell):
-			draw_colored_polygon(IsoProjection.cell_polygon(cell), preview_color)
-
-	if _is_inside(selected_cell):
-		var polygon := IsoProjection.cell_polygon(selected_cell)
-		draw_colored_polygon(polygon, COLOR_SELECTED_FILL)
-		draw_polyline(_closed(polygon), COLOR_SELECTED_LINE, 3.0, true)
 
 
 ## PLACEHOLDER_SURFACE: um piso no padrão do revestimento.

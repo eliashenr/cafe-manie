@@ -2,7 +2,7 @@ extends SceneTree
 ## Vitrine dos personagens para conferência visual (precisa de janela: não use --headless).
 ##
 ## Uso (na pasta do projeto):
-##   godot -s res://tools/showcase.gd -- <saida.png> [zoom]
+##   godot -s res://tools/showcase.gd -- <saida.png> [zoom] [id do piso] [id da parede]
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -25,6 +25,11 @@ func _initialize() -> void:
 	var simulation = load("res://core/service/cafe_simulation.gd").with_game_data(clock, layout, catalog, 7)
 	simulation.customer_types.clear()  # ninguém chega sozinho: a vitrine fica parada
 	simulation.cafe_name = "Vitrine"
+	for surface_id in args.slice(2, 4):
+		var surface = simulation.surfaces.get_definition(StringName(surface_id))
+		if surface != null:
+			simulation.style.own(surface.id)
+			simulation.style.apply(surface)
 	var place := func(id: StringName, cell: Vector2i, rotation := 0) -> StringName:
 		return layout.place(catalog.get_definition(id), cell, rotation)
 	place.call(&"stove_basic", Vector2i(0, 0), 3)

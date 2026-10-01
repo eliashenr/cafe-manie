@@ -8,15 +8,23 @@
 [ext_resource type="Script" path="res://scenes/ui/build_bar.gd" id="6_build_bar"]
 [ext_resource type="Script" path="res://scenes/cafe/wall_view.gd" id="7_wall"]
 [ext_resource type="Script" path="res://scenes/audio/sound_board.gd" id="8_sound"]
+[ext_resource type="Script" path="res://scenes/cafe/exterior_view.gd" id="9_exterior"]
+[ext_resource type="Script" path="res://scenes/cafe/front_view.gd" id="10_front"]
 
 [node name="Cafe" type="Node2D"]
 script = ExtResource("1_cafe")
+
+[node name="ExteriorView" type="Node2D" parent="."]
+script = ExtResource("9_exterior")
 
 [node name="FloorView" type="Node2D" parent="."]
 script = ExtResource("2_floor")
 
 [node name="WallView" type="Node2D" parent="."]
 script = ExtResource("7_wall")
+
+[node name="FrontView" type="Node2D" parent="."]
+script = ExtResource("10_front")
 
 [node name="WorldLayer" type="Node2D" parent="."]
 y_sort_enabled = true

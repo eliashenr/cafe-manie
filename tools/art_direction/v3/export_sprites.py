@@ -22,6 +22,7 @@ import math
 import os
 import shutil
 import subprocess
+import xml.etree.ElementTree as ElementTree
 
 from furniture3 import *  # noqa: F401,F403
 from people3 import person, TRAY_EMPTY, TRAY_FOOD
@@ -47,26 +48,29 @@ GAP = 12                # px entre figuras, para nenhuma invadir a vizinha
 # --- Folhas ------------------------------------------------------------------------------
 
 class Sheet:
-    """Várias figuras numa imagem só. Cada figura tem um retângulo próprio e uma âncora."""
+    """Várias figuras numa imagem só. Cada figura tem um retângulo próprio e uma âncora.
+    design_tile: largura do piso na escala em que a folha é desenhada (96 nas peças novas, 84 no canvas)."""
 
-    def __init__(self, name):
+    def __init__(self, name, design_tile=TILE_W):
         self.name = name
+        self.scale = GAME_TILE_W / design_tile * DENSITY
         self.D = Defs()
-        self.items = []  # (nome, svg, x_px, y_px, w_px, h_px, left, top, anchor)
+        self.items = []  # (nome, svg, x_px, y_px, w_px, h_px, left, top, anchor, repete)
         self._x = GAP
         self._y = GAP
         self._row_h = 0
         self.width = 0
 
-    def add(self, sprite_name, svg, bounds, anchor=(0.0, 0.0)):
-        """svg em coordenadas próprias; bounds = (esquerda, topo, largura, altura) que cabem tudo."""
+    def add(self, sprite_name, svg, bounds, anchor=(0.0, 0.0), tile=False):
+        """svg em coordenadas próprias; bounds = (esquerda, topo, largura, altura) que cabem tudo.
+        tile: textura de repetir (sai inteira, sem recorte, do tamanho exato de bounds)."""
         left, top, width, height = bounds
-        w_px, h_px = math.ceil(width * SCALE), math.ceil(height * SCALE)
+        w_px, h_px = math.ceil(width * self.scale - 1e-6), math.ceil(height * self.scale - 1e-6)
         if self._x + w_px + GAP > SHEET_MAX_WIDTH and self._x > GAP:
             self._x = GAP
             self._y += self._row_h + GAP
             self._row_h = 0
-        self.items.append((sprite_name, svg, self._x, self._y, w_px, h_px, left, top, anchor))
+        self.items.append((sprite_name, svg, self._x, self._y, w_px, h_px, left, top, anchor, tile))
         self._x += w_px + GAP
         self._row_h = max(self._row_h, h_px)
         self.width = max(self.width, self._x)
@@ -77,16 +81,18 @@ class Sheet:
     def svg(self):
         width, height = self.size()
         parts = []
-        for (_, svg, x, y, _, _, left, top, _) in self.items:
-            parts.append(f'<g transform="translate({f(x / SCALE - left)},{f(y / SCALE - top)})">{svg}</g>')
+        for (_, svg, x, y, _, _, left, top, _, _) in self.items:
+            parts.append(f'<g transform="translate({f(x / self.scale - left)},{f(y / self.scale - top)})">{svg}</g>')
         return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-                f'viewBox="0 0 {f(width / SCALE)} {f(height / SCALE)}">{self.D.render()}{"".join(parts)}</svg>')
+                f'viewBox="0 0 {f(width / self.scale)} {f(height / self.scale)}">{self.D.render()}{"".join(parts)}</svg>')
 
     def manifest(self):
         out = {}
-        for (name, _, x, y, w, h, left, top, anchor) in self.items:
+        for (name, _, x, y, w, h, left, top, anchor, tile) in self.items:
             out[name] = {"sheet": self.name, "rect": [x, y, w, h],
-                         "anchor": [round(x + (anchor[0] - left) * SCALE, 2), round(y + (anchor[1] - top) * SCALE, 2)]}
+                         "anchor": [round(x + (anchor[0] - left) * self.scale, 2), round(y + (anchor[1] - top) * self.scale, 2)]}
+            if tile:
+                out[name]["tile"] = True
         return out
 
 
@@ -288,6 +294,64 @@ def export_food(sheet, manifest):
     manifest["food_width"] = round(FOOD_SIZE * WORLD, 2)
 
 
+# --- Piso, paredes e exterior --------------------------------------------------------------
+
+import tiles3  # noqa: E402
+
+# Enfeites ao longo de cada parede, a partir do canto do fundo; o jogo repete o ciclo se ela crescer.
+WALL_DECORATIONS = {
+    "R": ["relogio", "", "janela", "prateleira", "quadro_cupcake", "", "janela", ""],
+    "L": ["", "quadro_paisagem", "janela", "", "prateleira", "janela", "", "quadro_cupcake"],
+}
+TILE_BOUNDS = (-46.0, -4.0, 92.0, 50.0)  # um piso de 84x42 com sobra; âncora no vértice de cima
+# Com folga dos lados: o varão da cortina e as folhas da prateleira passam um pouco da largura do piso.
+WALL_BOUNDS = {"R": (-10.0, -110.0, 62.0, 142.0), "L": (-10.0, -133.0, 62.0, 142.0)}
+# Lado das texturas de repetir: 42 unidades = 128 px de textura = 64 px de mundo. A grama usa o dobro,
+# para os tufos não formarem um desenho repetido.
+TEXTURE = 42.0
+LAWN_TEXTURE = 84.0
+
+
+def export_scene(sheet, manifest):
+    """Peças na escala do canvas (piso de 84): o jogo converte com o 'scale' da folha."""
+    iso = Iso(0, 0, tiles3.TW, tiles3.TH)
+    D = sheet.D
+    floors = {}
+    for surface_id, (variants, draw) in tiles3.FLOORS.items():
+        keys = ["a", "b"] if variants == "xadrez" else list(range(variants))
+        names = []
+        for key in keys:
+            name = f"piso_{surface_id}_{key}"
+            sheet.add(name, draw(D, iso, key), TILE_BOUNDS)
+            names.append(name)
+        floors[surface_id] = {"mode": "xadrez" if variants == "xadrez" else "variantes", "sprites": names}
+    sheet.add("piso_entrada", tiles3.entrance_mat(D, iso), TILE_BOUNDS)
+    walls = {}
+    for surface_id, draw in tiles3.WALLS.items():
+        walls[surface_id] = {}
+        for side in ("R", "L"):
+            name = f"parede_{surface_id}_{side}"
+            dark = tiles3.LEFT_DARK if side == "L" else 0.0
+            sheet.add(name, tiles3.wall_piece(side, draw(D, dark)), WALL_BOUNDS[side])
+            walls[surface_id][side] = name
+    for deco, draw in tiles3.DECORATIONS.items():
+        for side in ("R", "L"):
+            sheet.add(f"enfeite_{deco}_{side}", tiles3.wall_piece(side, draw(D, side)), WALL_BOUNDS[side])
+    sheet.add("gramado", tiles3.lawn_tile(D, LAWN_TEXTURE), (0.0, 0.0, LAWN_TEXTURE, LAWN_TEXTURE), tile=True)
+    sheet.add("asfalto", tiles3.asphalt_tile(D, TEXTURE), (0.0, 0.0, TEXTURE, TEXTURE), tile=True)
+    sheet.add("poste", tiles3.lamp_post(D, 0, 0, 0.85), (-34.0, -134.0, 68.0, 142.0))
+    sheet.add("canteiro", tiles3.flower_bed(D, 0, 0, 0.9), (-38.0, -36.0, 76.0, 54.0))
+    world = GAME_TILE_W / tiles3.TW  # pixels de mundo por unidade desta folha
+    manifest["floors"] = floors
+    manifest["floor_entrance"] = "piso_entrada"
+    manifest["walls"] = walls
+    manifest["wall_height"] = round(tiles3.WALL_H * world, 2)
+    manifest["wall_decorations"] = WALL_DECORATIONS
+    manifest["exterior"] = {"lawn": "gramado", "lawn_world": round(LAWN_TEXTURE * world, 2),
+                            "asphalt": "asfalto", "asphalt_world": round(TEXTURE * world, 2),
+                            "lamp": "poste", "flower_bed": "canteiro"}
+
+
 # --- Saída -------------------------------------------------------------------------------
 
 def find_browser():
@@ -309,14 +373,21 @@ def export(out_dir=OUT):
     os.makedirs(out_dir, exist_ok=True)
     browser = find_browser()
     manifest = {"density": DENSITY, "sheets": {}, "sprites": {}, "furniture": {}}
-    sheets = [Sheet("moveis"), Sheet("personagens"), Sheet("pratos")]
+    sheets = [Sheet("moveis"), Sheet("personagens"), Sheet("pratos"), Sheet("cenario", tiles3.TW)]
     export_furniture(sheets[0], manifest)
     export_people(sheets[1], manifest)
     export_food(sheets[2], manifest)
+    export_scene(sheets[3], manifest)
     for sheet in sheets:
         svg_path = os.path.join(out_dir, sheet.name + ".svg")
+        markup = sheet.svg()
+        try:
+            ElementTree.fromstring(markup)
+        except ElementTree.ParseError as error:
+            # O navegador desenharia uma página de erro no lugar das figuras.
+            raise SystemExit(f"SVG inválido na folha {sheet.name}: {error}")
         with open(svg_path, "w", encoding="utf-8", newline="\n") as fh:
-            fh.write(sheet.svg())
+            fh.write(markup)
         rasterize(browser, svg_path, os.path.join(out_dir, sheet.name + ".png"), sheet.size())
         manifest["sheets"][sheet.name] = sheet.name + ".png"
         manifest["sprites"].update(sheet.manifest())

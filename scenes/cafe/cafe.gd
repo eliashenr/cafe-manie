@@ -65,8 +65,10 @@ var grid: CafeGrid:
 	get:
 		return layout.grid
 
+@onready var exterior_view: ExteriorView = $ExteriorView
 @onready var floor_view: FloorView = $FloorView
 @onready var wall_view: WallView = $WallView
+@onready var front_view: FrontView = $FrontView
 @onready var world_layer: WorldLayer = $WorldLayer
 @onready var effects: Node2D = $Effects
 @onready var camera: CafeCamera = $CafeCamera
@@ -381,6 +383,10 @@ func _fit_floor_and_camera() -> void:
 	floor_view.grid_size = layout.grid.size
 	floor_view.entrance = layout.entrance
 	wall_view.grid_size = layout.grid.size
+	exterior_view.grid_size = layout.grid.size
+	exterior_view.entrance = layout.entrance
+	front_view.grid_size = layout.grid.size
+	front_view.entrance = layout.entrance
 	var headroom := maxf(furniture_headroom, wall_view.wall_height)
 	var bounds := IsoProjection.grid_bounds(layout.grid.size).grow_individual(0.0, headroom, 0.0, 0.0)
 	camera.set_bounds(bounds.grow(camera_margin))

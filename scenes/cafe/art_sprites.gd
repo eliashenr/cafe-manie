@@ -85,6 +85,52 @@ static func characters() -> Dictionary:
 	return _load_manifest().get("characters", {})
 
 
+## Piso do revestimento nesta célula: no xadrez, claro e escuro se alternam; nos
+## outros, a variação sai da posição (sempre a mesma para a mesma célula).
+static func floor_tile(surface_id: StringName, cell: Vector2i) -> Sprite:
+	var info: Dictionary = _load_manifest().get("floors", {}).get(String(surface_id), {})
+	var names: Array = info.get("sprites", [])
+	if names.is_empty():
+		return null
+	var index := posmod(cell.x + cell.y, 2) if info.get("mode", "") == "xadrez" else posmod(cell.x * 7 + cell.y * 13 + cell.x * cell.y, names.size())
+	return get_sprite(names[mini(index, names.size() - 1)])
+
+
+## Tapete da entrada (por cima do piso).
+static func floor_entrance() -> Sprite:
+	return get_sprite(_load_manifest().get("floor_entrance", ""))
+
+
+## Painel de uma célula da parede: "R" (direita, ao longo de x) ou "L" (esquerda, ao longo de y).
+static func wall_panel(surface_id: StringName, side: String) -> Sprite:
+	var sprite_name: String = _load_manifest().get("walls", {}).get(String(surface_id), {}).get(side, "")
+	return null if sprite_name.is_empty() else get_sprite(sprite_name)
+
+
+## Nome do enfeite da célula [param index] da parede (contando do canto do fundo),
+## ou "" se ela fica lisa. Ex.: "janela", "relogio".
+static func wall_decoration_name(side: String, index: int) -> String:
+	var cycle: Array = _load_manifest().get("wall_decorations", {}).get(side, [])
+	return "" if cycle.is_empty() else cycle[posmod(index, cycle.size())]
+
+
+## Enfeite da célula [param index] da parede, ou null.
+static func wall_decoration(side: String, index: int) -> Sprite:
+	var deco := wall_decoration_name(side, index)
+	return null if deco.is_empty() else get_sprite("enfeite_%s_%s" % [deco, side])
+
+
+## Altura da parede da arte, em pixels de mundo (0 se não há arte de parede).
+static func wall_height() -> float:
+	return float(_load_manifest().get("wall_height", 0.0))
+
+
+## Peças do exterior: "lawn" e "asphalt" (texturas de repetir), "lawn_world" e
+## "asphalt_world" (período delas em pixels de mundo), "lamp" e "flower_bed".
+static func exterior() -> Dictionary:
+	return _load_manifest().get("exterior", {})
+
+
 static func _load_manifest() -> Dictionary:
 	if _manifest.is_empty() and ResourceLoader.exists(MANIFEST_PATH):
 		var json: JSON = load(MANIFEST_PATH)

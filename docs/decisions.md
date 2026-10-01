@@ -4,6 +4,20 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-033 — Cenário da v3: piso e parede por célula, rua do lado da entrada
+
+**Problema:** o canvas desenha o salão inteiro de uma vez, mas no jogo o jogador troca o piso e a parede e a cafeteria cresce. Além disso, no canvas a porta fica numa parede do fundo e a rua passa atrás do salão. No jogo, os clientes entram pela borda da frente, à direita.
+
+**Decisão:**
+- **Piso:** uma peça do revestimento por célula. No xadrez, claro e escuro se alternam. Nos outros pisos, a variação sai da posição: a mesma célula sempre igual, e tábuas e mármores diferentes lado a lado. Cada peça passa um pouco da borda (sangria) para não abrir fresta. A borda da frente ganha a laje branca e a entrada ganha o tapete listrado do canvas.
+- **Parede:** um painel por célula nos dois lados, com a da esquerda mais escura, como no canvas. Os enfeites (relógio, janelas com cortina, prateleira, quadros) seguem um ciclo que se repete quando a parede cresce. A luz das janelas aparece no chão. O acabamento branco no alto e as pontas são desenhados por código. A parede tem a altura do canvas (152 px de mundo), e a câmera enquadra por ela.
+- **Revestimentos:** os 9 do jogo foram redesenhados no estilo v3, sem mudar id, preço nem beleza. As listras menta são o papel de parede aprovado nas pranchas.
+- **Exterior:** gramado em volta, sem árvores. Do lado da entrada ficam calçada, meio-fio, rua e um caminho de pedras até a porta, porque é por ali que os clientes chegam. As bordas da frente ganham a cerquinha branca, com abertura no caminho, e há canteiros na grama e postes na calçada.
+- **Camadas:** gramado, rua e caminho ficam atrás de tudo (`ExteriorView`). Cerca, canteiros e postes ficam por cima do salão (`FrontView`, `z_index` 1), porque estão sempre na frente dele.
+- O exportador confere se cada folha é um SVG válido antes de desenhar. Um atributo repetido fazia o navegador desenhar uma página de erro no lugar das figuras.
+
+---
+
 ## DT-032 — A cadeira vira sozinha para a mesa (decisão do PO, 01/10/2026)
 
 **Problema:** com a arte dos personagens, quem senta olha para onde a cadeira aponta (DT-031). Antes, a rotação da cadeira quase não aparecia, e o jogador podia pôr cadeiras viradas para qualquer lado.

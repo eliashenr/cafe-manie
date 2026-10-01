@@ -12,12 +12,12 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 284 testes
+## Cobertura atual — 291 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
 | `unit/test_cafe_grid.gd` | 10 | limites, ocupação, colisão, expansão segura |
-| `unit/test_iso_projection.gd` | 7 | clique cai no piso certo, inclusive nas bordas; posições fracionárias dos personagens |
+| `unit/test_iso_projection.gd` | 8 | clique cai no piso certo, inclusive nas bordas; posições fracionárias dos personagens; vértices fracionários (calçada, cerca) |
 | `unit/test_furniture_catalog.gd` | 6 | dados de móveis válidos (9 móveis); recusa de dados ruins |
 | `unit/test_cafe_layout.gd` | 20 | regras de posicionamento, entrada, acesso, mover/girar/remover sem efeito colateral; para onde a frente aponta; assento vira para a mesa |
 | `unit/test_placement_session.gd` | 9 | modo de construção só muda o layout ao confirmar; cadeira levada para o lado da mesa vira para ela |
@@ -43,6 +43,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_progress_scene.gd` | 17 | avisos de conquista em fila, painel de conquistas, recompensa diária (abre, paga, volta no dia seguinte, não empilha janelas), nome da cafeteria, sons e botão de som |
 | `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade**; toque no botão não vaza para o piso |
 | `integration/test_furniture_art.gd` | 5 | todo móvel tem arte nas 4 rotações, com âncora e escala certas; a cena e a prévia usam a arte |
+| `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; janelas na parede; a cena usa a arte e enquadra a parede; cerca aberta só na entrada; exterior acompanha a expansão |
 | `integration/test_character_art.gd` | 11 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; passos alternados; sentado segue a cadeira; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
 
 O executor também **reprova um arquivo de teste que nem compila**. Antes, ele sumia da contagem em silêncio (encontrado nesta etapa).
@@ -56,6 +57,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Paredes, beleza, venda, conquistas, recompensa diária e sons (20 de 20 pegos):** revestimento de graça, beleza ignorando revestimentos, piso sem atualizar, beleza sem efeito na paciência, revestimento não salvo, venda do último fogão, venda sem confirmação, guardados ignorados na venda, conquista de um degrau por vez, conquistas não restauradas, aviso apagando outro, clientes não contados (pego depois de um teste novo), relógio para trás liberando prêmio, sequência sem reinício, dia em UTC em vez do local, sequência não salva, recusa sem som, som desligado não lembrado, nota sem entrada suave, prato pronto sem som.
 - **Loja, expansão e missões (5 de 5 pegos):** móvel novo posicionado de graça, inventário sem salvamento automático, piso não acompanha a expansão, expansão sem confirmação, Guardar destruindo o móvel.
 - **Fase 2 (7 de 7 pegos):** paciência nunca acaba, garçom não serve, cozinhar dá ouro em vez de cobrar, cadeira ocupada desprotegida, personagens ignoram mudança de layout, porção reservada se perde, comida pronta na hora.
+- **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 
 ## Roteiro de teste manual — Arte v3 (móveis e personagens)
@@ -70,7 +72,10 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 6. [ ] O balão mostra o desenho do prato. A barra vai de verde a amarelo e vermelho, e a cara do cliente acompanha.
 7. [ ] Nenhum móvel cobre um balão.
 8. [ ] Com o zoom máximo (roda do mouse ou pinça), a arte continua nítida.
-9. [ ] Sensação: os personagens parecem os das pranchas aprovadas? Algum tamanho ficou estranho (gente grande ou pequena demais perto dos móveis)? *(anote)*
+9. [ ] Fora do salão há gramado, calçada, rua, cerquinha (aberta no caminho da entrada), canteiros e postes.
+10. [ ] Na loja, aba **Piso** e aba **Parede**: cada revestimento troca a arte do salão inteiro, sem frestas entre os pisos.
+11. [ ] Expanda a cafeteria: piso, paredes, calçada e cerca crescem junto.
+12. [ ] Sensação: os personagens e o cenário parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
 
 ## Roteiro de teste manual — Fase 1
 
