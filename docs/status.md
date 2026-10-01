@@ -17,12 +17,16 @@
 
 🟡 **EM ANDAMENTO**
 
-- **Mudança para o Claude Code no PC do PO:** o projeto inteiro, com histórico, vai para uma pasta própria. O que veio da conversa e o que muda no Windows estão em [passagem.md](passagem.md).
 - **Teste no celular de verdade:** roteiro "Android" em [qa.md](qa.md).
+
+✅ **RESOLVIDO EM 30/09/2026 (PC do PO)**
+
+- **Mudança para o Claude Code:** histórico de 35 commits recuperado do bundle, ícone de volta à versão do repositório, bundle apagado.
+- **Envio para o GitHub:** `main` enviada para `eliashenr/cafe-manie`.
 
 🔴 **BLOQUEADO**
 
-- **Envio para o GitHub:** o push continua recusado (403) até o app do Claude ser instalado na conta `eliashenr`. Todos os commits estão prontos localmente; o projeto vai em zip.
+- **Godot 4.7.2 não está instalada no PC do PO.** Sem ela não dá para rodar os testes nem a cena, e nada do jogo pode ser declarado pronto (seção 91).
 
 🧪 **TESTADO**
 
@@ -46,5 +50,5 @@ Detalhes em [decisions.md](decisions.md):
 ➡️ **PRÓXIMO PASSO**
 
 - **Levar a arte v3 para o jogo**, exportando os sprites do gerador e trocando os placeholders da Godot.
-- Do PC do PO, tentar de novo o **envio para o GitHub** com o login dele.
+- **Instalar a Godot 4.7.2** no PC do PO e confirmar os 260 testes no Windows.
 - **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.
