@@ -15,7 +15,13 @@ func _cafe_with_kitchen() -> Array:
 
 
 func test_real_scene_starts_a_new_game_from_data() -> void:
-	var cafe: Cafe = add_to_tree(CafeScene.instantiate())
+	# Pasta própria e vazia: sem ela, a cena leria o save de quem jogou neste PC.
+	var dir := "user://test_new_game"
+	DirAccess.make_dir_recursive_absolute(dir)
+	var cafe: Cafe = CafeScene.instantiate()
+	cafe.save_service = SaveService.new(dir.path_join("save.json"))
+	cafe.save_service.delete_save()
+	add_to_tree(cafe)
 	await tree.process_frame
 	var new_game: NewGameConfig = load("res://data/config/new_game.tres")
 	assert_eq(cafe.layout.count(), new_game.starter_items.size(), "móveis iniciais no lugar")
