@@ -4,6 +4,21 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-035 — Interface da v3: formato do jogo antigo, loja que abre e fecha
+
+**Problema:** a interface ainda era a do protótipo: painéis escuros, botões de texto e a loja sempre aberta embaixo. As pranchas aprovadas (DT-029) mostram o formato do jogo antigo.
+
+**Decisão:**
+- **HUD:** o Café Ouro num contador escuro com a moeda; no meio, a barra de XP listrada com a estrela do chef e o nível em número grande, e a barra de beleza com a flor; no alto à direita, o cronômetro do presente diário (com "Receber!" quando chega a hora); à esquerda, os medalhões Missões (com o cartão da missão, que o medalhão esconde e mostra), Presente e Conquistas; à direita, botões quadrados de zoom, som e configurações (Recomeçar); embaixo à esquerda, a satisfação dos clientes em estrelas (a popularidade) e o nome da cafeteria.
+- **Barra de baixo:** a faixa branca de ícones (Loja, Reformar, Expandir, Missões, Presentes, Conquistas). A **Loja abre** um painel com abas coloridas (Salão, Cozinha, Decoração, Pisos, Paredes) e quadradinhos com o desenho do item, o nome e a etiqueta de preço ou o cadeado do nível. Escolher um móvel fecha a loja, para o salão aparecer. Móvel selecionado e construção usam os botões quadrados da arte (Mover, Girar, Guardar, Vender, Fechar; Girar, Confirmar, Cancelar). O fogão mostra as receitas em cartões com o desenho do prato.
+- **Abas:** os móveis se dividem pela categoria que já existe nos dados. Mesa e cadeira ficam em Salão; fogão e balcão, em Cozinha; o resto, em Decoração. Nada muda nos dados.
+- **Arte e texto:** ícones, botões e medalhões vêm do gerador (folha `interface`, com 2 pixels de textura por pixel da tela). O texto é escrito pela Godot, para os números mudarem e continuarem nítidos.
+- **O que não existe no jogo fica de fora:** vizinhos, correio, grãos (moeda premium), festival e cardápio. Eles voltam com as fases deles.
+- Os textos que os testes usam continuam iguais ("60 ouro", "Nível 3", "Em uso", "10×8"...). O botão de som mostra o símbolo e diz o estado na dica.
+- **Fonte:** a interface usa a fonte padrão da Godot. As pranchas usam Fredoka e Nunito (licença livre OFL). Trazer essas fontes para o jogo depende de um download, que fica para o PO autorizar.
+
+---
+
 ## DT-034 — Cozinha da v3: panela no fogão, selo e pilha de pratos
 
 **Problema:** fogão e balcão mostravam o estado numa etiqueta de texto escura ("Café 0:12", "Café ×6"). As pranchas mostram a panela no fogão, um selo redondo com o prato e o tempo e, no balcão, a pilha de pratos com um número.

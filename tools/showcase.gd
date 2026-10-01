@@ -2,9 +2,10 @@ extends SceneTree
 ## Vitrine dos personagens para conferência visual (precisa de janela: não use --headless).
 ##
 ## Uso (na pasta do projeto):
-##   godot -s res://tools/showcase.gd -- <saida.png> [zoom] [id do piso] [id da parede] [foco x,y]
+##   godot -s res://tools/showcase.gd -- <saida.png> [zoom] [id do piso] [id da parede] [foco x,y] [painel]
 ##
 ## O foco é a célula que fica no meio da foto (ex.: 1,1 para a cozinha).
+## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir.
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -15,6 +16,8 @@ var _output := ""
 var _zoom := 1.0
 var _frames := 20
 var _focus := Vector2(-1, -1)
+var _panel := ""
+var _stoves: Array[StringName] = []
 
 
 func _initialize() -> void:
@@ -24,6 +27,8 @@ func _initialize() -> void:
 		_zoom = float(args[1])
 	if args.size() > 4 and args[4].contains(","):
 		_focus = Vector2(float(args[4].get_slice(",", 0)), float(args[4].get_slice(",", 1)))
+	if args.size() > 5:
+		_panel = args[5]
 	var clock = load("res://core/time/manual_clock.gd").new()
 	var catalog = load("res://core/furniture/furniture_catalog.gd").load_from()
 	var layout = load("res://core/cafe/cafe_layout.gd").new(Vector2i(8, 8), Vector2i(7, 4))
@@ -40,6 +45,8 @@ func _initialize() -> void:
 	var cooking_stove: StringName = place.call(&"stove_basic", Vector2i(0, 0), 3)
 	var ready_stove: StringName = place.call(&"stove_basic", Vector2i(1, 0), 0)
 	var counter: StringName = place.call(&"counter_basic", Vector2i(0, 2), 3)
+	var free_stove: StringName = place.call(&"stove_basic", Vector2i(2, 0), 0)
+	_stoves = [free_stove]
 	place.call(&"plant_pot", Vector2i(0, 6))
 	place.call(&"table_round", Vector2i(3, 2))
 	var left_chair: StringName = place.call(&"chair_wood", Vector2i(2, 2), 3)
@@ -100,10 +107,26 @@ func _initialize() -> void:
 	waiter.speed = 0.0
 	waiter.path.append(Vector2i(3, 6))
 
+	simulation.wallet.earn(&"soft_currency", 480, "vitrine")
 	_cafe = load("res://scenes/cafe/cafe.tscn").instantiate()
 	_cafe.simulation = simulation
 	_cafe.get_node("SoundBoard").settings_path = ""
 	root.add_child(_cafe)
+
+
+## Deixa o painel de baixo no estado pedido (depois de a cena ficar pronta).
+func _set_panel() -> void:
+	match _panel.get_slice(":", 0):
+		"loja":
+			var tab := _panel.get_slice(":", 1)
+			_cafe.build_bar.open_shop(_cafe.build_bar.ShopTab.get(tab, 0) if not tab.is_empty() else 0)
+		"fogao":
+			var stove = _cafe.layout.get_placement(_stoves[0])
+			_cafe.select_at_world(IsoProjection.cell_center(stove.origin))
+		"construir":
+			_cafe.start_placing(&"table_round")
+			_cafe.tap_at_world(IsoProjection.cell_center(Vector2i(5, 2)))
+	_panel = ""
 
 
 func _process(_delta: float) -> bool:
@@ -113,6 +136,8 @@ func _process(_delta: float) -> bool:
 		return true
 	for window: Window in _cafe.find_children("*", "Window", true, false):
 		window.hide()
+	if not _panel.is_empty():
+		_set_panel()
 	var camera := _cafe.get_viewport().get_camera_2d()
 	camera.zoom = Vector2(_zoom, _zoom)
 	if _focus.x >= 0.0:

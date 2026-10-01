@@ -354,6 +354,11 @@ func can_claim_daily() -> bool:
 	return daily.can_claim(clock.local_day())
 
 
+## Segundos até poder receber a próxima recompensa diária (0 se já pode agora).
+func seconds_until_daily() -> float:
+	return 0.0 if can_claim_daily() else clock.seconds_to_next_local_day()
+
+
 ## Dia da sequência (1 a 7) que seria recebido hoje.
 func daily_day_number() -> int:
 	return daily.index_for(clock.local_day()) + 1

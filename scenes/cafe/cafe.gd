@@ -105,6 +105,9 @@ func _ready() -> void:
 	hud.daily_claim_requested.connect(claim_daily_reward)
 	hud.name_chosen.connect(_on_name_chosen)
 	hud.name_skipped.connect(_on_name_skipped)
+	hud.daily_requested.connect(_on_daily_requested)
+	hud.zoom_requested.connect(func(factor: float) -> void:
+		camera.zoom_at(get_viewport().get_visible_rect().size / 2.0, camera.zoom.x * factor))
 	build_bar.bind(self)
 	world_layer.refresh(simulation)
 	_watch_for_changes()
@@ -253,6 +256,15 @@ func offer_daily_reward() -> bool:
 		return false
 	hud.show_daily_reward()
 	return true
+
+
+## O jogador tocou no presente: abre a recompensa, ou diz quanto falta para a próxima.
+func _on_daily_requested() -> void:
+	if offer_daily_reward():
+		return
+	if not simulation.can_claim_daily():
+		var left := ceili(simulation.seconds_until_daily())
+		EventBus.message_posted.emit("Próximo presente em %dh%02d" % [left / 3600, (left % 3600) / 60])
 
 
 ## Alguma janela de pergunta aberta? Só cabe uma por vez na tela.

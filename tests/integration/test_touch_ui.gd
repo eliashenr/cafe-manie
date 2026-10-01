@@ -11,7 +11,10 @@ func _tap_control(control: Control) -> void:
 func test_tapping_a_shop_button_with_a_finger_works() -> void:
 	var cafe := await spawn_cafe()
 	await settle()
+	_tap_control(cafe.build_bar.find_button("ShopButton"))
 	await settle()
+	await settle()
+	assert_true(cafe.build_bar.shop_open, "o toque abriu a loja")
 	var button := cafe.build_bar.find_button("Build_table_round")
 	_tap_control(button)
 	await settle()

@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 293 testes
+## Cobertura atual — 301 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -32,17 +32,18 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_shop_and_missions.gd` | 21 | compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
 | `unit/test_style_and_beauty.gd` | 11 | revestimentos (um inicial por tipo, compra única, troca grátis, bloqueios); beleza soma móveis e revestimentos; beleza aumenta a paciência; save e migração |
 | `unit/test_achievements.gd` | 9 | dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
-| `unit/test_daily_rewards.gd` | 10 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
+| `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
 | `integration/test_save_scene.gd` | 8 | fechar e reabrir com tudo no lugar, pratos prontos com o jogo fechado, salvamento automático, minimizar salva, Recomeçar com confirmação |
 | `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento (com as paredes) |
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
 | `integration/test_service_scene.gd` | 11 | jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
-| `integration/test_shop_scene.gd` | 13 | loja, compra, Guardar, expansão com confirmação, missões; **Vender com confirmação** e recusa do último fogão |
+| `integration/test_shop_scene.gd` | 14 | loja, compra, Guardar, expansão com confirmação, missões; **Vender com confirmação** e recusa do último fogão |
 | `integration/test_style_scene.gd` | 8 | abas, piso e parede desenhados, compra com confirmação, troca sem perguntar, bloqueio, Beleza no HUD, paredes crescem com a expansão |
 | `integration/test_progress_scene.gd` | 17 | avisos de conquista em fila, painel de conquistas, recompensa diária (abre, paga, volta no dia seguinte, não empilha janelas), nome da cafeteria, sons e botão de som |
 | `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade**; toque no botão não vaza para o piso |
 | `integration/test_furniture_art.gd` | 7 | todo móvel tem arte nas 4 rotações, com âncora e escala certas; a cena e a prévia usam a arte; panela de cada receita; forno aceso só de frente; fogão e balcão mostram receita, tempo, Pronto! e porções |
+| `integration/test_hud_art.gd` | 6 | moeda com ponto de milhar e nível; estrelas pela satisfação; presente com cronômetro; zoom pelos botões; medalhão de missões esconde e mostra; faixa de ícones abre a loja e as conquistas |
 | `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; janelas na parede; a cena usa a arte e enquadra a parede; cerca aberta só na entrada; exterior acompanha a expansão |
 | `integration/test_character_art.gd` | 11 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; passos alternados; sentado segue a cadeira; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
 
@@ -57,6 +58,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Paredes, beleza, venda, conquistas, recompensa diária e sons (20 de 20 pegos):** revestimento de graça, beleza ignorando revestimentos, piso sem atualizar, beleza sem efeito na paciência, revestimento não salvo, venda do último fogão, venda sem confirmação, guardados ignorados na venda, conquista de um degrau por vez, conquistas não restauradas, aviso apagando outro, clientes não contados (pego depois de um teste novo), relógio para trás liberando prêmio, sequência sem reinício, dia em UTC em vez do local, sequência não salva, recusa sem som, som desligado não lembrado, nota sem entrada suave, prato pronto sem som.
 - **Loja, expansão e missões (5 de 5 pegos):** móvel novo posicionado de graça, inventário sem salvamento automático, piso não acompanha a expansão, expansão sem confirmação, Guardar destruindo o móvel.
 - **Fase 2 (7 de 7 pegos):** paciência nunca acaba, garçom não serve, cozinhar dá ouro em vez de cobrar, cadeira ocupada desprotegida, personagens ignoram mudança de layout, porção reservada se perde, comida pronta na hora.
+- **Interface v3 (8 de 8 pegos):** loja começando aberta, loja que não fecha ao escolher, moeda sem ponto de milhar, estrelas apagadas, presente sem aviso de quanto falta, zoom ao contrário, medalhão que não esconde o cartão, Reformar abrindo a aba errada.
 - **Arte v3 da cozinha (6 de 6 pegos):** fogão sem a receita, selo sem o Pronto!, balcão sem quantidade, forno aceso de costas, selos por baixo do salão, estado da cozinha sem atualizar.
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
@@ -77,7 +79,11 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 10. [ ] Na loja, aba **Piso** e aba **Parede**: cada revestimento troca a arte do salão inteiro, sem frestas entre os pisos.
 11. [ ] Expanda a cafeteria: piso, paredes, calçada e cerca crescem junto.
 12. [ ] Cozinhe algo: o fogão mostra a panela com vapor e o selo com o tempo; pronto, o selo fica verde ("Pronto!"). No balcão aparece a pilha de pratos com o número.
-13. [ ] Sensação: os personagens e o cenário parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+13. [ ] No alto: a moeda, a barra de XP com o nível, a beleza e o presente diário ("Receber!" ou o cronômetro).
+14. [ ] Toque em **Loja**: o painel abre com as abas coloridas e os quadradinhos. Escolha a Mesa: a loja fecha e a mesa aparece para posicionar.
+15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
+16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
+17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
 
 ## Roteiro de teste manual — Fase 1
 

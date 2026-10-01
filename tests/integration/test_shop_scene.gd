@@ -19,6 +19,9 @@ func _cafe_with_game_data() -> Cafe:
 func test_shop_buttons_show_price_and_level_lock() -> void:
 	var cafe := await spawn_cafe()
 	await settle()
+	assert_true(cafe.build_bar.find_button("Build_table_round") == null, "a loja começa fechada, com a faixa de ícones")
+	cafe.build_bar.find_button("ShopButton").pressed.emit()
+	await settle()
 	var table := cafe.build_bar.find_button("Build_table_round")
 	assert_true(table.text.contains("60 ouro"), table.text)
 	assert_false(table.disabled)
@@ -29,6 +32,7 @@ func test_shop_buttons_show_price_and_level_lock() -> void:
 
 func test_buttons_turn_off_when_gold_runs_out_without_rebuilding() -> void:
 	var cafe := await spawn_cafe()
+	cafe.build_bar.open_shop(BuildBar.ShopTab.KITCHEN)
 	await settle()
 	var stove := cafe.build_bar.find_button("Build_stove_basic")
 	assert_false(stove.disabled, "200 ouro: dá para comprar fogão (150)")
@@ -70,6 +74,24 @@ func test_money_spent_during_placement_is_refused_without_placing() -> void:
 	assert_true(cafe.build_bar.message_text().contains("insuficiente"), cafe.build_bar.message_text())
 
 
+func test_picking_an_item_closes_the_shop_and_the_close_button_works() -> void:
+	var cafe := await spawn_cafe()
+	cafe.build_bar.open_shop()
+	await settle()
+	assert_true(cafe.build_bar.shop_open)
+	cafe.build_bar.find_button("Build_table_round").pressed.emit()
+	await settle()
+	assert_eq(cafe.mode, Cafe.Mode.BUILD)
+	assert_false(cafe.build_bar.shop_open, "a loja fecha para o salão aparecer")
+	cafe.cancel_placement()
+	cafe.build_bar.open_shop()
+	await settle()
+	(cafe.build_bar.find_child("CloseShopButton", true, false) as Button).pressed.emit()
+	await settle()
+	assert_false(cafe.build_bar.shop_open)
+	assert_true(cafe.build_bar.find_button("ShopButton") != null, "volta a faixa de ícones")
+
+
 # --- Inventário --------------------------------------------------------------------
 
 func test_store_button_keeps_the_item_and_placing_again_is_free() -> void:
@@ -85,6 +107,7 @@ func test_store_button_keeps_the_item_and_placing_again_is_free() -> void:
 	store.pressed.emit()
 	assert_eq(cafe.layout.count(), 0)
 	assert_eq(cafe.simulation.inventory.count(&"table_round"), 1)
+	cafe.build_bar.open_shop(BuildBar.ShopTab.SALON)
 	await settle()
 	var table := cafe.build_bar.find_button("Build_table_round")
 	assert_true(table.text.contains("1 guardado"), table.text)

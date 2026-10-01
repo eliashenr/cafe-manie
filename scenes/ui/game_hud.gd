@@ -1,8 +1,14 @@
 class_name GameHud
 extends CanvasLayer
-## PLACEHOLDER_HUD: painel de cima com nível, XP, Café Ouro e popularidade,
-## cartão da missão atual (canto direito), e um aviso central para mensagens
-## curtas (subiu de nível, missão concluída, ação recusada).
+## Interface de cima e das laterais, no formato da v3 (o do jogo antigo, desenho nosso):
+## - no alto à esquerda, o Café Ouro num contador escuro com a moeda;
+## - no meio, a barra de XP listrada com a estrela do chef e o nível em número grande,
+##   e a barra de beleza com a flor;
+## - no alto à direita, o cronômetro do presente diário;
+## - na lateral esquerda, os medalhões de Missões (com o cartão da missão atual),
+##   Presente e Conquistas; na direita, botões quadrados de zoom e som;
+## - embaixo à esquerda, a satisfação dos clientes (popularidade) e o nome da cafeteria;
+## - um aviso no alto para mensagens curtas (subiu de nível, missão concluída...).
 ##
 ## Os nomes exibidos das moedas ficam aqui, na interface; o código do jogo
 ## usa ids neutros (ver docs/economy.md).
@@ -17,29 +23,41 @@ signal name_chosen(text: String)
 signal name_skipped
 ## O jogador tocou no botão de som. [param muted] é o novo estado.
 signal mute_toggled(muted: bool)
+## O jogador tocou no presente diário (medalhão ou cronômetro).
+signal daily_requested
+## O jogador tocou num botão de zoom: multiplica o zoom por [param factor].
+signal zoom_requested(factor: float)
 
 const SOFT_CURRENCY_NAME := "Café Ouro"
-const HINT := "Arraste para mover  •  Roda do mouse ou pinça para zoom  •  Toque num fogão para cozinhar"
 const TOAST_SECONDS := 2.8
 ## Tempo extra de aviso por caractere, para textos longos darem tempo de ler.
 const TOAST_SECONDS_PER_CHAR := 0.05
-const MISSION_CARD_WIDTH := 330.0
-const XP_BAR_BACKGROUND := Color(1, 1, 1, 0.18)
-const XP_BAR_FILL := Color("8fd3ff")
+const MISSION_CARD_WIDTH := 300.0
+const ZOOM_STEP := 1.2
+const STARS := 5
+const DAILY_TITLE := "PRESENTE DIÁRIO EM"
+const DAILY_READY_TITLE := "PRESENTE DIÁRIO"
+const DAILY_READY := "Receber!"
 
 var simulation: CafeSimulation
 
+var _root: Control
 var _name_button: Button
 var _sound_button: Button
 var _muted := false
 var _name_dialog: ConfirmationDialog
 var _name_edit: LineEdit
-var _level_label: Label
-var _xp_bar: ProgressBar
-var _xp_label: Label
 var _gold_label: Label
-var _popularity_label: Label
-var _beauty_label: Label
+var _xp_bar: StripedBar
+var _level_label: Label
+var _beauty_bar: StripedBar
+var _rating_label: Label
+var _stars: Array[TextureRect] = []
+var _daily_title: Label
+var _daily_digits: Array[Label] = []
+var _daily_boxes: Control
+var _daily_ready: Label
+var _daily_badge: Control
 var _toast: Label
 var _toast_time := 0.0
 var _restart_dialog: ConfirmationDialog
@@ -50,141 +68,312 @@ var _achievements_list: VBoxContainer
 ## Avisos esperando a vez: um aviso nunca apaga o outro.
 var _toast_queue: Array[String] = []
 var _mission_card: PanelContainer
+var _mission_header: Label
 var _mission_title: Label
+var _mission_bar: ProgressBar
+var _mission_count: Label
+var _mission_reward: Label
 var _mission_hint: Label
+## O jogador escondeu o cartão da missão (tocando no medalhão)?
+var _mission_collapsed := false
 
 
 func _ready() -> void:
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	for side in ["left", "top", "right"]:
-		margin.add_theme_constant_override("margin_" + side, 16)
-	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(margin)
-
-	var panel := PanelContainer.new()
-	panel.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.07, 0.05, 0.8)
-	style.set_corner_radius_all(10)
-	style.set_content_margin_all(12)
-	panel.add_theme_stylebox_override("panel", style)
-	margin.add_child(panel)
-
-	var column := VBoxContainer.new()
-	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_child(column)
-
-	_name_button = Button.new()
-	_name_button.name = "CafeNameButton"
-	_name_button.flat = true
-	_name_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	_name_button.add_theme_font_size_override("font_size", 22)
-	_name_button.add_theme_color_override("font_color", Color("ffd35c"))
-	_name_button.focus_mode = Control.FOCUS_NONE
-	_name_button.tooltip_text = "Toque para trocar o nome"
-	_name_button.pressed.connect(func() -> void: ask_cafe_name(false))
-	column.add_child(_name_button)
-
-	var stats := HBoxContainer.new()
-	stats.add_theme_constant_override("separation", 20)
-	column.add_child(stats)
-
-	_level_label = _stat_label(stats, "Level")
-	var xp_box := VBoxContainer.new()
-	xp_box.add_theme_constant_override("separation", 0)
-	stats.add_child(xp_box)
-	_xp_bar = ProgressBar.new()
-	_xp_bar.name = "XpBar"
-	_xp_bar.custom_minimum_size = Vector2(140, 12)
-	_xp_bar.show_percentage = false
-	_xp_bar.max_value = 1.0
-	_xp_bar.step = 0.001
-	_xp_bar.add_theme_stylebox_override("background", _bar_style(XP_BAR_BACKGROUND))
-	_xp_bar.add_theme_stylebox_override("fill", _bar_style(XP_BAR_FILL))
-	xp_box.add_child(_xp_bar)
-	_xp_label = Label.new()
-	_xp_label.add_theme_font_size_override("font_size", 12)
-	_xp_label.modulate = Color(1, 1, 1, 0.75)
-	xp_box.add_child(_xp_label)
-	_gold_label = _stat_label(stats, "Gold")
-	_popularity_label = _stat_label(stats, "Popularity")
-	_beauty_label = _stat_label(stats, "Beauty")
-
-	var hint := Label.new()
-	hint.text = HINT
-	hint.add_theme_font_size_override("font_size", 14)
-	hint.modulate = Color(1, 1, 1, 0.65)
-	column.add_child(hint)
-
-	_toast = Label.new()
-	_toast.name = "Toast"
-	_toast.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-	_toast.position.y = 120
-	_toast.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_toast.add_theme_font_size_override("font_size", 22)
-	var toast_style := StyleBoxFlat.new()
-	toast_style.bg_color = Color(0.1, 0.07, 0.05, 0.88)
-	toast_style.set_corner_radius_all(12)
-	toast_style.content_margin_left = 20
-	toast_style.content_margin_right = 20
-	toast_style.content_margin_top = 10
-	toast_style.content_margin_bottom = 10
-	_toast.add_theme_stylebox_override("normal", toast_style)
-	_toast.visible = false
-	add_child(_toast)
-
-	_build_restart_controls()
+	_root = Control.new()
+	_root.name = "Root"
+	_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.theme = UiTheme.theme()
+	add_child(_root)
+	_build_gold()
+	_build_xp()
+	_build_daily_timer()
+	_build_side_buttons()
+	_build_medallions()
+	_build_rating()
+	_build_toast()
+	_build_dialogs()
 	EventBus.message_posted.connect(show_message)
 
 
-## Botão "Recomeçar" no canto de cima, sempre com confirmação: apagar progresso
-## não pode acontecer por um toque acidental (mesmo princípio da seção 32).
-func _build_restart_controls() -> void:
-	var corner := MarginContainer.new()
-	corner.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	corner.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	corner.add_theme_constant_override("margin_top", 16)
-	corner.add_theme_constant_override("margin_right", 16)
-	corner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(corner)
+# --- Montagem ------------------------------------------------------------------
+
+## Um nó posicionado a partir de um canto (ou do meio de cima) da tela.
+func _anchored(node: Control, anchor: Vector2, offset: Vector2, size: Vector2) -> Control:
+	node.anchor_left = anchor.x
+	node.anchor_right = anchor.x
+	node.anchor_top = anchor.y
+	node.anchor_bottom = anchor.y
+	node.offset_left = offset.x
+	node.offset_top = offset.y
+	node.offset_right = offset.x + size.x
+	node.offset_bottom = offset.y + size.y
+	_root.add_child(node)
+	return node
+
+
+func _place(parent: Control, child: Control, at: Vector2, size := Vector2.ZERO) -> Control:
+	child.position = at
+	if size != Vector2.ZERO:
+		child.size = size
+	parent.add_child(child)
+	return child
+
+
+func _group(group_name: String) -> Control:
+	var group := Control.new()
+	group.name = group_name
+	group.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return group
+
+
+func _build_gold() -> void:
+	var group := _anchored(_group("Gold"), Vector2.ZERO, Vector2(12, 12), Vector2(212, 46))
+	var pill := Panel.new()
+	pill.add_theme_stylebox_override("panel", UiTheme.pill_box())
+	pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_place(group, pill, Vector2(16, 0), Vector2(180, 34))
+	_place(group, UiTheme.art("icone_moeda", Vector2(46, 46)), Vector2(-6, -6))
+	_gold_label = UiTheme.outlined("0", 22)
+	_gold_label.name = "GoldValue"
+	_gold_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_place(group, _gold_label, Vector2(46, 0), Vector2(146, 34))
+
+
+func _build_xp() -> void:
+	var group := _anchored(_group("Xp"), Vector2(0.5, 0.0), Vector2(-238, 8), Vector2(420, 60))
+	_xp_bar = StripedBar.new()
+	_xp_bar.name = "XpBar"
+	_place(group, _xp_bar, Vector2(34, 10), Vector2(322, 26))
+	_place(group, UiTheme.art("icone_estrela_chef", Vector2(68, 68)), Vector2(-12, -12))
+	_level_label = UiTheme.outlined("1", 40, UiTheme.GOLD_TEXT, UiTheme.NAVY, 8)
+	_level_label.name = "LevelValue"
+	_level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(group, _level_label, Vector2(352, -6), Vector2(72, 48))
+	var caption := UiTheme.outlined("NÍVEL", 11, Color.WHITE, UiTheme.NAVY, 4)
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(group, caption, Vector2(352, 38), Vector2(72, 16))
+	var beauty := _anchored(_group("Beauty"), Vector2(0.5, 0.0), Vector2(202, 12), Vector2(150, 40))
+	_beauty_bar = StripedBar.new()
+	_beauty_bar.name = "BeautyBar"
+	_beauty_bar.stripes = "listras_beleza"
+	_beauty_bar.font_size = 14
+	_place(beauty, _beauty_bar, Vector2(18, 8), Vector2(132, 22))
+	_place(beauty, UiTheme.art("icone_flor", Vector2(42, 42)), Vector2(-9, -2))
+
+
+func _build_daily_timer() -> void:
+	var button := Button.new()
+	button.name = "DailyButton"
+	button.focus_mode = Control.FOCUS_NONE
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		button.add_theme_stylebox_override(state, UiTheme.pill_box(14))
+	button.pressed.connect(func() -> void: daily_requested.emit())
+	_anchored(button, Vector2(1.0, 0.0), Vector2(-226, 8), Vector2(214, 58))
+	_place(button, UiTheme.art("icone_presente", Vector2(58, 58)), Vector2(-23, 1))
+	_daily_title = UiTheme.outlined(DAILY_TITLE, 11, Color("bfe3ff"), UiTheme.NAVY, 0)
+	_place(button, _daily_title, Vector2(42, 3), Vector2(166, 16))
+	_daily_boxes = _group("Digits")
+	_place(button, _daily_boxes, Vector2(42, 20), Vector2(166, 36))
+	for i in 3:
+		var box := Panel.new()
+		var style := UiTheme.card_box(6, 0, UiTheme.TEXT)
+		style.shadow_size = 0
+		style.set_border_width_all(1)
+		box.add_theme_stylebox_override("panel", style)
+		box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_place(_daily_boxes, box, Vector2(i * 56, 0), Vector2(44, 26))
+		var digits := UiTheme.outlined("00", 19, UiTheme.TEXT, UiTheme.NAVY, 0)
+		digits.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		digits.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_place(box, digits, Vector2.ZERO, Vector2(44, 26))
+		_daily_digits.append(digits)
+		var unit := UiTheme.outlined(["H", "M", "S"][i], 9, Color("bfe3ff"), UiTheme.NAVY, 0)
+		unit.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_place(_daily_boxes, unit, Vector2(i * 56, 25), Vector2(44, 12))
+		if i < 2:
+			_place(_daily_boxes, UiTheme.outlined(":", 18, Color.WHITE, UiTheme.NAVY, 0), Vector2(i * 56 + 46, 0), Vector2(10, 24))
+	_daily_ready = UiTheme.outlined(DAILY_READY, 22, Color("8df06a"), UiTheme.NAVY, 6)
+	_daily_ready.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(button, _daily_ready, Vector2(42, 18), Vector2(166, 34))
+
+
+func _build_side_buttons() -> void:
+	var zoom_in := UiTheme.icon_button("ZoomInButton", "zoom_in", "", 42)
+	zoom_in.tooltip_text = "Aproximar"
+	zoom_in.pressed.connect(func() -> void: zoom_requested.emit(ZOOM_STEP))
+	_anchored(zoom_in, Vector2(1.0, 0.0), Vector2(-52, 132), Vector2(48, 46))
+	var zoom_out := UiTheme.icon_button("ZoomOutButton", "zoom_out", "", 42)
+	zoom_out.tooltip_text = "Afastar"
+	zoom_out.pressed.connect(func() -> void: zoom_requested.emit(1.0 / ZOOM_STEP))
+	_anchored(zoom_out, Vector2(1.0, 0.0), Vector2(-52, 180), Vector2(48, 46))
+	_sound_button = UiTheme.icon_button("SoundButton", "sound", "", 42)
+	_sound_button.pressed.connect(func() -> void: mute_toggled.emit(not _muted))
+	_anchored(_sound_button, Vector2(1.0, 0.0), Vector2(-52, 228), Vector2(48, 46))
+	var settings := UiTheme.icon_button("RestartButton", "gear", "", 42)
+	settings.tooltip_text = "Recomeçar o jogo"
+	settings.pressed.connect(ask_restart)
+	_anchored(settings, Vector2(1.0, 0.0), Vector2(-52, 276), Vector2(48, 46))
+	show_sound_state(false)
+
+
+func _medallion(button_name: String, art_name: String, label: String, center: Vector2, action: Callable) -> Button:
+	var button := Button.new()
+	button.name = button_name
+	button.flat = true
+	button.focus_mode = Control.FOCUS_NONE
+	button.tooltip_text = label.capitalize()
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	button.pressed.connect(action)
+	_anchored(button, Vector2.ZERO, center - Vector2(40, 34), Vector2(80, 86))
+	_place(button, UiTheme.art("medalhao_" + art_name, Vector2(68, 68)), Vector2(6, 0))
+	_place(button, UiTheme.art("fita_" + art_name, Vector2(110, 26)), Vector2(-15, 56))
+	var text := UiTheme.outlined(label, 12, Color.WHITE, Color(0, 0, 0, 0.45), 3)
+	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(button, text, Vector2(-15, 58), Vector2(110, 18))
+	return button
+
+
+func _build_medallions() -> void:
+	_medallion("MissionsButton", "missoes", "MISSÕES", Vector2(46, 178), func() -> void:
+		_mission_collapsed = not _mission_collapsed
+		_refresh_mission())
+	var gift := _medallion("GiftButton", "presente", "PRESENTE", Vector2(46, 278), func() -> void: daily_requested.emit())
+	_daily_badge = _badge("1")
+	_place(gift, _daily_badge, Vector2(56, -4), Vector2(24, 24))
+	_medallion("AchievementsButton", "conquistas", "CONQUISTAS", Vector2(46, 378), show_achievements)
+	_build_mission_card()
+
+
+## Bolinha vermelha com um número (há algo esperando).
+func _badge(text: String) -> Control:
+	var badge := Panel.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("e0303a")
+	style.border_color = Color.WHITE
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(12)
+	style.anti_aliasing = true
+	badge.add_theme_stylebox_override("panel", style)
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var label := UiTheme.outlined(text, 13, Color.WHITE, Color(0, 0, 0, 0), 0)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_place(badge, label, Vector2.ZERO, Vector2(24, 24))
+	return badge
+
+
+## Cartão da missão atual, ao lado do medalhão: as missões iniciais são o tutorial
+## (seção 143), então a dica fica à vista (o medalhão esconde e mostra o cartão).
+func _build_mission_card() -> void:
+	_mission_card = PanelContainer.new()
+	_mission_card.name = "MissionCard"
+	_mission_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_mission_card.add_theme_stylebox_override("panel", UiTheme.card_box(12, 10))
+	_anchored(_mission_card, Vector2.ZERO, Vector2(92, 140), Vector2(MISSION_CARD_WIDTH, 0))
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_theme_constant_override("separation", 10)
-	corner.add_child(column)
-	var button := Button.new()
-	button.name = "RestartButton"
-	button.text = "Recomeçar"
-	button.custom_minimum_size = Vector2(120, 44)
-	button.size_flags_horizontal = Control.SIZE_SHRINK_END
-	button.focus_mode = Control.FOCUS_NONE
-	button.pressed.connect(ask_restart)
-	var buttons := HBoxContainer.new()
-	buttons.size_flags_horizontal = Control.SIZE_SHRINK_END
-	buttons.add_theme_constant_override("separation", 8)
-	column.add_child(buttons)
-	var achievements := Button.new()
-	achievements.name = "AchievementsButton"
-	achievements.text = "Conquistas"
-	achievements.custom_minimum_size = Vector2(120, 44)
-	achievements.focus_mode = Control.FOCUS_NONE
-	achievements.pressed.connect(show_achievements)
-	buttons.add_child(achievements)
-	_sound_button = Button.new()
-	_sound_button.name = "SoundButton"
-	_sound_button.custom_minimum_size = Vector2(150, 44)
-	_sound_button.focus_mode = Control.FOCUS_NONE
-	_sound_button.pressed.connect(func() -> void: mute_toggled.emit(not _muted))
-	buttons.add_child(_sound_button)
-	buttons.add_child(button)
-	show_sound_state(false)
+	column.add_theme_constant_override("separation", 3)
+	_mission_card.add_child(column)
+	_mission_header = UiTheme.outlined("", 11, UiTheme.ORANGE, Color(0, 0, 0, 0), 0)
+	_mission_header.name = "MissionHeader"
+	column.add_child(_mission_header)
+	_mission_title = UiTheme.outlined("", 16, UiTheme.TEXT, Color(0, 0, 0, 0), 0)
+	_mission_title.name = "MissionTitle"
+	_mission_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_mission_title.custom_minimum_size = Vector2(MISSION_CARD_WIDTH - 24, 0)
+	column.add_child(_mission_title)
+	var progress := HBoxContainer.new()
+	progress.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	progress.add_theme_constant_override("separation", 6)
+	column.add_child(progress)
+	_mission_bar = ProgressBar.new()
+	_mission_bar.show_percentage = false
+	_mission_bar.custom_minimum_size = Vector2(150, 10)
+	_mission_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_mission_bar.max_value = 1.0
+	_mission_bar.step = 0.001
+	_mission_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_mission_bar.add_theme_stylebox_override("background", _bar_style(Color("dce8f7")))
+	_mission_bar.add_theme_stylebox_override("fill", _bar_style(Color("3cc04e")))
+	progress.add_child(_mission_bar)
+	_mission_count = UiTheme.outlined("", 12, UiTheme.TEXT, Color(0, 0, 0, 0), 0)
+	progress.add_child(_mission_count)
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	progress.add_child(spacer)
+	progress.add_child(UiTheme.art("icone_moeda", Vector2(20, 20)))
+	_mission_reward = UiTheme.outlined("", 12, Color("e08a00"), Color(0, 0, 0, 0), 0)
+	progress.add_child(_mission_reward)
+	_mission_hint = UiTheme.outlined("", 13, UiTheme.TEXT_SOFT, Color(0, 0, 0, 0), 0)
+	_mission_hint.name = "MissionHint"
+	_mission_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_mission_hint.custom_minimum_size = Vector2(MISSION_CARD_WIDTH - 24, 0)
+	column.add_child(_mission_hint)
+
+
+func _build_rating() -> void:
+	var card := PanelContainer.new()
+	card.name = "Rating"
+	card.add_theme_stylebox_override("panel", UiTheme.card_box(12, 0))
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_anchored(card, Vector2(0.0, 1.0), Vector2(12, -84), Vector2(196, 70))
+	var inside := _group("Inside")
+	card.add_child(inside)
+	_place(inside, UiTheme.art("icone_sorriso", Vector2(40, 40)), Vector2(6, 7))
+	_rating_label = UiTheme.outlined("0%", 22, UiTheme.TEXT, Color(0, 0, 0, 0), 0)
+	_rating_label.name = "RatingValue"
+	_place(inside, _rating_label, Vector2(52, 2), Vector2(70, 28))
+	_place(inside, UiTheme.outlined("satisfeitos", 11, UiTheme.TEXT_SOFT, Color(0, 0, 0, 0), 0), Vector2(110, 10), Vector2(80, 16))
+	for i in STARS:
+		var star := UiTheme.art("icone_estrela", Vector2(18, 18))
+		_place(inside, star, Vector2(52 + i * 17, 30))
+		_stars.append(star)
+	var strip := Panel.new()
+	var strip_style := StyleBoxFlat.new()
+	strip_style.bg_color = UiTheme.CARD_SOFT
+	strip_style.set_corner_radius_all(8)
+	strip.add_theme_stylebox_override("panel", strip_style)
+	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_place(inside, strip, Vector2(8, 50), Vector2(180, 16))
+	_name_button = Button.new()
+	_name_button.name = "CafeNameButton"
+	_name_button.flat = true
+	_name_button.focus_mode = Control.FOCUS_NONE
+	_name_button.tooltip_text = "Toque para trocar o nome"
+	_name_button.clip_text = true
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		_name_button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	_name_button.add_theme_font_size_override("font_size", 12)
+	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color"]:
+		_name_button.add_theme_color_override(color_name, Color("e0512a"))
+	_name_button.add_theme_constant_override("outline_size", 0)
+	_name_button.pressed.connect(func() -> void: ask_cafe_name(false))
+	_place(inside, _name_button, Vector2(8, 47), Vector2(180, 22))
+
+
+func _build_toast() -> void:
+	_toast = Label.new()
+	_toast.name = "Toast"
+	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_toast.add_theme_font_size_override("font_size", 20)
+	_toast.add_theme_color_override("font_color", UiTheme.TEXT)
+	var style := UiTheme.card_box(14, 10, UiTheme.BLUE)
+	style.content_margin_left = 22
+	style.content_margin_right = 22
+	_toast.add_theme_stylebox_override("normal", style)
+	_toast.visible = false
+	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_toast.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_anchored(_toast, Vector2(0.5, 0.0), Vector2(0, 92), Vector2.ZERO)
+
+
+func _build_dialogs() -> void:
 	_build_achievements_dialog()
 	_build_daily_dialog()
 	_build_name_dialog()
-	_build_mission_card(column)
-
 	_restart_dialog = ConfirmationDialog.new()
 	_restart_dialog.name = "RestartDialog"
 	_restart_dialog.title = "Recomeçar do zero?"
@@ -192,39 +381,12 @@ func _build_restart_controls() -> void:
 	_restart_dialog.ok_button_text = "Apagar e recomeçar"
 	_restart_dialog.cancel_button_text = "Cancelar"
 	_restart_dialog.confirmed.connect(func() -> void: restart_requested.emit())
-	add_child(_restart_dialog)
+	_add_dialog(_restart_dialog)
 
 
-## Cartão da missão atual: as missões iniciais são o tutorial (seção 143),
-## então a dica fica sempre à vista.
-func _build_mission_card(parent: Control) -> void:
-	_mission_card = PanelContainer.new()
-	_mission_card.name = "MissionCard"
-	_mission_card.custom_minimum_size = Vector2(MISSION_CARD_WIDTH, 0)
-	_mission_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.07, 0.05, 0.8)
-	style.border_color = Color("ffd35c")
-	style.border_width_left = 4
-	style.set_corner_radius_all(10)
-	style.set_content_margin_all(10)
-	_mission_card.add_theme_stylebox_override("panel", style)
-	parent.add_child(_mission_card)
-	var column := VBoxContainer.new()
-	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_theme_constant_override("separation", 2)
-	_mission_card.add_child(column)
-	_mission_title = Label.new()
-	_mission_title.name = "MissionTitle"
-	_mission_title.add_theme_font_size_override("font_size", 17)
-	_mission_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	column.add_child(_mission_title)
-	_mission_hint = Label.new()
-	_mission_hint.name = "MissionHint"
-	_mission_hint.add_theme_font_size_override("font_size", 14)
-	_mission_hint.modulate = Color(1, 1, 1, 0.75)
-	_mission_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	column.add_child(_mission_hint)
+func _add_dialog(dialog: AcceptDialog) -> void:
+	dialog.theme = UiTheme.theme()
+	add_child(dialog)
 
 
 func _build_achievements_dialog() -> void:
@@ -239,7 +401,7 @@ func _build_achievements_dialog() -> void:
 	_achievements_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_achievements_list.add_theme_constant_override("separation", 10)
 	scroll.add_child(_achievements_list)
-	add_child(_achievements_dialog)
+	_add_dialog(_achievements_dialog)
 
 
 ## Abre a lista de conquistas com o progresso de cada uma.
@@ -274,7 +436,15 @@ func achievement_text(achievement: AchievementDefinition) -> String:
 
 func show_sound_state(muted: bool) -> void:
 	_muted = muted
-	_sound_button.text = "Som: desligado" if muted else "Som: ligado"
+	var sprite := ArtSprites.get_sprite("botao_mute" if muted else "botao_sound")
+	if sprite != null:
+		_sound_button.icon = sprite.texture
+	_sound_button.tooltip_text = sound_text()
+
+
+## "Som: ligado" ou "Som: desligado" (o botão mostra só o símbolo; o texto vai na dica).
+func sound_text() -> String:
+	return "Som: desligado" if _muted else "Som: ligado"
 
 
 func _build_name_dialog() -> void:
@@ -302,11 +472,11 @@ func _build_name_dialog() -> void:
 	var rules := Label.new()
 	rules.text = "De %d a %d letras. Dá para trocar depois tocando no nome." % [CafeSimulation.CAFE_NAME_MIN, CafeSimulation.CAFE_NAME_MAX]
 	rules.add_theme_font_size_override("font_size", 13)
-	rules.modulate = Color(1, 1, 1, 0.7)
+	rules.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
 	column.add_child(rules)
 	_name_dialog.confirmed.connect(func() -> void: name_chosen.emit(_name_edit.text))
 	_name_dialog.canceled.connect(func() -> void: name_skipped.emit())
-	add_child(_name_dialog)
+	_add_dialog(_name_dialog)
 
 
 ## Pergunta o nome. Na primeira vez, o botão é "Abrir as portas".
@@ -336,7 +506,7 @@ func _build_daily_dialog() -> void:
 	_daily_days = HBoxContainer.new()
 	_daily_days.add_theme_constant_override("separation", 6)
 	_daily_dialog.add_child(_daily_days)
-	add_child(_daily_dialog)
+	_add_dialog(_daily_dialog)
 
 
 ## Mostra os dias da sequência, com o de hoje em destaque.
@@ -349,14 +519,12 @@ func show_daily_reward() -> void:
 	for i in days.size():
 		var card := PanelContainer.new()
 		card.name = "Day%d" % (i + 1)
-		card.custom_minimum_size = Vector2(96, 96)
-		var style := StyleBoxFlat.new()
-		style.set_corner_radius_all(8)
-		style.set_content_margin_all(6)
-		style.bg_color = Color(1, 1, 1, 0.08)
+		card.custom_minimum_size = Vector2(96, 110)
+		var style := UiTheme.card_box(10, 6)
+		style.shadow_size = 0
 		if i + 1 == today:
-			style.bg_color = Color("ffd35c", 0.25)
-			style.border_color = Color("ffd35c")
+			style.bg_color = Color("fff6c2")
+			style.border_color = Color("ffb400")
 			style.set_border_width_all(3)
 		card.add_theme_stylebox_override("panel", style)
 		var label := Label.new()
@@ -430,28 +598,58 @@ func refresh() -> void:
 	var progression := simulation.progression
 	_name_button.text = simulation.cafe_name
 	_name_button.visible = not simulation.cafe_name.is_empty()
-	_level_label.text = "Nível %d" % progression.level
+	_level_label.text = str(progression.level)
 	_xp_bar.value = progression.level_progress()
-	if progression.is_max_level():
-		_xp_label.text = "%d XP (nível máximo)" % progression.xp
-	else:
-		_xp_label.text = "%d / %d XP" % [progression.xp, progression.table.xp_for_next(progression.level)]
-	_gold_label.text = "%s: %d" % [SOFT_CURRENCY_NAME, simulation.wallet.balance(Wallet.SOFT)]
-	_popularity_label.text = "Popularidade: %d%%" % roundi(simulation.popularity)
-	_beauty_label.text = "Beleza: %d" % simulation.beauty()
+	_xp_bar.text = _xp_text()
+	_gold_label.text = UiTheme.thousands(simulation.wallet.balance(Wallet.SOFT))
+	var popularity := roundi(simulation.popularity)
+	_rating_label.text = "%d%%" % popularity
+	var lit := roundi(simulation.popularity / 100.0 * STARS)
+	for i in _stars.size():
+		var sprite := ArtSprites.get_sprite("icone_estrela" if i < lit else "icone_estrela_vazia")
+		if sprite != null and _stars[i].texture != sprite.texture:
+			_stars[i].texture = sprite.texture
+	var beauty := simulation.beauty()
+	_beauty_bar.text = str(beauty)
+	_beauty_bar.value = beauty / 100.0
+	_refresh_daily()
 	_refresh_mission()
+
+
+func _xp_text() -> String:
+	var progression := simulation.progression
+	if progression.is_max_level():
+		return "%s XP (nível máximo)" % UiTheme.thousands(progression.xp)
+	return "%s / %s XP" % [UiTheme.thousands(progression.xp), UiTheme.thousands(progression.table.xp_for_next(progression.level))]
+
+
+func _refresh_daily() -> void:
+	var ready := simulation.can_claim_daily()
+	_daily_badge.visible = ready
+	_daily_ready.visible = ready
+	_daily_boxes.visible = not ready
+	_daily_title.text = DAILY_READY_TITLE if ready else DAILY_TITLE
+	if not ready:
+		var left := ceili(simulation.seconds_until_daily())
+		var parts := [left / 3600, (left % 3600) / 60, left % 60]
+		for i in 3:
+			_daily_digits[i].text = "%02d" % parts[i]
 
 
 func _refresh_mission() -> void:
 	var missions := simulation.missions
 	var mission := missions.current()
-	_mission_card.visible = mission != null
+	_mission_card.visible = mission != null and not _mission_collapsed
 	if mission == null:
 		return
 	var progress := mini(missions.progress(), mission.target)
-	_mission_title.text = "Missão %d/%d: %s  (%d/%d)" % [
-		missions.completed_count() + 1, missions.missions.size(), mission.title, progress, mission.target]
+	_mission_header.text = "MISSÃO %d DE %d" % [missions.completed_count() + 1, missions.missions.size()]
+	_mission_title.text = mission.title
+	_mission_bar.value = float(progress) / mission.target
+	_mission_count.text = "%d/%d" % [progress, mission.target]
+	_mission_reward.text = "+%d" % mission.reward_gold
 	_mission_hint.text = mission.hint
+	_mission_card.reset_size()
 
 
 ## Mostra um aviso. Se já houver um na tela, este espera a vez.
@@ -465,6 +663,8 @@ func show_message(text: String) -> void:
 func _show_now(text: String) -> void:
 	_toast.text = text
 	_toast.visible = true
+	_toast.reset_size()
+	_toast.position.x = (_root.size.x - _toast.size.x) / 2.0
 	_toast_time = TOAST_SECONDS + text.length() * TOAST_SECONDS_PER_CHAR
 
 
@@ -477,25 +677,29 @@ func toast_text() -> String:
 	return _toast.text if _toast.visible else ""
 
 
-## Texto do cartão de missão (vazio quando não há missão ativa).
+## Texto da missão atual (vazio quando não há missão ativa), mesmo com o cartão escondido.
 func mission_text() -> String:
-	return "%s\n%s" % [_mission_title.text, _mission_hint.text] if _mission_card.visible else ""
+	var mission := simulation.missions.current() if simulation != null else null
+	if mission == null:
+		return ""
+	var missions := simulation.missions
+	return "Missão %d/%d: %s  (%d/%d)\n%s" % [missions.completed_count() + 1, missions.missions.size(), mission.title,
+		mini(missions.progress(), mission.target), mission.target, mission.hint]
 
 
+## Resumo do que a interface mostra, em texto: nível, XP, ouro, popularidade e beleza.
 func stats_text() -> String:
-	return "%s | %s | %s | %s | %s" % [_level_label.text, _xp_label.text, _gold_label.text, _popularity_label.text, _beauty_label.text]
+	if simulation == null:
+		return ""
+	var progression := simulation.progression
+	var xp := "%d XP (nível máximo)" % progression.xp if progression.is_max_level() \
+		else "%d / %d XP" % [progression.xp, progression.table.xp_for_next(progression.level)]
+	return "Nível %d | %s | %s: %d | Popularidade: %d%% | Beleza: %d" % [progression.level, xp, SOFT_CURRENCY_NAME,
+		simulation.wallet.balance(Wallet.SOFT), roundi(simulation.popularity), simulation.beauty()]
 
 
 func _bar_style(color: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
-	style.set_corner_radius_all(6)
+	style.set_corner_radius_all(5)
 	return style
-
-
-func _stat_label(parent: Control, node_name: String) -> Label:
-	var label := Label.new()
-	label.name = node_name
-	label.add_theme_font_size_override("font_size", 20)
-	parent.add_child(label)
-	return label

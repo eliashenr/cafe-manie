@@ -214,10 +214,12 @@ func test_mute_button_silences_and_remembers() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	cafe.sound_board.settings_path = path
 	var button := cafe.hud.find_child("SoundButton", true, false) as Button
-	assert_eq(button.text, "Som: ligado")
+	assert_eq(cafe.hud.sound_text(), "Som: ligado")
+	assert_eq(button.tooltip_text, "Som: ligado", "o botão mostra o símbolo e diz o estado na dica")
 	button.pressed.emit()
 	assert_true(cafe.sound_board.muted)
-	assert_eq(button.text, "Som: desligado")
+	assert_eq(cafe.hud.sound_text(), "Som: desligado")
+	assert_eq(button.tooltip_text, "Som: desligado")
 	var config := ConfigFile.new()
 	assert_eq(config.load(path), OK, "preferência guardada no aparelho")
 	assert_eq(config.get_value("audio", "muted"), true)

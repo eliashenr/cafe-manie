@@ -4,8 +4,10 @@ extends CafeTestCase
 
 func test_shop_tabs_split_furniture_and_decor() -> void:
 	var cafe := await spawn_cafe()
+	cafe.build_bar.open_shop()
 	await settle()
-	assert_true(cafe.build_bar.find_button("Build_table_round") != null, "Móveis é a aba inicial")
+	assert_true(cafe.build_bar.find_button("Build_table_round") != null, "Salão é a aba inicial")
+	assert_true(cafe.build_bar.find_button("Build_stove_basic") == null, "fogão fica em Cozinha")
 	assert_true(cafe.build_bar.find_button("Build_plant_pot") == null, "planta fica em Decoração")
 	cafe.build_bar.find_button("Tab_DECOR").pressed.emit()
 	await settle()

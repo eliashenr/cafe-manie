@@ -20,3 +20,8 @@ func utc_offset_seconds() -> int:
 ## Número do dia no calendário local (muda à meia-noite do jogador).
 func local_day() -> int:
 	return floori((now() + utc_offset_seconds()) / 86400.0)
+
+
+## Segundos até a próxima meia-noite do jogador (quando o dia local muda).
+func seconds_to_next_local_day() -> float:
+	return 86400.0 - fposmod(now() + utc_offset_seconds(), 86400.0)

@@ -130,3 +130,14 @@ func test_save_keeps_the_streak() -> void:
 	assert_false(loaded.can_claim_daily(), "já recebeu hoje")
 	clock.advance(DAY)
 	assert_eq(loaded.daily_day_number(), 3)
+
+
+func test_time_until_the_next_daily_reward_counts_to_local_midnight() -> void:
+	var clock := ManualClock.new()
+	clock.offset = -10800  # Brasília
+	clock.time = 86400.0 * 100 + 10800.0 + 3600.0  # 01:00 no horário local
+	assert_almost_eq(clock.seconds_to_next_local_day(), 23 * 3600.0, 0.01, "faltam 23 horas para a meia-noite local")
+	var simulation := CafeSimulation.create_new_game(clock, 3)
+	assert_eq(simulation.seconds_until_daily(), 0.0, "o presente de hoje ainda não foi recebido")
+	simulation.claim_daily()
+	assert_almost_eq(simulation.seconds_until_daily(), 23 * 3600.0, 0.01, "recebido: volta à meia-noite")

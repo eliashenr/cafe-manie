@@ -1,22 +1,24 @@
 class_name BuildBar
 extends CanvasLayer
-## PLACEHOLDER_UI: barra inferior do protótipo.
+## Interface de baixo, no formato da v3 (o do jogo antigo, desenho nosso).
 ##
 ## Mostra, conforme o estado da cafeteria:
-## - nada selecionado: loja em abas (Móveis, Decoração, Piso, Parede) e Expandir;
+## - nada selecionado: a faixa de ícones (Loja, Reformar, Expandir, Missões,
+##   Presentes, Conquistas); a Loja abre o painel em abas (Salão, Cozinha,
+##   Decoração, Pisos, Paredes) com os quadradinhos dos itens;
 ## - fogão selecionado: receitas para cozinhar (ou o tempo que falta), e as ações do móvel;
 ## - balcão selecionado: o que tem nele, e as ações do móvel;
-## - outro móvel selecionado: Mover, Girar, Guardar e Fechar;
+## - outro móvel selecionado: Mover, Girar, Guardar, Vender e Fechar;
 ## - construindo: instrução ou motivo da recusa, preço, Girar, Confirmar e Cancelar.
 ##
 ## Os botões só são recriados quando o tipo de painel muda. Preços, bloqueios,
 ## tempos e mensagens são atualizados no lugar a cada frame, para um clique
 ## nunca se perder porque um cliente pagou no meio dele.
 
-const BUTTON_MIN_SIZE := Vector2(112, 56)
-const TWO_LINE_BUTTON_MIN_SIZE := Vector2(124, 64)
-const FONT_SIZE := 18
-const SMALL_FONT_SIZE := 15
+const ICON_BUTTON_SIZE := Vector2(92, 74)
+const RECIPE_BUTTON_SIZE := Vector2(132, 92)
+const TAB_SIZE := Vector2(128, 50)
+const MESSAGE_SIZE := 17
 
 ## Mensagens para o jogador em cada resultado de checagem de posição.
 const CHECK_MESSAGES := {
@@ -53,26 +55,51 @@ const SERVICE_MESSAGES := {
 }
 
 ## Abas da loja.
-enum ShopTab { FURNITURE, DECOR, FLOOR, WALL }
+enum ShopTab { SALON, KITCHEN, DECOR, FLOOR, WALL }
 
 const SHOP_TAB_NAMES := {
-	ShopTab.FURNITURE: "Móveis",
+	ShopTab.SALON: "Salão",
+	ShopTab.KITCHEN: "Cozinha",
 	ShopTab.DECOR: "Decoração",
-	ShopTab.FLOOR: "Piso",
-	ShopTab.WALL: "Parede",
+	ShopTab.FLOOR: "Pisos",
+	ShopTab.WALL: "Paredes",
+}
+## Cor de cada aba (como nas pranchas: uma cor por seção da loja).
+const SHOP_TAB_COLORS := {
+	ShopTab.SALON: Color("ff5a5f"),
+	ShopTab.KITCHEN: Color("3d8ee8"),
+	ShopTab.DECOR: Color("3cc04e"),
+	ShopTab.FLOOR: Color("9b5cff"),
+	ShopTab.WALL: Color("2ec4b6"),
+}
+## Categorias de móvel em cada aba de móveis.
+const SHOP_TAB_CATEGORIES := {
+	ShopTab.SALON: [FurnitureDefinition.Category.TABLE, FurnitureDefinition.Category.SEATING],
+	ShopTab.KITCHEN: [FurnitureDefinition.Category.COOKING, FurnitureDefinition.Category.COUNTER],
+	ShopTab.DECOR: [FurnitureDefinition.Category.DECOR],
 }
 
 var cafe: Cafe
+var shop_tab := ShopTab.SALON
+## A loja está aberta (no lugar da faixa de ícones)?
+var shop_open := false
 
+var _root: Control
+var _stack: VBoxContainer
 var _message: Label
-## Linha de cima: receitas do fogão ou "Levar ao balcão". Escondida quando vazia.
+## Cartão de cima: receitas do fogão ou "Levar ao balcão". Escondido quando vazio.
+var _primary_card: PanelContainer
 var _primary: HBoxContainer
-## Linha de baixo: loja, ações do móvel ou controles de construção.
+## Faixa de baixo: ícones, ações do móvel ou controles de construção.
+var _bar: PanelContainer
 var _buttons: HBoxContainer
+## Loja aberta: abas e quadradinhos.
+var _shop: VBoxContainer
+var _tabs: HBoxContainer
+var _items: HBoxContainer
 ## Confirmação de compras que acontecem na hora (expansão, revestimento): seção 32.
 var _confirm_dialog: ConfirmationDialog
 var _pending_confirm: Callable
-var shop_tab := ShopTab.FURNITURE
 
 var _rebuild_pending := false
 ## Identifica o tipo de painel mostrado; só muda de painel quando isto muda.
@@ -84,54 +111,100 @@ var _updaters: Array[Callable] = []
 
 
 func _ready() -> void:
-	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	margin.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	for side in ["left", "right", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 16)
-	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(margin)
+	_root = Control.new()
+	_root.name = "Root"
+	_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.theme = UiTheme.theme()
+	add_child(_root)
 
-	var panel := PanelContainer.new()
-	panel.name = "Panel"
-	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.07, 0.05, 0.85)
-	style.set_corner_radius_all(12)
-	style.set_content_margin_all(12)
-	panel.add_theme_stylebox_override("panel", style)
-	margin.add_child(panel)
-
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 8)
-	panel.add_child(column)
+	_stack = VBoxContainer.new()
+	_stack.name = "Panel"
+	_stack.anchor_left = 0.5
+	_stack.anchor_right = 0.5
+	_stack.anchor_top = 1.0
+	_stack.anchor_bottom = 1.0
+	_stack.offset_bottom = -12
+	_stack.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_stack.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_stack.alignment = BoxContainer.ALIGNMENT_END
+	_stack.add_theme_constant_override("separation", 8)
+	_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(_stack)
 
 	_message = Label.new()
 	_message.name = "Message"
-	_message.add_theme_font_size_override("font_size", FONT_SIZE)
+	_message.add_theme_font_size_override("font_size", MESSAGE_SIZE)
+	_message.add_theme_color_override("font_color", UiTheme.TEXT)
 	_message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	column.add_child(_message)
+	_message.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var message_style := UiTheme.card_box(14, 8)
+	message_style.content_margin_left = 18
+	message_style.content_margin_right = 18
+	_message.add_theme_stylebox_override("normal", message_style)
+	_message.mouse_filter = Control.MOUSE_FILTER_STOP
+	_stack.add_child(_message)
 
-	_primary = HBoxContainer.new()
-	_primary.name = "Primary"
-	_primary.alignment = BoxContainer.ALIGNMENT_CENTER
-	_primary.add_theme_constant_override("separation", 8)
-	column.add_child(_primary)
+	_primary_card = _card("PrimaryCard")
+	_primary = _row("Primary")
+	_primary_card.add_child(_primary)
+	_stack.add_child(_primary_card)
 
-	_buttons = HBoxContainer.new()
-	_buttons.name = "Buttons"
-	_buttons.alignment = BoxContainer.ALIGNMENT_CENTER
-	_buttons.add_theme_constant_override("separation", 8)
-	column.add_child(_buttons)
+	_bar = _card("Bar", 18)
+	_buttons = _row("Buttons")
+	_bar.add_child(_buttons)
+	_stack.add_child(_bar)
+
+	_shop = VBoxContainer.new()
+	_shop.name = "Shop"
+	_shop.add_theme_constant_override("separation", 0)
+	_stack.add_child(_shop)
+	_tabs = HBoxContainer.new()
+	_tabs.name = "Tabs"
+	_tabs.add_theme_constant_override("separation", 6)
+	_tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+	_shop.add_child(_tabs)
+	var shop_card := _card("ShopCard", 16)
+	shop_card.size_flags_horizontal = Control.SIZE_FILL  # tão largo quanto a fileira de abas
+	_shop.add_child(shop_card)
+	var shop_row := HBoxContainer.new()
+	shop_row.add_theme_constant_override("separation", 12)
+	shop_card.add_child(shop_row)
+	_items = _row("Items")
+	_items.custom_minimum_size = Vector2(0, ShopItemButton.CARD_SIZE.y)
+	_items.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	shop_row.add_child(_items)
+	var close := UiTheme.icon_button("CloseShopButton", "close", "", 40)
+	close.tooltip_text = "Fechar a loja"
+	close.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	close.pressed.connect(close_shop)
+	shop_row.add_child(close)
 
 	_confirm_dialog = ConfirmationDialog.new()
 	_confirm_dialog.name = "ConfirmDialog"
 	_confirm_dialog.cancel_button_text = "Cancelar"
+	_confirm_dialog.theme = UiTheme.theme()
 	_confirm_dialog.confirmed.connect(func() -> void:
 		if _pending_confirm.is_valid():
 			_pending_confirm.call())
 	add_child(_confirm_dialog)
+
+
+func _card(card_name: String, radius := 14) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = card_name
+	card.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	card.add_theme_stylebox_override("panel", UiTheme.card_box(radius, 10))
+	return card
+
+
+func _row(row_name: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.name = row_name
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 10)
+	return row
 
 
 func bind(target_cafe: Cafe) -> void:
@@ -146,8 +219,11 @@ func message_text() -> String:
 
 
 func find_button(button_name: String) -> Button:
-	var button := _primary.get_node_or_null(button_name) as Button
-	return button if button != null else _buttons.get_node_or_null(button_name) as Button
+	for row: Node in [_primary, _buttons, _tabs, _items]:
+		var button := row.get_node_or_null(button_name) as Button
+		if button != null:
+			return button
+	return null
 
 
 func confirm_dialog() -> ConfirmationDialog:
@@ -159,9 +235,21 @@ func expand_dialog() -> ConfirmationDialog:
 	return _confirm_dialog
 
 
-func show_shop_tab(tab: ShopTab) -> void:
+## Abre a loja na aba pedida (no lugar da faixa de ícones).
+func open_shop(tab := shop_tab) -> void:
 	shop_tab = tab
+	shop_open = true
 	_request_rebuild()
+
+
+func close_shop() -> void:
+	shop_open = false
+	_request_rebuild()
+
+
+## Troca a aba da loja (e abre a loja, se estiver fechada).
+func show_shop_tab(tab: ShopTab) -> void:
+	open_shop(tab)
 
 
 func _process(_delta: float) -> void:
@@ -187,34 +275,41 @@ func _rebuild() -> void:
 		_refresh_in_place()
 		return
 	_shown_signature = signature
-	for row in [_primary, _buttons]:
+	for row: Node in [_primary, _buttons, _tabs, _items]:
 		for child in row.get_children():
 			row.remove_child(child)
 			child.queue_free()
 	_updaters.clear()
 
+	var showing_shop := false
 	if cafe.mode == Cafe.Mode.BUILD:
 		_show_build_controls()
 	elif _has_selection():
 		_show_selection_controls()
-	else:
+	elif shop_open:
 		_show_shop()
-	_primary.visible = _primary.get_child_count() > 0
+		showing_shop = true
+	else:
+		_show_icon_bar()
+	_shop.visible = showing_shop
+	_bar.visible = not showing_shop
+	_primary_card.visible = _primary.get_child_count() > 0
 	_refresh_in_place()
 
 
-## O que define o painel: modo, móvel selecionado, estado do fogão e se há próxima expansão.
+## O que define o painel: modo, móvel selecionado, estado do fogão, se há próxima expansão e a loja.
 func _signature() -> Array:
 	var stove_status := -1
 	if _has_selection() and cafe.simulation.kitchen.is_stove(cafe.selected_id):
 		stove_status = cafe.simulation.kitchen.stove_status(cafe.selected_id)
 	return [cafe.mode, cafe.selected_id if _has_selection() else &"", stove_status,
-		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty(), shop_tab]
+		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty(), shop_tab, shop_open]
 
 
 func _refresh_in_place() -> void:
 	if _message_source.is_valid():
 		_message.text = _message_source.call()
+	_message.visible = not _message.text.is_empty()
 	for updater in _updaters:
 		updater.call()
 
@@ -223,69 +318,55 @@ func _has_selection() -> bool:
 	return cafe.selected_id != &"" and cafe.layout.get_placement(cafe.selected_id) != null
 
 
-# --- Loja ------------------------------------------------------------------
+# --- Faixa de ícones -------------------------------------------------------------
 
-func _show_shop() -> void:
-	_message_source = func() -> String: return _with_problem("Loja")
-	for tab in SHOP_TAB_NAMES:
-		var this_tab: ShopTab = tab
-		var button := _add_button(_primary, "Tab_" + ShopTab.keys()[tab], SHOP_TAB_NAMES[tab],
-			func() -> void: show_shop_tab(this_tab))
-		button.toggle_mode = true
-		button.button_pressed = tab == shop_tab
+func _show_icon_bar() -> void:
+	_message_source = func() -> String: return _problem_text()
+	_add_icon(_buttons, "ShopButton", "loja", "Loja", func() -> void: open_shop(ShopTab.SALON))
+	_add_icon(_buttons, "RenovateButton", "rolo", "Reformar", func() -> void: open_shop(ShopTab.FLOOR))
 	_add_expand_button()
-	match shop_tab:
-		ShopTab.FURNITURE:
-			_show_furniture(false)
-		ShopTab.DECOR:
-			_show_furniture(true)
-		ShopTab.FLOOR:
-			_show_surfaces(SurfaceDefinition.Kind.FLOOR)
-		ShopTab.WALL:
-			_show_surfaces(SurfaceDefinition.Kind.WALL)
+	_add_icon(_buttons, "MissionsBarButton", "prancheta", "Missões", func() -> void:
+		var missions := cafe.hud.find_child("MissionsButton", true, false) as Button
+		if missions != null:
+			missions.pressed.emit())
+	_add_icon(_buttons, "GiftsBarButton", "presente", "Presentes", func() -> void: cafe.hud.daily_requested.emit())
+	_add_icon(_buttons, "AchievementsBarButton", "trofeu", "Conquistas", func() -> void: cafe.hud.show_achievements())
 
 
-func _show_furniture(decor: bool) -> void:
-	var simulation := cafe.simulation
-	for definition in cafe.catalog.all():
-		if (definition.category == FurnitureDefinition.Category.DECOR) != decor:
-			continue
-		var furniture := definition
-		var button := _add_button(_buttons, "Build_" + String(furniture.id), "", func() -> void: cafe.start_placing(furniture.id), true)
-		_updaters.append(func() -> void:
-			var stored := simulation.inventory.count(furniture.id)
-			if stored > 0:
-				button.text = "%s\n%d guardado%s" % [furniture.display_name, stored, "" if stored == 1 else "s"]
-			elif furniture.min_level > simulation.progression.level:
-				button.text = "%s\nNível %d" % [furniture.display_name, furniture.min_level]
-			else:
-				button.text = "%s\n%d ouro" % [furniture.display_name, furniture.price]
-			button.disabled = simulation.can_acquire(furniture) != ServiceResult.OK)
-
-
-func _show_surfaces(kind: SurfaceDefinition.Kind) -> void:
-	var simulation := cafe.simulation
-	for definition in simulation.surfaces.all(kind):
-		var surface := definition
-		var button := _add_button(_buttons, "Surface_" + String(surface.id), "", func() -> void: ask_use_surface(surface.id), true)
-		_updaters.append(func() -> void:
-			var in_use := simulation.style.current(surface.kind) == surface.id
-			if in_use:
-				button.text = "%s\nEm uso" % surface.display_name
-			elif simulation.style.owns(surface.id):
-				button.text = "%s\nAplicar" % surface.display_name
-			elif surface.min_level > simulation.progression.level:
-				button.text = "%s\nNível %d" % [surface.display_name, surface.min_level]
-			else:
-				button.text = "%s\n%d ouro" % [surface.display_name, surface.price]
-			button.disabled = in_use or simulation.can_use_surface(surface) != ServiceResult.OK)
+## Botão da faixa: o ícone da arte em cima e o nome embaixo.
+func _add_icon(row: HBoxContainer, button_name: String, icon: String, text: String, action: Callable) -> Button:
+	var button := Button.new()
+	button.name = button_name
+	button.text = text
+	var sprite := ArtSprites.get_sprite("icone_" + icon)
+	if sprite != null:
+		button.icon = sprite.texture
+	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+	button.add_theme_constant_override("icon_max_width", 44)
+	button.custom_minimum_size = ICON_BUTTON_SIZE
+	for state in ["normal", "hover", "pressed", "disabled", "focus", "hover_pressed"]:
+		button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	button.add_theme_color_override("font_color", UiTheme.TEXT)
+	button.add_theme_color_override("font_hover_color", UiTheme.BLUE)
+	button.add_theme_color_override("font_pressed_color", UiTheme.BLUE_DARK)
+	button.add_theme_color_override("font_disabled_color", UiTheme.DISABLED)
+	button.add_theme_color_override("font_outline_color", Color.WHITE)
+	button.add_theme_constant_override("outline_size", 4)
+	button.add_theme_font_size_override("font_size", 13)
+	button.focus_mode = Control.FOCUS_NONE
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	button.pressed.connect(func() -> void: action.call())
+	row.add_child(button)
+	return button
 
 
 func _add_expand_button() -> void:
 	var simulation := cafe.simulation
 	if simulation.next_expansion().is_empty():
 		return
-	var expand := _add_button(_primary, "ExpandButton", "", ask_expand, true)
+	var expand := _add_icon(_buttons, "ExpandButton", "expandir", "", ask_expand)
+	expand.custom_minimum_size = Vector2(108, ICON_BUTTON_SIZE.y)
 	_updaters.append(func() -> void:
 		var next := simulation.next_expansion()
 		if next.is_empty():
@@ -296,6 +377,122 @@ func _add_expand_button() -> void:
 		else:
 			expand.text = "Expandir\n%d×%d · %d" % [size.x, size.y, int(next["price"])]
 		expand.disabled = simulation.can_expand() != ServiceResult.OK)
+
+
+# --- Loja ------------------------------------------------------------------
+
+func _show_shop() -> void:
+	_message_source = func() -> String: return _problem_text()
+	for tab in SHOP_TAB_NAMES:
+		var this_tab: ShopTab = tab
+		var button := Button.new()
+		button.name = "Tab_" + ShopTab.keys()[tab]
+		button.text = SHOP_TAB_NAMES[tab]
+		button.toggle_mode = true
+		button.button_pressed = tab == shop_tab
+		button.custom_minimum_size = TAB_SIZE
+		button.focus_mode = Control.FOCUS_NONE
+		var color: Color = SHOP_TAB_COLORS[tab]
+		var active: bool = tab == shop_tab
+		for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+			button.add_theme_stylebox_override(state, _tab_box(Color.WHITE if active else color, color.darkened(0.3),
+				state == "hover" and not active))
+		button.add_theme_color_override("font_color", UiTheme.TEXT if active else Color.WHITE)
+		button.add_theme_color_override("font_hover_color", UiTheme.TEXT if active else Color.WHITE)
+		button.add_theme_color_override("font_pressed_color", UiTheme.TEXT)
+		button.add_theme_color_override("font_outline_color", Color.WHITE if active else color.darkened(0.45))
+		button.add_theme_constant_override("outline_size", 0 if active else 4)
+		button.add_theme_font_size_override("font_size", 17)
+		button.pressed.connect(func() -> void: show_shop_tab(this_tab))
+		_tabs.add_child(button)
+	match shop_tab:
+		ShopTab.SALON, ShopTab.KITCHEN, ShopTab.DECOR:
+			_show_furniture(SHOP_TAB_CATEGORIES[shop_tab])
+		ShopTab.FLOOR:
+			_show_surfaces(SurfaceDefinition.Kind.FLOOR)
+		ShopTab.WALL:
+			_show_surfaces(SurfaceDefinition.Kind.WALL)
+
+
+## Aba como as das pranchas: cantos de cima redondos, a ativa branca (emendada no painel).
+func _tab_box(fill: Color, edge: Color, hover: bool) -> StyleBoxFlat:
+	var box := StyleBoxFlat.new()
+	box.bg_color = fill.lightened(0.12) if hover else fill
+	box.border_color = edge
+	box.set_border_width_all(2)
+	box.border_width_bottom = 0
+	box.corner_radius_top_left = 14
+	box.corner_radius_top_right = 14
+	box.content_margin_top = 8
+	box.content_margin_bottom = 8
+	box.anti_aliasing = true
+	return box
+
+
+func _show_furniture(categories: Array) -> void:
+	var simulation := cafe.simulation
+	for definition in cafe.catalog.all():
+		if not categories.has(definition.category):
+			continue
+		var furniture := definition
+		var item := _add_item("Build_" + String(furniture.id), furniture.display_name,
+			ArtSprites.furniture(furniture.id, 3), func() -> void: _pick_furniture(furniture.id))
+		_updaters.append(func() -> void:
+			var stored := simulation.inventory.count(furniture.id)
+			var locked := furniture.min_level > simulation.progression.level
+			if stored > 0:
+				item.text = "%s\n%d guardado%s" % [furniture.display_name, stored, "" if stored == 1 else "s"]
+				item.show_state(furniture.price, 0, "%d guardado%s" % [stored, "" if stored == 1 else "s"], true)
+			elif locked:
+				item.text = "%s\nNível %d" % [furniture.display_name, furniture.min_level]
+				item.show_state(furniture.price, furniture.min_level, "", false)
+			else:
+				item.text = "%s\n%d ouro" % [furniture.display_name, furniture.price]
+				item.show_state(furniture.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, furniture.price))
+			item.disabled = simulation.can_acquire(furniture) != ServiceResult.OK)
+
+
+## Escolheu um móvel na loja: a loja fecha para o salão aparecer e a construção começa.
+func _pick_furniture(furniture_id: StringName) -> void:
+	if cafe.start_placing(furniture_id):
+		shop_open = false
+	_request_rebuild()
+
+
+func _show_surfaces(kind: SurfaceDefinition.Kind) -> void:
+	var simulation := cafe.simulation
+	for definition in simulation.surfaces.all(kind):
+		var surface := definition
+		var art := ArtSprites.floor_tile(surface.id, Vector2i.ZERO) if kind == SurfaceDefinition.Kind.FLOOR \
+			else ArtSprites.wall_panel(surface.id, "R")
+		var item := _add_item("Surface_" + String(surface.id), surface.display_name, art,
+			func() -> void: ask_use_surface(surface.id))
+		_updaters.append(func() -> void:
+			var in_use := simulation.style.current(surface.kind) == surface.id
+			var locked := surface.min_level > simulation.progression.level
+			if in_use:
+				item.text = "%s\nEm uso" % surface.display_name
+				item.show_state(surface.price, 0, "Em uso", true)
+			elif simulation.style.owns(surface.id):
+				item.text = "%s\nAplicar" % surface.display_name
+				item.show_state(surface.price, 0, "Aplicar", true)
+			elif locked:
+				item.text = "%s\nNível %d" % [surface.display_name, surface.min_level]
+				item.show_state(surface.price, surface.min_level, "", false)
+			else:
+				item.text = "%s\n%d ouro" % [surface.display_name, surface.price]
+				item.show_state(surface.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, surface.price))
+			item.disabled = in_use or simulation.can_use_surface(surface) != ServiceResult.OK)
+
+
+func _add_item(button_name: String, title: String, art: ArtSprites.Sprite, action: Callable) -> ShopItemButton:
+	var item := ShopItemButton.new()
+	item.name = button_name
+	item.title = title
+	item.art = art
+	item.pressed.connect(func() -> void: action.call())
+	_items.add_child(item)
+	return item
 
 
 ## Pede confirmação antes de gastar com a expansão (seção 32: nada de compra acidental).
@@ -361,11 +558,20 @@ func _show_selection_controls() -> void:
 	else:
 		var name := placement.definition.display_name
 		_message_source = func() -> String: return _with_problem(name)
-	_add_button(_buttons, "MoveButton", "Mover", cafe.start_moving_selected)
-	_add_button(_buttons, "RotateButton", "Girar", cafe.rotate_selected)
-	_add_button(_buttons, "RemoveButton", "Guardar", cafe.remove_selected)
-	_add_button(_buttons, "SellButton", "Vender", ask_sell_selected)
-	_add_button(_buttons, "CloseButton", "Fechar", cafe.clear_selection)
+	_add_square(_buttons, "MoveButton", "move", "Mover", cafe.start_moving_selected)
+	_add_square(_buttons, "RotateButton", "rotate", "Girar", cafe.rotate_selected)
+	_add_square(_buttons, "RemoveButton", "store", "Guardar", cafe.remove_selected)
+	_add_square(_buttons, "SellButton", "sell", "Vender", ask_sell_selected)
+	_add_square(_buttons, "CloseButton", "close", "Fechar", cafe.clear_selection)
+
+
+## Botão quadrado da arte com o nome embaixo.
+func _add_square(row: HBoxContainer, button_name: String, kind: String, text: String, action: Callable) -> Button:
+	var button := UiTheme.icon_button(button_name, kind, text, 48)
+	button.custom_minimum_size = ICON_BUTTON_SIZE
+	button.pressed.connect(func() -> void: action.call())
+	row.add_child(button)
+	return button
 
 
 func _show_stove_controls(stove_id: StringName) -> void:
@@ -374,7 +580,7 @@ func _show_stove_controls(stove_id: StringName) -> void:
 		Kitchen.StoveStatus.IDLE:
 			for recipe in simulation.recipes.all():
 				var dish := recipe
-				var button := _add_button(_primary, "Cook_" + String(dish.id), "", func() -> void: cafe.cook_on_selected(dish.id), true)
+				var button := _add_recipe(dish, func() -> void: cafe.cook_on_selected(dish.id))
 				_updaters.append(func() -> void:
 					var locked := dish.unlock_level > simulation.progression.level
 					if locked:
@@ -383,7 +589,58 @@ func _show_stove_controls(stove_id: StringName) -> void:
 						button.text = "%s\n%s · %d ouro" % [dish.display_name, WorldLayer.format_time(dish.cook_time), dish.ingredient_cost]
 					button.disabled = locked or not simulation.wallet.can_afford(Wallet.SOFT, dish.ingredient_cost))
 		Kitchen.StoveStatus.READY:
-			_add_button(_primary, "ServeButton", "Levar ao balcão", func() -> void: cafe.collect_stove(stove_id))
+			var serve := Button.new()
+			serve.name = "ServeButton"
+			serve.text = "Levar ao balcão"
+			serve.custom_minimum_size = Vector2(200, 56)
+			serve.focus_mode = Control.FOCUS_NONE
+			var green := Color("3cc04e")
+			for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+				serve.add_theme_stylebox_override(state, UiTheme.button_box(green.lightened(0.1) if state == "hover" else green, Color("177a28")))
+			serve.add_theme_color_override("font_outline_color", Color("177a28"))
+			serve.add_theme_font_size_override("font_size", 18)
+			var dish_icon := ArtSprites.food(simulation.kitchen.stove_recipe(stove_id).id)
+			if dish_icon != null:
+				serve.icon = dish_icon.texture
+				serve.add_theme_constant_override("icon_max_width", 34)
+			serve.pressed.connect(func() -> void: cafe.collect_stove(stove_id))
+			_primary.add_child(serve)
+
+
+## Cartão da receita: o desenho do prato em cima, o nome e o tempo e o custo embaixo.
+func _add_recipe(dish: RecipeDefinition, action: Callable) -> Button:
+	var button := Button.new()
+	button.name = "Cook_" + String(dish.id)
+	var food := ArtSprites.food(dish.id)
+	if food != null:
+		button.icon = food.texture
+	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+	button.add_theme_constant_override("icon_max_width", 44)
+	button.custom_minimum_size = RECIPE_BUTTON_SIZE
+	button.focus_mode = Control.FOCUS_NONE
+	button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	var normal := UiTheme.card_box(12, 6)
+	normal.shadow_size = 2
+	var hover := UiTheme.card_box(12, 6, UiTheme.BLUE)
+	hover.shadow_size = 2
+	var disabled := UiTheme.card_box(12, 6)
+	disabled.bg_color = Color("f1f4f8")
+	disabled.shadow_size = 0
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("pressed", hover)
+	button.add_theme_stylebox_override("hover_pressed", hover)
+	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	button.add_theme_stylebox_override("disabled", disabled)
+	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
+		button.add_theme_color_override(color_name, UiTheme.TEXT)
+	button.add_theme_color_override("font_disabled_color", UiTheme.DISABLED)
+	button.add_theme_constant_override("outline_size", 0)
+	button.add_theme_font_size_override("font_size", 14)
+	button.pressed.connect(func() -> void: action.call())
+	_primary.add_child(button)
+	return button
 
 
 func _stove_message(id: StringName) -> String:
@@ -413,10 +670,12 @@ func _show_build_controls() -> void:
 		if cafe.last_check == CafeLayout.Check.OK and cafe.last_service_result != ServiceResult.OK:
 			problem = SERVICE_MESSAGES.get(cafe.last_service_result, "")
 		return "%s: %s%s  —  %s" % [verb, session.definition.display_name, cost, problem]
-	_add_button(_buttons, "RotateButton", "Girar", cafe.rotate_placement)
-	var confirm := _add_button(_buttons, "ConfirmButton", "Confirmar", cafe.confirm_placement)
-	_updaters.append(func() -> void: confirm.disabled = cafe.last_check != CafeLayout.Check.OK)
-	_add_button(_buttons, "CancelButton", "Cancelar", cafe.cancel_placement)
+	_add_square(_buttons, "RotateButton", "rotate", "Girar", cafe.rotate_placement)
+	var confirm := _add_square(_buttons, "ConfirmButton", "check", "Confirmar", cafe.confirm_placement)
+	_updaters.append(func() -> void:
+		confirm.disabled = cafe.last_check != CafeLayout.Check.OK
+		confirm.modulate = Color(1, 1, 1, 0.45) if confirm.disabled else Color.WHITE)
+	_add_square(_buttons, "CancelButton", "close", "Cancelar", cafe.cancel_placement)
 
 
 # --- Comum -----------------------------------------------------------------------
@@ -432,15 +691,3 @@ func _problem_text() -> String:
 	if cafe.last_check != CafeLayout.Check.OK:
 		return CHECK_MESSAGES[cafe.last_check]
 	return SERVICE_MESSAGES.get(cafe.last_service_result, "")
-
-
-func _add_button(row: HBoxContainer, button_name: String, text: String, action: Callable, two_lines := false) -> Button:
-	var button := Button.new()
-	button.name = button_name
-	button.text = text
-	button.custom_minimum_size = TWO_LINE_BUTTON_MIN_SIZE if two_lines else BUTTON_MIN_SIZE
-	button.add_theme_font_size_override("font_size", SMALL_FONT_SIZE if two_lines else FONT_SIZE)
-	button.focus_mode = Control.FOCUS_NONE
-	button.pressed.connect(func() -> void: action.call())
-	row.add_child(button)
-	return button

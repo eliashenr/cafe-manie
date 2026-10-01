@@ -363,6 +363,30 @@ def export_scene(sheet, manifest):
                             "lamp": "poste", "flower_bed": "canteiro"}
 
 
+# --- Interface -----------------------------------------------------------------------------
+
+import ui3  # noqa: E402
+
+STRIPE_TILE = 32.0  # lado da textura das listras das barras (em px da interface)
+
+
+def export_ui(sheet, manifest):
+    """Peças da interface, em px da tela de 1280x720 (a folha sai com 2 px de textura por px)."""
+    D = sheet.D
+    box = (-2.0, -2.0, 68.0, 70.0)
+    for name, draw in ui3.ICONS.items():
+        sheet.add(f"icone_{name}", draw(D), box, (32.0, 32.0))
+    for kind, color in ui3.BUTTONS:
+        sheet.add(f"botao_{kind}", ui3.square_button(D, kind, color), (0.0, 0.0, 64.0, 66.0), (32.0, 32.0))
+    for name, draw in ui3.MEDALLIONS.items():
+        sheet.add(f"medalhao_{name}", draw(D), (-4.0, -4.0, 74.0, 76.0), (32.0, 32.0))
+    for name, (width, color) in ui3.RIBBONS.items():
+        sheet.add(f"fita_{name}", ui3.ribbon_band(D, width, color), (-width / 2 - 10, -2.0, width + 20, 26.0), (0.0, 0.0))
+    for name, (light, dark) in ui3.STRIPES.items():
+        sheet.add(f"listras_{name}", ui3.stripes_tile(STRIPE_TILE, light, dark), (0.0, 0.0, STRIPE_TILE, STRIPE_TILE), tile=True)
+    manifest["ui"] = {"density": DENSITY, "stripes_size": STRIPE_TILE}
+
+
 # --- Saída -------------------------------------------------------------------------------
 
 def find_browser():
@@ -384,11 +408,13 @@ def export(out_dir=OUT):
     os.makedirs(out_dir, exist_ok=True)
     browser = find_browser()
     manifest = {"density": DENSITY, "sheets": {}, "sprites": {}, "furniture": {}}
-    sheets = [Sheet("moveis"), Sheet("personagens"), Sheet("pratos"), Sheet("cenario", tiles3.TW)]
+    # A interface usa px da tela: design_tile = GAME_TILE_W dá 2 px de textura por px.
+    sheets = [Sheet("moveis"), Sheet("personagens"), Sheet("pratos"), Sheet("cenario", tiles3.TW), Sheet("interface", GAME_TILE_W)]
     export_furniture(sheets[0], manifest)
     export_people(sheets[1], manifest)
     export_food(sheets[2], manifest)
     export_scene(sheets[3], manifest)
+    export_ui(sheets[4], manifest)
     for sheet in sheets:
         svg_path = os.path.join(out_dir, sheet.name + ".svg")
         markup = sheet.svg()

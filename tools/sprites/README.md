@@ -25,6 +25,7 @@ godot --headless --import                                        # a Godot impor
 | `moveis` | cada móvel nas 4 rotações (`chair_wood_r0` …); a panela de cada receita (`panela_<receita>`) e o forno aceso (`fogao_aceso_r0`/`r3`), por cima do fogão | vértice da frente da pegada |
 | `personagens` | `cliente_01` … `cliente_12` e `garcom`, em `frente`/`costas` × `em_pe`/`andar`/`andar2`; `sentado_<expressão>`; `sentado_costas_r1`/`r2`; o garçom com `_bandeja` | pés (em pé) ou vértice da frente da cadeira (sentado) |
 | `pratos` | `prato_<id da receita>` e as carinhas `humor_feliz`/`esperando`/`bravo` | centro |
+| `interface` | `icone_<nome>` (moeda, estrela do chef, flor, sorriso, estrelas, presente, troféu, prancheta, loja, rolo, expandir, cadeado...), `botao_<símbolo>` (os quadrados brilhantes), `medalhao_<nome>`, `fita_<nome>` e as listras das barras | centro (ícones e botões); topo central (fitas) |
 | `cenario` | `piso_<revestimento>_<variação>`, `piso_entrada`, `parede_<revestimento>_R`/`L`, `enfeite_<nome>_R`/`L`, `poste`, `canteiro`; as texturas de repetir `gramado` e `asfalto` | vértice de cima do piso; ponta de baixo à esquerda do painel; base do poste e do canteiro |
 
 O `sprites.json` também diz o sprite de cada rotação dos móveis, a altura dos tampos das mesas, os visuais
