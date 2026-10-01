@@ -44,7 +44,13 @@ func footprint() -> Vector2i:
 	return CafeLayout.rotated_footprint(definition.footprint, rotation)
 
 
+## Escolhe o piso. Uma cadeira levada para o lado de uma mesa já vira para ela
+## (girar no mesmo piso continua valendo; ela só se ajeita quando muda de piso).
 func set_target(cell: Vector2i) -> void:
+	if cell != target and cell != CafeGrid.NO_CELL and CafeLayout.turns_toward_tables(definition):
+		var toward := layout.rotation_toward_table(cell, rotation)
+		if toward >= 0:
+			rotation = toward
 	target = cell
 
 

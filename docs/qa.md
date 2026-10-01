@@ -12,22 +12,22 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 260 testes
+## Cobertura atual — 284 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
 | `unit/test_cafe_grid.gd` | 10 | limites, ocupação, colisão, expansão segura |
 | `unit/test_iso_projection.gd` | 7 | clique cai no piso certo, inclusive nas bordas; posições fracionárias dos personagens |
 | `unit/test_furniture_catalog.gd` | 6 | dados de móveis válidos (9 móveis); recusa de dados ruins |
-| `unit/test_cafe_layout.gd` | 16 | regras de posicionamento, entrada, acesso, mover/girar/remover sem efeito colateral |
-| `unit/test_placement_session.gd` | 7 | modo de construção só muda o layout ao confirmar |
+| `unit/test_cafe_layout.gd` | 20 | regras de posicionamento, entrada, acesso, mover/girar/remover sem efeito colateral; para onde a frente aponta; assento vira para a mesa |
+| `unit/test_placement_session.gd` | 9 | modo de construção só muda o layout ao confirmar; cadeira levada para o lado da mesa vira para ela |
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
 | `unit/test_progression.gd` | 7 | curva de níveis, subir vários níveis de uma vez, nível máximo |
 | `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
 | `unit/test_cafe_simulation.gd` | 17 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo |
 | `unit/test_long_shift.gd` | 2 | 30 min simulados com o "jogador robô": ninguém preso, lucro, níveis; o robô conclui as 6 missões iniciais |
-| `unit/test_save_codec.gd` | 14 | ida e volta por JSON de tudo o que é salvo; preparo continua com o jogo fechado; conteúdo desconhecido pulado; migração das versões 1 e 2; nome da cafeteria |
+| `unit/test_save_codec.gd` | 16 | ida e volta por JSON de tudo o que é salvo; preparo continua com o jogo fechado; conteúdo desconhecido pulado; migração das versões 1, 2 e 3; nome da cafeteria; cadeiras de save antigo viram para a mesa uma vez |
 | `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, `.bak`, save danificado, save de versão mais nova protegido, apagar |
 | `unit/test_shop_and_missions.gd` | 21 | compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
 | `unit/test_style_and_beauty.gd` | 11 | revestimentos (um inicial por tipo, compra única, troca grátis, bloqueios); beleza soma móveis e revestimentos; beleza aumenta a paciência; save e migração |
@@ -42,6 +42,8 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_style_scene.gd` | 8 | abas, piso e parede desenhados, compra com confirmação, troca sem perguntar, bloqueio, Beleza no HUD, paredes crescem com a expansão |
 | `integration/test_progress_scene.gd` | 17 | avisos de conquista em fila, painel de conquistas, recompensa diária (abre, paga, volta no dia seguinte, não empilha janelas), nome da cafeteria, sons e botão de som |
 | `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade**; toque no botão não vaza para o piso |
+| `integration/test_furniture_art.gd` | 5 | todo móvel tem arte nas 4 rotações, com âncora e escala certas; a cena e a prévia usam a arte |
+| `integration/test_character_art.gd` | 11 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; passos alternados; sentado segue a cadeira; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
 
 O executor também **reprova um arquivo de teste que nem compila**. Antes, ele sumia da contagem em silêncio (encontrado nesta etapa).
 
@@ -54,6 +56,21 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Paredes, beleza, venda, conquistas, recompensa diária e sons (20 de 20 pegos):** revestimento de graça, beleza ignorando revestimentos, piso sem atualizar, beleza sem efeito na paciência, revestimento não salvo, venda do último fogão, venda sem confirmação, guardados ignorados na venda, conquista de um degrau por vez, conquistas não restauradas, aviso apagando outro, clientes não contados (pego depois de um teste novo), relógio para trás liberando prêmio, sequência sem reinício, dia em UTC em vez do local, sequência não salva, recusa sem som, som desligado não lembrado, nota sem entrada suave, prato pronto sem som.
 - **Loja, expansão e missões (5 de 5 pegos):** móvel novo posicionado de graça, inventário sem salvamento automático, piso não acompanha a expansão, expansão sem confirmação, Guardar destruindo o móvel.
 - **Fase 2 (7 de 7 pegos):** paciência nunca acaba, garçom não serve, cozinhar dá ouro em vez de cobrar, cadeira ocupada desprotegida, personagens ignoram mudança de layout, porção reservada se perde, comida pronta na hora.
+- **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
+
+## Roteiro de teste manual — Arte v3 (móveis e personagens)
+
+Rode o jogo (F5) com o seu save ou um jogo novo e confira:
+
+1. [ ] Todos os móveis aparecem com a arte nova, sem caixas coloridas.
+2. [ ] Escolha um **Balcão** e aperte **Girar** 4 vezes: ele mostra os 4 lados. Virado para o fundo, aparece de costas.
+3. [ ] Leve uma **Cadeira** para o lado de uma mesa: a prévia já vira para a mesa. Aperte **Girar** ali mesmo: ela gira e fica como você deixou.
+4. [ ] Os clientes andam alternando os pés e viram para o lado em que andam (de frente ou de costas).
+5. [ ] Sentados, olham para onde a cadeira aponta. Quem senta de costas aparece com o encosto na frente.
+6. [ ] O balão mostra o desenho do prato. A barra vai de verde a amarelo e vermelho, e a cara do cliente acompanha.
+7. [ ] Nenhum móvel cobre um balão.
+8. [ ] Com o zoom máximo (roda do mouse ou pinça), a arte continua nítida.
+9. [ ] Sensação: os personagens parecem os das pranchas aprovadas? Algum tamanho ficou estranho (gente grande ou pequena demais perto dos móveis)? *(anote)*
 
 ## Roteiro de teste manual — Fase 1
 
@@ -84,9 +101,9 @@ Rode o jogo (F5). O jogo novo já vem com 2 fogões, 2 balcões, 2 mesas com cad
 3. [ ] Escolha **Café**: o ouro cai 6, aparece "-6" sobre o fogão, e a etiqueta mostra o tempo correndo.
 4. [ ] Tente **Guardar** o fogão enquanto cozinha: a barra explica que está em uso.
 5. [ ] Em ~15 s a etiqueta fica verde ("Café pronto!"). Toque no fogão: sobem "+6 Café" e "+2 XP", e o balcão mostra "Café ×6".
-6. [ ] Clientes entram pela seta azul, sentam e mostram um balão com o pedido e uma barrinha de paciência.
-7. [ ] O garçom busca no balcão (aparece um prato na mão dele) e leva à mesa. O cliente come, sobe "+3" dourado, e ele vai embora.
-8. [ ] Deixe um cliente sem comida: a barrinha esvazia, aparece "Demorou!" e a popularidade cai.
+6. [ ] Clientes entram pela seta azul, sentam e mostram um balão com o desenho do pedido e uma barrinha de paciência.
+7. [ ] O garçom busca no balcão (o prato aparece na bandeja dele) e leva à mesa. O prato fica na mesa enquanto o cliente come, sobe "+3" dourado, e ele vai embora com uma carinha verde.
+8. [ ] Deixe um cliente sem comida: a barrinha fica amarela e depois vermelha, a cara dele muda, ele vai embora com uma carinha vermelha e a popularidade cai.
 9. [ ] Cozinhe Café num fogão e Pão de queijo no outro: cada um vai para um balcão.
 10. [ ] Ao juntar 30 XP aparece "Nível 2! Nova receita: Misto-quente", e o botão dela é liberado.
 11. [ ] Tente pôr uma Planta no piso onde alguém está passando: a barra diz "Tem alguém passando aí".

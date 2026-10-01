@@ -12,8 +12,13 @@ extends RefCounted
 
 ## Histórico: 1 = primeira versão; 2 = acrescenta inventário e missões;
 ## 3 = acrescenta revestimentos (piso e parede), contadores, conquistas,
-## recompensa diária e nome da cafeteria.
-const CURRENT_VERSION := 3
+## recompensa diária e nome da cafeteria; 4 = as cadeiras dos saves antigos
+## viram para a mesa uma vez (com a arte, para onde a cadeira olha aparece).
+const CURRENT_VERSION := 4
+
+## Marca posta pela migração para a versão 4: o decode vira as cadeiras e a marca
+## não volta a ser gravada.
+const TURN_SEATS_KEY := "turn_seats_toward_tables"
 
 
 ## Resultado de decode(): a simulação (null se os dados forem inutilizáveis)
@@ -105,6 +110,8 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 		if not ok:
 			result.warnings.append("Móvel ignorado: %s" % placement)
 	layout.restore_next_serial(int(layout_data.get("next_serial", 1)))
+	if data.get(TURN_SEATS_KEY, false):
+		layout.turn_seats_toward_tables()
 
 	var simulation := CafeSimulation.with_game_data(clock, layout, furniture, random_seed)
 	var kitchen_data: Dictionary = _dict(data.get("kitchen"))
@@ -164,7 +171,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -183,6 +190,13 @@ static func _v2_to_v3(data: Dictionary) -> Dictionary:
 	data["daily"] = {}
 	# Quem já jogava ganha um nome padrão (e pode trocar tocando nele), em vez de ser interrompido.
 	data["cafe_name"] = CafeSimulation.DEFAULT_CAFE_NAME
+	return data
+
+
+## Versão 4: o formato não muda, mas as cadeiras dos saves antigos foram postas
+## quando a rotação delas não aparecia. Elas viram para a mesa uma vez, no decode.
+static func _v3_to_v4(data: Dictionary) -> Dictionary:
+	data[TURN_SEATS_KEY] = true
 	return data
 
 

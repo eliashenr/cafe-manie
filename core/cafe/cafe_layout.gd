@@ -232,6 +232,37 @@ func move(id: StringName, origin: Vector2i, rotation: int) -> Check:
 	return Check.OK
 
 
+## Rotação que vira um assento de 1 piso, na célula dada, para uma mesa encostada
+## nele (é para onde quem senta olha). Testa primeiro [param preferred]: um assento
+## que já olha para uma mesa fica como está. Retorna -1 se não há mesa ao lado.
+func rotation_toward_table(cell: Vector2i, preferred := 0) -> int:
+	for turn in 4:
+		var rotation := posmod(preferred + turn, 4)
+		var neighbor := placement_at(cell + front_direction(rotation))
+		if neighbor != null and neighbor.definition.category == FurnitureDefinition.Category.TABLE:
+			return rotation
+	return -1
+
+
+## Assento que gira sozinho para a mesa: cadeira de 1 piso.
+static func turns_toward_tables(definition: FurnitureDefinition) -> bool:
+	return definition.category == FurnitureDefinition.Category.SEATING and definition.footprint == Vector2i.ONE
+
+
+## Vira para a mesa vizinha cada assento que não olha para nenhuma mesa.
+## Usado uma vez nos saves de antes da arte dos personagens, quando a rotação da
+## cadeira não aparecia na tela. Retorna quantos assentos giraram.
+func turn_seats_toward_tables() -> int:
+	var turned := 0
+	for placement in placements():
+		if not turns_toward_tables(placement.definition):
+			continue
+		var rotation := rotation_toward_table(placement.origin, placement.rotation)
+		if rotation >= 0 and rotation != placement.rotation 				and move(placement.id, placement.origin, rotation) == Check.OK:
+			turned += 1
+	return turned
+
+
 func remove(id: StringName) -> bool:
 	if can_remove(id) != Check.OK:
 		return false

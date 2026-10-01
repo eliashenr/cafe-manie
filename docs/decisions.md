@@ -4,6 +4,19 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-032 — A cadeira vira sozinha para a mesa (decisão do PO, 01/10/2026)
+
+**Problema:** com a arte dos personagens, quem senta olha para onde a cadeira aponta (DT-031). Antes, a rotação da cadeira quase não aparecia, e o jogador podia pôr cadeiras viradas para qualquer lado.
+
+**Opções apresentadas ao PO:** virar sozinha (as novas e as do save), virar só as novas, ou deixar como está.
+
+**Decisão do PO:** virar sozinha.
+- **Modo de construção:** a cadeira levada para o lado de uma mesa já vira para ela. Girar no mesmo piso continua valendo. Ela só se ajeita de novo quando muda de piso. Entre duas mesas, ela continua olhando para a que já olhava.
+- **Saves antigos:** o save sobe para a **versão 4**. A migração só põe uma marca, e ao carregar o layout as cadeiras que não olham para nenhuma mesa viram para a mesa vizinha. A marca não volta a ser gravada, então isso acontece **uma vez**. Depois, a escolha do jogador vale.
+- A regra fica em `CafeLayout` (`front_direction`, `rotation_toward_table`, `turn_seats_toward_tables`) e vale só para assento de 1 piso.
+
+---
+
 ## DT-031 — Personagens da arte v3: poses desenhadas, espelho no jogo e balões por código
 
 **Problema:** trocar os bonecos provisórios pelos personagens aprovados, que andam, sentam, pedem, comem e vão embora, sem multiplicar o número de desenhos.

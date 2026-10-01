@@ -77,3 +77,34 @@ func test_move_session_moves_on_confirm_and_discarding_is_a_cancel() -> void:
 
 func test_move_session_for_unknown_id_is_null() -> void:
 	assert_eq(PlacementSession.for_move(_layout(), &"fantasma"), null)
+
+
+func _category(id: StringName, category: FurnitureDefinition.Category) -> FurnitureDefinition:
+	var definition := FurnitureDefinition.new()
+	definition.id = id
+	definition.category = category
+	return definition
+
+
+func test_chair_brought_next_to_a_table_turns_toward_it() -> void:
+	var layout := _layout()
+	layout.place(_category(&"table", FurnitureDefinition.Category.TABLE), Vector2i(3, 3))
+	var session := PlacementSession.for_new(layout, _category(&"chair", FurnitureDefinition.Category.SEATING))
+	session.set_target(Vector2i(3, 2))
+	assert_eq(session.rotation, 0, "mesa em +y")
+	session.set_target(Vector2i(2, 3))
+	assert_eq(session.rotation, 3, "mudou de lado, virou de novo")
+	session.rotate_clockwise()
+	session.set_target(Vector2i(2, 3))
+	assert_eq(session.rotation, 0, "girar no mesmo piso continua valendo")
+	session.set_target(Vector2i(6, 6))
+	assert_eq(session.rotation, 0, "longe da mesa, fica como estava")
+	assert_eq(layout.get_placement(session.confirm()).rotation, 0)
+
+
+func test_other_furniture_does_not_turn_by_itself() -> void:
+	var layout := _layout()
+	layout.place(_category(&"table", FurnitureDefinition.Category.TABLE), Vector2i(3, 3))
+	var session := PlacementSession.for_new(layout, _category(&"stove", FurnitureDefinition.Category.COOKING))
+	session.set_target(Vector2i(2, 3))
+	assert_eq(session.rotation, 0)

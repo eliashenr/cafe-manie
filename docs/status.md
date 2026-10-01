@@ -21,6 +21,8 @@
   - o balão de pedido mostra o desenho do prato, com a barra de paciência em verde, amarelo ou vermelho, e fica sempre por cima do salão;
   - quem vai embora mostra uma carinha verde (satisfeito) ou vermelha (bravo).
 - **Vitrine dos personagens** (`tools/showcase.gd`): monta uma cafeteria com gente em cada situação, para conferir a arte de uma vez.
+- **A cadeira vira sozinha para a mesa** (decisão do PO): ao ser levada para o lado de uma mesa, ela já vem virada. Saves antigos viram as cadeiras uma vez, ao abrir (save versão 4). No save do PO as 4 cadeiras já olhavam para as mesas, então nada mudou nele.
+- **Commits enviados ao GitHub** (`main`), com a autorização do PO.
 
 🟡 **EM ANDAMENTO**
 
@@ -33,13 +35,15 @@
 
 🧪 **TESTADO**
 
-- **277 testes automatizados: PASSOU** no Windows. Os testes novos conferem:
+- **284 testes automatizados: PASSOU** no Windows. Os testes novos conferem:
   - se todo móvel tem arte nas 4 rotações, com a âncora e a escala certas, e se a cena e a prévia usam essa arte;
   - se todo cliente e o garçom têm todas as poses e toda receita tem prato;
   - se a direção e o espelho seguem o movimento e os passos se alternam;
   - se quem senta segue a cadeira e a expressão segue a paciência;
   - se o prato vai para a mesa certa e sai quando o cliente levanta;
-  - se o balão fica por cima de tudo.
+  - se o balão fica por cima de tudo;
+  - se a cadeira vira para a mesa no modo de construção e nos saves antigos, uma vez só, e respeita a escolha do jogador nos saves novos.
+- **Defeitos inseridos de propósito: 13 de 13 pegos** pelos testes novos (lista em [qa.md](qa.md)).
 - **Vitrine dos personagens** fotografada e conferida: cada situação aparece como nas pranchas.
 - **Cena principal rodando 300 frames: PASSOU**, zero erros.
 - **Foto do jogo** com uma cópia do save do PO: a arte aparece no lugar certo e fica nítida com zoom de 1,8×.
@@ -58,11 +62,11 @@ Detalhes em [decisions.md](decisions.md):
 
 - **DT-030:** sprites gerados do código da arte v3. O Chrome ou o Edge converte para PNG, porque a Godot deixa vazio o gradiente de formas curvas. A Godot recorta e grava a âncora.
 - **DT-031:** personagens com poses desenhadas e espelhadas no jogo. Quem senta segue a cadeira. Balões desenhados por código e sempre por cima.
+- **DT-032:** a cadeira vira sozinha para a mesa (decisão do PO). Save versão 4 vira as cadeiras dos saves antigos uma vez.
 
 ➡️ **PRÓXIMO PASSO**
 
-- **Conferência visual do PO** dos móveis e dos personagens.
-- **Decisão do PO:** a cadeira deve já vir virada para a mesa ao ser posta do lado dela? Hoje cada cliente olha para onde a cadeira aponta, e no save do PO há cadeira de costas para a mesa.
+- **Conferência visual do PO** dos móveis e dos personagens (roteiro "Arte v3" em [qa.md](qa.md)).
 - Continuar a troca: **piso e paredes**, depois **pratos e interface**.
 - Instalar os export templates e gerar um `.exe` novo para o PO jogar.
 - **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.

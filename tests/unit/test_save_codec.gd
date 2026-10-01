@@ -194,3 +194,29 @@ func test_round_trip_keeps_the_cafe_name_and_old_saves_get_a_default() -> void:
 	data.erase("cafe_name")
 	var loaded := SaveCodec.decode(SaveCodec.migrate(JSON.parse_string(JSON.stringify(data))), clock).simulation
 	assert_eq(loaded.cafe_name, CafeSimulation.DEFAULT_CAFE_NAME, "quem já jogava não é interrompido")
+
+
+func _chair_away_from_table() -> StringName:
+	# Canto livre do jogo novo: nenhuma outra mesa encosta na cadeira.
+	var table := sim.layout.place(sim.furniture.get_definition(&"table_round"), Vector2i(6, 6))
+	assert_true(table != &"", "mesa posta")
+	var chair := sim.layout.place(sim.furniture.get_definition(&"chair_wood"), Vector2i(5, 6), 1)
+	assert_true(chair != &"", "cadeira posta de costas para a mesa")
+	return chair
+
+
+func test_old_saves_turn_their_chairs_toward_the_table_once() -> void:
+	_setup()
+	var chair := _chair_away_from_table()
+	var data := SaveCodec.encode(sim)
+	data["save_version"] = 3
+	var loaded := SaveCodec.decode(SaveCodec.migrate(JSON.parse_string(JSON.stringify(data))), clock).simulation
+	assert_eq(loaded.layout.get_placement(chair).rotation, 3, "a cadeira do save antigo olha para a mesa")
+	var again := SaveCodec.encode(loaded)
+	assert_false(again.has(SaveCodec.TURN_SEATS_KEY), "a marca não volta para o save")
+
+
+func test_current_saves_keep_the_chair_where_the_player_turned_it() -> void:
+	_setup()
+	var chair := _chair_away_from_table()
+	assert_eq(_round_trip().simulation.layout.get_placement(chair).rotation, 1, "escolha do jogador")

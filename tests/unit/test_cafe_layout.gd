@@ -184,3 +184,46 @@ func test_remove_frees_cells_and_unknown_ids_are_handled() -> void:
 
 func assert_ne_empty(id: StringName, message := "") -> void:
 	assert_true(id != &"", "esperado um id, veio vazio. " + message)
+
+
+func _with_category(definition: FurnitureDefinition, category: FurnitureDefinition.Category) -> FurnitureDefinition:
+	definition.category = category
+	return definition
+
+
+func test_seat_turns_toward_the_table_beside_it() -> void:
+	var layout := _layout()
+	var table := _with_category(_def(&"dining_table"), FurnitureDefinition.Category.TABLE)
+	layout.place(table, Vector2i(3, 3))
+	assert_eq(layout.rotation_toward_table(Vector2i(2, 3)), 3, "mesa em +x: olha para sudeste")
+	assert_eq(layout.rotation_toward_table(Vector2i(4, 3)), 1, "mesa em -x: olha para noroeste")
+	assert_eq(layout.rotation_toward_table(Vector2i(3, 2)), 0, "mesa em +y: olha para sudoeste")
+	assert_eq(layout.rotation_toward_table(Vector2i(3, 4)), 2, "mesa em -y: olha para nordeste")
+	assert_eq(layout.rotation_toward_table(Vector2i(6, 6)), -1, "sem mesa ao lado")
+	layout.place(_plant(), Vector2i(5, 5))
+	assert_eq(layout.rotation_toward_table(Vector2i(5, 4)), -1, "planta não é mesa")
+
+
+func test_seat_between_two_tables_keeps_the_side_it_already_faces() -> void:
+	var layout := _layout()
+	var table := _with_category(_def(&"dining_table"), FurnitureDefinition.Category.TABLE)
+	layout.place(table, Vector2i(1, 3))
+	layout.place(table, Vector2i(3, 3))
+	assert_eq(layout.rotation_toward_table(Vector2i(2, 3), 1), 1, "já olhava para a mesa de -x")
+	assert_eq(layout.rotation_toward_table(Vector2i(2, 3), 3), 3, "já olhava para a mesa de +x")
+
+
+func test_turn_seats_fixes_only_seats_that_face_no_table() -> void:
+	var layout := _layout()
+	var table := _with_category(_def(&"dining_table"), FurnitureDefinition.Category.TABLE)
+	var seat := _with_category(_def(&"seat"), FurnitureDefinition.Category.SEATING)
+	layout.place(table, Vector2i(3, 3))
+	var away := layout.place(seat, Vector2i(2, 3), 1)      # de costas para a mesa
+	var facing := layout.place(seat, Vector2i(4, 3), 1)    # já olha para a mesa
+	var alone := layout.place(seat, Vector2i(6, 6), 2)     # sem mesa ao lado
+	_changes = 0
+	assert_eq(layout.turn_seats_toward_tables(), 1)
+	assert_eq(layout.get_placement(away).rotation, 3, "virou para a mesa")
+	assert_eq(layout.get_placement(facing).rotation, 1, "quem já olhava fica")
+	assert_eq(layout.get_placement(alone).rotation, 2, "sem mesa, fica como estava")
+	assert_eq(_changes, 1, "avisa a tela da mudança")
