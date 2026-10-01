@@ -65,6 +65,8 @@ func sync() -> void:
 
 ## O prato de quem come fica no piso da mesa, puxado este tanto para o lado da cadeira.
 const DISH_TOWARD_SEAT := 0.3
+## Texto do selo do fogão quando o prato fica pronto.
+const READY_TEXT := "Pronto!"
 
 
 ## Atualiza o que muda a cada frame: etiquetas de fogões e balcões, pratos nas mesas e os personagens.
@@ -78,17 +80,22 @@ func _refresh_furniture_status(kitchen: Kitchen) -> void:
 	for id: StringName in _views:
 		var view: FurnitureView = _views[id]
 		if kitchen.is_stove(id):
+			var recipe := kitchen.stove_recipe(id)
 			match kitchen.stove_status(id):
 				Kitchen.StoveStatus.COOKING:
-					view.set_status("%s %s" % [kitchen.stove_recipe(id).display_name,
-						format_time(kitchen.time_left(id))], kitchen.progress(id))
+					var time := format_time(kitchen.time_left(id))
+					view.set_status("%s %s" % [recipe.display_name, time], kitchen.progress(id), false, recipe, time)
 				Kitchen.StoveStatus.READY:
-					view.set_status("%s pronto!" % kitchen.stove_recipe(id).display_name, -1.0, true)
+					view.set_status("%s pronto!" % recipe.display_name, -1.0, true, recipe, READY_TEXT)
 				_:
 					view.set_status("")
 		elif kitchen.is_counter(id):
 			var stack := kitchen.counter_stack(id)
-			view.set_status("" if stack == null else "%s ×%d" % [stack.recipe.display_name, stack.servings])
+			if stack == null:
+				view.set_status("")
+			else:
+				view.set_status("%s ×%d" % [stack.recipe.display_name, stack.servings], -1.0, false, stack.recipe, "",
+					stack.servings)
 
 
 ## Põe na mesa o prato de cada cliente que está comendo, do lado da cadeira dele.

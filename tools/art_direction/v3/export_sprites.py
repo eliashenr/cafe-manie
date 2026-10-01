@@ -163,6 +163,8 @@ FURNITURE = {
 }
 # Altura do tampo (unidades do desenho), onde o jogo põe o prato de quem está comendo.
 TABLE_TOPS = {"table_round": 34.0, "table_long": 32.0}
+# Altura do mármore do balcão (corpo de 42 e tampo de 5), onde ficam as pilhas de pratos.
+COUNTER_TOP = 47.0
 
 
 def furniture_bounds(iso, fp):
@@ -187,6 +189,15 @@ def export_furniture(sheet, manifest):
             entry[str(rotation)] = name
         manifest["furniture"][item_id] = entry
     manifest["table_tops"] = {k: round(v * WORLD, 2) for k, v in TABLE_TOPS.items()}
+    # Fogão cozinhando: a panela de cada receita (com a chama) e o forno aceso, por cima do fogão apagado.
+    bounds, anchor = furniture_bounds(iso, (1, 1))
+    for recipe_id, kind in FOODS.items():
+        sheet.add(f"panela_{recipe_id}", stove_pot(sheet.D, iso, 0, 0, kind), bounds, anchor)
+    for rotation, face in FACE.items():
+        sheet.add(f"fogao_aceso_r{rotation}", stove_glow(sheet.D, iso, 0, 0, face), bounds, anchor)
+    manifest["cookware"] = {recipe_id: f"panela_{recipe_id}" for recipe_id in FOODS}
+    manifest["stove_glow"] = {str(rotation): f"fogao_aceso_r{rotation}" for rotation in FACE}
+    manifest["counter_top"] = round(COUNTER_TOP * WORLD, 2)
 
 
 # --- Personagens -------------------------------------------------------------------------

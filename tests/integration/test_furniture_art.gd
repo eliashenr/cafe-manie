@@ -57,3 +57,36 @@ func test_ghost_uses_the_sprite_too() -> void:
 	await settle()
 	var ghost: FurnitureView = cafe.world_layer.get_node("Ghost")
 	assert_eq(ghost.sprite, ArtSprites.furniture(&"table_long", 1))
+
+
+func test_every_recipe_has_cookware_and_the_stove_glows_only_when_its_front_shows() -> void:
+	for recipe in RecipeCatalog.load_from().all():
+		assert_true(ArtSprites.cookware(recipe.id) != null, "%s sem panela" % recipe.id)
+	assert_true(ArtSprites.stove_glow(0) != null and ArtSprites.stove_glow(3) != null, "forno aceso de frente")
+	assert_eq(ArtSprites.stove_glow(1), null, "de costas não se vê o forno")
+	assert_eq(ArtSprites.stove_glow(2), null)
+	assert_true(ArtSprites.counter_top() > 0.0, "altura do tampo do balcão")
+
+
+func test_kitchen_shows_pot_badge_and_plate_stack() -> void:
+	var cafe := await spawn_cafe()
+	var stove := cafe.layout.place(cafe.catalog.get_definition(&"stove_basic"), Vector2i(0, 0))
+	var counter := cafe.layout.place(cafe.catalog.get_definition(&"counter_basic"), Vector2i(2, 0))
+	cafe.simulation.start_cooking(stove, &"coffee")
+	cafe.world_layer.refresh(cafe.simulation)
+	var stove_view := cafe.world_layer.view_for(stove)
+	assert_eq(stove_view.kitchen_recipe.id, &"coffee", "o fogão sabe o que cozinha")
+	assert_true(stove_view.kitchen_detail.contains(":"), "o selo mostra o tempo: " + stove_view.kitchen_detail)
+	assert_true(stove_view.shows_kitchen_art(), "panela e selo no lugar da etiqueta")
+	clock.advance(1000.0)
+	cafe.world_layer.refresh(cafe.simulation)
+	assert_eq(stove_view.kitchen_detail, WorldLayer.READY_TEXT, "pronto")
+	assert_true(stove_view.status_ready)
+	cafe.simulation.collect(stove)
+	cafe.world_layer.refresh(cafe.simulation)
+	assert_eq(stove_view.kitchen_recipe, null, "fogão livre, sem panela")
+	var counter_view := cafe.world_layer.view_for(counter)
+	assert_eq(counter_view.kitchen_recipe.id, &"coffee", "o prato foi para o balcão")
+	assert_true(counter_view.kitchen_count > 0 and counter_view.shows_kitchen_art(), "pilha de pratos com o número")
+	var overlay: Node2D = counter_view.get_node("Overlay")
+	assert_true(overlay.z_index > 0, "selos por cima do salão")

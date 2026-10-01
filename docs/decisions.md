@@ -4,6 +4,18 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-034 — Cozinha da v3: panela no fogão, selo e pilha de pratos
+
+**Problema:** fogão e balcão mostravam o estado numa etiqueta de texto escura ("Café 0:12", "Café ×6"). As pranchas mostram a panela no fogão, um selo redondo com o prato e o tempo e, no balcão, a pilha de pratos com um número.
+
+**Decisão:**
+- O fogão que cozinha ganha por cima a **panela da receita**, com a chama acesa e vapor, e o **forno aceso** nas rotações em que a frente aparece. São figuras à parte, porque o mesmo fogão serve para todas as receitas.
+- O **selo do fogão** (círculo branco, prato, anel de progresso, tempo numa pílula azul, "Pronto!" verde com brilho) e o **número do balcão** são desenhados por código, porque o tempo e o progresso mudam a cada quadro. Eles ficam no filho de cima, como os balões, e nenhum móvel os cobre.
+- O **balcão** mostra a pilha de pratos com a comida: um prato a cada 4 porções, até 3.
+- A etiqueta de texto continua guardando o estado (os testes e a acessibilidade usam) e só é desenhada quando falta arte.
+
+---
+
 ## DT-033 — Cenário da v3: piso e parede por célula, rua do lado da entrada
 
 **Problema:** o canvas desenha o salão inteiro de uma vez, mas no jogo o jogador troca o piso e a parede e a cafeteria cresce. Além disso, no canvas a porta fica numa parede do fundo e a rua passa atrás do salão. No jogo, os clientes entram pela borda da frente, à direita.

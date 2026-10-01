@@ -215,18 +215,43 @@ def cookware(D, iso, kind, cx, cy, z):
     return "".join(o)
 
 
+# Medidas do fogão (em pisos e, a altura, em px para W=96) e a boca onde a panela fica.
+STOVE_INSET = 0.05
+STOVE_SIZE = 0.9
+STOVE_HEIGHT = 44
+STOVE_BURNERS = [(0.3, 0.3), (0.72, 0.3), (0.3, 0.72), (0.72, 0.72)]
+STOVE_COOK_BURNER = 3
+
+
+def stove_pot(D, iso, x, y, cooking):
+    """O que aparece em cima do fogão que cozinha: a chama acesa na boca da frente e a panela com a comida.
+    O jogo desenha isto por cima do fogão apagado."""
+    k = K(iso)
+    bx, by, w, h = x + STOVE_INSET, y + STOVE_INSET, STOVE_SIZE, STOVE_HEIGHT * k
+    u, v = STOVE_BURNERS[STOVE_COOK_BURNER]
+    return _burner(D, iso, bx + u * w, by + v * w, h, True) + cookware(D, iso, cooking, bx + u * w, by + v * w, h)
+
+
+def stove_glow(D, iso, x, y, front):
+    """O forno aceso visto pelo visor da porta (só quando a frente aparece)."""
+    k = K(iso)
+    bx, by, w, h = x + STOVE_INSET, y + STOVE_INSET, STOVE_SIZE, STOVE_HEIGHT * k
+    q = lambda u0, u1, v0, v1: iso.quad(front, bx, by, w, w, 0, h, u0, u1, v0, v1)
+    return P(q(0.24, 0.76, 0.24, 0.5), "#ffab40", None, 'opacity="0.55"') + P(q(0.3, 0.7, 0.28, 0.38), "#ffe08a", None, 'opacity="0.6"')
+
+
 def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e"):
     """Fogão retrô esmaltado: tampo preto com 4 bocas, painel cromado com botões e forno com visor.
     front=None: frente virada para longe da câmera (só o corpo e as bocas)."""
     k = K(iso)
-    bx, by, w, d, h = x + 0.05, y + 0.05, 0.9, 0.9, 44 * k
+    bx, by, w, d, h = x + STOVE_INSET, y + STOVE_INSET, STOVE_SIZE, STOVE_SIZE, STOVE_HEIGHT * k
     o = [soft_shadow(D, iso, x + 0.5, y + 0.5, 0.5, opacity=0.3)]
     o.append(box3(D, iso, bx, by, w, d, h, enamel, top="#ffffff"))
     top = [iso.v(bx + 0.05, by + 0.05, h), iso.v(bx + w - 0.05, by + 0.05, h), iso.v(bx + w - 0.05, by + d - 0.05, h), iso.v(bx + 0.05, by + d - 0.05, h)]
     o.append(P(top, D.lin([(0, "#3a3c46"), (1, "#1c1d23")], 0, 0, 1, 1), INK3, 0.9))
-    burners = [(0.3, 0.3), (0.72, 0.3), (0.3, 0.72), (0.72, 0.72)]
+    burners = STOVE_BURNERS
     for i, (u, v) in enumerate(burners):
-        o.append(_burner(D, iso, bx + u * w, by + v * d, h, cooking is not None and i == 3))
+        o.append(_burner(D, iso, bx + u * w, by + v * d, h, cooking is not None and i == STOVE_COOK_BURNER))
     if front is None:
         return "".join(o)
     q = lambda u0, u1, v0, v1: iso.quad(front, bx, by, w, d, 0, h, u0, u1, v0, v1)
@@ -243,7 +268,7 @@ def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e"):
     o.append(P(q(0.14, 0.86, 0.63, 0.67), "#f4f7fa", INK3, 0.8))
     o.append(P(q(0.02, 0.98, 0.0, 0.06), "#2a2230", None, 'opacity="0.6"'))
     if cooking:
-        u, v = burners[3]
+        u, v = burners[STOVE_COOK_BURNER]
         o.append(cookware(D, iso, cooking, bx + u * w, by + v * d, h))
     return "".join(o)
 

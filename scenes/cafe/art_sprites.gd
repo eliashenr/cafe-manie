@@ -69,6 +69,23 @@ static func food(recipe_id: StringName) -> Sprite:
 	return null if sprite_name.is_empty() else get_sprite(sprite_name)
 
 
+## Panela da receita no fogão (com a chama acesa), ou null se não há arte.
+static func cookware(recipe_id: StringName) -> Sprite:
+	var sprite_name: String = _load_manifest().get("cookware", {}).get(String(recipe_id), "")
+	return null if sprite_name.is_empty() else get_sprite(sprite_name)
+
+
+## Forno aceso visto pela porta, nas rotações em que a frente do fogão aparece (0 e 3); senão null.
+static func stove_glow(rotation_steps: int) -> Sprite:
+	var sprite_name: String = _load_manifest().get("stove_glow", {}).get(str(posmod(rotation_steps, 4)), "")
+	return null if sprite_name.is_empty() else get_sprite(sprite_name)
+
+
+## Altura do tampo do balcão, em pixels de mundo, onde ficam as pilhas de pratos.
+static func counter_top() -> float:
+	return float(_load_manifest().get("counter_top", 0.0))
+
+
 ## Largura natural de um prato, em pixels de mundo (para escalar ao desenhar menor).
 static func food_width() -> float:
 	return float(_load_manifest().get("food_width", 64.0))

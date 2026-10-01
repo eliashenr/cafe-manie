@@ -2,7 +2,9 @@ extends SceneTree
 ## Vitrine dos personagens para conferência visual (precisa de janela: não use --headless).
 ##
 ## Uso (na pasta do projeto):
-##   godot -s res://tools/showcase.gd -- <saida.png> [zoom] [id do piso] [id da parede]
+##   godot -s res://tools/showcase.gd -- <saida.png> [zoom] [id do piso] [id da parede] [foco x,y]
+##
+## O foco é a célula que fica no meio da foto (ex.: 1,1 para a cozinha).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -12,6 +14,7 @@ var _cafe: Node
 var _output := ""
 var _zoom := 1.0
 var _frames := 20
+var _focus := Vector2(-1, -1)
 
 
 func _initialize() -> void:
@@ -19,6 +22,8 @@ func _initialize() -> void:
 	_output = args[0] if args.size() > 0 else "user://vitrine.png"
 	if args.size() > 1:
 		_zoom = float(args[1])
+	if args.size() > 4 and args[4].contains(","):
+		_focus = Vector2(float(args[4].get_slice(",", 0)), float(args[4].get_slice(",", 1)))
 	var clock = load("res://core/time/manual_clock.gd").new()
 	var catalog = load("res://core/furniture/furniture_catalog.gd").load_from()
 	var layout = load("res://core/cafe/cafe_layout.gd").new(Vector2i(8, 8), Vector2i(7, 4))
@@ -32,8 +37,9 @@ func _initialize() -> void:
 			simulation.style.apply(surface)
 	var place := func(id: StringName, cell: Vector2i, rotation := 0) -> StringName:
 		return layout.place(catalog.get_definition(id), cell, rotation)
-	place.call(&"stove_basic", Vector2i(0, 0), 3)
-	place.call(&"counter_basic", Vector2i(0, 2), 3)
+	var cooking_stove: StringName = place.call(&"stove_basic", Vector2i(0, 0), 3)
+	var ready_stove: StringName = place.call(&"stove_basic", Vector2i(1, 0), 0)
+	var counter: StringName = place.call(&"counter_basic", Vector2i(0, 2), 3)
 	place.call(&"plant_pot", Vector2i(0, 6))
 	place.call(&"table_round", Vector2i(3, 2))
 	var left_chair: StringName = place.call(&"chair_wood", Vector2i(2, 2), 3)
@@ -43,6 +49,12 @@ func _initialize() -> void:
 	var front_chair: StringName = place.call(&"chair_wood", Vector2i(4, 6), 2)
 
 	var recipes = simulation.recipes
+	# Cozinha: lasanha no meio do preparo, café pronto e coxinhas no balcão.
+	var lasagna = recipes.get_definition(&"lasagna")
+	simulation.kitchen.restore_stove(cooking_stove, lasagna, clock.now() - lasagna.cook_time * 0.6)
+	var coffee = recipes.get_definition(&"coffee")
+	simulation.kitchen.restore_stove(ready_stove, coffee, clock.now() - coffee.cook_time - 1.0)
+	simulation.kitchen.restore_counter(counter, recipes.get_definition(&"coxinha"), 9)
 	var regular = load("res://data/customers/regular.tres")
 	var serial := [10]
 	var seat := func(chair: StringName, state: int, recipe: StringName, patience: float):
@@ -101,7 +113,10 @@ func _process(_delta: float) -> bool:
 		return true
 	for window: Window in _cafe.find_children("*", "Window", true, false):
 		window.hide()
-	_cafe.get_viewport().get_camera_2d().zoom = Vector2(_zoom, _zoom)
+	var camera := _cafe.get_viewport().get_camera_2d()
+	camera.zoom = Vector2(_zoom, _zoom)
+	if _focus.x >= 0.0:
+		camera.global_position = IsoProjection.grid_point_to_world(_focus)
 	_frames -= 1
 	if _frames > 0:
 		return false

@@ -29,10 +29,15 @@
   - fora do salão: gramado, calçada, rua e um caminho de pedras até a entrada, cerquinha branca na frente (aberta no caminho), canteiros de flores e postes;
   - tudo acompanha a expansão da cafeteria.
 - **Vitrine aceita piso e parede** (`tools/showcase.gd -- foto.png 0.75 floor_wood wall_mint_stripes`), para conferir cada revestimento.
+- **Arte v3 na cozinha (4ª parte da troca dos placeholders):**
+  - o fogão que cozinha mostra a panela da receita com a chama e vapor, e o forno aceso quando a frente aparece;
+  - em cima do fogão, o selo da arte: o prato, um anel de progresso e o tempo; quando fica pronto, "Pronto!" em verde, com brilho;
+  - o balcão mostra a pilha de pratos com a comida e um número com as porções;
+  - selos sempre por cima do salão, como os balões.
 
 🟡 **EM ANDAMENTO**
 
-- **Troca dos placeholders pela arte v3:** faltam os pratos no balcão e no fogão e a interface (HUD e loja).
+- **Troca dos placeholders pela arte v3:** falta a interface (HUD e loja).
 - **Teste no celular de verdade:** roteiro "Android" em [qa.md](qa.md).
 
 🔴 **BLOQUEADO**
@@ -41,7 +46,7 @@
 
 🧪 **TESTADO**
 
-- **291 testes automatizados: PASSOU** no Windows. Os testes novos conferem:
+- **293 testes automatizados: PASSOU** no Windows. Os testes novos conferem:
   - se todo móvel tem arte nas 4 rotações, com a âncora e a escala certas, e se a cena e a prévia usam essa arte;
   - se todo cliente e o garçom têm todas as poses e toda receita tem prato;
   - se a direção e o espelho seguem o movimento e os passos se alternam;
@@ -50,8 +55,9 @@
   - se o balão fica por cima de tudo;
   - se a cadeira vira para a mesa no modo de construção e nos saves antigos, uma vez só, e respeita a escolha do jogador nos saves novos;
   - se todo revestimento tem arte, o xadrez alterna, as variações não mudam sozinhas e a parede tem janelas;
-  - se a cena usa a arte e enquadra a parede mais alta, se a cerca abre só na entrada e se o exterior acompanha a expansão.
-- **Defeitos inseridos de propósito: 21 de 21 pegos** pelos testes novos (lista em [qa.md](qa.md)).
+  - se a cena usa a arte e enquadra a parede mais alta, se a cerca abre só na entrada e se o exterior acompanha a expansão;
+  - se toda receita tem panela, se o forno só acende de frente e se fogão e balcão mostram receita, tempo, "Pronto!" e porções.
+- **Defeitos inseridos de propósito: 27 de 27 pegos** pelos testes novos (lista em [qa.md](qa.md)).
 - **Revestimentos conferidos por foto:** os 4 conjuntos de piso e parede na vitrine e o save do PO com o cenário novo.
 - **Vitrine dos personagens** fotografada e conferida: cada situação aparece como nas pranchas.
 - **Cena principal rodando 300 frames: PASSOU**, zero erros.
@@ -73,10 +79,11 @@ Detalhes em [decisions.md](decisions.md):
 - **DT-031:** personagens com poses desenhadas e espelhadas no jogo. Quem senta segue a cadeira. Balões desenhados por código e sempre por cima.
 - **DT-032:** a cadeira vira sozinha para a mesa (decisão do PO). Save versão 4 vira as cadeiras dos saves antigos uma vez.
 - **DT-033:** cenário da v3 montado por célula (piso, parede e enfeites). Rua e calçada do lado da entrada, por onde os clientes chegam. Cerca e canteiros na frente do salão.
+- **DT-034:** cozinha da v3. Panela e forno aceso por cima do fogão, selo e número desenhados por código, pilha de pratos no balcão.
 
 ➡️ **PRÓXIMO PASSO**
 
 - **Conferência visual do PO** dos móveis e dos personagens (roteiro "Arte v3" em [qa.md](qa.md)).
-- Continuar a troca: **pratos no balcão e no fogão**, depois a **interface** (HUD e loja).
+- Continuar a troca: a **interface** (HUD e loja), no formato do jogo antigo aprovado na v3.
 - Instalar os export templates e gerar um `.exe` novo para o PO jogar.
 - **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.

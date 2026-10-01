@@ -22,7 +22,7 @@ godot --headless --import                                        # a Godot impor
 
 | Folha | Figuras | Âncora |
 |---|---|---|
-| `moveis` | cada móvel nas 4 rotações (`chair_wood_r0` …) | vértice da frente da pegada |
+| `moveis` | cada móvel nas 4 rotações (`chair_wood_r0` …); a panela de cada receita (`panela_<receita>`) e o forno aceso (`fogao_aceso_r0`/`r3`), por cima do fogão | vértice da frente da pegada |
 | `personagens` | `cliente_01` … `cliente_12` e `garcom`, em `frente`/`costas` × `em_pe`/`andar`/`andar2`; `sentado_<expressão>`; `sentado_costas_r1`/`r2`; o garçom com `_bandeja` | pés (em pé) ou vértice da frente da cadeira (sentado) |
 | `pratos` | `prato_<id da receita>` e as carinhas `humor_feliz`/`esperando`/`bravo` | centro |
 | `cenario` | `piso_<revestimento>_<variação>`, `piso_entrada`, `parede_<revestimento>_R`/`L`, `enfeite_<nome>_R`/`L`, `poste`, `canteiro`; as texturas de repetir `gramado` e `asfalto` | vértice de cima do piso; ponta de baixo à esquerda do painel; base do poste e do canteiro |
@@ -52,6 +52,7 @@ Depois, rode os três comandos acima. Os testes `test_furniture_art.gd`, `test_c
 godot -s res://tools/screenshot.gd -- <cópia do save.json> foto.png 120 1.8    # a sua cafeteria
 godot -s res://tools/showcase.gd -- vitrine.png 1.25                           # gente em cada situação
 godot -s res://tools/showcase.gd -- vitrine.png 0.75 floor_wood wall_brick      # com outro piso e outra parede
+godot -s res://tools/showcase.gd -- cozinha.png 1.6 floor_beige wall_cream 0.2,0.6   # câmera na cozinha
 ```
 
 As duas abrem uma janela de verdade e gravam a tela (o último número é o zoom). Na primeira, use sempre uma

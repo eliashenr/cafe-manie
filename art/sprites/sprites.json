@@ -133,6 +133,54 @@
     351.67
    ]
   },
+  "panela_coffee": {
+   "anchor": [
+    46.67,
+    305.67
+   ]
+  },
+  "panela_cheese_bread": {
+   "anchor": [
+    73.67,
+    278.67
+   ]
+  },
+  "panela_toasted_sandwich": {
+   "anchor": [
+    78.67,
+    265.67
+   ]
+  },
+  "panela_carrot_cake": {
+   "anchor": [
+    37.67,
+    202.67
+   ]
+  },
+  "panela_coxinha": {
+   "anchor": [
+    41.67,
+    278.67
+   ]
+  },
+  "panela_lasagna": {
+   "anchor": [
+    60.67,
+    273.67
+   ]
+  },
+  "fogao_aceso_r0": {
+   "anchor": [
+    87.67,
+    109.67
+   ]
+  },
+  "fogao_aceso_r3": {
+   "anchor": [
+    -27.33,
+    109.67
+   ]
+  },
   "cliente_01_frente_em_pe": {
    "anchor": [
     46.0,
@@ -1390,6 +1438,19 @@
   "table_round": 45.33,
   "table_long": 42.67
  },
+ "cookware": {
+  "coffee": "panela_coffee",
+  "cheese_bread": "panela_cheese_bread",
+  "toasted_sandwich": "panela_toasted_sandwich",
+  "carrot_cake": "panela_carrot_cake",
+  "coxinha": "panela_coxinha",
+  "lasagna": "panela_lasagna"
+ },
+ "stove_glow": {
+  "0": "fogao_aceso_r0",
+  "3": "fogao_aceso_r3"
+ },
+ "counter_top": 62.67,
  "characters": {
   "customers": [
    "cliente_01",
