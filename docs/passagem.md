@@ -2,6 +2,21 @@
 
 Até aqui, o projeto foi feito numa conversa do Claude (app) com o PO, de 29 a 30/09/2026, num computador na nuvem. A partir de agora ele continua no **Claude Code**, nesta pasta do PC do PO. A conversa não vem junto: o que importa dela está registrado nos arquivos abaixo.
 
+## Primeiro passo no PC: recuperar o histórico
+
+A pasta chegou ao PC sem a pasta oculta `.git`, porque as ferramentas remotas não podem gravar nela. Todo o histórico (os commits de 29 e 30/09) veio no arquivo `cafe-manie.bundle`, na raiz do projeto. Na primeira sessão, o Claude Code roda, dentro da pasta do projeto:
+
+```bash
+git init -b main                                   # cria o repositório vazio
+git fetch ./cafe-manie.bundle main                 # traz todos os commits do arquivo
+git update-ref refs/heads/main FETCH_HEAD          # aponta a branch main para o último commit
+git reset                                          # alinha o índice com os arquivos que já estão na pasta
+git remote add origin https://github.com/eliashenr/cafe-manie
+git status                                         # deve mostrar só o cafe-manie.bundle como novo
+```
+
+Depois disso, o `cafe-manie.bundle` pode ser apagado. Esse caminho foi testado: com os arquivos da pasta e o bundle, o `git status` fica limpo e o `git log` mostra o histórico inteiro.
+
 ## Por onde começar
 
 1. [CLAUDE.md](../CLAUDE.md): regras do projeto.
