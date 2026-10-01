@@ -125,7 +125,7 @@ func _set_panel() -> void:
 			_cafe.select_at_world(IsoProjection.cell_center(stove.origin))
 		"construir":
 			_cafe.start_placing(&"table_round")
-			_cafe.tap_at_world(IsoProjection.cell_center(Vector2i(5, 2)))
+			_cafe._on_tapped(IsoProjection.cell_center(Vector2i(5, 2)))  # o toque do modo de construção
 	_panel = ""
 
 

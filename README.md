@@ -2,7 +2,7 @@
 
 Jogo de gerenciamento de cafeteria, mobile-first (Android), feito em **Godot 4.7.2** com **GDScript**.
 
-> Nome provisório. Status: **Vertical Slice validada**, com paredes e revestimentos, decoração com beleza, venda, conquistas, recompensa diária, sons e o primeiro APK Android.
+> Nome provisório. Status: **Vertical Slice validada** e **arte v3 aprovada no jogo inteiro** (móveis, personagens, cenário, cozinha e interface no formato do jogo antigo), com paredes e revestimentos, decoração com beleza, venda, conquistas, recompensa diária, sons e o primeiro APK Android.
 
 O documento que manda em tudo é o [master prompt](docs/master-prompt.md). O estado atual está em [docs/status.md](docs/status.md).
 
@@ -10,10 +10,13 @@ O documento que manda em tudo é o [master prompt](docs/master-prompt.md). O est
 
 ## Jogar no Windows sem instalar nada (recomendado)
 
-1. Baixe o arquivo **`CafeManie-Instalar.exe`** que o Claude enviou na conversa (tem cerca de 22 MB; o jogo vem compactado dentro dele).
-2. Dê dois cliques nele. Na primeira vez o Windows pode mostrar **"O Windows protegeu o computador"**. Isso acontece com todo programa sem uma assinatura digital paga, e não quer dizer que haja algo errado. Clique em **Mais informações** e depois em **Executar assim mesmo**.
-3. Abre uma janelinha do 7-Zip perguntando onde extrair. Deixe como está e clique em **Extract**. Aparece uma pasta **CafeManie** ao lado do instalador.
-4. Abra a pasta e dê dois cliques em **`CafeManie.exe`**. Daqui em diante, é só abrir este arquivo; o instalador pode ser apagado.
+O Claude gera o jogo direto no seu PC, dentro da pasta do projeto.
+
+1. Abra a pasta do projeto (`cafe-manie`, na Área de Trabalho), depois `build` e depois `windows`.
+2. Dê dois cliques em **`CafeManie.exe`**. É o jogo inteiro num arquivo só, sem instalar nada.
+3. Na primeira vez, o Windows pode mostrar **"O Windows protegeu o computador"**. Isso acontece com todo programa sem uma assinatura digital paga, e não quer dizer que haja algo errado. Clique em **Mais informações** e depois em **Executar assim mesmo**.
+
+Se quiser, crie um atalho na Área de Trabalho: clique com o botão direito no `CafeManie.exe` e escolha **Mostrar mais opções → Enviar para → Área de trabalho (criar atalho)**.
 
 O jogo salva sozinho em `%APPDATA%\Godot\app_userdata\Café Manie\` (cole esse caminho na barra de endereço do Explorador de Arquivos para ver a pasta). Um `.exe` novo continua o mesmo save.
 

@@ -53,6 +53,20 @@ func sim_sounds(cafe: Cafe) -> int:
 	return count
 
 
+## Quantas peças da arte v3 carregaram: um móvel, um prato, um cliente, o piso, a parede e um botão.
+## Se o manifesto ou os PNGs não entrassem no build, o jogo cairia nas caixas coloridas sem erro.
+func art_pieces(sim: CafeSimulation) -> int:
+	var pieces := [
+		ArtSprites.furniture(&"table_round", 0),
+		ArtSprites.food(&"coffee"),
+		ArtSprites.get_sprite("cliente_01_frente_em_pe"),
+		ArtSprites.floor_tile(sim.style.floor_id, Vector2i.ZERO),
+		ArtSprites.wall_panel(sim.style.wall_id, "R"),
+		ArtSprites.get_sprite("botao_check"),
+	]
+	return pieces.filter(func(piece: Variant) -> bool: return piece != null).size()
+
+
 func _finish() -> void:
 	var cafe := get_parent() as Cafe
 	var sim := cafe.simulation
@@ -68,12 +82,15 @@ func _finish() -> void:
 		"recompensas_diarias": sim.daily.calendar.days.size() if sim.daily.enabled() else 0,
 		"sons": sim_sounds(cafe),
 		"moveis_na_cafeteria": sim.layout.count(),
+		"arte": art_pieces(sim),
 	}
 	for key in counts:
 		if counts[key] == 0:
 			problems.append("nada carregado em " + key)
 	if not sim.expansions.is_valid():
 		problems.append("expansões inválidas")
+	if counts["arte"] < 6:
+		problems.append("arte incompleta: %d de 6 peças" % counts["arte"])
 	problems.append_array(_errors.messages)
 	OS.remove_logger(_errors)
 	var summary := " ".join(counts.keys().map(func(k: String) -> String: return "%s=%d" % [k, counts[k]]))
