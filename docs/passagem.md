@@ -12,10 +12,12 @@ git fetch ./cafe-manie.bundle main                 # traz todos os commits do ar
 git update-ref refs/heads/main FETCH_HEAD          # aponta a branch main para o último commit
 git reset                                          # alinha o índice com os arquivos que já estão na pasta
 git remote add origin https://github.com/eliashenr/cafe-manie
-git status                                         # deve mostrar só o cafe-manie.bundle como novo
+git status                                         # mostra o cafe-manie.bundle como novo e o icon.svg como alterado
 ```
 
-Depois disso, o `cafe-manie.bundle` pode ser apagado. Esse caminho foi testado: com os arquivos da pasta e o bundle, o `git status` fica limpo e o `git log` mostra o histórico inteiro.
+O `icon.svg` aparece alterado porque o envio para o PC acrescentou a ele um bloco de metadados de procedência (`<metadata>`). O desenho é o mesmo e a Godot ignora esse bloco. Cabe ao PO decidir se esse bloco entra num commit ou se o arquivo volta à versão do repositório.
+
+Depois disso, o `cafe-manie.bundle` pode ser apagado. Esse caminho foi testado: com os arquivos da pasta e o bundle, o `git log` mostra o histórico inteiro, e nenhum outro arquivo aparece alterado.
 
 ## Por onde começar
 
