@@ -1,34 +1,51 @@
 # Sprites do jogo
 
-Os sprites dos móveis saem do mesmo código que desenhou a direção visual v3 (`tools/art_direction/v3`).
-Decisão em [DT-030](../../docs/decisions.md).
+Os sprites saem do mesmo código que desenhou a direção visual v3 (`tools/art_direction/v3`).
+Decisões em [DT-030 e DT-031](../../docs/decisions.md).
 
 ## Como regenerar
 
 Na pasta do projeto:
 
 ```bash
-python tools/art_direction/v3/export_sprites.py                  # desenha e converte para tools/sprites/raw/
-godot --headless -s res://tools/sprites/crop_sprites.gd          # recorta e grava art/furniture/
+python tools/art_direction/v3/export_sprites.py                  # desenha as folhas em tools/sprites/raw/
+godot --headless -s res://tools/sprites/crop_sprites.gd          # recorta cada figura e grava art/sprites/
 godot --headless --import                                        # a Godot importa os PNGs novos
 ```
 
 - O primeiro passo precisa do Chrome ou do Edge (todo Windows tem o Edge). Outro caminho vai em `SPRITES_BROWSER`.
 - No Windows, rode o Python com `PYTHONUTF8=1` se aparecer erro de acentuação.
-- `tools/sprites/raw/` é descartável e fica fora do git. Os PNGs de `art/furniture/` entram no repositório.
+- `tools/sprites/raw/` é descartável e fica fora do git. Os PNGs de `art/sprites/` entram no repositório.
+- O recorte reprova figura vazia ou encostada na borda do espaço reservado (sinal de que saiu cortada).
 
-## Como entra um móvel novo
+## O que sai
 
-1. Desenhe a função do móvel em `tools/art_direction/v3/furniture3.py` (ou reaproveite uma).
-2. Acrescente o id dele em `FURNITURE`, no `export_sprites.py`, com a pegada e quantos desenhos diferentes ele tem
-   (4 se a frente importa, 2 se só muda o comprimento, 1 se é simétrico).
-3. Rode os três comandos acima. O teste `test_furniture_art.gd` reprova móvel do catálogo sem sprite.
+| Folha | Figuras | Âncora |
+|---|---|---|
+| `moveis` | cada móvel nas 4 rotações (`chair_wood_r0` …) | vértice da frente da pegada |
+| `personagens` | `cliente_01` … `cliente_12` e `garcom`, em `frente`/`costas` × `em_pe`/`andar`/`andar2`; `sentado_<expressão>`; `sentado_costas_r1`/`r2`; o garçom com `_bandeja` | pés (em pé) ou vértice da frente da cadeira (sentado) |
+| `pratos` | `prato_<id da receita>` e as carinhas `humor_feliz`/`esperando`/`bravo` | centro |
+
+O `sprites.json` também diz o sprite de cada rotação dos móveis, a altura dos tampos das mesas, os visuais
+de cliente, onde fica o prato na bandeja do garçom e qual cadeira tem a arte de quem senta de costas.
+
+## Como entra conteúdo novo
+
+- **Móvel:** desenhe a função em `furniture3.py` (ou reaproveite uma) e acrescente o id em `FURNITURE`, no
+  `export_sprites.py`, com a pegada e quantos desenhos diferentes ele tem (4 se a frente importa, 2 se só muda o
+  comprimento, 1 se é simétrico). Mesa nova também entra em `TABLE_TOPS`.
+- **Receita:** acrescente o id em `FOODS`, apontando para um prato de `../v2/food.py`.
+- **Cliente:** acrescente um visual em `CUSTOMERS`.
+
+Depois, rode os três comandos acima. Os testes `test_furniture_art.gd` e `test_character_art.gd` reprovam
+conteúdo do catálogo sem arte.
 
 ## Conferência visual
 
 ```bash
-godot -s res://tools/screenshot.gd -- <cópia do save.json> foto.png 120 1.8
+godot -s res://tools/screenshot.gd -- <cópia do save.json> foto.png 120 1.8    # a sua cafeteria
+godot -s res://tools/showcase.gd -- vitrine.png 1.25                           # gente em cada situação
 ```
 
-Abre a cafeteria com uma janela de verdade e grava a tela (o último número é o zoom). Use sempre uma **cópia** do save:
-o jogo salva sozinho.
+As duas abrem uma janela de verdade e gravam a tela (o último número é o zoom). Na primeira, use sempre uma
+**cópia** do save: o jogo salva sozinho. A vitrine não lê nem grava save.

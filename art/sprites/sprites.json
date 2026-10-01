@@ -1,0 +1,1219 @@
+{
+ "density": 2.0,
+ "sprites": {
+  "chair_wood_r0": {
+   "anchor": [
+    62.67,
+    247.67
+   ]
+  },
+  "chair_wood_r1": {
+   "anchor": [
+    62.67,
+    216.67
+   ]
+  },
+  "chair_wood_r2": {
+   "anchor": [
+    63.67,
+    216.67
+   ]
+  },
+  "chair_wood_r3": {
+   "anchor": [
+    63.67,
+    247.67
+   ]
+  },
+  "table_round_r0": {
+   "anchor": [
+    86.67,
+    199.67
+   ]
+  },
+  "table_long_r0": {
+   "anchor": [
+    242.67,
+    271.67
+   ]
+  },
+  "table_long_r1": {
+   "anchor": [
+    114.67,
+    271.67
+   ]
+  },
+  "stove_basic_r0": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_basic_r1": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_basic_r2": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_basic_r3": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "counter_basic_r0": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_basic_r1": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "counter_basic_r2": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_basic_r3": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "bookshelf_r0": {
+   "anchor": [
+    187.67,
+    400.67
+   ]
+  },
+  "bookshelf_r1": {
+   "anchor": [
+    59.67,
+    371.67
+   ]
+  },
+  "bookshelf_r2": {
+   "anchor": [
+    244.67,
+    371.67
+   ]
+  },
+  "bookshelf_r3": {
+   "anchor": [
+    116.67,
+    400.67
+   ]
+  },
+  "plant_pot_r0": {
+   "anchor": [
+    103.67,
+    349.67
+   ]
+  },
+  "flower_vase_r0": {
+   "anchor": [
+    48.67,
+    269.67
+   ]
+  },
+  "floor_lamp_r0": {
+   "anchor": [
+    90.67,
+    351.67
+   ]
+  },
+  "cliente_01_frente_em_pe": {
+   "anchor": [
+    46.0,
+    206.33
+   ]
+  },
+  "cliente_01_frente_andar": {
+   "anchor": [
+    48.0,
+    206.33
+   ]
+  },
+  "cliente_01_frente_andar2": {
+   "anchor": [
+    48.0,
+    206.33
+   ]
+  },
+  "cliente_01_costas_em_pe": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_01_costas_andar": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_01_costas_andar2": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_01_sentado_feliz": {
+   "anchor": [
+    46.0,
+    292.0
+   ]
+  },
+  "cliente_01_sentado_esperando": {
+   "anchor": [
+    46.0,
+    292.0
+   ]
+  },
+  "cliente_01_sentado_bravo": {
+   "anchor": [
+    46.0,
+    292.0
+   ]
+  },
+  "cliente_01_sentado_comendo": {
+   "anchor": [
+    46.0,
+    292.0
+   ]
+  },
+  "cliente_01_sentado_costas_r1": {
+   "anchor": [
+    62.0,
+    291.0
+   ]
+  },
+  "cliente_01_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    291.0
+   ]
+  },
+  "cliente_02_frente_em_pe": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "cliente_02_frente_andar": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "cliente_02_frente_andar2": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "cliente_02_costas_em_pe": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_02_costas_andar": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_02_costas_andar2": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_02_sentado_feliz": {
+   "anchor": [
+    46.0,
+    297.0
+   ]
+  },
+  "cliente_02_sentado_esperando": {
+   "anchor": [
+    46.0,
+    297.0
+   ]
+  },
+  "cliente_02_sentado_bravo": {
+   "anchor": [
+    46.0,
+    297.0
+   ]
+  },
+  "cliente_02_sentado_comendo": {
+   "anchor": [
+    46.0,
+    297.0
+   ]
+  },
+  "cliente_02_sentado_costas_r1": {
+   "anchor": [
+    45.0,
+    291.0
+   ]
+  },
+  "cliente_02_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    291.0
+   ]
+  },
+  "cliente_03_frente_em_pe": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_frente_andar": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_frente_andar2": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_em_pe": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_andar": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_andar2": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_sentado_feliz": {
+   "anchor": [
+    60.0,
+    305.0
+   ]
+  },
+  "cliente_03_sentado_esperando": {
+   "anchor": [
+    60.0,
+    305.0
+   ]
+  },
+  "cliente_03_sentado_bravo": {
+   "anchor": [
+    60.0,
+    305.0
+   ]
+  },
+  "cliente_03_sentado_comendo": {
+   "anchor": [
+    60.0,
+    305.0
+   ]
+  },
+  "cliente_03_sentado_costas_r1": {
+   "anchor": [
+    60.0,
+    305.0
+   ]
+  },
+  "cliente_03_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    305.0
+   ]
+  },
+  "cliente_04_frente_em_pe": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_04_frente_andar": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_04_frente_andar2": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_04_costas_em_pe": {
+   "anchor": [
+    48.0,
+    209.33
+   ]
+  },
+  "cliente_04_costas_andar": {
+   "anchor": [
+    48.0,
+    209.33
+   ]
+  },
+  "cliente_04_costas_andar2": {
+   "anchor": [
+    48.0,
+    209.33
+   ]
+  },
+  "cliente_04_sentado_feliz": {
+   "anchor": [
+    48.0,
+    295.0
+   ]
+  },
+  "cliente_04_sentado_esperando": {
+   "anchor": [
+    48.0,
+    295.0
+   ]
+  },
+  "cliente_04_sentado_bravo": {
+   "anchor": [
+    48.0,
+    295.0
+   ]
+  },
+  "cliente_04_sentado_comendo": {
+   "anchor": [
+    48.0,
+    295.0
+   ]
+  },
+  "cliente_04_sentado_costas_r1": {
+   "anchor": [
+    48.0,
+    295.0
+   ]
+  },
+  "cliente_04_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    295.0
+   ]
+  },
+  "cliente_05_frente_em_pe": {
+   "anchor": [
+    46.0,
+    210.33
+   ]
+  },
+  "cliente_05_frente_andar": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_05_frente_andar2": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_05_costas_em_pe": {
+   "anchor": [
+    46.0,
+    207.33
+   ]
+  },
+  "cliente_05_costas_andar": {
+   "anchor": [
+    48.0,
+    207.33
+   ]
+  },
+  "cliente_05_costas_andar2": {
+   "anchor": [
+    48.0,
+    207.33
+   ]
+  },
+  "cliente_05_sentado_feliz": {
+   "anchor": [
+    46.0,
+    296.0
+   ]
+  },
+  "cliente_05_sentado_esperando": {
+   "anchor": [
+    46.0,
+    296.0
+   ]
+  },
+  "cliente_05_sentado_bravo": {
+   "anchor": [
+    46.0,
+    296.0
+   ]
+  },
+  "cliente_05_sentado_comendo": {
+   "anchor": [
+    46.0,
+    296.0
+   ]
+  },
+  "cliente_05_sentado_costas_r1": {
+   "anchor": [
+    45.0,
+    292.0
+   ]
+  },
+  "cliente_05_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    292.0
+   ]
+  },
+  "cliente_06_frente_em_pe": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_frente_andar": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_frente_andar2": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_costas_em_pe": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_costas_andar": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_costas_andar2": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_sentado_feliz": {
+   "anchor": [
+    52.0,
+    298.0
+   ]
+  },
+  "cliente_06_sentado_esperando": {
+   "anchor": [
+    52.0,
+    298.0
+   ]
+  },
+  "cliente_06_sentado_bravo": {
+   "anchor": [
+    52.0,
+    298.0
+   ]
+  },
+  "cliente_06_sentado_comendo": {
+   "anchor": [
+    52.0,
+    298.0
+   ]
+  },
+  "cliente_06_sentado_costas_r1": {
+   "anchor": [
+    51.0,
+    294.0
+   ]
+  },
+  "cliente_06_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    294.0
+   ]
+  },
+  "cliente_07_frente_em_pe": {
+   "anchor": [
+    46.0,
+    230.33
+   ]
+  },
+  "cliente_07_frente_andar": {
+   "anchor": [
+    48.0,
+    230.33
+   ]
+  },
+  "cliente_07_frente_andar2": {
+   "anchor": [
+    48.0,
+    230.33
+   ]
+  },
+  "cliente_07_costas_em_pe": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_07_costas_andar": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_07_costas_andar2": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_07_sentado_feliz": {
+   "anchor": [
+    46.0,
+    316.0
+   ]
+  },
+  "cliente_07_sentado_esperando": {
+   "anchor": [
+    46.0,
+    316.0
+   ]
+  },
+  "cliente_07_sentado_bravo": {
+   "anchor": [
+    46.0,
+    316.0
+   ]
+  },
+  "cliente_07_sentado_comendo": {
+   "anchor": [
+    46.0,
+    316.0
+   ]
+  },
+  "cliente_07_sentado_costas_r1": {
+   "anchor": [
+    45.0,
+    291.0
+   ]
+  },
+  "cliente_07_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    291.0
+   ]
+  },
+  "cliente_08_frente_em_pe": {
+   "anchor": [
+    46.0,
+    233.33
+   ]
+  },
+  "cliente_08_frente_andar": {
+   "anchor": [
+    48.0,
+    233.33
+   ]
+  },
+  "cliente_08_frente_andar2": {
+   "anchor": [
+    48.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_em_pe": {
+   "anchor": [
+    46.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_andar": {
+   "anchor": [
+    48.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_andar2": {
+   "anchor": [
+    48.0,
+    233.33
+   ]
+  },
+  "cliente_08_sentado_feliz": {
+   "anchor": [
+    46.0,
+    319.0
+   ]
+  },
+  "cliente_08_sentado_esperando": {
+   "anchor": [
+    46.0,
+    319.0
+   ]
+  },
+  "cliente_08_sentado_bravo": {
+   "anchor": [
+    46.0,
+    319.0
+   ]
+  },
+  "cliente_08_sentado_comendo": {
+   "anchor": [
+    46.0,
+    319.0
+   ]
+  },
+  "cliente_08_sentado_costas_r1": {
+   "anchor": [
+    45.0,
+    319.0
+   ]
+  },
+  "cliente_08_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    319.0
+   ]
+  },
+  "cliente_09_frente_em_pe": {
+   "anchor": [
+    46.0,
+    197.33
+   ]
+  },
+  "cliente_09_frente_andar": {
+   "anchor": [
+    48.0,
+    197.33
+   ]
+  },
+  "cliente_09_frente_andar2": {
+   "anchor": [
+    48.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_em_pe": {
+   "anchor": [
+    46.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_andar": {
+   "anchor": [
+    48.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_andar2": {
+   "anchor": [
+    48.0,
+    197.33
+   ]
+  },
+  "cliente_09_sentado_feliz": {
+   "anchor": [
+    46.0,
+    283.0
+   ]
+  },
+  "cliente_09_sentado_esperando": {
+   "anchor": [
+    46.0,
+    283.0
+   ]
+  },
+  "cliente_09_sentado_bravo": {
+   "anchor": [
+    46.0,
+    291.0
+   ]
+  },
+  "cliente_09_sentado_comendo": {
+   "anchor": [
+    46.0,
+    283.0
+   ]
+  },
+  "cliente_09_sentado_costas_r1": {
+   "anchor": [
+    45.0,
+    283.0
+   ]
+  },
+  "cliente_09_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    283.0
+   ]
+  },
+  "cliente_10_frente_em_pe": {
+   "anchor": [
+    46.0,
+    239.33
+   ]
+  },
+  "cliente_10_frente_andar": {
+   "anchor": [
+    48.0,
+    239.33
+   ]
+  },
+  "cliente_10_frente_andar2": {
+   "anchor": [
+    48.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_em_pe": {
+   "anchor": [
+    46.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_andar": {
+   "anchor": [
+    48.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_andar2": {
+   "anchor": [
+    48.0,
+    239.33
+   ]
+  },
+  "cliente_10_sentado_feliz": {
+   "anchor": [
+    46.0,
+    324.0
+   ]
+  },
+  "cliente_10_sentado_esperando": {
+   "anchor": [
+    46.0,
+    324.0
+   ]
+  },
+  "cliente_10_sentado_bravo": {
+   "anchor": [
+    46.0,
+    324.0
+   ]
+  },
+  "cliente_10_sentado_comendo": {
+   "anchor": [
+    46.0,
+    324.0
+   ]
+  },
+  "cliente_10_sentado_costas_r1": {
+   "anchor": [
+    45.0,
+    324.0
+   ]
+  },
+  "cliente_10_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    324.0
+   ]
+  },
+  "cliente_11_frente_em_pe": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_frente_andar": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_frente_andar2": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_costas_em_pe": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_costas_andar": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_costas_andar2": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_sentado_feliz": {
+   "anchor": [
+    52.0,
+    298.0
+   ]
+  },
+  "cliente_11_sentado_esperando": {
+   "anchor": [
+    52.0,
+    298.0
+   ]
+  },
+  "cliente_11_sentado_bravo": {
+   "anchor": [
+    52.0,
+    298.0
+   ]
+  },
+  "cliente_11_sentado_comendo": {
+   "anchor": [
+    52.0,
+    298.0
+   ]
+  },
+  "cliente_11_sentado_costas_r1": {
+   "anchor": [
+    51.0,
+    293.0
+   ]
+  },
+  "cliente_11_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    293.0
+   ]
+  },
+  "cliente_12_frente_em_pe": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "cliente_12_frente_andar": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "cliente_12_frente_andar2": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "cliente_12_costas_em_pe": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_12_costas_andar": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_12_costas_andar2": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_12_sentado_feliz": {
+   "anchor": [
+    46.0,
+    297.0
+   ]
+  },
+  "cliente_12_sentado_esperando": {
+   "anchor": [
+    46.0,
+    297.0
+   ]
+  },
+  "cliente_12_sentado_bravo": {
+   "anchor": [
+    46.0,
+    297.0
+   ]
+  },
+  "cliente_12_sentado_comendo": {
+   "anchor": [
+    46.0,
+    297.0
+   ]
+  },
+  "cliente_12_sentado_costas_r1": {
+   "anchor": [
+    45.0,
+    291.0
+   ]
+  },
+  "cliente_12_sentado_costas_r2": {
+   "anchor": [
+    63.0,
+    291.0
+   ]
+  },
+  "garcom_frente_em_pe": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "garcom_frente_em_pe_bandeja": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "garcom_frente_andar": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "garcom_frente_andar_bandeja": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "garcom_frente_andar2": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "garcom_frente_andar2_bandeja": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "garcom_costas_em_pe": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "garcom_costas_em_pe_bandeja": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "garcom_costas_andar": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "garcom_costas_andar_bandeja": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "garcom_costas_andar2": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "garcom_costas_andar2_bandeja": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "prato_coffee": {
+   "anchor": [
+    46.8,
+    57.48
+   ]
+  },
+  "prato_cheese_bread": {
+   "anchor": [
+    52.8,
+    25.48
+   ]
+  },
+  "prato_toasted_sandwich": {
+   "anchor": [
+    55.8,
+    47.48
+   ]
+  },
+  "prato_carrot_cake": {
+   "anchor": [
+    52.8,
+    36.48
+   ]
+  },
+  "prato_coxinha": {
+   "anchor": [
+    52.8,
+    37.48
+   ]
+  },
+  "prato_lasagna": {
+   "anchor": [
+    52.8,
+    62.48
+   ]
+  },
+  "humor_feliz": {
+   "anchor": [
+    32.07,
+    32.07
+   ]
+  },
+  "humor_esperando": {
+   "anchor": [
+    32.07,
+    32.07
+   ]
+  },
+  "humor_bravo": {
+   "anchor": [
+    32.07,
+    32.07
+   ]
+  }
+ },
+ "furniture": {
+  "chair_wood": {
+   "0": "chair_wood_r0",
+   "1": "chair_wood_r1",
+   "2": "chair_wood_r2",
+   "3": "chair_wood_r3"
+  },
+  "table_round": {
+   "0": "table_round_r0",
+   "1": "table_round_r0",
+   "2": "table_round_r0",
+   "3": "table_round_r0"
+  },
+  "table_long": {
+   "0": "table_long_r0",
+   "1": "table_long_r1",
+   "2": "table_long_r0",
+   "3": "table_long_r1"
+  },
+  "stove_basic": {
+   "0": "stove_basic_r0",
+   "1": "stove_basic_r1",
+   "2": "stove_basic_r2",
+   "3": "stove_basic_r3"
+  },
+  "counter_basic": {
+   "0": "counter_basic_r0",
+   "1": "counter_basic_r1",
+   "2": "counter_basic_r2",
+   "3": "counter_basic_r3"
+  },
+  "bookshelf": {
+   "0": "bookshelf_r0",
+   "1": "bookshelf_r1",
+   "2": "bookshelf_r2",
+   "3": "bookshelf_r3"
+  },
+  "plant_pot": {
+   "0": "plant_pot_r0",
+   "1": "plant_pot_r0",
+   "2": "plant_pot_r0",
+   "3": "plant_pot_r0"
+  },
+  "flower_vase": {
+   "0": "flower_vase_r0",
+   "1": "flower_vase_r0",
+   "2": "flower_vase_r0",
+   "3": "flower_vase_r0"
+  },
+  "floor_lamp": {
+   "0": "floor_lamp_r0",
+   "1": "floor_lamp_r0",
+   "2": "floor_lamp_r0",
+   "3": "floor_lamp_r0"
+  }
+ },
+ "table_tops": {
+  "table_round": 45.33,
+  "table_long": 42.67
+ },
+ "characters": {
+  "customers": [
+   "cliente_01",
+   "cliente_02",
+   "cliente_03",
+   "cliente_04",
+   "cliente_05",
+   "cliente_06",
+   "cliente_07",
+   "cliente_08",
+   "cliente_09",
+   "cliente_10",
+   "cliente_11",
+   "cliente_12"
+  ],
+  "waiter": "garcom",
+  "tray_food": [
+   31.63,
+   -70.4,
+   27.43
+  ],
+  "seated_back_chair": "chair_wood"
+ },
+ "food": {
+  "coffee": "prato_coffee",
+  "cheese_bread": "prato_cheese_bread",
+  "toasted_sandwich": "prato_toasted_sandwich",
+  "carrot_cake": "prato_carrot_cake",
+  "coxinha": "prato_coxinha",
+  "lasagna": "prato_lasagna"
+ },
+ "food_width": 64.0
+}

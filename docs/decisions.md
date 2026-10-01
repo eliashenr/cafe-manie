@@ -4,6 +4,23 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-031 — Personagens da arte v3: poses desenhadas, espelho no jogo e balões por código
+
+**Problema:** trocar os bonecos provisórios pelos personagens aprovados, que andam, sentam, pedem, comem e vão embora, sem multiplicar o número de desenhos.
+
+**Decisão:**
+- **12 visuais de cliente** (os tipos de gente das pranchas) e o **garçom Léo**. Cada visual tem: em pé e dois passos de andar, de frente e de costas; sentado de frente com 4 expressões (feliz, esperando, bravo, comendo); sentado de costas para as rotações 1 e 2 da cadeira. O garçom tem as poses com e sem bandeja.
+- Cada pose é desenhada olhando para a **direita da tela**. O jogo **espelha** na horizontal para as outras direções, como o canvas já fazia. Isso corta pela metade o número de desenhos.
+- Andar é um ciclo de 4 quadros (passo, em pé, outro passo, em pé), que troca de quadro conforme o personagem anda pelo piso, e não pelo relógio. Parado, ele fica em pé.
+- O visual do cliente vem do **número de série**: clientes não entram no save, então nada muda nos dados.
+- **Quem senta olha para onde a cadeira aponta** (`CafeLayout.front_direction`). Assim o corpo combina com o encosto. Quem senta de costas leva o encosto da cadeira desenhado por cima, como no canvas. Um teste reprova cadeira nova sem essa arte.
+- A **expressão segue a paciência**, nas mesmas faixas das cores da barra: acima de 50% feliz, acima de 25% esperando, abaixo disso bravo.
+- O **prato de quem come fica na mesa**, desenhado pela própria mesa, para a profundidade sair certa. O garçom leva na bandeja o prato do pedido.
+- **Balões e carinhas** são desenhados por código, porque a barra de paciência muda a cada quadro. O prato do pedido vai dentro do balão. Eles ficam num filho com `z_index` alto, e nenhum móvel cobre o balão.
+- O exportador agrupa as figuras em **folhas**: o navegador abre 3 vezes, e não 187. A exportação inteira leva uns 5 segundos.
+
+---
+
 ## DT-030 — Sprites do jogo gerados do código da arte v3
 
 **Problema:** levar a arte v3 aprovada (SVG gerado em Python) para dentro da Godot, na escala do jogo (piso de 128×64; a arte foi desenhada para 96×48), sem desenhar tudo de novo.
@@ -15,7 +32,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 **Decisão:** B.
 - `tools/art_direction/v3/export_sprites.py` desenha cada móvel nas 4 rotações e amplia o desenho inteiro (traços junto) para **2 pixels de textura por pixel de mundo**. A Godot desenha o sprite pela metade, o que deixa a imagem nítida até o zoom máximo (2×).
-- `tools/sprites/crop_sprites.gd` recorta as sobras e grava `art/furniture/*.png` e `sprites.json`, com a âncora de cada sprite no vértice da frente da pegada, o mesmo ponto em que o `FurnitureView` fica. Assim o y-sort continua valendo (DT-009).
+- `tools/sprites/crop_sprites.gd` recorta as sobras e grava `art/sprites/*.png` e `sprites.json`, com a âncora de cada sprite no vértice da frente da pegada, o mesmo ponto em que o `FurnitureView` fica. Assim o y-sort continua valendo (DT-009).
 - Rotações: a frente para sudoeste (0) e sudeste (3) aparece. Para noroeste (1) e nordeste (2), o móvel aparece **de costas**. Móveis simétricos têm um desenho só.
 - Os PNGs entram no repositório: abrir ou exportar o jogo não depende de Python nem de Chrome. Os arquivos crus (`tools/sprites/raw/`) não entram.
 - Móvel sem sprite volta à caixa colorida (`PLACEHOLDER_FURNITURE`), então dá para criar conteúdo novo antes de existir arte.

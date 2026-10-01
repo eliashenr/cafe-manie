@@ -79,6 +79,13 @@ static func rotated_footprint(footprint: Vector2i, rotation: int) -> Vector2i:
 	return footprint if posmod(rotation, 2) == 0 else Vector2i(footprint.y, footprint.x)
 
 
+## Para onde a frente do móvel aponta em cada rotação (0 a 3), em passos do grid:
+## 0 = sudoeste (+y), 1 = noroeste (-x), 2 = nordeste (-y), 3 = sudeste (+x).
+## É para onde olha quem senta numa cadeira.
+static func front_direction(rotation: int) -> Vector2i:
+	return [Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, 0)][posmod(rotation, 4)]
+
+
 func placements() -> Array[Placement]:
 	var result: Array[Placement] = []
 	result.assign(_placements.values())

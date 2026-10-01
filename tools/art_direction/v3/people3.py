@@ -556,6 +556,11 @@ def _seated_legs(D, bottom, skin_fill, shoes, back):
     return "".join(o)
 
 
+# Bandeja sem comida: o jogo desenha o prato por cima, no ponto TRAY_FOOD (pés em (0, 0), escala 1).
+TRAY_EMPTY = "vazia"
+TRAY_FOOD = (34.6, -77.0, 30.0)  # centro x, centro y e largura do prato
+
+
 def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, shoes="#5b4a66"):
     sk = SKIN[skin]
     kind, color = top
@@ -564,8 +569,14 @@ def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, 
     skin_fill = D.lin_u([(0, sk[2]), (0.5, sk[0]), (1, sk[1])], -20, -60, 20, -26)
     sleeve = {"camiseta": "curta", "blusa": "curta", "regata": None, "vestido": "curta"}.get(kind, "longa")
     o = []
+    # "andar2": a mesma passada com a outra perna à frente (as pernas espelhadas), para alternar com "andar".
+    other_leg = pose == "andar2"
+    if other_leg:
+        pose = "andar"
     if pose == "sentado":
         o.append(_seated_legs(D, bottom, skin_fill, shoes, back))
+    elif other_leg:
+        o.append(g(_legs(D, bottom, skin_fill, sk, shoes, pose), "scale(-1,1)"))
     else:
         o.append(_legs(D, bottom, skin_fill, sk, shoes, pose))
     dy = 26 if pose == "sentado" else 0
@@ -589,8 +600,9 @@ def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, 
         b.append(E(30.6, -63.4, 3.8, 4.1, skin_fill, LINE, 1.1))
         b.append(E(34.6, -67.4, 19, 5.6, D.lin([(0, "#ffffff"), (0.6, "#dfe6ee"), (1, "#aab6c4")]), LINE, 1.3))
         b.append(E(34.6, -68.4, 15.6, 3.6, "none", "#ffffff", 1.0, 'opacity="0.7"'))
-        from food3 import food
-        b.append(food(D, tray, 34.6, -77, 30))
+        if tray != TRAY_EMPTY:
+            from food3 import food
+            b.append(food(D, tray, 34.6, -77, 30))
     o.append(g("".join(b), f"translate(0,{dy})"))
     return "".join(o)
 

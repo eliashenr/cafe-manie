@@ -39,6 +39,14 @@ func test_default_entrance_is_middle_of_front_edge() -> void:
 	assert_eq(CafeLayout.default_entrance(Vector2i(12, 10)), Vector2i(11, 5))
 
 
+func test_front_direction_turns_clockwise_from_southwest() -> void:
+	assert_eq(CafeLayout.front_direction(0), Vector2i(0, 1))
+	assert_eq(CafeLayout.front_direction(1), Vector2i(-1, 0))
+	assert_eq(CafeLayout.front_direction(2), Vector2i(0, -1))
+	assert_eq(CafeLayout.front_direction(3), Vector2i(1, 0))
+	assert_eq(CafeLayout.front_direction(4), Vector2i(0, 1), "volta ao começo depois de uma volta inteira")
+
+
 func test_rotated_footprint_swaps_on_odd_quarter_turns() -> void:
 	assert_eq(CafeLayout.rotated_footprint(Vector2i(2, 1), 0), Vector2i(2, 1))
 	assert_eq(CafeLayout.rotated_footprint(Vector2i(2, 1), 1), Vector2i(1, 2))

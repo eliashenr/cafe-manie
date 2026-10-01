@@ -1,6 +1,6 @@
 class_name FurnitureView
 extends Node2D
-## Móvel desenhado com o sprite da arte v3 (FurnitureSprites). Móvel sem arte
+## Móvel desenhado com o sprite da arte v3 (ArtSprites). Móvel sem arte
 ## cai no PLACEHOLDER_FURNITURE: caixa isométrica colorida, com o nome em cima e
 ## um ponto marcando a frente (para a rotação ficar visível).
 ##
@@ -25,7 +25,7 @@ var origin := Vector2i.ZERO
 var rotation_steps := 0
 var look := Look.NORMAL
 ## Arte do móvel nesta rotação; null = desenha o placeholder.
-var sprite: FurnitureSprites.Sprite
+var sprite: ArtSprites.Sprite
 
 ## Etiqueta de estado acima do móvel (ex.: "Café 0:12", "Café ×6"). Vazia = sem etiqueta.
 var status_text := ""
@@ -33,6 +33,9 @@ var status_text := ""
 var status_progress := -1.0
 ## Destaca a etiqueta em verde (prato pronto para servir).
 var status_ready := false
+## Pratos sobre o tampo (mesas), cada um [ponto no grid, RecipeDefinition]. O ponto
+## usa a convenção do Agent: o centro da célula (x, y) é Vector2(x, y).
+var dishes: Array = []
 
 const STATUS_BG := Color(0.1, 0.07, 0.05, 0.85)
 const STATUS_READY_BG := Color(0.2, 0.62, 0.3, 0.95)
@@ -40,6 +43,20 @@ const STATUS_TEXT := Color(1, 1, 1)
 const STATUS_BAR_BG := Color(1, 1, 1, 0.25)
 const STATUS_BAR_FILL := Color("f2b33d")
 const STATUS_SIZE := 13
+
+
+## Largura do prato na mesa, em relação ao tamanho natural do sprite (como no canvas: 26 de 48).
+const DISH_SCALE := 26.0 / 48.0
+## O prato fica um pouco acima do tampo (centro do ícone), em pixels de mundo.
+const DISH_LIFT := 5.0
+
+
+## Troca os pratos sobre o tampo; só redesenha se algo mudou.
+func set_dishes(new_dishes: Array) -> void:
+	if new_dishes == dishes:
+		return
+	dishes = new_dishes
+	queue_redraw()
 
 
 ## Atualiza a etiqueta de estado; só redesenha se algo mudou.
@@ -59,7 +76,7 @@ func configure(new_definition: FurnitureDefinition, new_origin: Vector2i, new_ro
 	origin = new_origin
 	rotation_steps = new_rotation_steps
 	look = new_look
-	sprite = FurnitureSprites.lookup(definition.id, rotation_steps)
+	sprite = ArtSprites.furniture(definition.id, rotation_steps)
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	position = IsoProjection.cell_top_vertex(origin + _footprint())
 	match look:
@@ -132,7 +149,23 @@ func _draw_sprite() -> void:
 		draw_polyline(PackedVector2Array([b[0], b[1], b[2], b[3], b[0]]), SELECTED_OUTLINE, 3.0, true)
 	var rect := sprite.draw_rect()
 	draw_texture_rect(sprite.texture, rect, false)
+	_draw_dishes()
 	_draw_status(Vector2((b[0].x + b[2].x) / 2.0, rect.position.y))
+
+
+func _draw_dishes() -> void:
+	var top := ArtSprites.table_top(definition.id)
+	var placed: Array = []
+	for dish: Array in dishes:
+		var food := ArtSprites.food((dish[1] as RecipeDefinition).id)
+		if food == null:
+			continue
+		var at := IsoProjection.grid_point_to_world(dish[0]) - position - Vector2(0.0, top + DISH_LIFT)
+		placed.append([at, food])
+	placed.sort_custom(func(a: Array, b: Array) -> bool: return a[0].y < b[0].y)
+	for item: Array in placed:
+		var food: ArtSprites.Sprite = item[1]
+		draw_texture_rect(food.texture, food.rect_at(item[0], DISH_SCALE), false)
 
 
 ## Etiqueta arredondada acima do móvel, com barra de progresso opcional.

@@ -6,7 +6,7 @@ extends CafeTestCase
 func test_every_catalog_furniture_has_a_sprite_for_each_rotation() -> void:
 	for definition in FurnitureCatalog.load_from().all():
 		for rotation in 4:
-			var sprite := FurnitureSprites.lookup(definition.id, rotation)
+			var sprite := ArtSprites.furniture(definition.id, rotation)
 			assert_true(sprite != null, "%s sem sprite na rotação %d" % [definition.id, rotation])
 			if sprite == null:
 				continue
@@ -22,7 +22,7 @@ func test_sprite_covers_the_footprint_on_screen() -> void:
 	# Pega erro de escala: o sprite não pode ser minúsculo nem passar das pontas da pegada.
 	for definition in FurnitureCatalog.load_from().all():
 		for rotation in 4:
-			var sprite := FurnitureSprites.lookup(definition.id, rotation)
+			var sprite := ArtSprites.furniture(definition.id, rotation)
 			if sprite == null:
 				continue
 			var footprint := CafeLayout.rotated_footprint(definition.footprint, rotation)
@@ -39,7 +39,7 @@ func test_sprite_covers_the_footprint_on_screen() -> void:
 
 
 func test_unknown_furniture_has_no_sprite() -> void:
-	assert_eq(FurnitureSprites.lookup(&"nao_existe", 0), null)
+	assert_eq(ArtSprites.furniture(&"nao_existe", 0), null)
 
 
 func test_scene_draws_furniture_with_its_rotated_sprite() -> void:
@@ -48,7 +48,7 @@ func test_scene_draws_furniture_with_its_rotated_sprite() -> void:
 	await settle()
 	var view := cafe.world_layer.view_for(stove)
 	assert_true(view.sprite != null, "o fogão usa a arte")
-	assert_eq(view.sprite, FurnitureSprites.lookup(&"stove_basic", 3), "sprite da rotação certa")
+	assert_eq(view.sprite, ArtSprites.furniture(&"stove_basic", 3), "sprite da rotação certa")
 
 
 func test_ghost_uses_the_sprite_too() -> void:
@@ -56,4 +56,4 @@ func test_ghost_uses_the_sprite_too() -> void:
 	cafe.world_layer.show_ghost(cafe.catalog.get_definition(&"table_long"), Vector2i(2, 2), 1, true)
 	await settle()
 	var ghost: FurnitureView = cafe.world_layer.get_node("Ghost")
-	assert_eq(ghost.sprite, FurnitureSprites.lookup(&"table_long", 1))
+	assert_eq(ghost.sprite, ArtSprites.furniture(&"table_long", 1))

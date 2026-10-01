@@ -63,9 +63,14 @@ func sync() -> void:
 			_views.erase(id)
 
 
-## Atualiza o que muda a cada frame: etiquetas de fogões e balcões e os personagens.
+## O prato de quem come fica no piso da mesa, puxado este tanto para o lado da cadeira.
+const DISH_TOWARD_SEAT := 0.3
+
+
+## Atualiza o que muda a cada frame: etiquetas de fogões e balcões, pratos nas mesas e os personagens.
 func refresh(simulation: CafeSimulation) -> void:
 	_refresh_furniture_status(simulation.kitchen)
+	_refresh_table_dishes(simulation)
 	_refresh_agents(simulation)
 
 
@@ -86,6 +91,43 @@ func _refresh_furniture_status(kitchen: Kitchen) -> void:
 			view.set_status("" if stack == null else "%s ×%d" % [stack.recipe.display_name, stack.servings])
 
 
+## Põe na mesa o prato de cada cliente que está comendo, do lado da cadeira dele.
+func _refresh_table_dishes(simulation: CafeSimulation) -> void:
+	var by_table := {}
+	for customer in simulation.customers:
+		if customer.state != Customer.State.EATING or customer.order == null:
+			continue
+		var table := _table_cell_for(customer)
+		if table.is_empty():
+			continue
+		var point := Vector2(table[1]).lerp(Vector2(customer.seat_cell), DISH_TOWARD_SEAT)
+		if not by_table.has(table[0]):
+			by_table[table[0]] = []
+		by_table[table[0]].append([point, customer.order])
+	for id: StringName in _views:
+		var view: FurnitureView = _views[id]
+		if view.definition.category == FurnitureDefinition.Category.TABLE:
+			view.set_dishes(by_table.get(id, []))
+
+
+## [id da mesa, piso da mesa] encostado na cadeira do cliente: primeiro o piso para
+## onde a cadeira está virada, depois os outros vizinhos. Vazio se não há mesa.
+func _table_cell_for(customer: Customer) -> Array:
+	var seat := layout.get_placement(customer.seat_id)
+	if seat == null:
+		return []
+	var steps: Array[Vector2i] = [CafeLayout.front_direction(seat.rotation)]
+	for step in Navigation.NEIGHBORS:
+		if not steps.has(step):
+			steps.append(step)
+	for step in steps:
+		var cell := customer.seat_cell + step
+		var neighbor := layout.placement_at(cell)
+		if neighbor != null and neighbor.definition.category == FurnitureDefinition.Category.TABLE:
+			return [neighbor.id, cell]
+	return []
+
+
 func _refresh_agents(simulation: CafeSimulation) -> void:
 	var alive: Dictionary = {}
 	var everyone: Array[Agent] = []
@@ -99,7 +141,12 @@ func _refresh_agents(simulation: CafeSimulation) -> void:
 			view.name = "Agent_%d" % agent.serial
 			add_child(view)
 			_agents[agent.serial] = view
-		view.refresh(agent)
+		var seat_rotation := -1
+		if agent is Customer and (agent as Customer).is_seated():
+			var seat := layout.get_placement((agent as Customer).seat_id)
+			if seat != null:
+				seat_rotation = seat.rotation
+		view.refresh(agent, seat_rotation)
 	for serial: int in _agents.keys():
 		if not alive.has(serial):
 			_agents[serial].queue_free()
