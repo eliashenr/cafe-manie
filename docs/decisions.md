@@ -4,6 +4,25 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-030 — Sprites do jogo gerados do código da arte v3
+
+**Problema:** levar a arte v3 aprovada (SVG gerado em Python) para dentro da Godot, na escala do jogo (piso de 128×64; a arte foi desenhada para 96×48), sem desenhar tudo de novo.
+
+**Opção A:** a Godot importa os SVGs direto (ThorVG).
+**Opção B:** o Python desenha os SVGs, o Chrome ou o Edge sem janela converte para PNG, e a Godot só recorta e grava a âncora.
+
+**Impactos:** testado no Windows, o ThorVG da Godot 4.7.2 deixa **vazio** todo gradiente em forma curva (as folhas da planta saíam só com o contorno). Ele também não tem padrões (`<pattern>`), que a toalha da mesa usa. O Chrome desenha igual às pranchas aprovadas. Como o Edge vem em todo Windows, nada novo precisa ser instalado.
+
+**Decisão:** B.
+- `tools/art_direction/v3/export_sprites.py` desenha cada móvel nas 4 rotações e amplia o desenho inteiro (traços junto) para **2 pixels de textura por pixel de mundo**. A Godot desenha o sprite pela metade, o que deixa a imagem nítida até o zoom máximo (2×).
+- `tools/sprites/crop_sprites.gd` recorta as sobras e grava `art/furniture/*.png` e `sprites.json`, com a âncora de cada sprite no vértice da frente da pegada, o mesmo ponto em que o `FurnitureView` fica. Assim o y-sort continua valendo (DT-009).
+- Rotações: a frente para sudoeste (0) e sudeste (3) aparece. Para noroeste (1) e nordeste (2), o móvel aparece **de costas**. Móveis simétricos têm um desenho só.
+- Os PNGs entram no repositório: abrir ou exportar o jogo não depende de Python nem de Chrome. Os arquivos crus (`tools/sprites/raw/`) não entram.
+- Móvel sem sprite volta à caixa colorida (`PLACEHOLDER_FURNITURE`), então dá para criar conteúdo novo antes de existir arte.
+- Texturas importadas **com mipmaps** (padrão do projeto), para o zoom de afastar não serrilhar.
+
+---
+
 ## DT-029 — Direção visual v3: formato do jogo antigo, desenho próprio
 
 **Problema:** o PO reprovou o visual da v2 por ser apagado e pediu para chegar o mais perto possível do Café Mania original, liberando até copiar, já que o jogo foi encerrado.

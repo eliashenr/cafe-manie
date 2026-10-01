@@ -4,51 +4,47 @@
 
 🟢 **CONCLUÍDO**
 
-- **Direção visual v3 aprovada pelo PO** ("Gostei! Agora sim começamos conversar"), no canvas "Café Manie — Direção Visual", refeita a partir das capturas e do retorno do PO:
-  - **cores de dia claro e saturadas**: gramado verde-vivo, paredes brancas e menta, piso de madeira mel, cozinha em xadrez, móveis coloridos;
-  - **sem árvores**: fora do salão ficam gramado, rua, calçada, canteiros e cerquinha;
-  - **salão grande e lotado** (12×12), com cozinha completa, mesas compridas, 17 clientes sentados e gente chegando pela porta;
-  - **interface no formato do jogo de 2010**: contadores com "+", barra de XP com estrela e nível, missões laterais em medalhões com fita, botões quadrados azuis, barra de ícones e faixa de vizinhos;
-  - **loja em quadradinhos** com etiqueta de preço, selos, setas azuis, prévia e botão verde de comprar, e o móvel sendo posicionado no salão;
-  - **personagens refeitos**: cabeça redonda centrada (sem o "corcunda"), olhos de desenho com pálpebra e brilho, 12 penteados em mechas, expressões, mãos e roupas com detalhe;
-  - 6 pranchas: tela do jogo, loja, cardápio e cozinha, personagens, guia de estilo e cenário sem interface.
-- **Gerador da arte v3** no repositório (`tools/art_direction/v3/`). O mesmo código vai exportar os sprites do jogo depois da aprovação.
-- **Tudo do jogo que já existia continua igual**: paredes e revestimentos, beleza, venda, conquistas, recompensa diária, nome da cafeteria, sons e o APK Android.
+- **Projeto instalado no PC do PO:** histórico de 35 commits recuperado do bundle, ícone de volta à versão do repositório, bundle apagado e `main` enviada ao GitHub (`eliashenr/cafe-manie`).
+- **Godot 4.7.2 instalada** em `C:\Godot`, baixada da página oficial e conferida pela soma SHA-512 publicada pela Godot.
+- **Arte v3 nos móveis do jogo (1ª parte da troca dos placeholders):**
+  - os 9 móveis do catálogo (cadeira, mesa, mesa longa, fogão, balcão, estante, planta, vaso de flores e luminária) aparecem com a arte aprovada, nas 4 rotações;
+  - nas rotações que viram a frente para o fundo, o móvel aparece de costas;
+  - o móvel selecionado ganha um contorno laranja no chão; a prévia de construção usa a mesma arte, em verde ou vermelho;
+  - os sprites saem do mesmo código das pranchas (DT-030), em resolução dobrada, nítidos até o zoom máximo.
+- **Ferramenta de foto do jogo** (`tools/screenshot.gd`) para a conferência visual.
 
 🟡 **EM ANDAMENTO**
 
+- **Troca dos placeholders pela arte v3:** faltam personagens (garçom e clientes), piso e paredes, pratos e a interface (HUD e loja).
 - **Teste no celular de verdade:** roteiro "Android" em [qa.md](qa.md).
-
-✅ **RESOLVIDO EM 30/09/2026 (PC do PO)**
-
-- **Mudança para o Claude Code:** histórico de 35 commits recuperado do bundle, ícone de volta à versão do repositório, bundle apagado.
-- **Envio para o GitHub:** `main` enviada para `eliashenr/cafe-manie`.
 
 🔴 **BLOQUEADO**
 
-- **Godot 4.7.2 não está instalada no PC do PO.** Sem ela não dá para rodar os testes nem a cena, e nada do jogo pode ser declarado pronto (seção 91).
+- Nada bloqueado.
 
 🧪 **TESTADO**
 
-- **260 testes automatizados: PASSOU.**
+- **265 testes automatizados: PASSOU** no Windows. São 5 testes novos, que conferem se todo móvel tem arte nas 4 rotações, com a âncora e a escala certas, e se a cena e a prévia usam a arte.
 - **Cena principal rodando 300 frames: PASSOU**, zero erros.
-- **Pranchas da v3 conferidas por renderização:** cada prancha foi desenhada num navegador sem janela, com as fontes certas, e conferida por imagem antes de publicar. Os defeitos achados assim (brilhos opacos demais, letreiro de neon escondido atrás da janela, selos se sobrepondo, cartões de vizinhos cortados) foram corrigidos.
-- **Gerador rodando de dentro do repositório: PASSOU.** As pranchas geradas ali são idênticas, byte a byte, às publicadas.
-- **Celular Android de verdade: NÃO FOI POSSÍVEL TESTAR** aqui. Não há celular nem emulador na nuvem.
+- **Foto do jogo** com uma cópia do save do PO: a arte aparece no lugar certo e fica nítida com zoom de 1,8×.
+- **Sprites conferidos contra as pranchas:** cada um foi comparado lado a lado com o SVG desenhado pelo Chrome.
+- **Pranchas do canvas:** geradas antes e depois da mudança no gerador e comparadas, byte a byte idênticas.
+- **Exportação `.exe` e APK: NÃO TESTADA** nesta etapa. Os export templates ainda não estão instalados neste PC.
 
 🐞 **BUGS**
 
-- Nenhum bug novo no jogo: esta etapa mexeu só em arte e documentação.
-- ⚠️ **Balanceamento:** o robô continua rápido (6 missões em 5,2 min; nível 8 com 0 clientes irritados em 30 min). Fica para o **FAÇA BALANCEAMENTO**.
+- **Corrigido:** o teste de jogo novo lia o save de verdade de quem já jogou no PC e falhava (12 móveis e 282 de ouro no lugar dos valores de um jogo novo). Agora ele usa uma pasta própria.
+- ⚠️ **Balanceamento:** o robô continua rápido (6 missões em 5,2 min). Fica para o **FAÇA BALANCEAMENTO**.
 
 🏗️ **DECISÕES TÉCNICAS**
 
 Detalhes em [decisions.md](decisions.md):
 
-- **DT-029:** direção visual v3 no formato do jogo antigo, com desenho 100% próprio (seção 5).
+- **DT-030:** sprites gerados do código da arte v3. O Chrome ou o Edge converte para PNG, porque a Godot deixa vazio o gradiente de formas curvas. A Godot recorta e grava a âncora.
 
 ➡️ **PRÓXIMO PASSO**
 
-- **Levar a arte v3 para o jogo**, exportando os sprites do gerador e trocando os placeholders da Godot.
-- **Instalar a Godot 4.7.2** no PC do PO e confirmar os 260 testes no Windows.
+- **Conferência visual do PO** dos móveis novos.
+- Continuar a troca: **personagens** (garçom e clientes, com as poses de andar e sentar), depois **piso e paredes**, depois **pratos e interface**.
+- Instalar os export templates e gerar um `.exe` novo para o PO jogar.
 - **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.

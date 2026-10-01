@@ -20,3 +20,6 @@ desktop.ini
 # Python (ferramentas de arte)
 __pycache__/
 *.pyc
+
+# Sprites crus (regenerados por tools/art_direction/v3/export_sprites.py)
+/tools/sprites/raw/

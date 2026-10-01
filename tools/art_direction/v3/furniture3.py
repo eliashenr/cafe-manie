@@ -216,7 +216,8 @@ def cookware(D, iso, kind, cx, cy, z):
 
 
 def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e"):
-    """Fogão retrô esmaltado: tampo preto com 4 bocas, painel cromado com botões e forno com visor."""
+    """Fogão retrô esmaltado: tampo preto com 4 bocas, painel cromado com botões e forno com visor.
+    front=None: frente virada para longe da câmera (só o corpo e as bocas)."""
     k = K(iso)
     bx, by, w, d, h = x + 0.05, y + 0.05, 0.9, 0.9, 44 * k
     o = [soft_shadow(D, iso, x + 0.5, y + 0.5, 0.5, opacity=0.3)]
@@ -226,6 +227,8 @@ def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e"):
     burners = [(0.3, 0.3), (0.72, 0.3), (0.3, 0.72), (0.72, 0.72)]
     for i, (u, v) in enumerate(burners):
         o.append(_burner(D, iso, bx + u * w, by + v * d, h, cooking is not None and i == 3))
+    if front is None:
+        return "".join(o)
     q = lambda u0, u1, v0, v1: iso.quad(front, bx, by, w, d, 0, h, u0, u1, v0, v1)
     o.append(P(q(0.0, 1.0, 0.78, 0.97), D.lin([(0, "#f4f7fa"), (0.5, CHROME), (1, "#8f9aa7")]), INK3, 0.8))
     for u in (0.16, 0.38, 0.62, 0.84):
@@ -245,17 +248,27 @@ def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e"):
     return "".join(o)
 
 
-def counter(D, iso, x, y, front="R", dishes=(), body="#2ec4b6", top="#ffffff"):
-    """Balcão de servir: frente colorida com frisos, tampo de mármore claro, pilhas de pratos com a contagem."""
+def counter(D, iso, x, y, front="R", dishes=(), body="#2ec4b6", top="#ffffff", cells=1, along="x"):
+    """Balcão de servir: frente colorida com frisos, tampo de mármore claro, pilhas de pratos com a contagem.
+    cells/along: comprimento em células e o eixo em que ele se estende. front=None: frente escondida."""
     k = K(iso)
-    bx, by, w, d, h = x + 0.02, y + 0.06, 0.96, 0.88, 42 * k
-    o = [soft_shadow(D, iso, x + 0.5, y + 0.5, 0.5, opacity=0.28)]
+    if along == "x":
+        bx, by, w, d = x + 0.02, y + 0.06, cells - 0.04, 0.88
+    else:
+        bx, by, w, d = x + 0.06, y + 0.02, 0.88, cells - 0.04
+    h = 42 * k
+    o = [soft_shadow(D, iso, x + w / 2 + 0.02, y + d / 2 + 0.02, 0.5 * cells, 0.5, opacity=0.28) if cells > 1
+         else soft_shadow(D, iso, x + 0.5, y + 0.5, 0.5, opacity=0.28)]
     o.append(box3(D, iso, bx, by, w, d, h, body))
-    q = lambda u0, u1, v0, v1: iso.quad(front, bx, by, w, d, 0, h, u0, u1, v0, v1)
-    o.append(P(q(0, 1, 0, 0.1), shade(body, 0.35), None, 'opacity="0.7"'))
-    for (u0, u1) in ((0.08, 0.46), (0.54, 0.92)):
-        o.append(P(q(u0, u1, 0.18, 0.84), D.lin([(0, tint(body, 0.3)), (1, shade(body, 0.1))]), INK3, 0.8))
-        o.append(P(q(u0 + 0.05, u1 - 0.05, 0.62, 0.72), "#ffffff", None, 'opacity="0.35"'))
+    if front is not None:
+        q = lambda u0, u1, v0, v1: iso.quad(front, bx, by, w, d, 0, h, u0, u1, v0, v1)
+        o.append(P(q(0, 1, 0, 0.1), shade(body, 0.35), None, 'opacity="0.7"'))
+        n = cells if (front == "L") == (along == "x") else 1
+        for c in range(n):
+            for (u0, u1) in ((0.08, 0.46), (0.54, 0.92)):
+                a, b = (c + u0) / n, (c + u1) / n
+                o.append(P(q(a, b, 0.18, 0.84), D.lin([(0, tint(body, 0.3)), (1, shade(body, 0.1))]), INK3, 0.8))
+                o.append(P(q(a + 0.05 / n, b - 0.05 / n, 0.62, 0.72), "#ffffff", None, 'opacity="0.35"'))
     o.append(box3(D, iso, bx - 0.03, by - 0.03, w + 0.06, d + 0.06, 5 * k, "#e8edf2", z=h, top=top))
     for (a, b) in [((0.15, 0.2), (0.55, 0.35)), ((0.4, 0.62), (0.88, 0.72))]:
         p0 = iso.v(bx + a[0] * w, by + a[1] * d, h + 5 * k)
@@ -452,13 +465,23 @@ def floor_lamp(D, iso, x, y, shade_col="#ffd23f"):
     return "".join(o)
 
 
-def bookshelf(D, iso, x, y, color="#ffffff"):
-    """Estante 2x1 encostada na parede da direita, com livros e potes coloridos."""
+def bookshelf(D, iso, x, y, color="#ffffff", front="+y"):
+    """Estante 2x1 encostada na parede da direita, com livros e potes coloridos.
+    front: para onde as prateleiras abrem ('+y' e '+x' aparecem; '-y' e '-x' mostram as costas)."""
     k = K(iso)
-    bx, by, w, d, h = x + 0.05, y + 0.05, 1.9, 0.45, 80 * k
-    o = [soft_shadow(D, iso, x + 1, y + 0.3, 0.9, 0.3, opacity=0.25)]
+    h = 80 * k
+    if front in ("+y", "-y"):
+        bx, by, w, d = x + 0.05, y + (0.05 if front == "+y" else 0.5), 1.9, 0.45
+        o = [soft_shadow(D, iso, x + 1, by + 0.25, 0.9, 0.3, opacity=0.25)]
+    else:
+        bx, by, w, d = x + (0.05 if front == "+x" else 0.5), y + 0.05, 0.45, 1.9
+        o = [soft_shadow(D, iso, bx + 0.25, y + 1, 0.3, 0.9, opacity=0.25)]
     o.append(box3(D, iso, bx, by, w, d, h, color))
-    t = plane(iso, "R", bx, by + d, 0)
+    if front in ("-x", "-y"):
+        return "".join(o)
+    t = plane(iso, "R", bx, by + d, 0) if front == "+y" else plane(iso, "L", bx + w, by + d, 0)
+    if front == "+x":
+        w = d
     width_px = w * iso.W / 2
     inner = []
     r = Rng(9)

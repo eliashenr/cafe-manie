@@ -1,0 +1,193 @@
+{
+ "density": 2.0,
+ "sprites": {
+  "chair_wood_r0": {
+   "anchor": [
+    63.67,
+    247.67
+   ]
+  },
+  "chair_wood_r1": {
+   "anchor": [
+    63.67,
+    216.67
+   ]
+  },
+  "chair_wood_r2": {
+   "anchor": [
+    63.67,
+    216.67
+   ]
+  },
+  "chair_wood_r3": {
+   "anchor": [
+    63.67,
+    247.67
+   ]
+  },
+  "table_round_r0": {
+   "anchor": [
+    86.67,
+    199.67
+   ]
+  },
+  "table_long_r0": {
+   "anchor": [
+    242.67,
+    271.67
+   ]
+  },
+  "table_long_r1": {
+   "anchor": [
+    114.67,
+    271.67
+   ]
+  },
+  "stove_basic_r0": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_basic_r1": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_basic_r2": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_basic_r3": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "counter_basic_r0": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_basic_r1": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "counter_basic_r2": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_basic_r3": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "bookshelf_r0": {
+   "anchor": [
+    187.67,
+    400.67
+   ]
+  },
+  "bookshelf_r1": {
+   "anchor": [
+    59.67,
+    371.67
+   ]
+  },
+  "bookshelf_r2": {
+   "anchor": [
+    244.67,
+    371.67
+   ]
+  },
+  "bookshelf_r3": {
+   "anchor": [
+    116.67,
+    400.67
+   ]
+  },
+  "plant_pot_r0": {
+   "anchor": [
+    104.67,
+    349.67
+   ]
+  },
+  "flower_vase_r0": {
+   "anchor": [
+    48.67,
+    269.67
+   ]
+  },
+  "floor_lamp_r0": {
+   "anchor": [
+    90.67,
+    351.67
+   ]
+  }
+ },
+ "furniture": {
+  "chair_wood": {
+   "0": "chair_wood_r0",
+   "1": "chair_wood_r1",
+   "2": "chair_wood_r2",
+   "3": "chair_wood_r3"
+  },
+  "table_round": {
+   "0": "table_round_r0",
+   "1": "table_round_r0",
+   "2": "table_round_r0",
+   "3": "table_round_r0"
+  },
+  "table_long": {
+   "0": "table_long_r0",
+   "1": "table_long_r1",
+   "2": "table_long_r0",
+   "3": "table_long_r1"
+  },
+  "stove_basic": {
+   "0": "stove_basic_r0",
+   "1": "stove_basic_r1",
+   "2": "stove_basic_r2",
+   "3": "stove_basic_r3"
+  },
+  "counter_basic": {
+   "0": "counter_basic_r0",
+   "1": "counter_basic_r1",
+   "2": "counter_basic_r2",
+   "3": "counter_basic_r3"
+  },
+  "bookshelf": {
+   "0": "bookshelf_r0",
+   "1": "bookshelf_r1",
+   "2": "bookshelf_r2",
+   "3": "bookshelf_r3"
+  },
+  "plant_pot": {
+   "0": "plant_pot_r0",
+   "1": "plant_pot_r0",
+   "2": "plant_pot_r0",
+   "3": "plant_pot_r0"
+  },
+  "flower_vase": {
+   "0": "flower_vase_r0",
+   "1": "flower_vase_r0",
+   "2": "flower_vase_r0",
+   "3": "flower_vase_r0"
+  },
+  "floor_lamp": {
+   "0": "floor_lamp_r0",
+   "1": "floor_lamp_r0",
+   "2": "floor_lamp_r0",
+   "3": "floor_lamp_r0"
+  }
+ }
+}

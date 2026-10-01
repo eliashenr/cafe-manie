@@ -1,7 +1,8 @@
 class_name FurnitureView
 extends Node2D
-## PLACEHOLDER_FURNITURE: móvel desenhado como caixa isométrica colorida, com
-## o nome em cima e um ponto marcando a frente (para a rotação ficar visível).
+## Móvel desenhado com o sprite da arte v3 (FurnitureSprites). Móvel sem arte
+## cai no PLACEHOLDER_FURNITURE: caixa isométrica colorida, com o nome em cima e
+## um ponto marcando a frente (para a rotação ficar visível).
 ##
 ## O nó fica no vértice da frente do móvel, para que o y-sort da camada
 ## desenhe na ordem de profundidade.
@@ -16,12 +17,15 @@ const SELECTED_OUTLINE := Color("f29f1f")
 const EDGE_COLOR := Color(0.1, 0.06, 0.04, 0.45)
 const LABEL_COLOR := Color(0.1, 0.06, 0.04)
 const LABEL_SIZE := 13
+const SELECTED_FILL := Color(0.95, 0.62, 0.12, 0.28)
 
 var definition: FurnitureDefinition
 var origin := Vector2i.ZERO
 ## Quartos de volta (0 a 3). Não confundir com Node2D.rotation.
 var rotation_steps := 0
 var look := Look.NORMAL
+## Arte do móvel nesta rotação; null = desenha o placeholder.
+var sprite: FurnitureSprites.Sprite
 
 ## Etiqueta de estado acima do móvel (ex.: "Café 0:12", "Café ×6"). Vazia = sem etiqueta.
 var status_text := ""
@@ -55,6 +59,8 @@ func configure(new_definition: FurnitureDefinition, new_origin: Vector2i, new_ro
 	origin = new_origin
 	rotation_steps = new_rotation_steps
 	look = new_look
+	sprite = FurnitureSprites.lookup(definition.id, rotation_steps)
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	position = IsoProjection.cell_top_vertex(origin + _footprint())
 	match look:
 		Look.GHOST_VALID:
@@ -89,6 +95,9 @@ func _base() -> PackedVector2Array:
 func _draw() -> void:
 	if definition == null:
 		return
+	if sprite != null:
+		_draw_sprite()
+		return
 	var b := _base()
 	var up := Vector2(0.0, -definition.placeholder_height)
 	var top := PackedVector2Array([b[0] + up, b[1] + up, b[2] + up, b[3] + up])
@@ -112,18 +121,30 @@ func _draw() -> void:
 
 	_draw_front_marker(top)
 	_draw_label(top)
-	_draw_status(top)
+	_draw_status(Vector2((top[0].x + top[2].x) / 2.0, top[0].y))
+
+
+## Arte do móvel; selecionado, ganha um contorno laranja no chão, embaixo dele.
+func _draw_sprite() -> void:
+	var b := _base()
+	if look == Look.SELECTED:
+		draw_colored_polygon(b, SELECTED_FILL)
+		draw_polyline(PackedVector2Array([b[0], b[1], b[2], b[3], b[0]]), SELECTED_OUTLINE, 3.0, true)
+	var rect := sprite.draw_rect()
+	draw_texture_rect(sprite.texture, rect, false)
+	_draw_status(Vector2((b[0].x + b[2].x) / 2.0, rect.position.y))
 
 
 ## Etiqueta arredondada acima do móvel, com barra de progresso opcional.
-func _draw_status(top: PackedVector2Array) -> void:
+## top_center: ponto mais alto do desenho, no meio do móvel.
+func _draw_status(top_center: Vector2) -> void:
 	if status_text.is_empty():
 		return
 	var font := ThemeDB.fallback_font
 	var text_size := font.get_string_size(status_text, HORIZONTAL_ALIGNMENT_LEFT, -1, STATUS_SIZE)
 	var has_bar := status_progress >= 0.0
 	var box_size := Vector2(text_size.x + 14.0, 20.0 + (6.0 if has_bar else 0.0))
-	var anchor := Vector2((top[0].x + top[2].x) / 2.0, top[0].y - 8.0)
+	var anchor := top_center - Vector2(0.0, 8.0)
 	var box := Rect2(anchor - Vector2(box_size.x / 2.0, box_size.y), box_size)
 	draw_style_box(_status_style(), box)
 	draw_string(font, Vector2(box.position.x + 7.0, box.position.y + 15.0), status_text,
