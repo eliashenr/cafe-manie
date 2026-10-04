@@ -4,6 +4,21 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-036 — Movimento suave na tela, regras no grid
+
+**Problema:** o PO achou a movimentação "muito travada". Os personagens andavam de centro em centro de piso e viravam em ângulo reto. Ao sentar e ao levantar, pulavam entre a cadeira e o piso ao lado. Os clientes surgiam e sumiam na entrada, e os passos tinham quadros quase iguais.
+
+**Opções:** (A) mudar a navegação (caminhos em diagonal, curvas nas regras); (B) deixar as regras como estão e suavizar só o desenho.
+
+**Decisão:** B. As regras continuam simples e testadas: ocupação de piso, caminho e quem chega primeiro não mudam.
+- O desenho **persegue** a posição do personagem com suavidade (`SMOOTHING`), nunca mais rápido que 1,6 vez o passo dele. Assim as curvas saem redondas e os saltos das regras (sentar, levantar) viram um passinho.
+- O cliente só aparece **sentado quando o desenho chega na cadeira**.
+- **Passos novos na arte** ("passo" e "passo2"): passada mais aberta e braços balançando ao contrário das pernas. A pose "andar" das pranchas não mudou.
+- Cada passada tem um **quique** e um **balanço** do corpo, medidos pelo quanto o desenho andou: o pé não escorrega. Parado ou sentado, o personagem **respira** de leve.
+- Os clientes **chegam andando da calçada** e, ao sair, **voltam para ela** e somem aos poucos. Para as regras, eles já saíram (a contagem de personagens não muda).
+
+---
+
 ## DT-035 — Interface da v3: formato do jogo antigo, loja que abre e fecha
 
 **Problema:** a interface ainda era a do protótipo: painéis escuros, botões de texto e a loja sempre aberta embaixo. As pranchas aprovadas (DT-029) mostram o formato do jogo antigo.

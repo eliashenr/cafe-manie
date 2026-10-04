@@ -9,15 +9,35 @@ extends Node2D
 ## O nó fica nos pés do personagem (sentado, no vértice da frente da cadeira),
 ## para o y-sort da camada do mundo desenhar na ordem de profundidade certa.
 ## Balões e carinhas ficam num filho com z_index alto: nada do salão os cobre.
+##
+## Movimento na tela (só visual: as regras continuam andando de piso em piso):
+## o desenho segue o personagem com suavidade, então as curvas saem redondas e
+## sentar ou levantar vira um passinho, sem pulo. Cada passada tem um quique e um
+## balanço do corpo; parado ou sentado, o personagem respira de leve. Clientes
+## chegam andando da calçada e, ao sair, voltam para ela e somem aos poucos.
 
 ## Pequeno desempate para o personagem ficar à frente do móvel do mesmo piso.
 const SORT_NUDGE := 1.0
 ## Balões por cima de todo o salão (móveis e personagens ficam no z 0).
 const OVERLAY_Z := 10
-## Ciclo de andar: passo, em pé, outro passo, em pé. Troca de quadro a cada
-## 1/WALK_FRAMES_PER_CELL de piso andado.
-const WALK_CYCLE: Array[String] = ["andar", "em_pe", "andar2", "em_pe"]
-const WALK_FRAMES_PER_CELL := 4.0
+## O desenho persegue a posição do personagem com esta rapidez (1/s)...
+const SMOOTHING := 10.0
+## ...mas nunca mais rápido que isto vezes o passo dele (assim um salto vira caminhada).
+const CATCH_UP := 1.6
+## Abaixo desta velocidade (pisos/s) o desenho está parado.
+const WALKING_SPEED := 0.35
+## A esta distância da cadeira (pisos), o cliente já aparece sentado.
+const SEAT_REACHED := 0.12
+## Passadas por piso andado; cada passada alterna a perna da frente.
+const STEPS_PER_CELL := 2.2
+## Quique de cada passada (pixels de mundo) e balanço do corpo (radianos).
+const BOUNCE := 4.0
+const SWAY := 0.055
+## Respiração de quem está parado ou sentado: quanto estica e quantas vezes por segundo.
+const BREATH := 0.012
+const BREATH_RATE := 0.45
+## Tempo para aparecer e para sumir (segundos).
+const FADE_TIME := 0.35
 ## Abaixo desta fração de paciência o cliente fica preocupado; abaixo da outra, bravo.
 ## São as mesmas faixas das cores da barra do balão.
 const PATIENCE_WORRIED := 0.5
@@ -50,6 +70,17 @@ const SEAT_LIFT := 14.0
 var agent: Agent
 ## Rotação da cadeira de quem está sentado (0 a 3); -1 = não está sentado.
 var seat_rotation := -1
+## Saindo da cafeteria: o personagem já saiu das regras e o desenho termina a caminhada.
+var exiting := false
+
+## Posição desenhada, em pisos (a do personagem, suavizada) e a velocidade dela.
+var shown := Vector2.ZERO
+var velocity := Vector2.ZERO
+var _traveled := 0.0
+var _time := 0.0
+var _alpha := 0.0
+var _started := false
+var _exit_target := Vector2.ZERO
 
 static var _balloon_style: StyleBoxFlat
 static var _balloon_shadow_style: StyleBoxFlat
@@ -59,42 +90,121 @@ var _overlay := Node2D.new()
 
 func _init() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	modulate.a = 0.0  # aparece aos poucos (advance)
 	_overlay.name = "Overlay"
 	_overlay.z_index = OVERLAY_Z
 	_overlay.draw.connect(_draw_overlay)
 	add_child(_overlay)
 
 
-## Lê o estado do agente e se reposiciona. Chamado a cada frame.
+## Lê o estado do agente. Chamado a cada frame; o desenho anda em advance().
 func refresh(target: Agent, new_seat_rotation := -1) -> void:
 	agent = target
 	seat_rotation = new_seat_rotation
-	if _is_seated():
-		# Sentado: ordena junto com a cadeira (logo à frente dela).
-		position = IsoProjection.cell_top_vertex(agent.cell() + Vector2i.ONE) + Vector2(0, SORT_NUDGE)
-	else:
-		position = IsoProjection.grid_point_to_world(agent.position) + Vector2(0, SORT_NUDGE)
+	if not _started:
+		_started = true
+		shown = agent.position
+	_place()
 	queue_redraw()
 	_overlay.queue_redraw()
+
+
+## Cliente novo: o desenho começa em [param point] (na calçada) e vem andando.
+func arrive_from(point: Vector2) -> void:
+	shown = point
+	_place()
+
+
+## O personagem saiu: o desenho anda até [param point] (na calçada), some aos poucos e se apaga.
+func begin_exit(point: Vector2) -> void:
+	exiting = true
+	_exit_target = point
+
+
+func _process(delta: float) -> void:
+	advance(delta)
+
+
+## Anda o desenho [param delta] segundos atrás da posição do personagem.
+func advance(delta: float) -> void:
+	if agent == null or delta <= 0.0:
+		return
+	_time += delta
+	var walk := maxf(agent.speed, 0.5)
+	var target := _exit_target if exiting else agent.position
+	var to_target := target - shown
+	var step: Vector2
+	if exiting:
+		step = to_target.limit_length(walk * delta)
+	else:
+		step = to_target * (1.0 - exp(-SMOOTHING * delta))
+		step = step.limit_length(walk * CATCH_UP * delta)
+	shown += step
+	velocity = step / delta
+	_traveled += step.length()
+	if exiting and shown.distance_to(_exit_target) < 0.05:
+		_alpha -= delta / FADE_TIME
+		if _alpha <= 0.0:
+			queue_free()
+	else:
+		_alpha = minf(1.0, _alpha + delta / FADE_TIME)
+	modulate.a = clampf(_alpha, 0.0, 1.0)
+	_place()
+	queue_redraw()
+	_overlay.queue_redraw()
+
+
+## Sentado: ordena junto com a cadeira (logo à frente dela). Senão, pelos pés desenhados.
+func _place() -> void:
+	if seated_on_screen():
+		position = IsoProjection.cell_top_vertex(agent.cell() + Vector2i.ONE) + Vector2(0, SORT_NUDGE)
+	else:
+		position = IsoProjection.grid_point_to_world(shown) + Vector2(0, SORT_NUDGE)
+
+
+## Aparece sentado: está sentado nas regras e o desenho já chegou na cadeira.
+func seated_on_screen() -> bool:
+	return _is_seated() and not exiting and shown.distance_to(agent.position) <= SEAT_REACHED
+
+
+## O desenho está andando?
+func walking() -> bool:
+	return velocity.length() > WALKING_SPEED
+
+
+## Quique e balanço da passada atual: [quanto sobe (px), inclinação (rad)].
+func step_motion() -> Array:
+	if not walking():
+		return [0.0, 0.0]
+	var phase := _traveled * STEPS_PER_CELL * PI
+	return [sin(fposmod(phase, PI)) * BOUNCE, sin(phase) * SWAY]
 
 
 ## Nome do sprite do corpo e se ele sai espelhado. Ex.: ["cliente_03_frente_andar", true].
 func pose() -> Array:
 	var look := _look()
-	if _is_seated():
+	if seated_on_screen():
 		var rotation := seat_rotation if seat_rotation >= 0 else 3
 		if rotation == 1 or rotation == 2:
 			return ["%s_sentado_costas_r%d" % [look, rotation], false]
 		return ["%s_sentado_%s" % [look, expression()], rotation == 0]
 	var direction := _direction()
-	var frame := "em_pe"
-	if agent.is_moving():
-		var phase := floori((agent.position.x + agent.position.y) * WALK_FRAMES_PER_CELL)
-		frame = WALK_CYCLE[posmod(phase, WALK_CYCLE.size())]
-	var sprite_name := "%s_%s_%s" % [look, "costas" if direction[0] else "frente", frame]
+	var sprite_name := "%s_%s_%s" % [look, "costas" if direction[0] else "frente", _frame()]
 	if agent is Waiter and (agent as Waiter).carrying != null:
 		sprite_name += "_bandeja"
 	return [sprite_name, direction[1]]
+
+
+## Quadro das pernas: nos contatos com o chão, uma perna à frente (alternando a cada
+## passada); no meio da passada, em pé.
+func _frame() -> String:
+	if not walking():
+		return "em_pe"
+	var phase := _traveled * STEPS_PER_CELL * PI
+	var within := fposmod(phase, PI) / PI
+	if within > 0.3 and within < 0.7:
+		return "em_pe"
+	return "passo" if posmod(floori(phase / PI), 2) == 0 else "passo2"
 
 
 ## Expressão do cliente sentado: comendo, ou conforme a paciência que sobra.
@@ -118,7 +228,11 @@ func _draw() -> void:
 	if sprite == null:
 		_draw_placeholder()
 		return
-	draw_set_transform(Vector2(0.0, -SORT_NUDGE), 0.0, Vector2(-1.0 if body_pose[1] else 1.0, 1.0))
+	var motion := step_motion()
+	var breath := 1.0
+	if not walking():
+		breath += sin((_time * BREATH_RATE + agent.serial * 0.37) * TAU) * BREATH
+	draw_set_transform(Vector2(0.0, -SORT_NUDGE - motion[0]), motion[1], Vector2(-1.0 if body_pose[1] else 1.0, breath))
 	draw_texture_rect(sprite.texture, sprite.draw_rect(), false)
 	_draw_tray_food()
 	draw_set_transform(Vector2.ZERO)
@@ -131,10 +245,10 @@ func _draw_overlay() -> void:
 	var sprite := ArtSprites.get_sprite(pose()[0])
 	var head_top: Vector2
 	if sprite != null:
-		head_top = Vector2(0.0, -SORT_NUDGE + sprite.draw_rect().position.y)
+		head_top = Vector2(0.0, -SORT_NUDGE - step_motion()[0] + sprite.draw_rect().position.y)
 	else:
-		head_top = IsoProjection.grid_point_to_world(agent.position) - position + Vector2(0.0, -56.0)
-		if _is_seated():
+		head_top = IsoProjection.grid_point_to_world(shown) - position + Vector2(0.0, -56.0)
+		if seated_on_screen():
 			head_top.y -= SEAT_LIFT
 	_draw_customer_overlay(head_top)
 
@@ -148,10 +262,11 @@ func _look() -> String:
 	return "" if looks.is_empty() else looks[posmod(agent.serial, looks.size())]
 
 
-## [de costas?, espelhado?] pela última direção de movimento. A arte olha para a
-## direita da tela: +x (sudeste) de frente e -y (nordeste) de costas saem como estão.
+## [de costas?, espelhado?] pela direção em que o desenho anda (parado, a última do
+## personagem). A arte olha para a direita da tela: +x (sudeste) de frente e -y
+## (nordeste) de costas saem como estão.
 func _direction() -> Array:
-	var facing := agent.facing
+	var facing := velocity if walking() else agent.facing
 	if absf(facing.x) >= absf(facing.y):
 		return [false, false] if facing.x >= 0.0 else [true, true]
 	return [false, true] if facing.y >= 0.0 else [true, false]
@@ -179,7 +294,7 @@ func _draw_customer_overlay(head_top: Vector2) -> void:
 		Customer.State.WAITING_FOR_FOOD:
 			_draw_balloon(tip, ArtSprites.food(customer.order.id), customer.order.display_name,
 				customer.patience_fraction())
-		Customer.State.LEAVING:
+		Customer.State.LEAVING, Customer.State.GONE:
 			var face := ArtSprites.get_sprite("humor_feliz" if customer.happy else "humor_bravo")
 			if face != null:
 				_overlay.draw_texture_rect(face.texture, face.rect_at(tip - Vector2(0.0, face.world_size().y / 2.0)), false)
@@ -235,8 +350,8 @@ func _is_seated() -> bool:
 
 ## PLACEHOLDER_CHARACTER: corpo e cabeça em formas simples (para personagem sem arte).
 func _draw_placeholder() -> void:
-	var feet := IsoProjection.grid_point_to_world(agent.position) - position
-	if _is_seated():
+	var feet := IsoProjection.grid_point_to_world(shown) - position
+	if seated_on_screen():
 		feet.y -= SEAT_LIFT
 	else:
 		draw_set_transform(feet, 0.0, Vector2(1.0, 0.45))

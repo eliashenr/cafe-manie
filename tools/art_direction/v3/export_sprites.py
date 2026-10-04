@@ -207,7 +207,7 @@ PERSON_SCALE = 0.6 * TILE_W / 84.0
 # Do vértice da frente da cadeira até os pés de quem senta: assento (seat_point) + 4, como no canvas.
 SEAT_DROP = 4.0
 EXPRESSIONS = ("feliz", "esperando", "bravo", "comendo")
-WALK = ("em_pe", "andar", "andar2")
+WALK = ("em_pe", "passo", "passo2")
 
 # Clientes: os mesmos tipos de gente das pranchas aprovadas.
 CUSTOMERS = {

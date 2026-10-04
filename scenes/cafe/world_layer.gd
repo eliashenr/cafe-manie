@@ -23,6 +23,8 @@ var selected_id: StringName = &"":
 
 var _views: Dictionary = {}  # id do móvel -> FurnitureView
 var _agents: Dictionary = {}  # serial do personagem -> AgentView
+## Clientes que já saíram e terminam a caminhada até a calçada (somem sozinhos).
+var _exiting: Array[AgentView] = []
 var _ghost: FurnitureView
 
 
@@ -65,6 +67,8 @@ func sync() -> void:
 
 ## O prato de quem come fica no piso da mesa, puxado este tanto para o lado da cadeira.
 const DISH_TOWARD_SEAT := 0.3
+## Onde os clientes aparecem e somem: na calçada, este tanto para fora da entrada (em pisos).
+const SIDEWALK_OFFSET := Vector2(2.8, 0.0)
 ## Texto do selo do fogão quando o prato fica pronto.
 const READY_TEXT := "Pronto!"
 
@@ -148,6 +152,9 @@ func _refresh_agents(simulation: CafeSimulation) -> void:
 			view.name = "Agent_%d" % agent.serial
 			add_child(view)
 			_agents[agent.serial] = view
+			if agent is Customer and (agent as Customer).state == Customer.State.WALKING_IN:
+				view.refresh(agent)
+				view.arrive_from(_sidewalk_point())
 		var seat_rotation := -1
 		if agent is Customer and (agent as Customer).is_seated():
 			var seat := layout.get_placement((agent as Customer).seat_id)
@@ -156,8 +163,34 @@ func _refresh_agents(simulation: CafeSimulation) -> void:
 		view.refresh(agent, seat_rotation)
 	for serial: int in _agents.keys():
 		if not alive.has(serial):
-			_agents[serial].queue_free()
+			var gone: AgentView = _agents[serial]
 			_agents.erase(serial)
+			if gone.agent is Customer:
+				gone.begin_exit(_sidewalk_point())
+				_exiting.append(gone)
+			else:
+				gone.queue_free()
+	_prune_exiting()
+
+
+## Ponto da calçada na frente da entrada (de onde os clientes vêm e para onde vão).
+func _sidewalk_point() -> Vector2:
+	return Vector2(layout.entrance) + SIDEWALK_OFFSET
+
+
+## Clientes que já saíram e ainda terminam a caminhada na tela.
+func exiting_count() -> int:
+	_prune_exiting()
+	return _exiting.size()
+
+
+## Tira da lista quem já terminou a caminhada e se apagou.
+func _prune_exiting() -> void:
+	var still: Array[AgentView] = []
+	for view in _exiting:
+		if is_instance_valid(view) and not view.is_queued_for_deletion():
+			still.append(view)
+	_exiting = still
 
 
 ## "0:45", "3:05", "1:02:10".

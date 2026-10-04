@@ -3,7 +3,7 @@ extends CafeTestCase
 ## direção e o espelhamento seguem o movimento, quem senta segue a cadeira, a
 ## expressão segue a paciência e o prato de quem come vai para a mesa certa.
 
-const FRAMES: Array[String] = ["em_pe", "andar", "andar2"]
+const FRAMES: Array[String] = ["em_pe", "passo", "passo2"]
 
 
 func _customer(serial := 0) -> Customer:
@@ -76,19 +76,89 @@ func test_walking_direction_picks_front_or_back_and_mirror() -> void:
 		assert_eq(pose[1], expected[facing][1], "espelhado para %s" % facing)
 
 
-func test_walk_cycle_alternates_feet_and_stops_standing() -> void:
+func test_walk_cycle_alternates_feet_bounces_and_stops_standing() -> void:
 	var customer := _customer()
-	customer.facing = Vector2(1, 0)
-	customer.path = [Vector2i(5, 3)]
+	customer.speed = 2.2
+	customer.position = Vector2(2, 3)
+	var view := _view(customer)
 	var seen := {}
-	for i in 8:
-		customer.position = Vector2(3.0 + i * 0.25, 3.0)
-		var pose: String = _view(customer).pose()[0]
-		seen[pose.get_slice("_frente_", 1)] = true
+	var bounced := false
+	var swayed := false
+	for i in 90:
+		customer.position.x += customer.speed / 60.0
+		view.advance(1.0 / 60.0)
+		seen[String(view.pose()[0]).get_slice("_frente_", 1)] = true
+		bounced = bounced or view.step_motion()[0] > 1.0
+		swayed = swayed or absf(view.step_motion()[1]) > 0.02
 	for frame in FRAMES:
 		assert_true(seen.has(frame), "o ciclo passa por " + frame)
-	customer.path.clear()
-	assert_true(String(_view(customer).pose()[0]).ends_with("_frente_em_pe"), "parado fica em pé")
+	assert_true(bounced and swayed, "cada passada quica e balança o corpo")
+	for i in 120:
+		view.advance(1.0 / 60.0)
+	assert_false(view.walking(), "parou de andar")
+	assert_true(String(view.pose()[0]).ends_with("_frente_em_pe"), "parado fica em pé")
+	assert_eq(view.step_motion(), [0.0, 0.0], "parado não quica")
+
+
+func test_jumps_in_the_rules_become_short_walks_on_screen() -> void:
+	var customer := _customer()
+	customer.speed = 2.2
+	customer.position = Vector2(3, 3)
+	var view := _view(customer)
+	customer.position = Vector2(4, 3)  # nas regras, o cliente pula para o piso ao lado (ex.: levantou da cadeira)
+	view.advance(1.0 / 60.0)
+	var moved := view.shown.distance_to(Vector2(3, 3))
+	assert_true(moved > 0.0 and moved <= customer.speed * AgentView.CATCH_UP / 60.0 + 0.001, "anda, não pula: %f" % moved)
+	for i in 60:
+		view.advance(1.0 / 60.0)
+	assert_true(view.shown.distance_to(customer.position) < 0.02, "chega em menos de um segundo")
+
+
+func test_customer_sits_only_when_the_drawing_reaches_the_chair() -> void:
+	var customer := _customer()
+	customer.speed = 2.2
+	customer.state = Customer.State.WAITING_TO_ORDER
+	customer.patience_total = 10.0
+	customer.patience_left = 10.0
+	customer.seat_cell = Vector2i(3, 4)
+	customer.position = Vector2(3, 4)
+	var view := _view(customer, 3)
+	view.arrive_from(Vector2(4, 4))  # o desenho ainda está no piso de acesso
+	assert_false(view.seated_on_screen())
+	view.advance(1.0 / 60.0)
+	assert_false(String(view.pose()[0]).contains("_sentado_"), "ainda andando até a cadeira")
+	for i in 60:
+		view.advance(1.0 / 60.0)
+	assert_true(String(view.pose()[0]).ends_with("_sentado_feliz"), "chegou e sentou")
+
+
+func test_customers_arrive_from_the_sidewalk_and_leave_to_it() -> void:
+	var simulation := quiet_simulation()
+	simulation.customer_types.append(load("res://data/customers/regular.tres"))
+	simulation.config.spawn_jitter = 0.0
+	var cafe := await spawn_cafe(simulation)
+	cafe.layout.place(cafe.catalog.get_definition(&"table_round"), Vector2i(4, 4))
+	cafe.layout.place(cafe.catalog.get_definition(&"chair_wood"), Vector2i(3, 4), 3)
+	while simulation.customers.is_empty():
+		simulation.tick(0.1)
+	cafe.world_layer.refresh(simulation)
+	var customer: Customer = simulation.customers[0]
+	var view: AgentView = cafe.world_layer.get_node("Agent_%d" % customer.serial)
+	var sidewalk := Vector2(cafe.layout.entrance) + WorldLayer.SIDEWALK_OFFSET
+	assert_true(view.shown.distance_to(sidewalk) < 0.01, "o desenho começa na calçada")
+	assert_true(view.modulate.a < 0.01, "e aparece aos poucos")
+	customer.state = Customer.State.GONE
+	simulation.tick(0.0)
+	cafe.world_layer.refresh(simulation)
+	assert_eq(cafe.world_layer.agent_view_count(), 1, "nas regras, só o garçom ficou")
+	assert_eq(cafe.world_layer.exiting_count(), 1, "o cliente termina a caminhada até a calçada")
+	assert_true(view.exiting)
+	for i in 400:
+		if not is_instance_valid(view):
+			break
+		view.advance(1.0 / 30.0)
+	await settle()
+	assert_eq(cafe.world_layer.exiting_count(), 0, "chegou na calçada, sumiu e saiu da tela")
 
 
 func test_customers_get_different_looks() -> void:

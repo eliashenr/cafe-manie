@@ -472,7 +472,7 @@ def _shoe(D, sx, sy, shoes):
 def _legs(D, bottom, skin_fill, sk, shoes, pose):
     bkind, bcol = bottom
     o = []
-    st = 2.6 if pose == "andar" else 0.0
+    st = 2.6 if pose == "andar" else (STRIDE_GAME if pose == "passo" else 0.0)
     left = f"M-12.2,-32.6 C-12.8,-24 -12.8,-14 {f(-12.2-st)},-5.4 L{f(-2.4-st)},-5.4 C{f(-2.2-st)},-12 -1.6,-18 0,-21.4 L0,-32.6 Z"
     right = (f"M12.2,-32.6 C12.8,-24 12.8,-14 {f(12.2+st*0.4)},{f(-5.4-st)} L{f(2.4+st*0.4)},{f(-5.4-st)} "
              f"C{f(2.2+st*0.4)},-12 1.6,-18 0,-21.4 L0,-32.6 Z")
@@ -561,6 +561,12 @@ TRAY_EMPTY = "vazia"
 TRAY_FOOD = (34.6, -77.0, 30.0)  # centro x, centro y e largura do prato
 
 
+# Passos do jogo ("passo", "passo2"): passada mais aberta que a das pranchas ("andar") e os braços
+# balançando ao contrário das pernas. As pranchas continuam com "andar".
+STRIDE_GAME = 5.2
+ARM_SWING = 11.0  # graus, em torno do ombro
+
+
 def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, shoes="#5b4a66"):
     sk = SKIN[skin]
     kind, color = top
@@ -570,8 +576,12 @@ def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, 
     sleeve = {"camiseta": "curta", "blusa": "curta", "regata": None, "vestido": "curta"}.get(kind, "longa")
     o = []
     # "andar2": a mesma passada com a outra perna à frente (as pernas espelhadas), para alternar com "andar".
-    other_leg = pose == "andar2"
-    if other_leg:
+    other_leg = pose in ("andar2", "passo2")
+    arm_swing = 0.0
+    if pose in ("passo", "passo2"):
+        arm_swing = ARM_SWING if pose == "passo" else -ARM_SWING
+        pose = "passo"
+    elif other_leg:
         pose = "andar"
     if pose == "sentado":
         o.append(_seated_legs(D, bottom, skin_fill, shoes, back))
@@ -593,7 +603,11 @@ def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, 
     for s in (-1, 1):
         if tray and s == 1:
             continue
-        b.append(_arm(D, s, sleeve, skin_fill, sk, _cloth(D, base), pose))
+        arm = _arm(D, s, sleeve, skin_fill, sk, _cloth(D, base), pose)
+        if arm_swing:
+            # Braço do lado da perna da frente vai para trás, o outro para a frente.
+            arm = g(arm, f"rotate({f(arm_swing * s)} {f(s * 13)} -55)")
+        b.append(arm)
     if tray:
         b.append(path("M12.8,-57.8 C19,-58.4 23.4,-55 23.8,-50.4 L28.2,-55.4 L32.4,-61.8 L28.8,-65.2 L20.6,-57.8 Z",
                       _cloth(D, base) if sleeve else skin_fill, LINE, 1.15))
