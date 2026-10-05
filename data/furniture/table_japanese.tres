@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"table_japanese"
+display_name = "Mesa de Madeira Escura"
+category = 0
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"japones"
+price = 125
+min_level = 5
+beauty = 11
+efficiency = 0
+comfort = 10
+placeholder_color = Color(0.290, 0.165, 0.118, 1)
+placeholder_height = 24.0

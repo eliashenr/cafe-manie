@@ -17,6 +17,8 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR }
 ## Se true, precisa de pelo menos uma célula vizinha alcançável a partir da
 ## entrada (é onde cliente ou garçom param para usar o móvel).
 @export var needs_access := true
+## Coleção da loja (estilo ou cultura) a que o móvel pertence (res://data/collections).
+@export var collection: StringName = &"classico"
 
 @export_group("Balanceamento")
 @export var price := 0

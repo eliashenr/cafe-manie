@@ -1,11 +1,30 @@
 # Status
 
-## CAFÉ MANIE — STATUS (30/09/2026)
+## CAFÉ MANIE — STATUS (05/10/2026)
 
 🟢 **CONCLUÍDO**
 
+**Pedido do PO de 04/10: movimento, loja e música**
+
+- **Personagens andando de um jeito natural** (DT-036):
+  - eles andam em curvas arredondadas, sem virar em ângulo reto, e nunca pulam de um piso para o outro;
+  - cada passada alterna os pés, com quique e balanço do corpo; parados ou sentados, respiram de leve;
+  - o cliente só senta quando chega na cadeira e, ao levantar, dá um passinho;
+  - os clientes chegam andando pela calçada e, ao ir embora, voltam para ela e somem aos poucos.
+- **Música ambiente de restaurante chique** (DT-037): uma bossa nova original, sem voz, de 2min11, que emenda o fim no começo. Ela toca baixinho, atrás dos efeitos, e tem botão próprio (a nota musical).
+- **Loja com 12 coleções novas** (DT-038):
+  - Anos 70, Country, Festa, Americano, Mexicano, Anos 80, Italiano, Japonês, Francês, Brasileiro, Anos 2010 e Balada;
+  - cada uma tem cadeira, mesa, dois enfeites, piso e parede: são **48 móveis e 24 revestimentos novos**, que liberam do nível 2 ao 9;
+  - alguns exemplos: cadeira ovo e luminária de lava (anos 70), jukebox e placa neon "Diner" (americano), cacto e piñata (mexicano), fliperama (anos 80), Torre Eiffel (francês), papagaio e calçadão de Copacabana (brasileiro), globo de espelhos e cabine de DJ (balada);
+  - na loja, uma fileira de coleções no alto filtra os itens, e as setas trocam de página.
+- **Encosto da cadeira certa:** quem senta de costas aparece com o encosto da cadeira em que sentou, em qualquer coleção. A banqueta americana não tem encosto.
+- **Foto de coleção** (`tools/collection_showcase.gd`): monta uma coleção num salão, com gente sentada nas 4 direções, para conferir a arte.
+
+**Etapas anteriores**
+
 - **Projeto instalado no PC do PO:** histórico de 35 commits recuperado do bundle, ícone de volta à versão do repositório, bundle apagado e `main` enviada ao GitHub (`eliashenr/cafe-manie`).
 - **Godot 4.7.2 instalada** em `C:\Godot`, baixada da página oficial e conferida pela soma SHA-512 publicada pela Godot.
+- **Export templates 4.7.2 instalados** neste PC (baixados do GitHub oficial da Godot e conferidos pela soma SHA-512).
 - **Arte v3 nos móveis do jogo (1ª parte da troca dos placeholders):**
   - os 9 móveis do catálogo (cadeira, mesa, mesa longa, fogão, balcão, estante, planta, vaso de flores e luminária) aparecem com a arte aprovada, nas 4 rotações;
   - nas rotações que viram a frente para o fundo, o móvel aparece de costas;
@@ -52,7 +71,23 @@
 
 🧪 **TESTADO**
 
-- **301 testes automatizados: PASSOU** no Windows. Os testes novos conferem:
+- **312 testes automatizados: PASSOU** no Windows. Os testes desta etapa conferem:
+  - se o desenho anda em vez de pular, quica e alterna os pés, senta só ao chegar na cadeira e chega e sai pela calçada;
+  - se a música toca em loop, baixinho, com botão próprio lembrado no aparelho, separado do som dos efeitos;
+  - se todo móvel e revestimento está numa coleção conhecida e se cada coleção tem cadeira, mesa, enfeite, piso e parede;
+  - se as coleções aparecem na ordem da loja, cada uma com nome e cor próprios;
+  - se a loja filtra pela coleção, troca de página e volta para "Todas" ao trocar de aba;
+  - se quem senta de costas recebe o encosto da própria cadeira (e nada de frente, em pé ou na banqueta).
+- **Defeitos inseridos de propósito nesta etapa:**
+  - movimento: 6 de 6 pegos;
+  - coleções e encosto: 9 de 9 pegos, mais 1 que não mudava nada, porque o código tinha uma checagem redundante, que foi removida;
+  - um dos 9 só foi pego depois de reforçar o teste da loja;
+  - a lista completa está em [qa.md](qa.md).
+- **As 12 coleções conferidas por foto:** cada uma montada num salão, com o piso e a parede dela e gente sentada nas 4 direções. A loja também foi fotografada, com a fileira de coleções e as páginas.
+- **Save do PO intacto:** as ferramentas de foto usam uma cafeteria própria e não leem nem gravam o save.
+- **Cena principal rodando 300 frames: PASSOU**, zero erros.
+- **`.exe` novo gerado** (`build\windows\CafeManie.exe`, 123 MB). A checagem automática do build **PASSOU** (`SMOKE OK`), com os 57 móveis, os 33 revestimentos e a arte dentro do `.exe`.
+- **Etapas anteriores:** os testes conferiam:
   - se todo móvel tem arte nas 4 rotações, com a âncora e a escala certas, e se a cena e a prévia usam essa arte;
   - se todo cliente e o garçom têm todas as poses e toda receita tem prato;
   - se a direção e o espelho seguem o movimento e os passos se alternam;
@@ -72,18 +107,23 @@
 - **Sprites conferidos contra as pranchas:** cada um foi comparado lado a lado com o SVG desenhado pelo Chrome.
 - **Pranchas do canvas:** geradas antes e depois da mudança no gerador e comparadas, byte a byte idênticas.
 - **Fontes das pranchas no jogo** (autorizadas pelo PO): Fredoka em toda a interface e nos textos do salão, com as licenças OFL no projeto e no build.
-- **`.exe` novo gerado no PC do PO** (`build\windows\CafeManie.exe`, 117 MB). A checagem automática do build exportado **PASSOU** (`SMOKE OK`), e agora ela também confere se a arte entrou no `.exe` (6 de 6 peças).
+- **`.exe` da etapa anterior** (`build\windows\CafeManie.exe`, 117 MB). A checagem automática do build exportado **PASSOU** (`SMOKE OK`), e agora ela também confere se a arte entrou no `.exe` (6 de 6 peças).
 - **APK Android: NÃO GERADO** nesta etapa (precisa do JDK e do Android SDK no PC; ver o README).
 
 🐞 **BUGS**
 
 - **Corrigido:** o teste de jogo novo lia o save de verdade de quem já jogou no PC e falhava (12 móveis e 282 de ouro no lugar dos valores de um jogo novo). Agora ele usa uma pasta própria.
 - ⚠️ **Balanceamento:** o robô continua rápido (6 missões em 5,2 min). Fica para o **FAÇA BALANCEAMENTO**.
+- **Anotado (sem efeito no jogo):** se o jogo fecha com a música tocando, às vezes a Godot avisa no console que a faixa ficou na memória. Nas fotos, isso aconteceu em 1 de cada 6 vezes. O jogo já para a música ao sair; o aviso vem de a Godot liberar o áudio numa linha de execução separada. Ele só aparece no modo de console, e o Windows libera a memória ao fechar. Não mexe no save.
+- **Corrigido:** o guia dos sprites ainda citava as poses antigas de andar e não falava das coleções. O README principal também descrevia a loja antiga e não falava do botão de música.
 
 🏗️ **DECISÕES TÉCNICAS**
 
 Detalhes em [decisions.md](decisions.md):
 
+- **DT-036:** movimento suave só no desenho; as regras continuam no grid. O desenho persegue o personagem sem pular, e os passos ganharam quique e balanço.
+- **DT-037:** música composta e sintetizada por código (sem risco de direito autoral), em loop, com botão próprio.
+- **DT-038:** coleções como conteúdo (`data/collections`), com filtro e páginas na loja. Cadeiras e mesas saem de peças genéricas, e o encosto de quem senta de costas vem da própria cadeira.
 - **DT-030:** sprites gerados do código da arte v3. O Chrome ou o Edge converte para PNG, porque a Godot deixa vazio o gradiente de formas curvas. A Godot recorta e grava a âncora.
 - **DT-031:** personagens com poses desenhadas e espelhadas no jogo. Quem senta segue a cadeira. Balões desenhados por código e sempre por cima.
 - **DT-032:** a cadeira vira sozinha para a mesa (decisão do PO). Save versão 4 vira as cadeiras dos saves antigos uma vez.
@@ -93,7 +133,6 @@ Detalhes em [decisions.md](decisions.md):
 
 ➡️ **PRÓXIMO PASSO**
 
-- **Conferência visual do PO** dos móveis e dos personagens (roteiro "Arte v3" em [qa.md](qa.md)).
-- **A troca dos placeholders pela arte v3 terminou e o `.exe` novo está pronto.** Próximos: a **conferência do PO** (roteiro "Arte v3" em [qa.md](qa.md)) e o **FAÇA BALANCEAMENTO**.
-- **Export templates 4.7.2 instalados** neste PC (baixados do GitHub oficial da Godot e conferidos pela soma SHA-512).
-- **FAÇA BALANCEAMENTO** e o teste no celular continuam na fila.
+- **Conferência do PO** do movimento, da música e das coleções (roteiro "Movimento, música e coleções" em [qa.md](qa.md)), com o `.exe` novo.
+- **FAÇA BALANCEAMENTO:** os enfeites novos somam beleza e podem deixar o jogo mais fácil; o robô de teste já estava rápido (6 missões em 5,2 min).
+- **APK Android** e teste no celular de verdade (precisa do JDK e do Android SDK no PC; downloads só com a autorização do PO).

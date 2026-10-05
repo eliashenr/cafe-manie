@@ -71,6 +71,7 @@ func test_cancelling_a_surface_purchase_changes_nothing() -> void:
 func test_locked_surface_button_is_disabled() -> void:
 	var cafe := await spawn_cafe()
 	cafe.build_bar.show_shop_tab(BuildBar.ShopTab.FLOOR)
+	cafe.build_bar.show_shop_collection(&"classico")
 	await settle()
 	var marble := cafe.build_bar.find_button("Surface_floor_marble")
 	assert_true(marble.disabled and marble.text.contains("Nível 5"), marble.text)

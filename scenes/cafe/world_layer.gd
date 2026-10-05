@@ -156,11 +156,13 @@ func _refresh_agents(simulation: CafeSimulation) -> void:
 				view.refresh(agent)
 				view.arrive_from(_sidewalk_point())
 		var seat_rotation := -1
+		var seat_furniture: StringName = &""
 		if agent is Customer and (agent as Customer).is_seated():
 			var seat := layout.get_placement((agent as Customer).seat_id)
 			if seat != null:
 				seat_rotation = seat.rotation
-		view.refresh(agent, seat_rotation)
+				seat_furniture = seat.definition.id
+		view.refresh(agent, seat_rotation, seat_furniture)
 	for serial: int in _agents.keys():
 		if not alive.has(serial):
 			var gone: AgentView = _agents[serial]

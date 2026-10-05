@@ -53,11 +53,14 @@ func test_every_recipe_has_a_dish_and_moods_exist() -> void:
 
 
 func test_seated_back_art_matches_the_seats_in_the_catalog() -> void:
-	# Quem senta de costas leva o encosto da cadeira desenhado por cima: cadeira nova precisa de arte nova.
-	var chair: String = ArtSprites.characters().get("seated_back_chair", "")
+	# Quem senta de costas leva o encosto da cadeira desenhado por cima: toda cadeira precisa dizer o seu
+	# (banqueta sem encosto diz "nenhum").
 	for definition in FurnitureCatalog.load_from().all():
 		if definition.category == FurnitureDefinition.Category.SEATING:
-			assert_eq(String(definition.id), chair, "%s não tem a arte de quem senta de costas" % definition.id)
+			assert_true(ArtSprites.has_backrest_entry(definition.id), "%s sem o encosto de quem senta de costas" % definition.id)
+	assert_true(ArtSprites.chair_backrest(&"chair_wood", 1) != null and ArtSprites.chair_backrest(&"chair_wood", 2) != null,
+		"a cadeira de madeira tem encosto nas duas rotações de costas")
+	assert_eq(ArtSprites.chair_backrest(&"chair_wood", 3), null, "de frente, o encosto já está no desenho da cadeira")
 
 
 func test_walking_direction_picks_front_or_back_and_mirror() -> void:
@@ -181,6 +184,27 @@ func test_seated_customer_follows_the_chair_rotation() -> void:
 	assert_true(String(_view(customer, 2).pose()[0]).ends_with("_sentado_costas_r2"))
 
 
+func test_back_seated_customer_is_covered_by_the_backrest_of_their_own_chair() -> void:
+	var customer := _customer()
+	customer.state = Customer.State.WAITING_TO_ORDER
+	customer.patience_total = 10.0
+	customer.patience_left = 10.0
+	var on := func(rotation: int, chair: StringName) -> AgentView:
+		var view := AgentView.new()
+		view.refresh(customer, rotation, chair)
+		add_to_tree(view)
+		return view
+	for rotation in [1, 2]:
+		var backrest: ArtSprites.Sprite = on.call(rotation, &"chair_70s").backrest()
+		assert_true(backrest != null, "de costas na rotação %d, o encosto vai por cima" % rotation)
+		assert_eq(backrest, ArtSprites.chair_backrest(&"chair_70s", rotation), "o encosto da cadeira em que sentou")
+		assert_true(backrest != ArtSprites.chair_backrest(&"chair_wood", rotation), "não o da cadeira clássica")
+	assert_eq(on.call(3, &"chair_70s").backrest(), null, "de frente, o encosto já está no desenho da cadeira")
+	assert_eq(on.call(1, &"stool_diner").backrest(), null, "banqueta não tem encosto")
+	customer.state = Customer.State.WALKING_IN
+	assert_eq(on.call(1, &"chair_70s").backrest(), null, "em pé, nada por cima")
+
+
 func test_expression_follows_patience_and_eating() -> void:
 	var customer := _customer()
 	customer.state = Customer.State.WAITING_FOR_FOOD
@@ -222,6 +246,7 @@ func test_scene_seats_customer_with_chair_rotation_and_serves_dish_on_table() ->
 	assert_true((dishes[0][0] as Vector2).x < 4.0, "do lado da cadeira")
 	var seated: AgentView = cafe.world_layer.get_node("Agent_50")
 	assert_eq(seated.seat_rotation, 3, "senta virado como a cadeira")
+	assert_eq(seated.seat_furniture, &"chair_wood", "sabe em que cadeira sentou (para o encosto)")
 	customer.state = Customer.State.LEAVING
 	cafe.world_layer.refresh(cafe.simulation)
 	assert_eq(cafe.world_layer.view_for(table).dishes.size(), 0, "quem levantou leva o prato")

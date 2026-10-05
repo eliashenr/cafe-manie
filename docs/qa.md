@@ -12,13 +12,14 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 301 testes
+## Cobertura atual — 312 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
 | `unit/test_cafe_grid.gd` | 10 | limites, ocupação, colisão, expansão segura |
 | `unit/test_iso_projection.gd` | 8 | clique cai no piso certo, inclusive nas bordas; posições fracionárias dos personagens; vértices fracionários (calçada, cerca) |
-| `unit/test_furniture_catalog.gd` | 6 | dados de móveis válidos (9 móveis); recusa de dados ruins |
+| `unit/test_furniture_catalog.gd` | 7 | dados de móveis válidos (57 móveis); recusa de dados ruins; todo móvel e revestimento numa coleção conhecida, e cada coleção com cadeira, mesa, enfeite, piso e parede |
+| `unit/test_collection_catalog.gd` | 2 | coleções na ordem da loja, começando pelo Clássico, cada uma com nome e cor próprios; recusa de dados ruins |
 | `unit/test_cafe_layout.gd` | 20 | regras de posicionamento, entrada, acesso, mover/girar/remover sem efeito colateral; para onde a frente aponta; assento vira para a mesa |
 | `unit/test_placement_session.gd` | 9 | modo de construção só muda o layout ao confirmar; cadeira levada para o lado da mesa vira para ela |
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
@@ -38,14 +39,15 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento (com as paredes) |
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
 | `integration/test_service_scene.gd` | 11 | jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
-| `integration/test_shop_scene.gd` | 14 | loja, compra, Guardar, expansão com confirmação, missões; **Vender com confirmação** e recusa do último fogão |
+| `integration/test_shop_scene.gd` | 15 | loja, compra, Guardar, expansão com confirmação, missões; **Vender com confirmação** e recusa do último fogão; filtro por coleção e páginas |
 | `integration/test_style_scene.gd` | 8 | abas, piso e parede desenhados, compra com confirmação, troca sem perguntar, bloqueio, Beleza no HUD, paredes crescem com a expansão |
 | `integration/test_progress_scene.gd` | 17 | avisos de conquista em fila, painel de conquistas, recompensa diária (abre, paga, volta no dia seguinte, não empilha janelas), nome da cafeteria, sons e botão de som |
 | `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade**; toque no botão não vaza para o piso |
 | `integration/test_furniture_art.gd` | 7 | todo móvel tem arte nas 4 rotações, com âncora e escala certas; a cena e a prévia usam a arte; panela de cada receita; forno aceso só de frente; fogão e balcão mostram receita, tempo, Pronto! e porções |
 | `integration/test_hud_art.gd` | 6 | moeda com ponto de milhar e nível; estrelas pela satisfação; presente com cronômetro; zoom pelos botões; medalhão de missões esconde e mostra; faixa de ícones abre a loja e as conquistas |
 | `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; janelas na parede; a cena usa a arte e enquadra a parede; cerca aberta só na entrada; exterior acompanha a expansão |
-| `integration/test_character_art.gd` | 11 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; passos alternados; sentado segue a cadeira; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
+| `integration/test_character_art.gd` | 15 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; passos alternados com quique; saltos das regras viram passinhos; senta só quando chega na cadeira; chega e sai pela calçada; sentado segue a cadeira; **encosto da própria cadeira por cima de quem senta de costas**; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
+| `integration/test_music.gd` | 3 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados |
 
 O executor também **reprova um arquivo de teste que nem compila**. Antes, ele sumia da contagem em silêncio (encontrado nesta etapa).
 
@@ -62,6 +64,8 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 da cozinha (6 de 6 pegos):** fogão sem a receita, selo sem o Pronto!, balcão sem quantidade, forno aceso de costas, selos por baixo do salão, estado da cozinha sem atualizar.
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
+- **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Coleções e encosto (9 de 9 pegos, mais 1 equivalente):** encosto nunca desenhado, encosto da cadeira errada, cena sem dizer em que cadeira o cliente sentou, loja ignorando a coleção, página sem cortar, aba nova mantendo a coleção, coleção nova sem voltar à página 1 (pego depois de fortalecer o teste: nenhuma coleção sozinha passa de uma página, e o limite escondia o defeito), coleções fora de ordem, móvel sem coleção. A mutação "encosto também de frente" não mudava nada, porque a arte só tem encosto nas rotações 1 e 2. A checagem redundante saiu do código.
 
 ## Roteiro de teste manual — Arte v3 (móveis e personagens)
 
@@ -84,6 +88,23 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Movimento, música e coleções
+
+Rode o jogo com o seu save ou um jogo novo e confira:
+
+1. [ ] Os clientes chegam andando pela calçada, sem surgir do nada na porta. Ao ir embora, voltam para a calçada e somem aos poucos.
+2. [ ] Andando, eles alternam os pés, com um leve quique, e fazem as curvas arredondadas, sem virar em ângulo reto. Parados, respiram de leve.
+3. [ ] O cliente só senta quando chega na cadeira; ao levantar, dá um passinho, sem pular.
+4. [ ] Toca uma bossa nova baixinha, sem voz. O botão da nota musical (à direita) liga e desliga só a música; o do alto-falante, só os efeitos.
+5. [ ] Feche e abra o jogo: as escolhas de som e de música continuam as mesmas.
+6. [ ] Toque em **Loja**: no alto aparece a fileira de coleções (Todas, Clássico, Anos 70, Country, Festa, Americano, Mexicano, Anos 80, Italiano, Japonês, Francês, Brasileiro, Anos 2010, Balada).
+7. [ ] Toque numa coleção: só os itens dela aparecem, e o botão dela fica pintado. "Todas" volta a mostrar tudo.
+8. [ ] As setas da direita e da esquerda trocam de página, e o número (ex.: "1/5") acompanha.
+9. [ ] Itens de nível mais alto aparecem com cadeado e o nível em que liberam.
+10. [ ] Compre uma cadeira e uma mesa de uma coleção. Quando um cliente sentar de costas, o encosto que aparece por cima dele é o da cadeira dele (não o da cadeira clássica). A banqueta do Americano não tem encosto.
+11. [ ] Nas abas **Pisos** e **Paredes**, aplique o revestimento de uma coleção: o salão inteiro troca, sem frestas entre os pisos nem entre as paredes.
+12. [ ] Sensação: alguma coleção ficou estranha ou parecida demais com outra? Faltou algum estilo ou cultura? *(anote)*
 
 ## Roteiro de teste manual — Fase 1
 

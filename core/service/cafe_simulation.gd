@@ -72,6 +72,8 @@ var achievements: AchievementTracker
 var expansions := ExpansionPlan.new()
 var economy: EconomyConfig = load(ECONOMY_PATH)
 var surfaces: SurfaceCatalog
+## Coleções da loja (estilos e culturas), para agrupar os itens.
+var collections: CollectionCatalog
 var style := CafeStyle.new()
 ## Id do último móvel posicionado por acquire_and_place.
 var last_placed_id: StringName = &""
@@ -105,6 +107,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	layout.agent_cells_provider = agent_cells
 	popularity = config.popularity_start
 	set_surfaces(SurfaceCatalog.load_from())
+	collections = CollectionCatalog.load_from()
 	var no_missions: Array[MissionDefinition] = []
 	set_missions(no_missions)
 	var no_achievements: Array[AchievementDefinition] = []

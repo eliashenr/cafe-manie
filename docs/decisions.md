@@ -4,6 +4,32 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-038 — Coleções da loja: estilos e culturas como conteúdo
+
+**Problema:** o PO achou a loja com poucos itens. Ele pediu móveis de estilos e de culturas: anos 70, 80 e 2010, balada, festa, country, americano, mexicano, "todas culturas". A loja tinha 9 móveis e 9 revestimentos, numa fila só por aba.
+
+**Opções:** (A) só acrescentar itens nas abas que já existem; (B) agrupar o conteúdo em coleções, com filtro e páginas na loja.
+
+**Decisão:** B. Com dezenas de itens, uma fila só ficaria comprida demais para o celular.
+- **A coleção é conteúdo:** `CollectionDefinition` (id, nome, cor e ordem), em `data/collections/*.tres`, lida pelo `CollectionCatalog`. Móveis e revestimentos ganharam o campo `collection`. O padrão é `classico`, então os itens antigos e os saves não mudam.
+- **12 coleções novas:** Anos 70, Country, Festa, Americano, Mexicano, Anos 80, Italiano, Japonês, Francês, Brasileiro, Anos 2010 e Balada.
+  - Cada uma tem cadeira, mesa, dois enfeites, piso e parede: são 48 móveis e 24 revestimentos novos.
+  - Elas liberam do nível 2 ao 9.
+  - Os arquivos saem de `tools/content/make_collections.py`.
+- **Loja:**
+  - uma fileira de coleções no alto: "Todas" e uma para cada coleção, na cor dela;
+  - 6 quadradinhos por página, com setas e a contagem ("1/5");
+  - trocar de aba volta para "Todas", e trocar de coleção volta para a primeira página.
+- **Arte:**
+  - `themes3.py` desenha cadeiras e mesas a partir de duas peças genéricas: o pé, o assento, o encosto, o tampo e a toalha mudam de uma coleção para a outra;
+  - cada enfeite tem um desenho próprio;
+  - pisos e paredes ficam em `tiles3.py`, com padrões que emendam de uma célula para a outra (o que passa da borda é recortado na sangria).
+- **Encosto separado:** quem senta de costas recebe, por cima, o encosto da cadeira em que sentou (`encosto_<cadeira>_r1` e `_r2`). Antes, a pose de costas já vinha com o encosto da cadeira clássica desenhado. A banqueta americana não tem encosto.
+- **Folhas que crescem:** os móveis agora ocupam três folhas (`moveis`, `moveis_2` e `moveis_3`), porque o navegador não fotografa uma imagem muito alta. As folhas de um mesmo assunto compartilham os gradientes.
+- A beleza e o preço dos itens novos seguem a escala atual. Se o jogo ficar fácil demais, isso entra no **FAÇA BALANCEAMENTO**.
+
+---
+
 ## DT-037 — Música ambiente: bossa nova composta e sintetizada por código
 
 **Problema:** o PO pediu uma "musiquinha de café" tocando sempre, como no jogo antigo: som de restaurante chique, sem voz, suave.

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"boombox"
+display_name = "Rádio Boombox"
+category = 4
+footprint = Vector2i(1, 1)
+needs_access = false
+collection = &"anos80"
+price = 110
+min_level = 5
+beauty = 22
+efficiency = 0
+comfort = 0
+placeholder_color = Color(0.227, 0.235, 0.275, 1)
+placeholder_height = 40.0

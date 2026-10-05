@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"wall_party"
+display_name = "Bolinhas de Festa"
+kind = 1
+is_default = false
+collection = &"festa"
+price = 170
+min_level = 3
+beauty = 18
+pattern = 3
+color_a = Color(1.000, 0.941, 0.965, 1)
+color_b = Color(1.000, 0.373, 0.635, 1)

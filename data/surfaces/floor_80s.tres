@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"floor_80s"
+display_name = "Piso Memphis"
+kind = 0
+is_default = false
+collection = &"anos80"
+price = 240
+min_level = 5
+beauty = 22
+pattern = 2
+color_a = Color(1.000, 1.000, 1.000, 1)
+color_b = Color(1.000, 0.302, 0.824, 1)

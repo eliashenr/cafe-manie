@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"olive_tree"
+display_name = "Oliveira"
+category = 4
+footprint = Vector2i(1, 1)
+needs_access = false
+collection = &"italiano"
+price = 160
+min_level = 6
+beauty = 30
+efficiency = 0
+comfort = 0
+placeholder_color = Color(0.478, 0.604, 0.290, 1)
+placeholder_height = 70.0

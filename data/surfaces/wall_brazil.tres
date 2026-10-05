@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"wall_brazil"
+display_name = "Folhagem Tropical"
+kind = 1
+is_default = false
+collection = &"brasileiro"
+price = 290
+min_level = 7
+beauty = 26
+pattern = 3
+color_a = Color(1.000, 0.965, 0.878, 1)
+color_b = Color(0.247, 0.682, 0.290, 1)

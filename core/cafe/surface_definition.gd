@@ -15,6 +15,8 @@ enum Pattern { CHECKER, PLANKS, TILES, PLAIN, BRICK, STRIPES }
 @export var kind := Kind.FLOOR
 ## O revestimento com que toda cafeteria nova começa (um por tipo).
 @export var is_default := false
+## Coleção da loja (estilo ou cultura) a que o revestimento pertence (res://data/collections).
+@export var collection: StringName = &"classico"
 
 @export_group("Balanceamento")
 @export var price := 0

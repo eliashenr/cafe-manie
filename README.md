@@ -2,7 +2,7 @@
 
 Jogo de gerenciamento de cafeteria, mobile-first (Android), feito em **Godot 4.7.2** com **GDScript**.
 
-> Nome provisório. Status: **Vertical Slice validada** e **arte v3 aprovada no jogo inteiro** (móveis, personagens, cenário, cozinha e interface no formato do jogo antigo), com paredes e revestimentos, decoração com beleza, venda, conquistas, recompensa diária, sons e o primeiro APK Android.
+> Nome provisório. Status: **Vertical Slice validada** e **arte v3 aprovada no jogo inteiro** (móveis, personagens, cenário, cozinha e interface no formato do jogo antigo), com paredes e revestimentos, decoração com beleza, loja com 12 coleções de estilos e culturas, venda, conquistas, recompensa diária, sons, música ambiente e o primeiro APK Android.
 
 O documento que manda em tudo é o [master prompt](docs/master-prompt.md). O estado atual está em [docs/status.md](docs/status.md).
 
@@ -68,7 +68,7 @@ Você só precisa fazer isto uma vez.
 | Confirmar / cancelar | **Enter** / **Esc** | **Confirmar** / **Cancelar** |
 | Mover ou guardar um móvel | Selecione-o e use **Mover** / **Guardar** (ou **Delete**) | Selecione-o e use **Mover** / **Guardar** |
 | Vender um móvel | Selecione-o e use **Vender** (pede confirmação) | Igual |
-| Trocar piso ou parede | Abas **Piso** / **Parede** na loja | Igual |
+| Trocar piso ou parede | Abas **Pisos** / **Paredes** na loja | Igual |
 
 ### Cozinhar e atender
 
@@ -80,7 +80,8 @@ Você só precisa fazer isto uma vez.
 ### Loja, missões e expansão
 
 - O **cartão no canto direito** mostra a missão atual e uma dica. São 6 missões iniciais que ensinam o jogo, cada uma com recompensa em Café Ouro e XP.
-- A **barra de baixo** é a loja: cada botão mostra o preço, o nível necessário ou quantos você tem guardados. O móvel só é cobrado quando você confirma o lugar dele. Cancelar não custa nada.
+- Toque em **Loja**, na faixa de baixo. Ela tem as abas Salão, Cozinha, Decoração, Pisos e Paredes. Cada quadradinho mostra o preço, o nível necessário ou quantos você tem guardados. O móvel só é cobrado quando você confirma o lugar dele. Cancelar não custa nada.
+- **Coleções:** no alto da loja ficam os estilos e as culturas: Clássico, Anos 70, Country, Festa, Americano, Mexicano, Anos 80, Italiano, Japonês, Francês, Brasileiro, Anos 2010 e Balada. Toque numa coleção para ver só os itens dela, ou em **Todas**. As setas trocam de página.
 - **Guardar** tira o móvel da cafeteria e leva para o inventário. Colocar de volta é grátis.
 - **Expandir** aumenta a cafeteria (a partir do nível 2). Antes de cobrar, o jogo pergunta, e o botão já selecionado é o **Cancelar**.
 
@@ -89,7 +90,7 @@ Você só precisa fazer isto uma vez.
 - **Beleza** (no topo): soma da decoração, do piso e da parede. Uma cafeteria bonita deixa os clientes mais pacientes e atrai mais gente.
 - **Conquistas** (botão no canto de cima): 7 conquistas com 3 degraus cada, que pagam Café Ouro.
 - **Recompensa diária:** entre um dia por vez, 7 dias seguidos. Perder um dia volta ao Dia 1.
-- **Som:** o botão no canto de cima liga e desliga os sons. A escolha fica guardada no aparelho.
+- **Som e música:** à direita, o alto-falante liga e desliga os efeitos, e a nota musical liga e desliga a música ambiente. As escolhas ficam guardadas no aparelho.
 
 ### Save
 

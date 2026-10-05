@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"wall_japanese"
+display_name = "Painel Shoji"
+kind = 1
+is_default = false
+collection = &"japones"
+price = 270
+min_level = 6
+beauty = 25
+pattern = 3
+color_a = Color(0.984, 0.965, 0.918, 1)
+color_b = Color(0.420, 0.267, 0.137, 1)

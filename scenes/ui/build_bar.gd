@@ -16,6 +16,8 @@ extends CanvasLayer
 ## nunca se perder porque um cliente pagou no meio dele.
 
 const ICON_BUTTON_SIZE := Vector2(92, 74)
+## Quadradinhos por página da loja.
+const ITEMS_PER_PAGE := 6
 const RECIPE_BUTTON_SIZE := Vector2(132, 92)
 const TAB_SIZE := Vector2(128, 50)
 const MESSAGE_SIZE := 17
@@ -83,6 +85,9 @@ var cafe: Cafe
 var shop_tab := ShopTab.SALON
 ## A loja está aberta (no lugar da faixa de ícones)?
 var shop_open := false
+## Coleção escolhida na loja (&"" = todas) e a página dos quadradinhos.
+var shop_collection: StringName = &""
+var shop_page := 0
 
 var _root: Control
 var _stack: VBoxContainer
@@ -96,7 +101,11 @@ var _buttons: HBoxContainer
 ## Loja aberta: abas e quadradinhos.
 var _shop: VBoxContainer
 var _tabs: HBoxContainer
+var _chips: HBoxContainer
 var _items: HBoxContainer
+var _prev_page: Button
+var _next_page: Button
+var _page_label: Label
 ## Confirmação de compras que acontecem na hora (expansão, revestimento): seção 32.
 var _confirm_dialog: ConfirmationDialog
 var _pending_confirm: Callable
@@ -167,18 +176,44 @@ func _ready() -> void:
 	var shop_card := _card("ShopCard", 16)
 	shop_card.size_flags_horizontal = Control.SIZE_FILL  # tão largo quanto a fileira de abas
 	_shop.add_child(shop_card)
+	var shop_column := VBoxContainer.new()
+	shop_column.add_theme_constant_override("separation", 8)
+	shop_card.add_child(shop_column)
+	var top_row := HBoxContainer.new()
+	top_row.add_theme_constant_override("separation", 8)
+	shop_column.add_child(top_row)
+	_chips = HBoxContainer.new()
+	_chips.name = "Collections"
+	_chips.add_theme_constant_override("separation", 5)
+	_chips.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_row.add_child(_chips)
+	var close := UiTheme.icon_button("CloseShopButton", "close", "", 34)
+	close.tooltip_text = "Fechar a loja"
+	close.pressed.connect(close_shop)
+	top_row.add_child(close)
 	var shop_row := HBoxContainer.new()
-	shop_row.add_theme_constant_override("separation", 12)
-	shop_card.add_child(shop_row)
+	shop_row.add_theme_constant_override("separation", 10)
+	shop_column.add_child(shop_row)
+	_prev_page = UiTheme.icon_button("PrevPageButton", "left", "", 36)
+	_prev_page.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_prev_page.pressed.connect(func() -> void: show_shop_page(shop_page - 1))
+	shop_row.add_child(_prev_page)
 	_items = _row("Items")
-	_items.custom_minimum_size = Vector2(0, ShopItemButton.CARD_SIZE.y)
+	_items.custom_minimum_size = Vector2(ITEMS_PER_PAGE * (ShopItemButton.CARD_SIZE.x + 10) - 10, ShopItemButton.CARD_SIZE.y)
 	_items.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	shop_row.add_child(_items)
-	var close := UiTheme.icon_button("CloseShopButton", "close", "", 40)
-	close.tooltip_text = "Fechar a loja"
-	close.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	close.pressed.connect(close_shop)
-	shop_row.add_child(close)
+	var right := VBoxContainer.new()
+	right.alignment = BoxContainer.ALIGNMENT_CENTER
+	shop_row.add_child(right)
+	_next_page = UiTheme.icon_button("NextPageButton", "right", "", 36)
+	_next_page.pressed.connect(func() -> void: show_shop_page(shop_page + 1))
+	right.add_child(_next_page)
+	_page_label = Label.new()
+	_page_label.name = "PageLabel"
+	_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_page_label.add_theme_font_size_override("font_size", 13)
+	_page_label.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
+	right.add_child(_page_label)
 
 	_confirm_dialog = ConfirmationDialog.new()
 	_confirm_dialog.name = "ConfirmDialog"
@@ -219,7 +254,7 @@ func message_text() -> String:
 
 
 func find_button(button_name: String) -> Button:
-	for row: Node in [_primary, _buttons, _tabs, _items]:
+	for row: Node in [_primary, _buttons, _tabs, _chips, _items]:
 		var button := row.get_node_or_null(button_name) as Button
 		if button != null:
 			return button
@@ -247,9 +282,52 @@ func close_shop() -> void:
 	_request_rebuild()
 
 
-## Troca a aba da loja (e abre a loja, se estiver fechada).
+## Troca a aba da loja (e abre a loja, se estiver fechada). A coleção e a página voltam ao começo.
 func show_shop_tab(tab: ShopTab) -> void:
+	if tab != shop_tab:
+		shop_collection = &""
+		shop_page = 0
 	open_shop(tab)
+
+
+## Mostra só os itens de uma coleção (&"" = todas), a partir da primeira página.
+func show_shop_collection(collection: StringName) -> void:
+	shop_collection = collection
+	shop_page = 0
+	_request_rebuild()
+
+
+func show_shop_page(page: int) -> void:
+	shop_page = clampi(page, 0, shop_page_count() - 1)
+	_request_rebuild()
+
+
+## Ids de todos os itens da aba e da coleção escolhidas (em todas as páginas), na ordem da loja.
+func shop_item_ids() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for item: Resource in _shop_items():
+		ids.append(item.id)
+	return ids
+
+
+func shop_page_count() -> int:
+	return maxi(1, ceili(_shop_items().size() / float(ITEMS_PER_PAGE)))
+
+
+## Definições da aba atual (móveis ou revestimentos), filtradas pela coleção.
+func _shop_items() -> Array:
+	var items: Array = []
+	match shop_tab:
+		ShopTab.FLOOR, ShopTab.WALL:
+			var kind := SurfaceDefinition.Kind.FLOOR if shop_tab == ShopTab.FLOOR else SurfaceDefinition.Kind.WALL
+			items.assign(cafe.simulation.surfaces.all(kind))
+		_:
+			for definition in cafe.catalog.all():
+				if SHOP_TAB_CATEGORIES[shop_tab].has(definition.category):
+					items.append(definition)
+	if shop_collection != &"":
+		items = items.filter(func(item: Resource) -> bool: return item.collection == shop_collection)
+	return items
 
 
 func _process(_delta: float) -> void:
@@ -275,7 +353,7 @@ func _rebuild() -> void:
 		_refresh_in_place()
 		return
 	_shown_signature = signature
-	for row: Node in [_primary, _buttons, _tabs, _items]:
+	for row: Node in [_primary, _buttons, _tabs, _chips, _items]:
 		for child in row.get_children():
 			row.remove_child(child)
 			child.queue_free()
@@ -303,7 +381,8 @@ func _signature() -> Array:
 	if _has_selection() and cafe.simulation.kitchen.is_stove(cafe.selected_id):
 		stove_status = cafe.simulation.kitchen.stove_status(cafe.selected_id)
 	return [cafe.mode, cafe.selected_id if _has_selection() else &"", stove_status,
-		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty(), shop_tab, shop_open]
+		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty(), shop_tab, shop_open,
+		shop_collection, shop_page]
 
 
 func _refresh_in_place() -> void:
@@ -405,13 +484,64 @@ func _show_shop() -> void:
 		button.add_theme_font_size_override("font_size", 17)
 		button.pressed.connect(func() -> void: show_shop_tab(this_tab))
 		_tabs.add_child(button)
-	match shop_tab:
-		ShopTab.SALON, ShopTab.KITCHEN, ShopTab.DECOR:
-			_show_furniture(SHOP_TAB_CATEGORIES[shop_tab])
-		ShopTab.FLOOR:
-			_show_surfaces(SurfaceDefinition.Kind.FLOOR)
-		ShopTab.WALL:
-			_show_surfaces(SurfaceDefinition.Kind.WALL)
+	_show_collection_chips()
+	shop_page = clampi(shop_page, 0, shop_page_count() - 1)
+	var page := _shop_items().slice(shop_page * ITEMS_PER_PAGE, (shop_page + 1) * ITEMS_PER_PAGE)
+	for item: Resource in page:
+		if item is FurnitureDefinition:
+			_add_furniture_item(item)
+		else:
+			_add_surface_item(item)
+	var pages := shop_page_count()
+	_prev_page.disabled = shop_page == 0
+	_next_page.disabled = shop_page >= pages - 1
+	_prev_page.modulate.a = 0.35 if _prev_page.disabled else 1.0
+	_next_page.modulate.a = 0.35 if _next_page.disabled else 1.0
+	_page_label.text = "%d/%d" % [shop_page + 1, pages]
+
+
+## Fileira de coleções: "Todas" e as que têm itens nesta aba, cada uma na sua cor.
+func _show_collection_chips() -> void:
+	var present := {}
+	var saved := shop_collection
+	shop_collection = &""
+	for item: Resource in _shop_items():
+		present[item.collection] = true
+	shop_collection = saved
+	_add_chip("Collection_all", "Todas", UiTheme.BLUE, shop_collection == &"", &"")
+	for collection in cafe.simulation.collections.all():
+		if present.has(collection.id):
+			_add_chip("Collection_" + String(collection.id), collection.display_name, collection.color,
+				shop_collection == collection.id, collection.id)
+
+
+func _add_chip(chip_name: String, text: String, color: Color, active: bool, collection: StringName) -> void:
+	var chip := Button.new()
+	chip.name = chip_name
+	chip.text = text
+	chip.toggle_mode = true
+	chip.button_pressed = active
+	chip.focus_mode = Control.FOCUS_NONE
+	chip.custom_minimum_size = Vector2(0, 30)
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		var box := StyleBoxFlat.new()
+		box.bg_color = color if active else (Color.WHITE if state != "hover" else color.lightened(0.85))
+		box.border_color = color.darkened(0.2)
+		box.set_border_width_all(2)
+		box.set_corner_radius_all(15)
+		box.content_margin_left = 12
+		box.content_margin_right = 12
+		box.content_margin_top = 3
+		box.content_margin_bottom = 3
+		box.anti_aliasing = true
+		chip.add_theme_stylebox_override(state, box)
+	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
+		chip.add_theme_color_override(color_name, Color.WHITE if active else color.darkened(0.35))
+	chip.add_theme_constant_override("outline_size", 3 if active else 0)
+	chip.add_theme_color_override("font_outline_color", color.darkened(0.45))
+	chip.add_theme_font_size_override("font_size", 14)
+	chip.pressed.connect(func() -> void: show_shop_collection(collection))
+	_chips.add_child(chip)
 
 
 ## Aba como as das pranchas: cantos de cima redondos, a ativa branca (emendada no painel).
@@ -429,27 +559,23 @@ func _tab_box(fill: Color, edge: Color, hover: bool) -> StyleBoxFlat:
 	return box
 
 
-func _show_furniture(categories: Array) -> void:
+func _add_furniture_item(furniture: FurnitureDefinition) -> void:
 	var simulation := cafe.simulation
-	for definition in cafe.catalog.all():
-		if not categories.has(definition.category):
-			continue
-		var furniture := definition
-		var item := _add_item("Build_" + String(furniture.id), furniture.display_name,
-			ArtSprites.furniture(furniture.id, 3), func() -> void: _pick_furniture(furniture.id))
-		_updaters.append(func() -> void:
-			var stored := simulation.inventory.count(furniture.id)
-			var locked := furniture.min_level > simulation.progression.level
-			if stored > 0:
-				item.text = "%s\n%d guardado%s" % [furniture.display_name, stored, "" if stored == 1 else "s"]
-				item.show_state(furniture.price, 0, "%d guardado%s" % [stored, "" if stored == 1 else "s"], true)
-			elif locked:
-				item.text = "%s\nNível %d" % [furniture.display_name, furniture.min_level]
-				item.show_state(furniture.price, furniture.min_level, "", false)
-			else:
-				item.text = "%s\n%d ouro" % [furniture.display_name, furniture.price]
-				item.show_state(furniture.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, furniture.price))
-			item.disabled = simulation.can_acquire(furniture) != ServiceResult.OK)
+	var item := _add_item("Build_" + String(furniture.id), furniture.display_name,
+		ArtSprites.furniture(furniture.id, 3), func() -> void: _pick_furniture(furniture.id))
+	_updaters.append(func() -> void:
+		var stored := simulation.inventory.count(furniture.id)
+		var locked := furniture.min_level > simulation.progression.level
+		if stored > 0:
+			item.text = "%s\n%d guardado%s" % [furniture.display_name, stored, "" if stored == 1 else "s"]
+			item.show_state(furniture.price, 0, "%d guardado%s" % [stored, "" if stored == 1 else "s"], true)
+		elif locked:
+			item.text = "%s\nNível %d" % [furniture.display_name, furniture.min_level]
+			item.show_state(furniture.price, furniture.min_level, "", false)
+		else:
+			item.text = "%s\n%d ouro" % [furniture.display_name, furniture.price]
+			item.show_state(furniture.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, furniture.price))
+		item.disabled = simulation.can_acquire(furniture) != ServiceResult.OK)
 
 
 ## Escolheu um móvel na loja: a loja fecha para o salão aparecer e a construção começa.
@@ -459,30 +585,28 @@ func _pick_furniture(furniture_id: StringName) -> void:
 	_request_rebuild()
 
 
-func _show_surfaces(kind: SurfaceDefinition.Kind) -> void:
+func _add_surface_item(surface: SurfaceDefinition) -> void:
 	var simulation := cafe.simulation
-	for definition in simulation.surfaces.all(kind):
-		var surface := definition
-		var art := ArtSprites.floor_tile(surface.id, Vector2i.ZERO) if kind == SurfaceDefinition.Kind.FLOOR \
-			else ArtSprites.wall_panel(surface.id, "R")
-		var item := _add_item("Surface_" + String(surface.id), surface.display_name, art,
-			func() -> void: ask_use_surface(surface.id))
-		_updaters.append(func() -> void:
-			var in_use := simulation.style.current(surface.kind) == surface.id
-			var locked := surface.min_level > simulation.progression.level
-			if in_use:
-				item.text = "%s\nEm uso" % surface.display_name
-				item.show_state(surface.price, 0, "Em uso", true)
-			elif simulation.style.owns(surface.id):
-				item.text = "%s\nAplicar" % surface.display_name
-				item.show_state(surface.price, 0, "Aplicar", true)
-			elif locked:
-				item.text = "%s\nNível %d" % [surface.display_name, surface.min_level]
-				item.show_state(surface.price, surface.min_level, "", false)
-			else:
-				item.text = "%s\n%d ouro" % [surface.display_name, surface.price]
-				item.show_state(surface.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, surface.price))
-			item.disabled = in_use or simulation.can_use_surface(surface) != ServiceResult.OK)
+	var art := ArtSprites.floor_tile(surface.id, Vector2i.ZERO) if surface.kind == SurfaceDefinition.Kind.FLOOR \
+		else ArtSprites.wall_panel(surface.id, "R")
+	var item := _add_item("Surface_" + String(surface.id), surface.display_name, art,
+		func() -> void: ask_use_surface(surface.id))
+	_updaters.append(func() -> void:
+		var in_use := simulation.style.current(surface.kind) == surface.id
+		var locked := surface.min_level > simulation.progression.level
+		if in_use:
+			item.text = "%s\nEm uso" % surface.display_name
+			item.show_state(surface.price, 0, "Em uso", true)
+		elif simulation.style.owns(surface.id):
+			item.text = "%s\nAplicar" % surface.display_name
+			item.show_state(surface.price, 0, "Aplicar", true)
+		elif locked:
+			item.text = "%s\nNível %d" % [surface.display_name, surface.min_level]
+			item.show_state(surface.price, surface.min_level, "", false)
+		else:
+			item.text = "%s\n%d ouro" % [surface.display_name, surface.price]
+			item.show_state(surface.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, surface.price))
+		item.disabled = in_use or simulation.can_use_surface(surface) != ServiceResult.OK)
 
 
 func _add_item(button_name: String, title: String, art: ArtSprites.Sprite, action: Callable) -> ShopItemButton:

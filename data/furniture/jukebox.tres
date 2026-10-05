@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"jukebox"
+display_name = "Jukebox"
+category = 4
+footprint = Vector2i(1, 1)
+needs_access = false
+collection = &"americano"
+price = 180
+min_level = 4
+beauty = 32
+efficiency = 0
+comfort = 0
+placeholder_color = Color(1.000, 0.239, 0.498, 1)
+placeholder_height = 60.0

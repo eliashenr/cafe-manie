@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"chair_club"
+display_name = "Poltrona de Veludo"
+category = 1
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"balada"
+price = 110
+min_level = 8
+beauty = 10
+efficiency = 0
+comfort = 15
+placeholder_color = Color(0.478, 0.184, 0.816, 1)
+placeholder_height = 22.0

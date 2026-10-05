@@ -96,8 +96,21 @@ static func table_top(furniture_id: StringName) -> float:
 	return float(_load_manifest().get("table_tops", {}).get(String(furniture_id), 0.0))
 
 
-## Dados dos personagens: "customers" (visuais de cliente), "waiter",
-## "tray_food" (centro x, y e largura do prato na bandeja) e "seated_back_chair".
+## Encosto da cadeira visto de costas (rotações 1 e 2), desenhado por cima de quem senta.
+## Null se a cadeira não tem encosto (banqueta) ou se a rotação mostra a cadeira de frente.
+static func chair_backrest(furniture_id: StringName, rotation_steps: int) -> Sprite:
+	var rotations: Dictionary = _load_manifest().get("chair_backrests", {}).get(String(furniture_id), {})
+	var sprite_name: String = rotations.get(str(posmod(rotation_steps, 4)), "")
+	return null if sprite_name.is_empty() else get_sprite(sprite_name)
+
+
+## A cadeira tem arte de encosto para quem senta de costas (mesmo que seja "sem encosto")?
+static func has_backrest_entry(furniture_id: StringName) -> bool:
+	return _load_manifest().get("chair_backrests", {}).has(String(furniture_id))
+
+
+## Dados dos personagens: "customers" (visuais de cliente), "waiter" e
+## "tray_food" (centro x, y e largura do prato na bandeja).
 static func characters() -> Dictionary:
 	return _load_manifest().get("characters", {})
 

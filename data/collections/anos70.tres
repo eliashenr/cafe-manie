@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CollectionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/content/collection_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"anos70"
+display_name = "Anos 70"
+color = Color(0.878, 0.478, 0.180, 1)
+order = 1

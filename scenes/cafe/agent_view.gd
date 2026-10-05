@@ -70,6 +70,8 @@ const SEAT_LIFT := 14.0
 var agent: Agent
 ## Rotação da cadeira de quem está sentado (0 a 3); -1 = não está sentado.
 var seat_rotation := -1
+## Qual cadeira (id do móvel): de costas, o encosto dela vai por cima da pessoa.
+var seat_furniture: StringName = &""
 ## Saindo da cafeteria: o personagem já saiu das regras e o desenho termina a caminhada.
 var exiting := false
 
@@ -98,9 +100,10 @@ func _init() -> void:
 
 
 ## Lê o estado do agente. Chamado a cada frame; o desenho anda em advance().
-func refresh(target: Agent, new_seat_rotation := -1) -> void:
+func refresh(target: Agent, new_seat_rotation := -1, new_seat_furniture: StringName = &"") -> void:
 	agent = target
 	seat_rotation = new_seat_rotation
+	seat_furniture = new_seat_furniture
 	if not _started:
 		_started = true
 		shown = agent.position
@@ -236,6 +239,15 @@ func _draw() -> void:
 	draw_texture_rect(sprite.texture, sprite.draw_rect(), false)
 	_draw_tray_food()
 	draw_set_transform(Vector2.ZERO)
+	var chair_back := backrest()
+	if chair_back != null:
+		draw_texture_rect(chair_back.texture, chair_back.rect_at(Vector2(0.0, -SORT_NUDGE)), false)
+
+
+## Encosto desenhado por cima de quem senta de costas: o da cadeira em que sentou. A arte só tem
+## encosto nas rotações 1 e 2; de frente, em pé ou na banqueta sem encosto, é null.
+func backrest() -> ArtSprites.Sprite:
+	return ArtSprites.chair_backrest(seat_furniture, seat_rotation) if seated_on_screen() else null
 
 
 ## Balão ou carinha do cliente, no filho que fica por cima de tudo.

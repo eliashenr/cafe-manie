@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"table_diner"
+display_name = "Mesa de Lanchonete"
+category = 0
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"americano"
+price = 90
+min_level = 3
+beauty = 8
+efficiency = 0
+comfort = 10
+placeholder_color = Color(0.310, 0.820, 0.773, 1)
+placeholder_height = 26.0

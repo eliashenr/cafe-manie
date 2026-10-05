@@ -42,6 +42,7 @@ BROWSERS = [
     "google-chrome", "chromium", "chromium-browser", "microsoft-edge",
 ]
 SHEET_MAX_WIDTH = 3600  # px; as folhas crescem para baixo
+SHEET_MAX_HEIGHT = 6400  # px; passando disso, o assunto continua numa folha nova (o navegador não fotografa imagem gigante)
 GAP = 12                # px entre figuras, para nenhuma invadir a vizinha
 
 
@@ -61,12 +62,24 @@ class Sheet:
         self._row_h = 0
         self.width = 0
 
+    def _px(self, bounds):
+        return math.ceil(bounds[2] * self.scale - 1e-6), math.ceil(bounds[3] * self.scale - 1e-6)
+
+    def _wraps(self, w_px):
+        return self._x + w_px + GAP > SHEET_MAX_WIDTH and self._x > GAP
+
+    def fits(self, bounds, max_height):
+        """A figura cabe sem a folha passar de max_height px? (Folha vazia sempre aceita.)"""
+        w_px, h_px = self._px(bounds)
+        y, row_h = (self._y + self._row_h + GAP, 0) if self._wraps(w_px) else (self._y, self._row_h)
+        return not self.items or y + max(row_h, h_px) + GAP <= max_height
+
     def add(self, sprite_name, svg, bounds, anchor=(0.0, 0.0), tile=False):
         """svg em coordenadas próprias; bounds = (esquerda, topo, largura, altura) que cabem tudo.
         tile: textura de repetir (sai inteira, sem recorte, do tamanho exato de bounds)."""
         left, top, width, height = bounds
-        w_px, h_px = math.ceil(width * self.scale - 1e-6), math.ceil(height * self.scale - 1e-6)
-        if self._x + w_px + GAP > SHEET_MAX_WIDTH and self._x > GAP:
+        w_px, h_px = self._px(bounds)
+        if self._wraps(w_px):
             self._x = GAP
             self._y += self._row_h + GAP
             self._row_h = 0
@@ -94,6 +107,28 @@ class Sheet:
             if tile:
                 out[name]["tile"] = True
         return out
+
+
+class SheetGroup:
+    """Folhas de um mesmo assunto: quando uma enche (SHEET_MAX_HEIGHT), as figuras seguem em outra
+    (moveis, moveis_2, ...). Todas usam os mesmos gradientes, desenhados antes de saber a folha."""
+
+    def __init__(self, name, design_tile=TILE_W):
+        self.name = name
+        self.design_tile = design_tile
+        self.D = Defs()
+        self.sheets = []
+        self._open()
+
+    def _open(self):
+        sheet = Sheet(self.name if not self.sheets else f"{self.name}_{len(self.sheets) + 1}", self.design_tile)
+        sheet.D = self.D
+        self.sheets.append(sheet)
+
+    def add(self, sprite_name, svg, bounds, anchor=(0.0, 0.0), tile=False):
+        if not self.sheets[-1].fits(bounds, SHEET_MAX_HEIGHT):
+            self._open()
+        self.sheets[-1].add(sprite_name, svg, bounds, anchor, tile)
 
 
 # --- Móveis ------------------------------------------------------------------------------
@@ -161,10 +196,52 @@ FURNITURE = {
     "flower_vase": ((1, 1), flower_vase_sprite, 1),
     "floor_lamp": ((1, 1), floor_lamp_sprite, 1),
 }
+def chair_wood_back(D, iso, facing):
+    return chair(D, iso, 0, 0, facing, "#ff4d5e")[1]
+
+
+# id da cadeira -> encosto visto de costas (facing "-x" ou "-y"), para desenhar por cima de quem senta.
+SEAT_BACKS = {"chair_wood": chair_wood_back}
+
 # Altura do tampo (unidades do desenho), onde o jogo põe o prato de quem está comendo.
 TABLE_TOPS = {"table_round": 34.0, "table_long": 32.0}
 # Altura do mármore do balcão (corpo de 42 e tampo de 5), onde ficam as pilhas de pratos.
 COUNTER_TOP = 47.0
+
+# --- Coleções da loja (themes3): cadeira, mesa e enfeites de cada estilo -----------------
+
+import themes3  # noqa: E402
+
+
+def _collection_chair(style):
+    def draw(D, iso, fp, rotation):
+        drawn = themes3.styled_chair(D, iso, 0, 0, FACING[rotation], **style)
+        return drawn if isinstance(drawn, str) else drawn[0] + drawn[1]
+    return draw
+
+
+def _collection_back(style):
+    return lambda D, iso, facing: themes3.styled_chair(D, iso, 0, 0, facing, **style)[1]
+
+
+def _collection_table(style, height):
+    return lambda D, iso, fp, rotation: themes3.styled_table(D, iso, 0, 0, height=height, **style)
+
+
+def _collection_decor(draw):
+    return lambda D, iso, fp, rotation: draw(D, iso, 0, 0)
+
+
+for _id, _style in themes3.CHAIRS.items():
+    FURNITURE[_id] = ((1, 1), _collection_chair(_style), 4)
+    SEAT_BACKS[_id] = _collection_back(_style)
+for _id, (_style, _height) in themes3.TABLES.items():
+    FURNITURE[_id] = ((1, 1), _collection_table(_style, _height), 1)
+    TABLE_TOPS[_id] = float(_height)
+for _id, _draw in themes3.DECOR.items():
+    FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
+# Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
+FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 
 
 def furniture_bounds(iso, fp):
@@ -189,6 +266,19 @@ def export_furniture(sheet, manifest):
             entry[str(rotation)] = name
         manifest["furniture"][item_id] = entry
     manifest["table_tops"] = {k: round(v * WORLD, 2) for k, v in TABLE_TOPS.items()}
+    # Encosto de cada cadeira nas rotações 1 e 2 (de costas): o jogo desenha por cima de quem senta.
+    # Banqueta sem encosto fica com "" (nada por cima).
+    backrests = {}
+    for item_id, back_of in SEAT_BACKS.items():
+        backrests[item_id] = {}
+        bounds, anchor = furniture_bounds(iso, (1, 1))
+        for rotation in (1, 2):
+            back = back_of(sheet.D, iso, FACING[rotation])
+            name = f"encosto_{item_id}_r{rotation}" if back else ""
+            if back:
+                sheet.add(name, back, bounds, anchor)
+            backrests[item_id][str(rotation)] = name
+    manifest["chair_backrests"] = backrests
     # Fogão cozinhando: a panela de cada receita (com a chama) e o forno aceso, por cima do fogão apagado.
     bounds, anchor = furniture_bounds(iso, (1, 1))
     for recipe_id, kind in FOODS.items():
@@ -245,16 +335,15 @@ def _walker(D, spec, pose, back=False, tray=None, expr="feliz"):
 
 def _seated(D, iso, spec, expr, chair_rotation=None):
     """Sentado na cadeira cuja frente é o vértice (0, 0). De frente (chair_rotation None) olha para +x.
-    De costas (rotações 1 e 2 da cadeira), o encosto da cadeira é desenhado por cima, como no canvas."""
+    De costas (rotações 1 e 2 da cadeira), só a pessoa: o jogo desenha por cima o encosto da cadeira
+    em que ela sentou (encosto_<cadeira>_r1/r2), como no canvas."""
     cell = (-1.0, -1.0)  # a célula da cadeira, para o vértice da frente cair em (0, 0)
     sx, sy = seat_point(iso, *cell)
     sy += SEAT_DROP * K(iso)
     if chair_rotation is None:
         return person(D, sx, sy, PERSON_SCALE, 1, "sentado", expr=expr, **spec)
-    facing = FACING[chair_rotation]
-    mirror = {"-x": -1, "-y": 1}[facing]
-    _, backrest = chair(D, iso, cell[0], cell[1], facing, "#ff4d5e")
-    return person(D, sx, sy, PERSON_SCALE, mirror, "sentado", expr=expr, back=True, **spec) + backrest
+    mirror = {"-x": -1, "-y": 1}[FACING[chair_rotation]]
+    return person(D, sx, sy, PERSON_SCALE, mirror, "sentado", expr=expr, back=True, **spec)
 
 
 def export_people(sheet, manifest):
@@ -278,8 +367,6 @@ def export_people(sheet, manifest):
         # Centro e largura do prato na bandeja, em pixels de mundo, com os pés em (0, 0), olhando para a direita.
         "tray_food": [round(tray_x * PERSON_SCALE * WORLD, 2), round(tray_y * PERSON_SCALE * WORLD, 2),
                       round(tray_w * PERSON_SCALE * WORLD, 2)],
-        # Quem senta de costas leva o encosto desta cadeira desenhado por cima (como no canvas).
-        "seated_back_chair": "chair_wood",
     }
 
 
@@ -409,13 +496,14 @@ def export(out_dir=OUT):
     browser = find_browser()
     manifest = {"density": DENSITY, "sheets": {}, "sprites": {}, "furniture": {}}
     # A interface usa px da tela: design_tile = GAME_TILE_W dá 2 px de textura por px.
-    sheets = [Sheet("moveis"), Sheet("personagens"), Sheet("pratos"), Sheet("cenario", tiles3.TW), Sheet("interface", GAME_TILE_W)]
-    export_furniture(sheets[0], manifest)
-    export_people(sheets[1], manifest)
-    export_food(sheets[2], manifest)
-    export_scene(sheets[3], manifest)
-    export_ui(sheets[4], manifest)
-    for sheet in sheets:
+    furniture = SheetGroup("moveis")
+    sheets = [Sheet("personagens"), Sheet("pratos"), Sheet("cenario", tiles3.TW), Sheet("interface", GAME_TILE_W)]
+    export_furniture(furniture, manifest)
+    export_people(sheets[0], manifest)
+    export_food(sheets[1], manifest)
+    export_scene(sheets[2], manifest)
+    export_ui(sheets[3], manifest)
+    for sheet in furniture.sheets + sheets:
         svg_path = os.path.join(out_dir, sheet.name + ".svg")
         markup = sheet.svg()
         try:

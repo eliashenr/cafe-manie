@@ -139,10 +139,10 @@ FLOORS = {
 L = TW / 2
 
 
-def _wainscot(color, dark_k, rail, base):
+def _wainscot(color, dark_k, rail, base, frame="#d8e2ee"):
     """Lambri com frisos, rodameio e rodapé (comum a quase todas as paredes)."""
     o = [f'<rect x="{-BLEED * L}" y="-36" width="{f(L * (1 + 2 * BLEED))}" height="36" fill="{shade(color, dark_k + 0.02)}"/>']
-    o.append(f'<rect x="4" y="-30" width="{f(L - 8)}" height="22" rx="2" fill="none" stroke="{shade("#d8e2ee", dark_k)}" stroke-width="1.4"/>')
+    o.append(f'<rect x="4" y="-30" width="{f(L - 8)}" height="22" rx="2" fill="none" stroke="{shade(frame, dark_k)}" stroke-width="1.4"/>')
     o.append(f'<rect x="{-BLEED * L}" y="-39" width="{f(L * (1 + 2 * BLEED))}" height="5.5" fill="{shade(rail, dark_k)}"/>')
     o.append(f'<line x1="{-BLEED * L}" y1="-39" x2="{f(L * (1 + BLEED))}" y2="-39" stroke="{INK3}" stroke-width="0.7"/>')
     o.append(f'<line x1="{-BLEED * L}" y1="-33.5" x2="{f(L * (1 + BLEED))}" y2="-33.5" stroke="{INK3}" stroke-width="0.7"/>')
@@ -150,8 +150,8 @@ def _wainscot(color, dark_k, rail, base):
     return "".join(o)
 
 
-def _top_band(dark_k):
-    return (f'<rect x="{-BLEED * L}" y="{-WALL_H}" width="{f(L * (1 + 2 * BLEED))}" height="6" fill="{shade("#ffffff", dark_k)}"/>'
+def _top_band(dark_k, color="#ffffff"):
+    return (f'<rect x="{-BLEED * L}" y="{-WALL_H}" width="{f(L * (1 + 2 * BLEED))}" height="6" fill="{shade(color, dark_k)}"/>'
             f'<line x1="{-BLEED * L}" y1="{-WALL_H + 6}" x2="{f(L * (1 + BLEED))}" y2="{-WALL_H + 6}" stroke="{INK3}" stroke-width="0.7"/>')
 
 
@@ -227,6 +227,510 @@ def wall_navy(D, dark_k):
 WALLS = {"wall_cream": wall_cream, "wall_mint_stripes": wall_mint, "wall_brick": wall_brick, "wall_navy": wall_navy}
 # A parede da esquerda recebe menos luz (como no canvas).
 LEFT_DARK = 0.07
+
+
+# --- Coleções da loja (estilos e culturas) ---------------------------------------------------
+# Um piso e uma parede para cada coleção (res://data/collections). O que passa da borda é recortado
+# na sangria; os padrões que atravessam a emenda têm o período de uma célula, então o vizinho
+# desenha a continuação no mesmo lugar, sem fresta.
+
+X0, X1 = -BLEED * L, L * (1 + BLEED)  # a parede de uma célula, com a sangria dos lados
+
+
+def _clip_cell(D, iso, content):
+    q = _quad(iso, -BLEED, -BLEED, 1 + BLEED, 1 + BLEED)
+    d = "M" + " L".join(f"{f(x)},{f(y)}" for x, y in q) + " Z"
+    return f'<g clip-path="{D.clip(d)}">{content}</g>'
+
+
+def _clip_panel(D, content):
+    d = f"M{f(X0)},{-WALL_H} L{f(X1)},{-WALL_H} L{f(X1)},0 L{f(X0)},0 Z"
+    return f'<g clip-path="{D.clip(d)}">{content}</g>'
+
+
+def _band_rect(y0, y1, fill, extra=""):
+    """Faixa de parede de uma ponta à outra (com a sangria), de y0 a y1 (y cresce para baixo)."""
+    return f'<rect x="{f(X0)}" y="{f(y0)}" width="{f(X1 - X0)}" height="{f(y1 - y0)}" fill="{fill}"{(" " + extra) if extra else ""}/>'
+
+
+def floor_retro_circles(D, iso):
+    """Anos 70: círculos concêntricos laranja e mostarda num piso marrom; os quartos de círculo dos
+    cantos fecham círculos inteiros com os vizinhos."""
+    o = [_base(iso, "#5a2a12")]
+    inset = 0.012
+    o.append(P(_quad(iso, inset, inset, 1 - inset, 1 - inset), "#8a4a24", None))
+    rings = [(0.42, "#e07a2e"), (0.32, "#f2b33d"), (0.22, "#fbe3b8"), (0.12, "#b0532a")]
+    art = []
+    for (cx, cy, scale) in [(0.5, 0.5, 1.0), (0, 0, 0.6), (1, 0, 0.6), (1, 1, 0.6), (0, 1, 0.6)]:
+        sx, sy = iso.v(cx, cy)
+        for r, c in rings:
+            art.append(E(sx, sy, r * scale * iso.W / SQ2, r * scale * iso.H / SQ2, c, "#5a2a12", 0.5))
+    o.append(_clip_cell(D, iso, "".join(art)))
+    o.append(_gloss(D, iso, 0.12))
+    return "".join(o)
+
+
+def floor_rustic(D, iso, seed):
+    """Country: tábuas largas de madeira escura, três fileiras por piso, com pregos nas pontas."""
+    r = Rng(seed)
+    woods = ["#9a6238", "#8a5530", "#a86d40", "#7d4a28"]
+    o = [_base(iso, "#4a2a16")]
+    for j in range(3):
+        y0, y1 = j / 3, (j + 1) / 3
+        x = -r.u(0, 0.9)
+        while x < 1:
+            ln = r.u(0.8, 1.5)
+            a, b = max(0.0, x), min(1.0, x + ln)
+            if b - a > 0.04:
+                c = woods[int(r.u(0, len(woods)))]
+                o.append(P(_quad(iso, a, y0, b, y1), D.lin([(0, tint(c, 0.08)), (1, shade(c, 0.08))], 0, 0, 1, 1), "#4a2a16", 0.7))
+                gy = y0 + (y1 - y0) * r.u(0.3, 0.7)
+                p0, p1 = iso.v(a + (b - a) * 0.12, gy), iso.v(a + (b - a) * 0.88, gy + r.u(-0.04, 0.04))
+                o.append(line(p0[0], p0[1], p1[0], p1[1], shade(c, 0.3), 0.8, 'opacity="0.55"'))
+                # pregos só nas pontas de verdade (não onde a tábua continua no piso vizinho)
+                for px in ([a + 0.05] if x >= 0 else []) + ([b - 0.05] if x + ln <= 1 else []):
+                    for py in (y0 + 0.07, y1 - 0.07):
+                        q = iso.v(px, py)
+                        o.append(C(q[0], q[1], 0.9, "#2e1a0e", None))
+            x += ln
+    return "".join(o)
+
+
+def floor_confetti(D, iso, seed):
+    """Festa: piso rosa-claro com confete colorido espalhado."""
+    r = Rng(seed)
+    o = [_base(iso, "#f3c6da")]
+    inset = 0.012
+    o.append(P(_quad(iso, inset, inset, 1 - inset, 1 - inset), D.lin([(0, "#fff6fa"), (1, "#ffe1ee")], 0, 0, 1, 1), None))
+    colors = ["#ff8fb1", "#ffd23f", "#7fd6ff", "#9be38a", "#c39bff"]
+    art = []
+    for _ in range(16):
+        px, py = iso.v(r.u(0.04, 0.96), r.u(0.04, 0.96))
+        c = colors[int(r.u(0, len(colors)))]
+        if r.r() < 0.45:
+            art.append(E(px, py, 2.1, 1.1, c, None))
+        else:
+            art.append(f'<rect x="-2.6" y="-0.8" width="5.2" height="1.6" rx="0.6" fill="{c}" '
+                       f'transform="translate({f(px)},{f(py)}) scale(1,0.55) rotate({f(r.u(0, 180))})"/>')
+    o.append(_clip_cell(D, iso, "".join(art)))
+    o.append(_gloss(D, iso, 0.16))
+    return "".join(o)
+
+
+def floor_saltillo(D, iso, seed):
+    """Mexicano: lajota de barro (saltillo), quatro por piso, cada uma num tom, com rejunte claro."""
+    r = Rng(seed)
+    tones = ["#c8643a", "#d27245", "#bb5a34", "#d9804f", "#c26a3f"]
+    o = [_base(iso, "#ead8bf")]
+    for yy in range(2):
+        for xx in range(2):
+            x0, y0, x1, y1 = xx / 2 + 0.022, yy / 2 + 0.022, (xx + 1) / 2 - 0.022, (yy + 1) / 2 - 0.022
+            c = tones[int(r.u(0, len(tones)))]
+            o.append(P(_quad(iso, x0, y0, x1, y1), D.lin([(0, tint(c, 0.12)), (1, shade(c, 0.08))], 0, 0, 1, 1), shade(c, 0.25), 0.5))
+            for _ in range(2):
+                px, py = iso.v(r.u(x0 + 0.12, x1 - 0.12), r.u(y0 + 0.12, y1 - 0.12))
+                o.append(E(px, py, r.u(2.0, 3.6), r.u(1.0, 1.8), shade(c, 0.14), None, extra='opacity="0.5"'))
+    o.append(_gloss(D, iso, 0.12))
+    return "".join(o)
+
+
+def floor_memphis(D, iso, seed):
+    """Anos 80: estilo Memphis, fundo lilás-claro com rabiscos, triângulos e bolinhas."""
+    r = Rng(seed)
+    o = [_base(iso, "#cfc4ec")]
+    inset = 0.012
+    o.append(P(_quad(iso, inset, inset, 1 - inset, 1 - inset), "#f6f2ff", None))
+    colors = ["#ff4dd2", "#4fe0ff", "#ffd23f", "#2a2d6e"]
+    art = []
+    for i in range(8):
+        px, py = iso.v(r.u(0.1, 0.9), r.u(0.1, 0.9))
+        c = colors[i % 4]
+        if i % 3 == 0:
+            art.append(path(f"M{f(px - 7)},{f(py)} l3.5,-2 l3.5,2 l3.5,-2 l3.5,2", "none", c, 1.6))
+        elif i % 3 == 1:
+            art.append(P([(px - 4, py + 2), (px + 4, py + 2), (px, py - 3)], c, None))
+        else:
+            art.append(E(px, py, 2.6, 1.4, c, None))
+    o.append(_clip_cell(D, iso, "".join(art)))
+    o.append(_gloss(D, iso, 0.14))
+    return "".join(o)
+
+
+def floor_terrazzo(D, iso, seed):
+    """Italiano: granilite claro com lascas de pedra coloridas."""
+    r = Rng(seed)
+    o = [_base(iso, "#cdbfac")]
+    inset = 0.01
+    o.append(P(_quad(iso, inset, inset, 1 - inset, 1 - inset), D.lin([(0, "#f7f1e8"), (1, "#e9dfcf")], 0, 0, 1, 1), None))
+    chips = ["#b0382e", "#2f9e44", "#8a8f96", "#3a3c46", "#e0a050", "#ffffff"]
+    art = []
+    for _ in range(28):
+        px, py = iso.v(r.u(0.03, 0.97), r.u(0.03, 0.97))
+        c = chips[int(r.u(0, len(chips)))]
+        s = r.u(0.8, 2.0)
+        ang = r.u(0, 360)
+        corners = []
+        for i, a in enumerate((0, 100, 190, 280)):
+            k = s * (1.3 if i % 2 else 1.0)
+            corners.append((px + k * math.cos(math.radians(ang + a)), py + k * 0.55 * math.sin(math.radians(ang + a))))
+        art.append(P(corners, c, None))
+    o.append(_clip_cell(D, iso, "".join(art)))
+    o.append(_gloss(D, iso, 0.2))
+    return "".join(o)
+
+
+def floor_tatami(D, iso, which):
+    """Japonês: tatame de palha com borda de tecido escuro. 'a' e 'b' deitam as duas esteiras em direções
+    diferentes; o jogo alterna as duas como num xadrez, igual ao encaixe de verdade."""
+    o = [_base(iso, "#3a4a32")]
+    straw = D.lin([(0, "#e0db9e"), (1, "#c4bf7a")], 0, 0, 1, 1)
+    along_x = which == "a"
+    halves = [(0, 0, 1, 0.5), (0, 0.5, 1, 1)] if along_x else [(0, 0, 0.5, 1), (0.5, 0, 1, 1)]
+    for (x0, y0, x1, y1) in halves:
+        x0, y0, x1, y1 = x0 + 0.015, y0 + 0.015, x1 - 0.015, y1 - 0.015
+        o.append(P(_quad(iso, x0, y0, x1, y1), straw, "#8a8a5a", 0.5))
+        for i in range(1, 9):
+            t = i / 9
+            if along_x:
+                a, b = iso.v(x0 + 0.02, y0 + (y1 - y0) * t), iso.v(x1 - 0.02, y0 + (y1 - y0) * t)
+            else:
+                a, b = iso.v(x0 + (x1 - x0) * t, y0 + 0.02), iso.v(x0 + (x1 - x0) * t, y1 - 0.02)
+            o.append(line(a[0], a[1], b[0], b[1], "#a8a462", 0.5, 'opacity="0.6"'))
+        if along_x:
+            edges = [((x0, y0 + 0.03), (x1, y0 + 0.03)), ((x0, y1 - 0.03), (x1, y1 - 0.03))]
+        else:
+            edges = [((x0 + 0.03, y0), (x0 + 0.03, y1)), ((x1 - 0.03, y0), (x1 - 0.03, y1))]
+        for (p, q) in edges:
+            a, b = iso.v(*p), iso.v(*q)
+            o.append(f'<line x1="{f(a[0])}" y1="{f(a[1])}" x2="{f(b[0])}" y2="{f(b[1])}" stroke="#26402c" stroke-width="2.4"/>')
+    o.append(_gloss(D, iso, 0.1))
+    return "".join(o)
+
+
+def floor_parquet(D, iso):
+    """Francês: parquê em cesto (quadrados de três tábuas que alternam a direção), cor de mel."""
+    o = [_base(iso, "#7a4a22")]
+    woods = ["#d89a5a", "#c98a4e", "#e2a868"]
+    for yy in range(2):
+        for xx in range(2):
+            x0, y0 = xx / 2, yy / 2
+            for i in range(3):
+                c = woods[(i + xx + 2 * yy) % 3]
+                if (xx + yy) % 2 == 0:
+                    q = _quad(iso, x0 + 0.012, y0 + i / 6 + 0.008, x0 + 0.488, y0 + (i + 1) / 6 - 0.008)
+                else:
+                    q = _quad(iso, x0 + i / 6 + 0.008, y0 + 0.012, x0 + (i + 1) / 6 - 0.008, y0 + 0.488)
+                o.append(P(q, D.lin([(0, tint(c, 0.12)), (1, shade(c, 0.06))], 0, 0, 1, 1), "#8a5a2e", 0.4))
+    o.append(_gloss(D, iso, 0.22))
+    return "".join(o)
+
+
+def floor_copacabana(D, iso):
+    """Brasileiro: as ondas pretas e brancas do calçadão de Copacabana. A onda tem o período de um piso
+    e passa pela sangria: emenda com o vizinho sem fresta."""
+    o = [_base(iso, "#f8f5ec")]
+    n = 32
+    art = []
+    for v0 in (0.25, 0.75):
+        top, bottom = [], []
+        for i in range(n + 1):
+            u = -BLEED + (1 + 2 * BLEED) * i / n
+            vc = v0 + 0.1 * math.sin(2 * math.pi * u)
+            top.append(iso.v(u, vc - 0.09))
+            bottom.append(iso.v(u, vc + 0.09))
+        art.append(P(top + bottom[::-1], "#26262b", None))
+    o.append(_clip_cell(D, iso, "".join(art)))
+    r = Rng(14)
+    for _ in range(18):  # pedrinhas portuguesas
+        px, py = iso.v(r.u(0.05, 0.95), r.u(0.05, 0.95))
+        o.append(C(px, py, 0.6, "#bdb8ac", None, extra='opacity="0.6"'))
+    return "".join(o)
+
+
+def floor_concrete(D, iso, seed):
+    """Anos 2010: cimento queimado cinza, com manchas suaves e a junta entre as placas."""
+    r = Rng(seed)
+    o = [_base(iso, "#8f959a")]
+    inset = 0.008
+    o.append(P(_quad(iso, inset, inset, 1 - inset, 1 - inset), D.lin([(0, "#cdd1d4"), (1, "#b7bcc0")], 0, 0, 1, 1), None))
+    art = []
+    for _ in range(7):
+        px, py = iso.v(r.u(0.1, 0.9), r.u(0.1, 0.9))
+        art.append(E(px, py, r.u(6, 12), r.u(3, 6), "#ffffff" if r.r() < 0.5 else "#7d848a", None,
+                     extra=f'opacity="{f(r.u(0.08, 0.16))}"'))
+    o.append(_clip_cell(D, iso, "".join(art)))
+    o.append(_gloss(D, iso, 0.24))
+    return "".join(o)
+
+
+def floor_led(D, iso, variant):
+    """Balada: pista de LED, quatro placas por piso, cada uma acesa numa cor (ou apagada); cada variação
+    gira a ordem das cores, para os pisos vizinhos não repetirem."""
+    colors = ["#ff4dd2", "#4fe0ff", "#b04dff", "#ffd23f", "#2a2440"]
+    o = [_base(iso, "#0d0b16")]
+    for yy in range(2):
+        for xx in range(2):
+            x0, y0, x1, y1 = xx / 2 + 0.03, yy / 2 + 0.03, (xx + 1) / 2 - 0.03, (yy + 1) / 2 - 0.03
+            c = colors[(variant * 2 + (yy * 2 + xx) * 3) % len(colors)]
+            o.append(P(_quad(iso, x0, y0, x1, y1), D.lin([(0, tint(c, 0.4)), (0.5, c), (1, shade(c, 0.35))], 0, 0, 1, 1),
+                       shade(c, 0.5), 0.6))
+            o.append(P(_quad(iso, x0 + 0.07, y0 + 0.07, x1 - 0.07, y1 - 0.07), "#ffffff", None, 'opacity="0.16"'))
+    return "".join(o)
+
+
+FLOORS.update({
+    "floor_70s": (1, lambda D, iso, v: floor_retro_circles(D, iso)),
+    "floor_country": (3, lambda D, iso, v: floor_rustic(D, iso, 61 + v * 7)),
+    "floor_party": (2, lambda D, iso, v: floor_confetti(D, iso, 71 + v)),
+    "floor_diner": ("xadrez", lambda D, iso, v: floor_checker(D, iso, "#ffffff", "#2a2a33", "#9aa0a8", v)),
+    "floor_mexican": (3, lambda D, iso, v: floor_saltillo(D, iso, 81 + v)),
+    "floor_80s": (2, lambda D, iso, v: floor_memphis(D, iso, 91 + v)),
+    "floor_italian": (3, lambda D, iso, v: floor_terrazzo(D, iso, 101 + v)),
+    "floor_japanese": ("xadrez", lambda D, iso, v: floor_tatami(D, iso, v)),
+    "floor_french": (1, lambda D, iso, v: floor_parquet(D, iso)),
+    "floor_brazil": (1, lambda D, iso, v: floor_copacabana(D, iso)),
+    "floor_2010s": (3, lambda D, iso, v: floor_concrete(D, iso, 111 + v)),
+    "floor_club": (3, lambda D, iso, v: floor_led(D, iso, v)),
+})
+
+
+def wall_groovy(D, dark_k):
+    """Anos 70: creme com três ondas largas (laranja, mostarda e marrom) e lambri de madeira."""
+    o = [_upper(D, "#fbe6bf", dark_k)]
+    n = 16
+    for (base_y, c) in [(-78, "#e07a2e"), (-66, "#f2b33d"), (-54, "#b0532a")]:
+        top, bottom = [], []
+        for i in range(n + 1):
+            u = X0 + (X1 - X0) * i / n
+            off = 4.5 * math.sin(2 * math.pi * u / L)
+            top.append((u, base_y + off - 5))
+            bottom.append((u, base_y + off + 5))
+        o.append(P(top + bottom[::-1], shade(c, dark_k), None))
+    o.append(_wainscot("#9a6238", dark_k, "#e07a2e", "#5a3a20", frame="#c48a5a"))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_logs(D, dark_k):
+    """Country: parede de toras empilhadas, com a massa clara entre elas."""
+    o = [_band_rect(-WALL_H, 0, shade("#e2d4b4", dark_k))]
+    r = Rng(8)
+    y = -5.0
+    while y > -WALL_H + 6:
+        y0 = max(y - 11.0, -WALL_H + 6)
+        c = mix("#a86d40", "#86522e", r.r())
+        o.append(_band_rect(y0 + 0.9, y - 0.9, D.lin([(0, shade(tint(c, 0.3), dark_k)), (0.45, shade(c, dark_k)),
+                                                      (1, shade(c, dark_k + 0.3))])))
+        o.append(_band_rect(y0 + 2.2, y0 + 3.2, "#ffffff", 'opacity="0.22"'))
+        u = r.u(4, L - 4)
+        o.append(f'<ellipse cx="{f(u)}" cy="{f((y0 + y) / 2)}" rx="2.2" ry="1.4" fill="none" '
+                 f'stroke="{shade(c, dark_k + 0.35)}" stroke-width="0.8"/>')
+        y = y0
+    o.append(_band_rect(-5, 0, shade("#4a2e1a", dark_k)))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_party(D, dark_k):
+    """Festa: rosa-claro de bolinhas coloridas, varal de bandeirinhas e lambri branco."""
+    o = [_upper(D, "#ffe2f0", dark_k)]
+    for (u, v, c) in [(6, -76, "#7fd6ff"), (27, -80, "#ffd23f"), (16, -62, "#9be38a"), (37, -58, "#c39bff"),
+                      (5, -48, "#ff8fb1"), (26, -46, "#7fd6ff")]:
+        for du in (-L, 0, L):
+            o.append(f'<circle cx="{f(u + du)}" cy="{v}" r="3.2" fill="{shade(c, dark_k)}"/>')
+
+    def sag(u):  # o varal cai um pouco entre as emendas (período de uma célula)
+        return -90 + 5 * abs(math.sin(math.pi * u / L))
+    n = 12
+    us = [X0 + (X1 - X0) * i / n for i in range(n + 1)]
+    o.append(path("M" + " L".join(f"{f(u)},{f(sag(u))}" for u in us), "none", shade("#8a5a7a", dark_k), 0.8))
+    for i, u in enumerate((5.25, 15.75, 26.25, 36.75)):
+        y = sag(u)
+        c = ["#ff4d6d", "#ffd23f", "#4fc3ff", "#7ee85a"][i]
+        o.append(P([(u - 3.4, y), (u + 3.4, y), (u, y + 7.5)], shade(c, dark_k), INK3, 0.5))
+    o.append(_wainscot("#ffffff", dark_k, "#ff8fb1", "#e05a8a"))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_diner(D, dark_k):
+    """Americano: azulejo branco no alto, faixa cromada e painel vermelho com xadrez preto e branco."""
+    o = [_band_rect(-WALL_H, -46, shade("#fbfbfb", dark_k))]
+    grout = shade("#d4d9de", dark_k)
+    for y in range(-WALL_H + 13, -46, 7):
+        o.append(_band_rect(y - 0.4, y + 0.4, grout))
+    for i in range(7):
+        o.append(f'<rect x="{f(i * 7 - 0.4)}" y="{-WALL_H + 6}" width="0.8" height="{WALL_H - 6 - 46}" fill="{grout}"/>')
+    o.append(_band_rect(-46, -40, D.lin([(0, shade("#ffffff", dark_k)), (0.3, shade("#c9d3de", dark_k)),
+                                         (0.6, shade("#8d98a6", dark_k)), (1, shade("#e8edf2", dark_k))])))
+    o.append(_band_rect(-40, -5, shade("#e0303a", dark_k)))
+    for i in range(-1, 13):
+        for row in range(2):
+            color = "#1d1d24" if (i + row) % 2 == 0 else "#ffffff"
+            o.append(f'<rect x="{f(i * 3.5)}" y="{f(-16 + row * 3.5)}" width="3.5" height="3.5" fill="{shade(color, dark_k)}"/>')
+    o.append(_band_rect(-5, 0, shade("#1d1d24", dark_k)))
+    o.append(_band_rect(-46, -45.4, INK3) + _band_rect(-40.3, -39.7, INK3))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_stucco(D, dark_k):
+    """Mexicano: estuque amarelo com textura, faixa de azulejos de talavera e barra de barro."""
+    o = [_upper(D, "#f6c445", dark_k)]
+    r = Rng(12)
+    for _ in range(16):
+        u, v = r.u(2, L - 2), r.u(-WALL_H + 12, -46)
+        o.append(f'<ellipse cx="{f(u)}" cy="{f(v)}" rx="{f(r.u(1.5, 3.5))}" ry="{f(r.u(0.8, 1.6))}" '
+                 f'fill="{shade("#dc9f2a", dark_k)}" opacity="0.45"/>')
+    o.append(_band_rect(-42, -27, shade("#f4efe2", dark_k)))
+    blue, yellow, green = shade("#2f6fd9", dark_k), shade("#ffd23f", dark_k), shade("#2fae4e", dark_k)
+    for i in range(3):
+        cx, cy = i * 14 + 7, -34.5
+        o.append(f'<rect x="{f(i * 14 + 0.6)}" y="-41.4" width="12.8" height="13.8" fill="none" stroke="{blue}" stroke-width="1"/>')
+        o.append(f'<circle cx="{cx}" cy="{cy}" r="2" fill="{yellow}"/>')
+        for a in range(0, 360, 45):
+            o.append(f'<circle cx="{f(cx + math.cos(math.radians(a)) * 3.8)}" cy="{f(cy + math.sin(math.radians(a)) * 3.8)}" '
+                     f'r="1.4" fill="{blue}"/>')
+        for (dx, dy) in ((-5, -5.5), (5, -5.5), (-5, 5.5), (5, 5.5)):
+            o.append(f'<circle cx="{f(cx + dx)}" cy="{f(cy + dy)}" r="1" fill="{green}"/>')
+    o.append(_band_rect(-42.6, -41.8, INK3) + _band_rect(-27.2, -26.4, INK3))
+    o.append(_band_rect(-26.4, -5, shade("#c8643a", dark_k)))
+    o.append(_band_rect(-5, 0, shade("#7a3a20", dark_k)))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_synth(D, dark_k):
+    """Anos 80: roxo escuro com zigue-zague de neon rosa e ciano e grade de neon embaixo."""
+    o = [_band_rect(-WALL_H, 0, D.lin([(0, shade("#2a1a4a", dark_k)), (1, shade("#4a1f6e", dark_k))]))]
+    for (vc, c) in [(-76, "#ff4dd2"), (-64, "#4fe0ff")]:
+        d = "M" + " L".join(f"{f(7 * i)},{f(vc + (4 if i % 2 else -4))}" for i in range(-1, 8))
+        o.append(path(d, "none", shade(c, dark_k), 5, 'opacity="0.3"'))
+        o.append(path(d, "none", shade(tint(c, 0.5), dark_k), 1.6))
+    grid = shade("#ff4dd2", dark_k)
+    for y in (-42, -32, -24, -17, -11):
+        o.append(_band_rect(y - 0.5, y + 0.5, grid, 'opacity="0.8"'))
+    for u in (0, 14, 28, 42):
+        o.append(f'<rect x="{f(u - 0.5)}" y="-42" width="1" height="37" fill="{grid}" opacity="0.8"/>')
+    o.append(_band_rect(-5, 0, shade("#120a22", dark_k)))
+    o.append(_top_band(dark_k, "#ff4dd2"))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_tuscan(D, dark_k):
+    """Italiano: reboco toscano cor de ocre com manchas, rodameio de madeira e tijolo aparente embaixo."""
+    o = [_upper(D, "#f0c890", dark_k)]
+    r = Rng(19)
+    for _ in range(10):
+        u, v = r.u(3, L - 3), r.u(-WALL_H + 12, -44)
+        o.append(f'<ellipse cx="{f(u)}" cy="{f(v)}" rx="{f(r.u(3, 6))}" ry="{f(r.u(1.5, 3))}" '
+                 f'fill="{shade("#e0b070", dark_k)}" opacity="0.4"/>')
+    o.append(_band_rect(-38, -5, shade("#e9dccb", dark_k)))
+    for row in range(6):
+        y0 = -38 + row * 5.5
+        off = 0.0 if row % 2 == 0 else -L / 8
+        for i in range(-1, 5):
+            brick = shade(mix("#c8603e", "#a84a30", r.r()), dark_k)
+            o.append(f'<rect x="{f(off + i * L / 4 + 0.5)}" y="{f(y0 + 0.5)}" width="{f(L / 4 - 1)}" height="4.5" rx="0.8" fill="{brick}"/>')
+            o.append(f'<rect x="{f(off + i * L / 4 + 1.2)}" y="{f(y0 + 1.1)}" width="{f(L / 8)}" height="0.9" rx="0.45" fill="#ffffff" opacity="0.2"/>')
+    o.append(_band_rect(-40.5, -37.5, shade("#8a5a32", dark_k)))
+    o.append(_band_rect(-40.5, -40, INK3) + _band_rect(-37.8, -37.3, INK3))
+    o.append(_band_rect(-5, 0, shade("#6b3a22", dark_k)))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_shoji(D, dark_k):
+    """Japonês: painel shoji de papel claro com grade de madeira, e lambri de madeira escura."""
+    wood = shade("#6b4423", dark_k)
+    o = [_band_rect(-WALL_H, 0, wood)]
+    top, bottom = -WALL_H + 7, -40
+    paper = D.lin([(0, shade("#fdf9ee", dark_k)), (1, shade("#efe5cc", dark_k))])
+    o.append(f'<rect x="2.5" y="{top}" width="{f(L - 5)}" height="{bottom - top}" fill="{paper}"/>')
+    for i in (1, 2):
+        o.append(f'<rect x="{f(2.5 + (L - 5) * i / 3 - 0.6)}" y="{top}" width="1.2" height="{bottom - top}" fill="{wood}"/>')
+    for j in (1, 2, 3):
+        o.append(f'<rect x="2.5" y="{f(top + (bottom - top) * j / 4 - 0.6)}" width="{f(L - 5)}" height="1.2" fill="{wood}"/>')
+    post = shade("#4a2a16", dark_k)
+    for u in (0, L):  # pilares nas emendas: o vizinho desenha a outra metade
+        o.append(f'<rect x="{f(u - 2.5)}" y="{-WALL_H}" width="5" height="{WALL_H}" fill="{post}"/>')
+    o.append(_band_rect(-40, -38.4, shade("#3a2212", dark_k)))
+    for u in (10.5, 21, 31.5):
+        o.append(f'<rect x="{f(u - 0.4)}" y="-38.4" width="0.8" height="33.4" fill="{post}"/>')
+    o.append(_band_rect(-5, 0, shade("#2a1a0e", dark_k)))
+    o.append(_top_band(dark_k, "#4a2a16"))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_boiserie(D, dark_k):
+    """Francês: boiserie azul-acinzentado com molduras douradas em cima e no lambri."""
+    o = [_upper(D, "#bcd2e4", dark_k)]
+    gold = shade("#d9b44a", dark_k)
+    o.append(f'<rect x="5" y="-86" width="{f(L - 10)}" height="38" rx="3" fill="none" stroke="{gold}" stroke-width="1.4"/>')
+    o.append(f'<rect x="7.5" y="-83.5" width="{f(L - 15)}" height="33" rx="2" fill="none" stroke="#ffffff" stroke-width="0.7" opacity="0.6"/>')
+    o.append(f'<circle cx="{f(L / 2)}" cy="-86" r="2" fill="{gold}"/>')
+    o.append(_wainscot("#a9c3da", dark_k, "#d9b44a", "#7d95ab", frame="#d9b44a"))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_tropical(D, dark_k):
+    """Brasileiro: papel de parede de folhagem tropical, lambri branco e rodameio amarelo."""
+    o = [_upper(D, "#e9f6e2", dark_k)]
+    vein = shade("#1d6b33", dark_k)
+    leaves = [(6, -78, -40, 22, 7, "#2fae4e"), (20, -66, 30, 24, 8, "#3fbf4a"), (34, -84, -120, 20, 6.5, "#23803a"),
+              (30, -52, 160, 18, 6, "#4fcf5a"), (12, -50, -150, 16, 5.5, "#23803a"), (40, -64, 70, 18, 6, "#2fae4e")]
+    for (u, v, ang, ln, w, c) in leaves:
+        fill = D.lin([(0, shade(tint(c, 0.25), dark_k)), (1, shade(c, dark_k + 0.15))], 0, 0, 1, 1)
+        dx, dy = math.cos(math.radians(ang)) * ln / 2, math.sin(math.radians(ang)) * ln / 2
+        for du in (-L, 0, L):
+            o.append(path(leaf(u + du, v, ang, ln, w, 0.05), fill, vein, 0.7))
+            o.append(line(u + du - dx, v - dy, u + du + dx, v + dy, vein, 0.6, 'opacity="0.6"'))
+    o.append(_wainscot("#ffffff", dark_k, "#ffd23f", "#2fae4e"))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_subway(D, dark_k):
+    """Anos 2010: azulejo de metrô branco em amarração, rejunte cinza e rodapé preto."""
+    o = [_band_rect(-WALL_H, 0, shade("#c3c8cd", dark_k))]
+    tile = D.lin([(0, shade("#ffffff", dark_k)), (1, shade("#e9edf1", dark_k))])
+    w, h = L / 4, 5.4
+    y, row = -5.0, 0
+    while y > -WALL_H + 6:
+        y0 = max(y - h, -WALL_H + 6)
+        off = 0.0 if row % 2 == 0 else -w / 2
+        for i in range(-1, 6):
+            x0 = off + i * w
+            o.append(f'<rect x="{f(x0 + 0.45)}" y="{f(y0 + 0.45)}" width="{f(w - 0.9)}" height="{f(y - y0 - 0.9)}" rx="0.9" fill="{tile}"/>')
+            o.append(f'<rect x="{f(x0 + 1.2)}" y="{f(y0 + 1)}" width="{f(w * 0.45)}" height="0.8" rx="0.4" fill="#ffffff" opacity="0.8"/>')
+        y = y0
+        row += 1
+    o.append(_band_rect(-5, 0, shade("#2a2c34", dark_k)))
+    o.append(_top_band(dark_k))
+    return _clip_panel(D, "".join(o))
+
+
+def wall_neon(D, dark_k):
+    """Balada: preto-azulado com duas faixas de neon (rosa e ciano) e pontinhos de luz."""
+    o = [_band_rect(-WALL_H, 0, D.lin([(0, shade("#15121f", dark_k)), (1, shade("#251a38", dark_k))]))]
+    for (u, v) in [(5, -84), (17, -78), (29, -88), (38, -74), (11, -52), (24, -48), (35, -56)]:
+        o.append(f'<circle cx="{u}" cy="{v}" r="0.9" fill="#ffffff" opacity="0.7"/>')
+    for (y, c) in [(-68, "#ff4dd2"), (-62, "#4fe0ff")]:
+        o.append(_band_rect(y - 3, y + 3, shade(c, dark_k), 'opacity="0.28"'))
+        o.append(_band_rect(y - 0.9, y + 0.9, shade(tint(c, 0.55), dark_k)))
+    o.append(_band_rect(-38, -5, shade("#1d1a2b", dark_k)))
+    o.append(_band_rect(-38.8, -37.6, shade("#b04dff", dark_k)))
+    o.append(_band_rect(-5, 0, shade("#0d0b16", dark_k)))
+    o.append(_top_band(dark_k, "#2a2440"))
+    return _clip_panel(D, "".join(o))
+
+
+WALLS.update({
+    "wall_70s": wall_groovy, "wall_country": wall_logs, "wall_party": wall_party, "wall_diner": wall_diner,
+    "wall_mexican": wall_stucco, "wall_80s": wall_synth, "wall_italian": wall_tuscan, "wall_japanese": wall_shoji,
+    "wall_french": wall_boiserie, "wall_brazil": wall_tropical, "wall_2010s": wall_subway, "wall_club": wall_neon,
+})
 
 
 def wall_window(D, curtain):

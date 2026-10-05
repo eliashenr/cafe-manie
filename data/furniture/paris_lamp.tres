@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"paris_lamp"
+display_name = "Poste Parisiense"
+category = 4
+footprint = Vector2i(1, 1)
+needs_access = false
+collection = &"frances"
+price = 150
+min_level = 7
+beauty = 28
+efficiency = 0
+comfort = 0
+placeholder_color = Color(0.165, 0.227, 0.227, 1)
+placeholder_height = 80.0

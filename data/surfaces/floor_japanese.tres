@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"floor_japanese"
+display_name = "Tatame"
+kind = 0
+is_default = false
+collection = &"japones"
+price = 280
+min_level = 6
+beauty = 25
+pattern = 2
+color_a = Color(0.788, 0.761, 0.478, 1)
+color_b = Color(0.290, 0.416, 0.227, 1)

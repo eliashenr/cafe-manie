@@ -13,10 +13,29 @@ func _definition(id: StringName, level := 1, price := 10) -> FurnitureDefinition
 
 func test_loads_every_furniture_file_from_data_folder() -> void:
 	var catalog := FurnitureCatalog.load_from()
-	assert_eq(catalog.size(), 9)
+	assert_true(catalog.size() >= 57, "os 9 clássicos e as coleções: %d" % catalog.size())
 	for id in [&"table_round", &"chair_wood", &"stove_basic", &"counter_basic", &"plant_pot", &"table_long",
 			&"flower_vase", &"floor_lamp", &"bookshelf"]:
 		assert_true(catalog.get_definition(id) != null, "falta %s" % id)
+		assert_eq(catalog.get_definition(id).collection, &"classico", "%s é clássico" % id)
+
+
+func test_every_item_belongs_to_a_known_collection_and_each_collection_has_a_full_set() -> void:
+	var collections := CollectionCatalog.load_from()
+	assert_true(collections.size() >= 13, "clássico e as 12 coleções")
+	var furniture := FurnitureCatalog.load_from()
+	var surfaces := SurfaceCatalog.load_from()
+	var kinds := {}
+	for definition in furniture.all():
+		assert_true(collections.get_definition(definition.collection) != null, "%s sem coleção conhecida" % definition.id)
+		kinds[[definition.collection, definition.category]] = true
+	for surface in surfaces.all():
+		assert_true(collections.get_definition(surface.collection) != null, "%s sem coleção conhecida" % surface.id)
+		kinds[[surface.collection, "piso" if surface.kind == SurfaceDefinition.Kind.FLOOR else "parede"]] = true
+	for collection in collections.all():
+		for kind in [FurnitureDefinition.Category.SEATING, FurnitureDefinition.Category.TABLE, FurnitureDefinition.Category.DECOR,
+				"piso", "parede"]:
+			assert_true(kinds.has([collection.id, kind]), "%s sem %s" % [collection.display_name, kind])
 
 
 func test_every_data_file_is_valid_and_complete() -> void:

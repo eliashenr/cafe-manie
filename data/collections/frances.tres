@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CollectionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/content/collection_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"frances"
+display_name = "Francês"
+color = Color(0.290, 0.482, 0.851, 1)
+order = 9
