@@ -246,6 +246,9 @@ func _connect_sounds() -> void:
 	hud.mute_toggled.connect(sound_board.set_muted)
 	sound_board.muted_changed.connect(hud.show_sound_state)
 	hud.show_sound_state(sound_board.muted)
+	hud.music_toggled.connect(sound_board.set_music_muted)
+	sound_board.music_muted_changed.connect(hud.show_music_state)
+	hud.show_music_state(sound_board.music_muted)
 
 
 # --- Recompensa diária ------------------------------------------------------

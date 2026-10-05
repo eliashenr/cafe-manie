@@ -4,6 +4,20 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-037 — Música ambiente: bossa nova composta e sintetizada por código
+
+**Problema:** o PO pediu uma "musiquinha de café" tocando sempre, como no jogo antigo: som de restaurante chique, sem voz, suave.
+
+**Opções:** (A) música licenciada ou de banco gratuito; (B) composição própria gerada por código, como os sons (DT-027).
+
+**Decisão:** B. Não há risco de direito autoral, e a faixa pode ser refeita ou alterada a qualquer momento.
+- `tools/music/compose_bossa.py` compõe e sintetiza, só com Python, uma **bossa nova em fá maior a 88 BPM**: piano elétrico (FM) na batida da bossa, contrabaixo dedilhado, vibrafone com a melodia, vassourinha, caxixi e aro de caixa, com reverberação de salão. Três voltas de 16 compassos: melodia, solo suave do piano e melodia de novo. São **2min11**, e o fim emenda no começo, sem corte.
+- O equilíbrio foi medido instrumento por instrumento: melodia a cerca de -5 dB do total, piano e baixo a -5 dB, percussão a -17 dB.
+- No jogo: `art/music/bossa_do_cafe.wav`, importado comprimido (QOA) e em loop. A música toca a -11 dB, atrás dos efeitos, e entra e sai com fade. Tem **botão próprio** (nota musical), separado do som dos efeitos, e a escolha fica no aparelho.
+- Sem saída de som de verdade (modo sem janela), a música não toca: lá ela nunca termina de parar e fica presa na memória ao fechar. Os testes ligam a música mesmo assim (`music_without_audio_device`).
+
+---
+
 ## DT-036 — Movimento suave na tela, regras no grid
 
 **Problema:** o PO achou a movimentação "muito travada". Os personagens andavam de centro em centro de piso e viravam em ângulo reto. Ao sentar e ao levantar, pulavam entre a cadeira e o piso ao lado. Os clientes surgiam e sumiam na entrada, e os passos tinham quadros quase iguais.

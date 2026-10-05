@@ -23,6 +23,8 @@ signal name_chosen(text: String)
 signal name_skipped
 ## O jogador tocou no botão de som. [param muted] é o novo estado.
 signal mute_toggled(muted: bool)
+## O jogador tocou no botão da música. [param muted] é o novo estado.
+signal music_toggled(muted: bool)
 ## O jogador tocou no presente diário (medalhão ou cronômetro).
 signal daily_requested
 ## O jogador tocou num botão de zoom: multiplica o zoom por [param factor].
@@ -45,6 +47,8 @@ var _root: Control
 var _name_button: Button
 var _sound_button: Button
 var _muted := false
+var _music_button: Button
+var _music_muted := false
 var _name_dialog: ConfirmationDialog
 var _name_edit: LineEdit
 var _gold_label: Label
@@ -210,11 +214,15 @@ func _build_side_buttons() -> void:
 	_sound_button = UiTheme.icon_button("SoundButton", "sound", "", 42)
 	_sound_button.pressed.connect(func() -> void: mute_toggled.emit(not _muted))
 	_anchored(_sound_button, Vector2(1.0, 0.0), Vector2(-52, 228), Vector2(48, 46))
+	_music_button = UiTheme.icon_button("MusicButton", "music", "", 42)
+	_music_button.pressed.connect(func() -> void: music_toggled.emit(not _music_muted))
+	_anchored(_music_button, Vector2(1.0, 0.0), Vector2(-52, 276), Vector2(48, 46))
 	var settings := UiTheme.icon_button("RestartButton", "gear", "", 42)
 	settings.tooltip_text = "Recomeçar o jogo"
 	settings.pressed.connect(ask_restart)
-	_anchored(settings, Vector2(1.0, 0.0), Vector2(-52, 276), Vector2(48, 46))
+	_anchored(settings, Vector2(1.0, 0.0), Vector2(-52, 324), Vector2(48, 46))
 	show_sound_state(false)
+	show_music_state(false)
 
 
 func _medallion(button_name: String, art_name: String, label: String, center: Vector2, action: Callable) -> Button:
@@ -445,6 +453,19 @@ func show_sound_state(muted: bool) -> void:
 ## "Som: ligado" ou "Som: desligado" (o botão mostra só o símbolo; o texto vai na dica).
 func sound_text() -> String:
 	return "Som: desligado" if _muted else "Som: ligado"
+
+
+func show_music_state(muted: bool) -> void:
+	_music_muted = muted
+	var sprite := ArtSprites.get_sprite("botao_music_off" if muted else "botao_music")
+	if sprite != null:
+		_music_button.icon = sprite.texture
+	_music_button.tooltip_text = music_text()
+
+
+## "Música: ligada" ou "Música: desligada".
+func music_text() -> String:
+	return "Música: desligada" if _music_muted else "Música: ligada"
 
 
 func _build_name_dialog() -> void:

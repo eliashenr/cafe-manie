@@ -191,5 +191,5 @@ Para conferir o conteúdo, descompacte a pasta `assets/` do APK e rode `godot --
 
 ## Créditos
 
-- Arte, sons e código: feitos para o Café Manie (ver [direção de arte](docs/art-direction.md)).
+- Arte, sons, música e código: feitos para o Café Manie (ver [direção de arte](docs/art-direction.md)). A música ambiente, "Bossa do Café", é composta e sintetizada por `tools/music/compose_bossa.py`.
 - Fontes **Fredoka** (The Fredoka Project Authors) e **Nunito** (The Nunito Project Authors), do Google Fonts, sob a licença SIL Open Font License 1.1. Os arquivos e as licenças estão em `art/fonts/`.

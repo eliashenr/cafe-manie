@@ -15,6 +15,10 @@ def glyph(kind):
     if kind == "mute":
         return ('<path d="M12,26 h9 l11,-9 v30 l-11,-9 h-9 Z" fill="#ffffff"/>'
                 f'<path d="M40,24 L54,40 M54,24 L40,40" {GLYPH_STROKE}/>')
+    if kind == "music_off":
+        return ('<path d="M22,44 V16 L44,11 V39" fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round"/>'
+                '<ellipse cx="17" cy="45" rx="7" ry="5.5" fill="#ffffff"/><ellipse cx="39" cy="40" rx="7" ry="5.5" fill="#ffffff"/>'
+                f'<path d="M10,10 L54,54" {GLYPH_STROKE}/>')
     if kind == "move":
         return (f'<path d="M32,10 V54 M10,32 H54" {GLYPH_STROKE}/>'
                 '<path d="M32,6 l7,9 h-14 Z M32,58 l7,-9 h-14 Z M6,32 l9,7 v-14 Z M58,32 l-9,7 v-14 Z" fill="#ffffff"/>')
@@ -88,7 +92,8 @@ ICONS = {
     "bolo": cake, "martelo": hammer, "cadeado": padlock,
 }
 
-BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("gear", "blue"),
+BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("music", "blue"),
+           ("music_off", "blue"), ("gear", "blue"),
            ("rotate", "blue"), ("move", "blue"), ("store", "blue"), ("sell", "orange"), ("serve", "green"),
            ("check", "green"), ("close", "red"), ("left", "blue"), ("right", "blue")]
 

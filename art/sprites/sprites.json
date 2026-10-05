@@ -1497,6 +1497,18 @@
     60.0
    ]
   },
+  "botao_music": {
+   "anchor": [
+    60.0,
+    60.0
+   ]
+  },
+  "botao_music_off": {
+   "anchor": [
+    60.0,
+    60.0
+   ]
+  },
   "botao_gear": {
    "anchor": [
     60.0,
