@@ -33,7 +33,7 @@ separadamente:
 - [x] **4. Paredes completas** (DT-042):
   - paredes da frente e dos lados, com porta, baixas o bastante para continuar vendo o salão;
   - janelas, portas, TV e rádio para pôr nas paredes.
-- [ ] **5. Mais conteúdo:** mais cadeiras e mesas em cada coleção e fogões e balcões modernos.
+- [x] **5. Mais conteúdo** (24 cadeiras e mesas, 3 fogões e 3 balcões; DT-038): mais cadeiras e mesas em cada coleção e fogões e balcões modernos.
 - [ ] **6. Compra de moedas:**
   - pacotes de Café Ouro por dinheiro, oferecidos quando falta ouro, com a taxa calculada pela economia do jogo;
   - o pagamento real depende da Play Store (conta de desenvolvedor do PO) e da revisão jurídica da Fase 7;

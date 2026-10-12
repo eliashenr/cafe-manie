@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"chair_french_red"
+display_name = "Poltrona Bistrô Vermelha"
+category = 1
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"frances"
+price = 90
+min_level = 6
+beauty = 9
+efficiency = 0
+comfort = 13
+placeholder_color = Color(0.784, 0.118, 0.227, 1)
+placeholder_height = 22.0

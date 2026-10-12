@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"stool_zen"
+display_name = "Banquinho Zen"
+category = 1
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"japones"
+price = 70
+min_level = 5
+beauty = 7
+efficiency = 0
+comfort = 9
+placeholder_color = Color(0.851, 0.263, 0.231, 1)
+placeholder_height = 18.0

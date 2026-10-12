@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"stove_mint"
+display_name = "Fogão Retrô Menta"
+category = 2
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"americano"
+price = 300
+min_level = 3
+beauty = 6
+efficiency = 20
+comfort = 0
+placeholder_color = Color(0.498, 0.863, 0.753, 1)
+placeholder_height = 38.0

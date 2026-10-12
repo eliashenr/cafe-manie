@@ -114,7 +114,8 @@ func test_shop_filters_by_collection_and_turns_pages() -> void:
 	cafe.build_bar.find_button("Collection_anos70").pressed.emit()
 	await settle()
 	assert_eq(cafe.build_bar.shop_page, 0, "trocar de coleção volta à primeira página")
-	assert_eq(cafe.build_bar.shop_item_ids(), [&"chair_70s", &"table_70s"] as Array[StringName], "só os anos 70 do salão")
+	assert_eq(cafe.build_bar.shop_item_ids(), [&"chair_70s", &"chair_tulip", &"table_70s", &"table_70s_square"] as Array[StringName],
+		"só os anos 70 do salão: duas cadeiras e duas mesas")
 	assert_true(cafe.build_bar.find_button("Collection_anos70").button_pressed, "a coleção escolhida aparece marcada")
 	cafe.build_bar.find_button("Tab_DECOR").pressed.emit()
 	await settle()

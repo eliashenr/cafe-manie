@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"chair_80s_pink"
+display_name = "Cadeira Neon Rosa"
+category = 1
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"anos80"
+price = 70
+min_level = 4
+beauty = 7
+efficiency = 0
+comfort = 11
+placeholder_color = Color(1.000, 0.302, 0.824, 1)
+placeholder_height = 20.0

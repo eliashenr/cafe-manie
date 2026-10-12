@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"chair_tulip"
+display_name = "Cadeira Tulipa"
+category = 1
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"anos70"
+price = 55
+min_level = 2
+beauty = 6
+efficiency = 0
+comfort = 11
+placeholder_color = Color(1.000, 0.541, 0.239, 1)
+placeholder_height = 22.0

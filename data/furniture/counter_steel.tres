@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"counter_steel"
+display_name = "Balcão Inox"
+category = 3
+footprint = Vector2i(2, 1)
+needs_access = true
+collection = &"anos2010"
+price = 320
+min_level = 5
+beauty = 8
+efficiency = 10
+comfort = 0
+placeholder_color = Color(0.725, 0.765, 0.812, 1)
+placeholder_height = 34.0

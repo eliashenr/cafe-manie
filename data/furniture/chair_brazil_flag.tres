@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"chair_brazil_flag"
+display_name = "Cadeira Verde e Amarela"
+category = 1
+footprint = Vector2i(1, 1)
+needs_access = true
+collection = &"brasileiro"
+price = 85
+min_level = 6
+beauty = 9
+efficiency = 0
+comfort = 12
+placeholder_color = Color(0.184, 0.682, 0.306, 1)
+placeholder_height = 20.0

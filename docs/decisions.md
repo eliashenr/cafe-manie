@@ -144,6 +144,11 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 - **Encosto separado:** quem senta de costas recebe, por cima, o encosto da cadeira em que sentou (`encosto_<cadeira>_r1` e `_r2`). Antes, a pose de costas já vinha com o encosto da cadeira clássica desenhado. A banqueta americana não tem encosto.
 - **Folhas que crescem:** os móveis agora ocupam três folhas (`moveis`, `moveis_2` e `moveis_3`), porque o navegador não fotografa uma imagem muito alta. As folhas de um mesmo assunto compartilham os gradientes.
 - A beleza e o preço dos itens novos seguem a escala atual. Se o jogo ficar fácil demais, isso entra no **FAÇA BALANCEAMENTO**.
+- **Complemento (12/10, pedido do PO):**
+  - mais uma cadeira e uma mesa em cada coleção (24 itens), com outras formas, cores e encostos;
+  - fogões e balcões modernos: fogão retrô menta, inox industrial e preto com dourado; balcão de madeira, de confeitaria e inox;
+  - os fogões mantêm as medidas do clássico, para a panela e o forno aceso caírem no lugar, e os balcões mantêm a altura das pilhas de pratos;
+  - a aba Cozinha agora também tem coleções.
 
 ---
 
