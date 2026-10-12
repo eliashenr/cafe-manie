@@ -4,7 +4,7 @@
 
 🟢 **CONCLUÍDO**
 
-**Pacote de melhorias do PO de 12/10, etapas 1 e 2 de 6** (plano completo no [roadmap](roadmap.md))
+**Pacote de melhorias do PO de 12/10: as 6 etapas** (plano no [roadmap](roadmap.md))
 
 - **Atendimento que pressiona** (DT-039):
   - os clientes também pedem pratos que não estão no balcão (pratos rápidos saem mais);
@@ -18,6 +18,22 @@
   - nunca começam a cozinhar.
 - **Contratar garçons:** botão na faixa de baixo, com 3 garçons a mais (níveis 3, 5 e 8; 500, 1.500 e 4.000 de ouro), sempre com confirmação. O save passou para a versão 5.
 - **Andar natural** (DT-040): ciclo de 8 quadros com joelho e pé que sobe; o corpo não balança mais de lado.
+- **Reforma piso a piso** (DT-041):
+  - escolher um piso ou parede na loja abre a reforma: cada toque marca um piso ou trecho de parede, com prévia, e confirmar cobra por célula;
+  - dá para misturar revestimentos;
+  - o que você já tinha comprado inteiro pinta de graça;
+  - save versão 6.
+- **Paredes completas** (DT-042):
+  - mureta baixa nas duas bordas da frente, no lugar da cerca, com o revestimento da parede (pintável);
+  - porta com toldo e a plaquinha "ABERTO" na entrada.
+- **Itens de parede** (DT-042):
+  - 13 itens para pendurar onde quiser, entre eles TV, rádio, janela redonda, janelão em arco, lousa de cardápio, neon, espelho e planta pendurada;
+  - o save guarda os enfeites de sempre;
+  - save versão 7.
+- **Mais móveis:** mais uma cadeira e uma mesa em cada coleção (24) e fogões e balcões modernos (6).
+- **Compra de Café Ouro** (DT-043):
+  - vitrine com 5 pacotes (R$ 4,90 a R$ 99,90, até 47% de bônus), aberta pelo "+" do ouro ou oferecida quando falta ouro;
+  - o pagamento de verdade só existe com o jogo na Play Store; neste build nada é cobrado.
 
 **Pedido do PO de 04/10**
 
@@ -88,12 +104,15 @@
 
 🧪 **TESTADO**
 
-- **329 testes automatizados: PASSOU** no Windows. Os da etapa de 12/10 conferem:
+- **353 testes automatizados: PASSOU** no Windows. Os da etapa de 12/10 conferem:
   - pedidos do cardápio, fila, ritmo por nível;
   - garçons (buscar no fogão, circular, não cozinhar, contratação);
   - o save dos garçons, a tela do botão Garçom, da fila e da bolinha de pedidos;
-  - o andar com o ciclo de 8 quadros.
-  - **Defeitos inseridos de propósito: 19 de 19 pegos.**
+  - o andar com o ciclo de 8 quadros;
+  - a reforma por célula (preço, prévia, confirmação, beleza, save);
+  - a mureta, a porta e os itens de parede;
+  - os pacotes de moedas (o ouro só entra com o pagamento confirmado).
+  - **Defeitos inseridos de propósito: 19 de 19 (atendimento e andar), 10 de 10 (reforma), 12 de 12 (paredes e itens) e 6 de 6 (moedas).**
 - **Turno de 30 min do robô:** 199 clientes servidos, 18% irritados à mesa, 30 desistências da fila (o robô não compra mesas), nível 7 e popularidade 63%.
 - **Cópia do save do PO** aberta com as regras novas: a migração para a versão 5 funciona, e o save de verdade não foi tocado.
 - **Os testes da etapa de 04/10** conferem:
@@ -147,6 +166,9 @@
 
 Detalhes em [decisions.md](decisions.md):
 
+- **DT-041:** reforma piso a piso, cobrada por célula (pintura guardada por piso e por trecho de parede; save 6).
+- **DT-042:** mureta baixa na frente com porta, e itens de parede comprados e pendurados pelo jogador (save 7).
+- **DT-043:** pacotes de Café Ouro com a taxa calculada pelo ganho do jogo; ouro só com o pagamento confirmado pela loja oficial.
 - **DT-039:** atendimento com cardápio, fila na calçada, ritmo por nível, garçons que buscam nos fogões e contratação. Tudo em `core/`, com os números em dados.
 - **DT-040:** andar em 8 quadros com joelho, desenhados pelo gerador da arte; sem o balanço do corpo.
 - **DT-036:** movimento suave só no desenho; as regras continuam no grid. O desenho persegue o personagem sem pular, e os passos ganharam quique e balanço.
@@ -161,11 +183,11 @@ Detalhes em [decisions.md](decisions.md):
 
 ➡️ **PRÓXIMO PASSO**
 
-- **Etapas 3 a 6 do pacote de 12/10:**
-  - reforma piso a piso;
-  - paredes completas com porta, mais janelas, TV e rádio;
-  - mais cadeiras e mesas por coleção e fogões e balcões modernos (a arte já está desenhada);
-  - compra de moedas.
+- **Conferência do PO** do pacote de 12/10 (roteiros em [qa.md](qa.md)), com o `.exe` novo.
+- **Para cobrar de verdade:**
+  - publicar na Play Store, com a conta de desenvolvedor do PO e os produtos `cafe_ouro_*` cadastrados;
+  - plugin de cobrança da Google;
+  - revisão jurídica (Fase 7).
 
 - **Conferência do PO** do movimento, da música e das coleções (roteiro "Movimento, música e coleções" em [qa.md](qa.md)), com o `.exe` novo.
 - **FAÇA BALANCEAMENTO:** os enfeites novos somam beleza e podem deixar o jogo mais fácil; o robô de teste já estava rápido (6 missões em 5,2 min).

@@ -4,7 +4,7 @@ extends RefCounted
 ##
 ## O jogo nunca entrega ouro sem a confirmação do provedor de pagamento. Neste build (Windows e APK de
 ## teste) o provedor é o UnavailablePaymentProvider: a compra fica indisponível até o jogo estar na Play
-## Store com a cobrança da Google configurada pelo dono da conta (ver DT-044).
+## Store com a cobrança da Google configurada pelo dono da conta (ver DT-043).
 
 signal purchase_finished(pack: CoinPack, result: int)
 

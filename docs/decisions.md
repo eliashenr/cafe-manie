@@ -4,6 +4,41 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-043 — Compra de Café Ouro: pacotes, taxa e pagamento só pela loja oficial
+
+**Problema:** o PO pediu que, quando faltar ouro, o jogo ofereça pagar um valor X por Y moedas, e que eu calcule uma taxa boa.
+
+**Opções:**
+- (A) cobrança própria (cartão dentro do jogo): não é permitida pelas lojas e é um risco legal;
+- (B) a cobrança da loja (Google Play Billing no Android), com o jogo entregando o ouro só depois que a loja confirma.
+
+**Decisão:** B.
+- **Pacotes em dados** (`data/coin_packs`, gerados por `tools/content/make_coin_packs.py`):
+
+  | Pacote | Ouro | Preço | Ouro por real |
+  |---|---|---|---|
+  | Punhado de Ouro | 500 | R$ 4,90 | 102 |
+  | Saco de Ouro | 1.200 | R$ 9,90 | 121 (+19%) |
+  | Baú de Ouro | 3.300 | R$ 24,90 | 133 (+30%) |
+  | Cofre de Ouro | 7.000 | R$ 49,90 | 140 (+37%) |
+  | Tesouro do Café | 15.000 | R$ 99,90 | 150 (+47%) |
+
+- **Como a taxa foi calculada:**
+  - no turno de 30 minutos do robô (níveis 1 a 7), o saldo sobe uns 640 de ouro, já descontados os ingredientes: cerca de 1.300 por hora de jogo ativo;
+  - o menor pacote (500) vale uns 25 minutos de jogo por R$ 4,90, a faixa comum em jogos casuais;
+  - os maiores dão até 47% a mais por real, para valer a pena comprar de uma vez;
+  - comparando com os preços do jogo: a 4ª expansão (1.000) fica perto do Saco, e o 4º garçom (4.000) entre o Baú e o Cofre;
+  - os preços seguem os degraus da Play Store em reais.
+- **Pagamento:**
+  - `CoinShop` pede a compra a um `PaymentProvider` e só põe o ouro na carteira quando o provedor confirma; cancelada ou recusada, nada muda;
+  - neste build (Windows e APK de teste) o provedor é o `UnavailablePaymentProvider`: a vitrine aparece, mas a compra explica que só existe na Play Store e que nada foi cobrado;
+  - o provedor de verdade (o plugin de cobrança da Google para a Godot) entra quando houver a conta de desenvolvedor do PO com os produtos `cafe_ouro_*` cadastrados e a revisão jurídica da Fase 7 (menores e compras, ECA Digital).
+- **Na tela:**
+  - um "+" verde no contador de ouro abre a vitrine;
+  - quando uma compra falha por falta de ouro, a vitrine aparece sozinha ("Faltou Café Ouro?"), no máximo uma vez por minuto e nunca por cima de outra janela.
+
+---
+
 ## DT-042 — Paredes completas (mureta na frente, com porta) e itens de parede do jogador
 
 **Problema:** o PO pediu as paredes da frente e dos lados, com porta, mantendo a mesma visibilidade, e itens para pôr nas paredes (janelas, portas, TV, rádio).

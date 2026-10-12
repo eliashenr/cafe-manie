@@ -1,4 +1,4 @@
-"""Cria os pacotes de Café Ouro por dinheiro de verdade (res://data/coin_packs). Ver DT-044.
+"""Cria os pacotes de Café Ouro por dinheiro de verdade (res://data/coin_packs). Ver DT-043.
 
 A taxa parte do que um jogador ativo ganha: no turno de 30 minutos do robô (níveis 1 a 7), o saldo
 sobe cerca de 640 de ouro, já descontados os ingredientes — uns 1.300 por hora. O menor pacote (500)

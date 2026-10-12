@@ -5,7 +5,8 @@ extends SceneTree
 ##   godot -s res://tools/showcase.gd -- <saida.png> [zoom] [id do piso] [id da parede] [foco x,y] [painel]
 ##
 ## O foco é a célula que fica no meio da foto (ex.: 1,1 para a cozinha).
-## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir.
+## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir, reforma,
+## reforma:<revestimento> ou moedas (a vitrine de Café Ouro).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -18,6 +19,8 @@ var _frames := 20
 var _focus := Vector2(-1, -1)
 var _panel := ""
 var _stoves: Array[StringName] = []
+## Janela que a foto deixa aberta (as outras são escondidas para a foto ficar limpa).
+var _keep_window := ""
 
 
 func _initialize() -> void:
@@ -126,6 +129,9 @@ func _set_panel() -> void:
 		"construir":
 			_cafe.start_placing(&"table_round")
 			_cafe._on_tapped(IsoProjection.cell_center(Vector2i(5, 2)))  # o toque do modo de construção
+		"moedas":
+			_keep_window = "CoinShopDialog"
+			_cafe.hud.show_coin_shop(true)
 		"reforma":
 			# Piso e parede já misturados, e uma reforma em andamento com alguns pisos marcados.
 			var style = _cafe.simulation.style
@@ -147,7 +153,8 @@ func _process(_delta: float) -> bool:
 		quit(1)
 		return true
 	for window: Window in _cafe.find_children("*", "Window", true, false):
-		window.hide()
+		if window.name != _keep_window:
+			window.hide()
 	if not _panel.is_empty():
 		_set_panel()
 	var camera := _cafe.get_viewport().get_camera_2d()

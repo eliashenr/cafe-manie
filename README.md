@@ -2,7 +2,7 @@
 
 Jogo de gerenciamento de cafeteria, mobile-first (Android), feito em **Godot 4.7.2** com **GDScript**.
 
-> Nome provisório. Status: **Vertical Slice validada** e **arte v3 aprovada no jogo inteiro** (móveis, personagens, cenário, cozinha e interface no formato do jogo antigo), com paredes e revestimentos, decoração com beleza, loja com 12 coleções de estilos e culturas, venda, conquistas, recompensa diária, sons, música ambiente e o primeiro APK Android.
+> Nome provisório. Status: **Vertical Slice validada** e **arte v3 aprovada no jogo inteiro** (móveis, personagens, cenário, cozinha e interface no formato do jogo antigo), com paredes completas e porta, reforma piso a piso, itens de parede, decoração com beleza, loja com 12 coleções de estilos e culturas, garçons contratáveis, fila de clientes, venda, conquistas, recompensa diária, sons, música ambiente e o primeiro APK Android.
 
 O documento que manda em tudo é o [master prompt](docs/master-prompt.md). O estado atual está em [docs/status.md](docs/status.md).
 
@@ -68,13 +68,14 @@ Você só precisa fazer isto uma vez.
 | Confirmar / cancelar | **Enter** / **Esc** | **Confirmar** / **Cancelar** |
 | Mover ou guardar um móvel | Selecione-o e use **Mover** / **Guardar** (ou **Delete**) | Selecione-o e use **Mover** / **Guardar** |
 | Vender um móvel | Selecione-o e use **Vender** (pede confirmação) | Igual |
-| Trocar piso ou parede | Abas **Pisos** / **Paredes** na loja | Igual |
+| Reformar piso ou parede | Abas **Pisos** / **Paredes** na loja: escolha o revestimento, toque nos pisos ou trechos de parede e **Confirmar** | Igual |
+| Pendurar TV, janela, quadro... | Aba **Paredes**, depois dos revestimentos: escolha o item, toque nos trechos e **Confirmar** | Igual |
 
 ### Cozinhar e atender
 
 1. Toque num **fogão** e escolha uma receita. Os ingredientes custam Café Ouro.
 2. Quando a etiqueta ficar verde ("pronto!"), toque no fogão para levar o prato ao **balcão**.
-3. Os clientes entram, sentam nas cadeiras ao lado das mesas e pedem o que houver no balcão. O garçom leva.
+3. Os clientes entram, sentam e pedem do cardápio: às vezes o que está no balcão, às vezes outro prato (a bolinha vermelha no painel do fogão mostra quantos esperam cada um). O garçom busca o prato pronto no fogão, leva ao balcão e serve.
 4. Cliente servido paga, dá XP e popularidade. Cliente que espera demais vai embora irritado.
 
 ### Loja, missões e expansão
@@ -84,6 +85,8 @@ Você só precisa fazer isto uma vez.
 - **Coleções:** no alto da loja ficam os estilos e as culturas: Clássico, Anos 70, Country, Festa, Americano, Mexicano, Anos 80, Italiano, Japonês, Francês, Brasileiro, Anos 2010 e Balada. Toque numa coleção para ver só os itens dela, ou em **Todas**. As setas trocam de página.
 - **Guardar** tira o móvel da cafeteria e leva para o inventário. Colocar de volta é grátis.
 - **Expandir** aumenta a cafeteria (a partir do nível 2). Antes de cobrar, o jogo pergunta, e o botão já selecionado é o **Cancelar**.
+- **Garçom** (na faixa de baixo) contrata mais um garçom a partir do nível 3. Sem cadeira livre, os clientes fazem fila na calçada e desistem se esperarem demais.
+- **+** ao lado do ouro abre a vitrine de pacotes de Café Ouro. A compra com dinheiro de verdade só existe quando o jogo estiver na Play Store.
 
 ### Beleza, conquistas e recompensa diária
 

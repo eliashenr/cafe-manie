@@ -79,6 +79,8 @@ var surfaces: SurfaceCatalog
 var collections: CollectionCatalog
 ## Itens de pendurar na parede (janelas, quadros, TV, rádio...).
 var wall_items: WallItemCatalog
+## Pacotes de Café Ouro por dinheiro de verdade (o ouro só entra com o pagamento confirmado).
+var coin_shop: CoinShop
 var style := CafeStyle.new()
 ## Id do último móvel posicionado por acquire_and_place.
 var last_placed_id: StringName = &""
@@ -114,6 +116,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	set_surfaces(SurfaceCatalog.load_from())
 	collections = CollectionCatalog.load_from()
 	wall_items = WallItemCatalog.load_from()
+	coin_shop = CoinShop.load_from(wallet)
 	var no_missions: Array[MissionDefinition] = []
 	set_missions(no_missions)
 	var no_achievements: Array[AchievementDefinition] = []

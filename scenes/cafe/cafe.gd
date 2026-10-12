@@ -63,6 +63,12 @@ var last_service_result := ServiceResult.OK:
 		last_service_result = value
 		if value != ServiceResult.OK and sound_board != null:
 			sound_board.play(&"error")
+		if value == ServiceResult.NOT_ENOUGH_GOLD:
+			_offer_gold.call_deferred()
+
+## Faltou ouro: a vitrine de Café Ouro aparece sozinha, no máximo uma vez a cada tantos segundos.
+@export var gold_offer_cooldown := 60.0
+var _since_gold_offer := INF
 
 var _save_dirty := false
 var _since_last_save := 0.0
@@ -98,6 +104,7 @@ func _ready() -> void:
 	simulation.leveled_up.connect(_on_leveled_up)
 	simulation.cafe_expanded.connect(_on_cafe_expanded)
 	simulation.waiter_hired.connect(_on_waiter_hired)
+	hud.coin_pack_chosen.connect(_on_coin_pack_chosen)
 	simulation.mission_completed.connect(_on_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
 	_connect_sounds()
@@ -131,6 +138,7 @@ func _process(delta: float) -> void:
 	simulation.tick(delta)
 	world_layer.refresh(simulation)
 	_since_last_save += delta
+	_since_gold_offer += delta
 	if _save_dirty and _since_last_save >= autosave_min_interval:
 		save_now()
 
@@ -282,7 +290,7 @@ func _on_daily_requested() -> void:
 ## Alguma janela de pergunta aberta? Só cabe uma por vez na tela.
 func is_dialog_open() -> bool:
 	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(),
-			hud.name_dialog(), build_bar.confirm_dialog()]:
+			hud.name_dialog(), build_bar.confirm_dialog(), hud.coin_dialog(), hud.coin_info_dialog()]:
 		if dialog.visible:
 			return true
 	return false
@@ -401,6 +409,28 @@ func hire_waiter() -> int:
 	last_service_result = simulation.hire_waiter()
 	state_changed.emit()
 	return last_service_result
+
+
+## Oferece os pacotes de Café Ouro quando uma compra falha por falta de ouro (sem empilhar janelas).
+func _offer_gold() -> void:
+	if not is_inside_tree() or is_dialog_open() or _since_gold_offer < gold_offer_cooldown:
+		return
+	_since_gold_offer = 0.0
+	hud.show_coin_shop(true)
+
+
+func _on_coin_pack_chosen(pack_id: StringName) -> void:
+	var pack := simulation.coin_shop.get_pack(pack_id)
+	match simulation.coin_shop.buy(pack_id):
+		CoinShop.Result.OK:
+			hud.coin_dialog().hide()
+			sound_board.play(&"coin")
+			EventBus.message_posted.emit("Compra concluída: +%s Café Ouro" % UiTheme.thousands(pack.gold))
+			_mark_dirty()
+		CoinShop.Result.UNAVAILABLE:
+			hud.show_coin_unavailable()
+		_:
+			pass  # cancelada ou recusada na loja: nada muda
 
 
 func _on_waiter_hired(count: int) -> void:

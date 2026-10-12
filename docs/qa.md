@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 329 testes
+## Cobertura atual — 353 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -32,7 +32,8 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_staff_and_queue.gd` | 3 | botão Garçom (nível, preço, confirmação com Cancelar selecionado, garçom novo aparece); fila na calçada e quem desiste sai andando por ela; bolinha de pedidos no painel do fogão |
 | `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, `.bak`, save danificado, save de versão mais nova protegido, apagar |
 | `unit/test_shop_and_missions.gd` | 21 | compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
-| `unit/test_style_and_beauty.gd` | 11 | revestimentos (um inicial por tipo, compra única, troca grátis, bloqueios); beleza soma móveis e revestimentos; beleza aumenta a paciência; save e migração |
+| `unit/test_style_and_beauty.gd` | 24 | revestimentos (um inicial por tipo, bloqueios); **pintura por célula** (cobra só o que muda, recusa sem mudar nada, pintar com a base apaga); beleza pela média das células e dos itens de parede; **itens de parede** (dados, enfeites de sempre no jogo novo, pendurar cobra por trecho, tirar é grátis, bloqueio); mureta pintável sem a porta; save da pintura e dos itens, migração das versões 5 e 6 |
+| `unit/test_coin_shop.gd` | 4 | pacotes de Café Ouro válidos e em ordem, taxa melhor nos maiores; este build nunca entrega ouro; ouro só com o pagamento confirmado (cancelado ou recusado não muda nada) |
 | `unit/test_achievements.gd` | 9 | dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
@@ -41,12 +42,13 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
 | `integration/test_service_scene.gd` | 11 | jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
 | `integration/test_shop_scene.gd` | 15 | loja, compra, Guardar, expansão com confirmação, missões; **Vender com confirmação** e recusa do último fogão; filtro por coleção e páginas |
-| `integration/test_style_scene.gd` | 8 | abas, piso e parede desenhados, compra com confirmação, troca sem perguntar, bloqueio, Beleza no HUD, paredes crescem com a expansão |
+| `integration/test_style_scene.gd` | 12 | abas, piso e parede desenhados; **reforma**: escolher abre o modo, toques marcam, prévia, preço por piso, confirmação, trecho de parede e da mureta, Tudo e Cancelar, comprado antes pinta de graça; **pendurar a TV** com confirmação; tirar enfeite de graça; bloqueio; Beleza no HUD; paredes crescem com a expansão |
+| `integration/test_coin_shop_scene.gd` | 3 | o "+" do ouro abre a vitrine com os 5 pacotes; neste build a compra explica que ainda não existe e não dá ouro; com pagamento confirmado o ouro entra; faltando ouro, a vitrine aparece uma vez (sem insistir) |
 | `integration/test_progress_scene.gd` | 17 | avisos de conquista em fila, painel de conquistas, recompensa diária (abre, paga, volta no dia seguinte, não empilha janelas), nome da cafeteria, sons e botão de som |
 | `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade**; toque no botão não vaza para o piso |
 | `integration/test_furniture_art.gd` | 7 | todo móvel tem arte nas 4 rotações, com âncora e escala certas; a cena e a prévia usam a arte; panela de cada receita; forno aceso só de frente; fogão e balcão mostram receita, tempo, Pronto! e porções |
 | `integration/test_hud_art.gd` | 6 | moeda com ponto de milhar e nível; estrelas pela satisfação; presente com cronômetro; zoom pelos botões; medalhão de missões esconde e mostra; faixa de ícones abre a loja e as conquistas |
-| `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; janelas na parede; a cena usa a arte e enquadra a parede; cerca aberta só na entrada; exterior acompanha a expansão |
+| `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; todo item de parede tem desenho nas duas paredes e a porta existe; a cena usa a arte e enquadra a parede; **mureta** nas duas bordas da frente, baixa, sem fechar a porta; exterior acompanha a expansão |
 | `integration/test_character_art.gd` | 15 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; ciclo de 8 quadros do andar, que nunca para no meio do passo, com o corpo subindo e descendo de leve; saltos das regras viram passinhos; senta só quando chega na cadeira; chega e sai pela calçada; sentado segue a cadeira; **encosto da própria cadeira por cima de quem senta de costas**; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
 | `integration/test_music.gd` | 3 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados |
 
@@ -66,6 +68,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Compra de moedas (6 de 6 pegos):** ouro sem pagamento, pacote dando o ouro errado, oferta sem pausa, sem oferta quando falta ouro, aviso de indisponível sumido, vitrine sem pacotes.
 - **Paredes completas e itens de parede (12 de 12 pegos):** mureta fechando a porta, pendurar cobrando onde já tinha, pendurar sem nível, item sem beleza, save esquecendo os itens, save antigo sem os enfeites de sempre, jogo novo sem enfeites, pendurar na mureta, toque sem achar a mureta, prévia do item sem aparecer, pendurar sem confirmação, mureta sem o revestimento da parede.
 - **Reforma piso a piso (10 de 10 pegos):** pintar cobrando o revestimento inteiro, cobrando pisos que já tinham, sem nível, beleza ignorando a pintura, save esquecendo a pintura, pintar com a base sem apagar, reforma paga sem confirmação, toque achando qualquer trecho de parede, prévia sem aparecer, piso pintado sem aparecer.
 - **Atendimento e andar (19 de 19 pegos):** cliente só pedindo do balcão, cardápio sem peso, fila que não anda, fila sem paciência, sem fila, garçom que não busca no fogão, garçom parado, dois garçons no mesmo prato, contratar sem cobrar, contratar sem nível, paciência igual com o prato no fogão, nível sem acelerar os clientes (refeito: a primeira versão do defeito nem compilava), porção que nunca chega ao pedido, save que esquece os garçons, contratar sem perguntar, bolinha de pedidos sumida, fila surgindo na porta, pernas paradas no andar, andar sem quique.
@@ -92,6 +95,14 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Mais móveis e compra de moedas (etapas 5 e 6)
+
+1. [ ] Na loja, cada coleção tem duas cadeiras e duas mesas (ex.: Anos 70: Cadeira Ovo e Cadeira Tulipa, Mesa Tulipa e Mesa de Fórmica).
+2. [ ] Na aba **Cozinha** há fogões e balcões novos (retrô menta, inox, preto e dourado; madeira, confeitaria, inox). Cozinhe num fogão novo: a panela e o forno aceso aparecem no lugar certo.
+3. [ ] O **+** verde ao lado do ouro abre a vitrine com 5 pacotes e os preços em reais.
+4. [ ] Tocar num pacote mostra que a compra só existe na Play Store e que nada foi cobrado; o ouro não muda.
+5. [ ] Tente comprar algo sem ouro: a vitrine aparece sozinha ("Faltou Café Ouro?"), mas não fica reaparecendo a cada toque.
 
 ## Roteiro de teste manual — Paredes completas e itens de parede (etapa 4)
 

@@ -29,8 +29,12 @@ signal music_toggled(muted: bool)
 signal daily_requested
 ## O jogador tocou num botão de zoom: multiplica o zoom por [param factor].
 signal zoom_requested(factor: float)
+## O jogador escolheu um pacote de Café Ouro na vitrine.
+signal coin_pack_chosen(pack_id: StringName)
 
 const SOFT_CURRENCY_NAME := "Café Ouro"
+const COIN_UNAVAILABLE_TEXT := ("A compra de Café Ouro com dinheiro de verdade fica disponível quando o Café Manie estiver "
+	+ "na Play Store. Nada foi cobrado.")
 const TOAST_SECONDS := 2.8
 ## Tempo extra de aviso por caractere, para textos longos darem tempo de ler.
 const TOAST_SECONDS_PER_CHAR := 0.05
@@ -66,6 +70,10 @@ var _toast: Label
 var _toast_time := 0.0
 var _restart_dialog: ConfirmationDialog
 var _achievements_dialog: AcceptDialog
+var _coin_dialog: AcceptDialog
+var _coin_info_dialog: AcceptDialog
+var _coin_note: Label
+var _coin_packs: HBoxContainer
 var _daily_dialog: AcceptDialog
 var _daily_days: HBoxContainer
 var _achievements_list: VBoxContainer
@@ -142,6 +150,24 @@ func _build_gold() -> void:
 	_gold_label.name = "GoldValue"
 	_gold_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_place(group, _gold_label, Vector2(46, 0), Vector2(146, 34))
+	# "+" verde no fim do contador: abre a vitrine de Café Ouro.
+	var buy := Button.new()
+	buy.name = "BuyGoldButton"
+	buy.text = "+"
+	buy.tooltip_text = "Comprar Café Ouro"
+	buy.focus_mode = Control.FOCUS_NONE
+	var green := Color("3cc04e")
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		var box := UiTheme.button_box(green.lightened(0.1) if state == "hover" else green, Color("177a28"))
+		box.set_corner_radius_all(15)
+		box.content_margin_top = 0
+		box.content_margin_bottom = 2
+		buy.add_theme_stylebox_override(state, box)
+	buy.add_theme_font_size_override("font_size", 24)
+	buy.add_theme_color_override("font_outline_color", Color("177a28"))
+	buy.add_theme_constant_override("outline_size", 4)
+	buy.pressed.connect(func() -> void: show_coin_shop())
+	_place(group, buy, Vector2(178, 2), Vector2(30, 30))
 
 
 func _build_xp() -> void:
@@ -380,6 +406,7 @@ func _build_toast() -> void:
 
 func _build_dialogs() -> void:
 	_build_achievements_dialog()
+	_build_coin_dialogs()
 	_build_daily_dialog()
 	_build_name_dialog()
 	_restart_dialog = ConfirmationDialog.new()
@@ -516,6 +543,81 @@ func name_dialog() -> ConfirmationDialog:
 
 func name_edit() -> LineEdit:
 	return _name_edit
+
+
+func _build_coin_dialogs() -> void:
+	_coin_dialog = AcceptDialog.new()
+	_coin_dialog.name = "CoinShopDialog"
+	_coin_dialog.title = "Comprar Café Ouro"
+	_coin_dialog.ok_button_text = "Fechar"
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 10)
+	_coin_note = Label.new()
+	_coin_note.name = "CoinNote"
+	_coin_note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_coin_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_coin_note.custom_minimum_size = Vector2(560, 0)
+	_coin_note.add_theme_font_size_override("font_size", 16)
+	column.add_child(_coin_note)
+	_coin_packs = HBoxContainer.new()
+	_coin_packs.name = "CoinPacks"
+	_coin_packs.add_theme_constant_override("separation", 8)
+	column.add_child(_coin_packs)
+	_coin_dialog.add_child(column)
+	_add_dialog(_coin_dialog)
+	_coin_info_dialog = AcceptDialog.new()
+	_coin_info_dialog.name = "CoinInfoDialog"
+	_coin_info_dialog.title = "Compra de Café Ouro"
+	_coin_info_dialog.ok_button_text = "Entendi"
+	_coin_info_dialog.dialog_autowrap = true
+	_coin_info_dialog.dialog_text = COIN_UNAVAILABLE_TEXT
+	_add_dialog(_coin_info_dialog)
+
+
+## Vitrine dos pacotes. [param short_of_gold]: aberta porque faltou ouro numa compra.
+func show_coin_shop(short_of_gold := false) -> void:
+	for child in _coin_packs.get_children():
+		_coin_packs.remove_child(child)
+		child.queue_free()
+	var shop := simulation.coin_shop
+	var note := "Faltou Café Ouro? Escolha um pacote:" if short_of_gold else "Escolha um pacote de Café Ouro:"
+	if not shop.is_available():
+		note += "\n(Por enquanto só dá para ver os pacotes: a compra é liberada quando o jogo estiver na Play Store.)"
+	_coin_note.text = note
+	var cheapest := shop.packs()[0].gold_per_real() if not shop.packs().is_empty() else 1.0
+	for pack in shop.packs():
+		var chosen := pack.id
+		var button := Button.new()
+		button.name = "Pack_" + String(pack.id)
+		var bonus := roundi((pack.gold_per_real() / cheapest - 1.0) * 100.0)
+		button.text = "%s\n%s ouro\n%s%s" % [pack.display_name, UiTheme.thousands(pack.gold), pack.price_text(),
+			"\n+%d%%" % bonus if bonus > 0 else "\n"]
+		button.custom_minimum_size = Vector2(118, 120)
+		button.focus_mode = Control.FOCUS_NONE
+		var coin := ArtSprites.get_sprite("icone_moeda")
+		if coin != null:
+			button.icon = coin.texture
+			button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+			button.add_theme_constant_override("icon_max_width", 34)
+		button.add_theme_font_size_override("font_size", 14)
+		button.pressed.connect(func() -> void: coin_pack_chosen.emit(chosen))
+		_coin_packs.add_child(button)
+	_coin_dialog.popup_centered()
+
+
+## Explica que a compra com dinheiro de verdade ainda não existe neste build (nada foi cobrado).
+func show_coin_unavailable() -> void:
+	_coin_dialog.hide()
+	_coin_info_dialog.popup_centered()
+
+
+func coin_dialog() -> AcceptDialog:
+	return _coin_dialog
+
+
+func coin_info_dialog() -> AcceptDialog:
+	return _coin_info_dialog
 
 
 func _build_daily_dialog() -> void:

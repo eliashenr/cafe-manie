@@ -3,7 +3,7 @@ extends Resource
 ## Pacote de Café Ouro vendido por dinheiro de verdade (res://data/coin_packs).
 ##
 ## O preço fica em centavos de real; na Play Store, o preço de verdade vem da loja (o produto
-## product_id é cadastrado lá com o mesmo valor). Ver DT-044.
+## product_id é cadastrado lá com o mesmo valor). Ver DT-043.
 
 @export var id: StringName
 @export var display_name := ""
