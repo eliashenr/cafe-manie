@@ -1,24 +1,17 @@
 class_name FrontView
 extends Node2D
-## O que fica na frente do salão (arte v3): a cerquinha branca nas duas bordas da
-## frente, com uma abertura no caminho da entrada, os canteiros de flores na grama
-## e os postes da calçada. Nada fica na frente deles, então este nó desenha por
-## cima do piso, das paredes e do salão (z_index 1). Sem a arte, não desenha nada.
+## O que fica na frente do salão (arte v3): a mureta nas duas bordas da frente (a parte de baixo da
+## parede, com o mesmo revestimento, baixa para o salão continuar à vista), a porta na entrada, os
+## canteiros de flores na grama e os postes da calçada. Nada fica na frente deles, então este nó desenha
+## por cima do piso, das paredes e do salão (z_index 1). Sem a arte, não desenha nada.
 
-## Distância da cerca até a borda do piso, em pisos.
-const FENCE_OFFSET := 0.55
-## Estacas por piso de cerca.
-const POSTS_PER_CELL := 4
-## Medidas da estaca e das duas travessas, em pixels de mundo (as do canvas, na escala do jogo).
-const POST_HALF_WIDTH := 3.66
-const POST_HEIGHT := 30.5
-const POST_TIP := 36.6
-const RAIL_HEIGHTS: Array[float] = [10.7, 22.9]
-const RAIL_WIDTH := 4.9
-const POST_LIGHT := Color("ffffff")
-const POST_SHADE := Color("dfe6ee")
-const RAIL_SHADOW := Color("c9d2dc")
+## Altura da mureta, em pixels de mundo: o lambri da parede, sem tampar o salão.
+const FRONT_WALL_HEIGHT := 44.0
+## Espessura do acabamento branco no alto da mureta (em pisos).
+const CAP_DEPTH := 0.16
+const CAP_TOP := Color("ffffff")
 const ART_INK := Color("33283a")
+const PAINT_LINE := Color("ffd23f")
 ## Canteiros na grama da frente, em frações da largura e da profundidade do grid (mais um recuo em pisos).
 const FLOWER_BEDS: Array[Vector3] = [Vector3(0.28, 1.0, 1.6), Vector3(0.74, 1.0, 1.75)]
 ## Postes na calçada (x a partir da borda da entrada; y em frações do comprimento, mais um recuo em pisos).
@@ -35,6 +28,20 @@ var entrance := CafeGrid.NO_CELL:
 		entrance = value
 		queue_redraw()
 
+## Revestimento de base da parede e os trechos pintados por cima ({"borda:índice": SurfaceDefinition}).
+var wall_style: SurfaceDefinition:
+	set(value):
+		wall_style = value
+		queue_redraw()
+var painted: Dictionary = {}:
+	set(value):
+		painted = value
+		queue_redraw()
+
+## Reforma em andamento nos trechos da mureta.
+var paint_surface: SurfaceDefinition
+var paint_segments: Array[String] = []
+
 
 func _init() -> void:
 	z_index = 1
@@ -45,12 +52,58 @@ func has_art() -> bool:
 	return ArtSprites.get_sprite(ArtSprites.exterior().get("lawn", "")) != null
 
 
+func set_paint_preview(surface: SurfaceDefinition, segments: Array[String]) -> void:
+	paint_surface = surface
+	paint_segments = segments.duplicate()
+	queue_redraw()
+
+
+func clear_paint_preview() -> void:
+	paint_surface = null
+	paint_segments = []
+	queue_redraw()
+
+
+## Trechos da mureta (as duas bordas da frente, menos o da porta).
+func front_segments() -> Array[String]:
+	return CafeStyle.front_wall_segments(grid_size, entrance)
+
+
+## Revestimento que aparece no trecho (com a reforma em andamento por cima).
+func surface_at(wall_segment: String) -> SurfaceDefinition:
+	if paint_surface != null and paint_segments.has(wall_segment):
+		return paint_surface
+	return painted.get(wall_segment, wall_style)
+
+
+## As duas pontas do trecho na malha: [a da esquerda na tela, a da direita].
+func segment_ends(wall_segment: String) -> Array[Vector2]:
+	var index := int(wall_segment.get_slice(":", 1))
+	var n := Vector2(grid_size)
+	if wall_segment.begins_with(CafeStyle.EDGE_BOTTOM):
+		return [Vector2(index, n.y), Vector2(index + 1, n.y)]
+	return [Vector2(n.x, index + 1), Vector2(n.x, index)]
+
+
+## Contorno na tela do trecho da mureta.
+func segment_polygon(wall_segment: String) -> PackedVector2Array:
+	var ends := segment_ends(wall_segment)
+	return PackedVector2Array([_at(ends[0]), _at(ends[1]), _at(ends[1], FRONT_WALL_HEIGHT), _at(ends[0], FRONT_WALL_HEIGHT)])
+
+
+## Trecho da mureta sob este ponto do mundo ("" se nenhum).
+func segment_at(world_point: Vector2) -> String:
+	for wall_segment in front_segments():
+		if Geometry2D.is_point_in_polygon(world_point, segment_polygon(wall_segment)):
+			return wall_segment
+	return ""
+
+
 func _draw() -> void:
 	if grid_size == Vector2i.ZERO or not has_art():
 		return
 	var n := Vector2(grid_size)
-	for segment: Array in fence_segments():
-		_draw_fence(segment[0], segment[1])
+	_draw_front_walls()
 	var items: Array = []
 	var info := ArtSprites.exterior()
 	var bed := ArtSprites.get_sprite(info.get("flower_bed", ""))
@@ -60,47 +113,48 @@ func _draw() -> void:
 	var lamp := ArtSprites.get_sprite(info.get("lamp", ""))
 	if lamp != null:
 		for spot in LAMPS:
-			items.append([_at(Vector2(n.x + FENCE_OFFSET + LAMP_X, n.y * spot.x + spot.y)), lamp])
+			items.append([_at(Vector2(n.x + LAMP_X, n.y * spot.x + spot.y)), lamp])
 	items.sort_custom(func(a: Array, b: Array) -> bool: return a[0].y < b[0].y)
 	for item: Array in items:
 		var sprite: ArtSprites.Sprite = item[1]
 		draw_texture_rect(sprite.texture, sprite.rect_at(item[0]), false)
 
 
-## Trechos de cerca, cada um [de, até] em pisos: a borda da frente à esquerda (y fixo)
-## inteira e a da direita (x fixo) aberta na fileira da entrada, por onde passa o caminho.
-func fence_segments() -> Array:
-	var edge := Vector2(grid_size) + Vector2(FENCE_OFFSET, FENCE_OFFSET)
-	var segments: Array = [[Vector2(-0.3, edge.y), Vector2(edge.x, edge.y)]]
-	if entrance.x == grid_size.x - 1:
-		segments.append([Vector2(edge.x, -0.3), Vector2(edge.x, entrance.y - 0.02)])
-		segments.append([Vector2(edge.x, entrance.y + 1.02), Vector2(edge.x, edge.y)])
-	else:
-		segments.append([Vector2(edge.x, -0.3), Vector2(edge.x, edge.y)])
-	return segments
+## A mureta, trecho a trecho, com a parte de baixo do painel da parede, o acabamento branco e a porta.
+func _draw_front_walls() -> void:
+	for wall_segment in front_segments():
+		_draw_low_wall(wall_segment)
+	var door := ArtSprites.get_sprite("enfeite_porta_L")
+	if door != null and entrance.x == grid_size.x - 1:
+		draw_texture_rect(door.texture, door.rect_at(_at(Vector2(grid_size.x, entrance.y + 1))), false)
+	for wall_segment in paint_segments:
+		var outline := segment_polygon(wall_segment)
+		outline.append(outline[0])
+		draw_polyline(outline, PAINT_LINE, 2.5, true)
+
+
+func _draw_low_wall(wall_segment: String) -> void:
+	var side := "R" if wall_segment.begins_with(CafeStyle.EDGE_BOTTOM) else "L"
+	var surface := surface_at(wall_segment)
+	var panel := ArtSprites.wall_panel(surface.id, side) if surface != null else null
+	if panel == null and wall_style != null:
+		panel = ArtSprites.wall_panel(wall_style.id, side)
+	var ends := segment_ends(wall_segment)
+	var band := segment_polygon(wall_segment)
+	if panel != null:
+		# Só a faixa de baixo do painel: o mesmo desenho da parede do fundo, cortado na altura da mureta.
+		var rect := panel.rect_at(band[0])
+		var uvs := PackedVector2Array()
+		for point in band:
+			uvs.append((point - rect.position) / rect.size)
+		draw_polygon(band, PackedColorArray([Color.WHITE]), uvs, panel.texture)
+	var inward := Vector2(0.0, -CAP_DEPTH) if side == "R" else Vector2(-CAP_DEPTH, 0.0)
+	var cap := PackedVector2Array([_at(ends[0], FRONT_WALL_HEIGHT), _at(ends[1], FRONT_WALL_HEIGHT),
+		_at(ends[1] + inward, FRONT_WALL_HEIGHT), _at(ends[0] + inward, FRONT_WALL_HEIGHT)])
+	draw_colored_polygon(cap, CAP_TOP)
+	draw_polyline(PackedVector2Array([cap[3], cap[0], cap[1], cap[2]]), ART_INK, 1.2, true)
+	draw_line(band[0], band[1], ART_INK, 1.2, true)
 
 
 func _at(point: Vector2, height := 0.0) -> Vector2:
 	return IsoProjection.vertex_to_world(point) - Vector2(0.0, height)
-
-
-## Cerca de estacas pontudas com duas travessas, de [param from] até [param to] (em pisos).
-func _draw_fence(from: Vector2, to: Vector2) -> void:
-	var length := from.distance_to(to)
-	if length <= 0.0:
-		return
-	var count := maxi(int(length * POSTS_PER_CELL), 1)
-	for i in count + 1:
-		var base := _at(from.lerp(to, float(i) / count))
-		var w := POST_HALF_WIDTH
-		var post := PackedVector2Array([base + Vector2(-w, 0.0), base + Vector2(-w, -POST_HEIGHT), base + Vector2(0.0, -POST_TIP),
-			base + Vector2(w, -POST_HEIGHT), base + Vector2(w, 0.0)])
-		draw_polygon(post, PackedColorArray([POST_LIGHT, POST_LIGHT, POST_LIGHT, POST_SHADE, POST_SHADE]))
-		var closed := post.duplicate()
-		closed.append(post[0])
-		draw_polyline(closed, ART_INK, 1.2, true)
-	for height in RAIL_HEIGHTS:
-		var a := _at(from, height)
-		var b := _at(to, height)
-		draw_line(a, b, POST_LIGHT, RAIL_WIDTH, true)
-		draw_line(a + Vector2(0.0, 2.4), b + Vector2(0.0, 2.4), RAIL_SHADOW, 1.5, true)

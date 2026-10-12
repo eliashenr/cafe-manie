@@ -9,5 +9,5 @@ order = 5
 stat = &"beauty"
 description = "de beleza na cafeteria"
 tier_titles = Array[String](["Caprichoso", "Charmoso", "Deslumbrante"])
-tier_targets = Array[int]([50, 150, 300])
+tier_targets = Array[int]([55, 150, 300])
 tier_rewards = Array[int]([20, 60, 150])

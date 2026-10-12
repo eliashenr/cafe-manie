@@ -84,13 +84,83 @@ func test_paint_all_then_cancel_changes_nothing() -> void:
 	cafe.start_painting(&"wall_brick")
 	await settle()
 	cafe.build_bar.find_button("PaintAllButton").pressed.emit()
-	assert_eq(cafe.paint_target_count(), 16, "Tudo marca as duas paredes inteiras (8 + 8 trechos)")
+	assert_eq(cafe.paint_target_count(), 31, "Tudo marca as paredes do fundo (8 + 8) e a mureta da frente (8 + 7)")
 	cafe.build_bar.find_button("CancelButton").pressed.emit()
 	await settle()
 	assert_eq(cafe.mode, Cafe.Mode.VIEW)
 	assert_eq(cafe.simulation.style.wall_at(CafeStyle.segment(CafeStyle.EDGE_TOP, 0)), &"wall_cream")
 	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 200)
 	assert_eq(cafe.wall_view.paint_segments.size(), 0, "a prévia some")
+
+
+func test_front_wall_stretch_is_painted_by_tapping_it() -> void:
+	var cafe := await spawn_cafe()
+	cafe.start_painting(&"wall_brick")
+	var stretch := CafeStyle.segment(CafeStyle.EDGE_BOTTOM, 5)
+	var center := Vector2.ZERO
+	for point in cafe.front_view.segment_polygon(stretch):
+		center += point / 4.0
+	cafe.toggle_paint_at(center)
+	assert_eq(cafe.paint_target_count(), 1)
+	assert_eq(cafe.front_view.surface_at(stretch).id, &"wall_brick", "a prévia aparece na mureta")
+	cafe.build_bar.ask_confirm_paint()
+	cafe.build_bar.confirm_dialog().get_ok_button().pressed.emit()
+	assert_eq(cafe.simulation.style.wall_at(stretch), &"wall_brick")
+	assert_eq(cafe.front_view.surface_at(stretch).id, &"wall_brick")
+
+
+func test_hanging_a_tv_on_the_wall() -> void:
+	var cafe := await spawn_cafe()
+	var sim := cafe.simulation
+	cafe.build_bar.show_shop_tab(BuildBar.ShopTab.WALL)
+	await settle()
+	var tv := cafe.build_bar.find_button("WallItem_tv")
+	while tv == null and cafe.build_bar.shop_page < cafe.build_bar.shop_page_count() - 1:
+		cafe.build_bar.show_shop_page(cafe.build_bar.shop_page + 1)
+		await settle()
+		tv = cafe.build_bar.find_button("WallItem_tv")
+	assert_true(tv != null and tv.disabled, "a TV está na aba Paredes, bloqueada no começo")
+	sim.progression.add_xp(99999)
+	sim.wallet.earn(Wallet.SOFT, 1000, "teste")
+	await settle()
+	tv.pressed.emit()
+	await settle()
+	assert_true(cafe.hanging_items and cafe.mode == Cafe.Mode.PAINT, "escolher o item começa a pendurar")
+	var stretch := CafeStyle.segment(CafeStyle.EDGE_TOP, 5)
+	var center := Vector2.ZERO
+	for point in cafe.wall_view.segment_polygon(stretch):
+		center += point / 4.0
+	cafe.toggle_paint_at(center)
+	assert_eq(cafe.wall_view.item_at(stretch).id, &"tv", "a prévia mostra a TV na parede")
+	var gold := sim.wallet.balance(Wallet.SOFT)
+	cafe.build_bar.find_button("ConfirmButton").pressed.emit()
+	var dialog := cafe.build_bar.confirm_dialog()
+	assert_true(dialog.visible and dialog.get_cancel_button().has_focus(), "pagar pede confirmação")
+	assert_eq(sim.style.wall_item_at(stretch), &"", "nada muda antes de confirmar")
+	assert_eq(sim.wallet.balance(Wallet.SOFT), gold)
+	dialog.get_ok_button().pressed.emit()
+	await settle()
+	assert_eq(sim.style.wall_item_at(stretch), &"tv")
+	assert_eq(sim.wallet.balance(Wallet.SOFT), gold - sim.wall_items.get_definition(&"tv").price)
+	assert_eq(cafe.wall_view.item_at(stretch).id, &"tv")
+	assert_true(all_messages(cafe).contains("Pendurado"), all_messages(cafe))
+
+
+func test_taking_a_decoration_off_is_free() -> void:
+	var cafe := await spawn_cafe()
+	var stretch := CafeStyle.segment(CafeStyle.EDGE_TOP, 2)
+	cafe.simulation.style.hang([stretch] as Array[String], &"janela")
+	await settle()
+	assert_eq(cafe.wall_view.item_at(stretch).id, &"janela")
+	assert_true(cafe.start_hanging(&""))
+	var center := Vector2.ZERO
+	for point in cafe.wall_view.segment_polygon(stretch):
+		center += point / 4.0
+	cafe.toggle_paint_at(center)
+	cafe.build_bar.ask_confirm_paint()
+	assert_false(cafe.build_bar.confirm_dialog().visible, "de graça: sem pergunta")
+	assert_eq(cafe.simulation.style.wall_item_at(stretch), &"")
+	assert_eq(cafe.wall_view.item_at(stretch), null)
 
 
 func test_surface_bought_before_paints_for_free_without_asking() -> void:

@@ -77,6 +77,8 @@ var economy: EconomyConfig = load(ECONOMY_PATH)
 var surfaces: SurfaceCatalog
 ## Coleções da loja (estilos e culturas), para agrupar os itens.
 var collections: CollectionCatalog
+## Itens de pendurar na parede (janelas, quadros, TV, rádio...).
+var wall_items: WallItemCatalog
 var style := CafeStyle.new()
 ## Id do último móvel posicionado por acquire_and_place.
 var last_placed_id: StringName = &""
@@ -111,6 +113,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	popularity = config.popularity_start
 	set_surfaces(SurfaceCatalog.load_from())
 	collections = CollectionCatalog.load_from()
+	wall_items = WallItemCatalog.load_from()
 	var no_missions: Array[MissionDefinition] = []
 	set_missions(no_missions)
 	var no_achievements: Array[AchievementDefinition] = []
@@ -132,6 +135,7 @@ static func create_new_game(game_clock: GameClock, random_seed := 0) -> CafeSimu
 		if definition == null or cafe_layout.place(definition, item["origin"], item["rotation"]) == &"":
 			push_error("Móvel inicial inválido em new_game.tres: %s" % item)
 	var simulation := with_game_data(game_clock, cafe_layout, furniture_catalog, random_seed)
+	simulation.hang_legacy_wall_items()
 	simulation.wallet.earn(Wallet.SOFT, new_game.starting_gold, "Ouro inicial")
 	return simulation
 
@@ -364,9 +368,69 @@ func wall_segments_to_paint(definition: SurfaceDefinition, segments: Array[Strin
 	return result
 
 
-## Trechos das paredes da cafeteria (hoje, as do fundo).
+## Enfeites que as paredes do fundo tinham antes de os itens de parede serem do jogador (o ciclo
+## que a arte repetia ao longo de cada parede): jogo novo e saves antigos começam com eles.
+const LEGACY_WALL_ITEMS := {
+	"top": [&"relogio", &"", &"janela", &"prateleira", &"quadro_cupcake", &"", &"janela", &""],
+	"left": [&"", &"quadro_paisagem", &"janela", &"", &"prateleira", &"janela", &"", &"quadro_cupcake"],
+}
+
+
+## Trechos de parede que podem ser pintados: as do fundo e a mureta da frente (menos a porta).
 func wall_segments() -> Array[String]:
+	var result := CafeStyle.back_wall_segments(layout.grid.size)
+	result.append_array(CafeStyle.front_wall_segments(layout.grid.size, layout.entrance))
+	return result
+
+
+## Trechos onde se pendura item: só as paredes do fundo (a mureta da frente é baixa).
+func item_segments() -> Array[String]:
 	return CafeStyle.back_wall_segments(layout.grid.size)
+
+
+## Pendura os enfeites de sempre ao longo das paredes do fundo (o ciclo se repete em paredes compridas).
+func hang_legacy_wall_items() -> void:
+	for edge: String in LEGACY_WALL_ITEMS:
+		var cycle: Array = LEGACY_WALL_ITEMS[edge]
+		var length := layout.grid.size.x if edge == CafeStyle.EDGE_TOP else layout.grid.size.y
+		for i in length:
+			var id: StringName = cycle[i % cycle.size()]
+			if id != &"" and wall_items.get_definition(id) != null:
+				style.hang([CafeStyle.segment(edge, i)] as Array[String], id)
+
+
+## Trechos em que o item (null = tirar o enfeite) mudaria algo.
+func item_segments_to_change(item: WallItemDefinition, segments: Array[String]) -> Array[String]:
+	var valid := item_segments()
+	var target: StringName = item.id if item != null else &""
+	var result: Array[String] = []
+	for wall_segment in segments:
+		if valid.has(wall_segment) and style.wall_item_at(wall_segment) != target and not result.has(wall_segment):
+			result.append(wall_segment)
+	return result
+
+
+func can_hang(item: WallItemDefinition, count: int) -> int:
+	if item == null:
+		return ServiceResult.OK
+	if item.min_level > progression.level:
+		return ServiceResult.FURNITURE_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, item.price * count):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	return ServiceResult.OK
+
+
+## Pendura o item nos trechos, cobrando o preço por trecho que muda (o que estava lá sai sem reembolso).
+## item null tira os enfeites, de graça.
+func hang_items(item: WallItemDefinition, segments: Array[String]) -> int:
+	var targets := item_segments_to_change(item, segments)
+	var result := can_hang(item, targets.size())
+	if result != ServiceResult.OK or targets.is_empty():
+		return result
+	if item != null and item.price > 0:
+		wallet.spend(Wallet.SOFT, item.price * targets.size(), "Parede: %s (%d)" % [item.display_name, targets.size()])
+	style.hang(targets, item.id if item != null else &"")
+	return ServiceResult.OK
 
 
 ## Pinta pisos com o revestimento, cobrando paint_price por piso que muda. Nada é cobrado se recusar.
@@ -441,6 +505,11 @@ func beauty() -> int:
 	var segments := wall_segments()
 	for wall_segment in segments:
 		wall_sum += _surface_beauty(style.wall_at(wall_segment))
+	var items := style.hung_items()
+	for wall_segment: String in items:
+		var item := wall_items.get_definition(items[wall_segment]) if wall_items != null else null
+		if item != null:
+			total += item.beauty
 	return total + roundi(floor_sum / maxi(size.x * size.y, 1) + wall_sum / maxi(segments.size(), 1))
 
 

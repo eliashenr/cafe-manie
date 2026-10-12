@@ -30,7 +30,7 @@ separadamente:
 - [x] **3. Reforma piso a piso** (DT-041):
   - escolher um piso ou parede e pintar célula por célula, pagando por célula;
   - misturar cores e estilos.
-- [ ] **4. Paredes completas:**
+- [x] **4. Paredes completas** (DT-042):
   - paredes da frente e dos lados, com porta, baixas o bastante para continuar vendo o salão;
   - janelas, portas, TV e rádio para pôr nas paredes.
 - [ ] **5. Mais conteúdo:** mais cadeiras e mesas em cada coleção e fogões e balcões modernos.

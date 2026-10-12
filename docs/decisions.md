@@ -4,6 +4,35 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-042 — Paredes completas (mureta na frente, com porta) e itens de parede do jogador
+
+**Problema:** o PO pediu as paredes da frente e dos lados, com porta, mantendo a mesma visibilidade, e itens para pôr nas paredes (janelas, portas, TV, rádio).
+
+**Opções:**
+- (A) parede alta na frente, transparente;
+- (B) mureta baixa na frente, como nos jogos de cafeteria, que fecha o salão sem esconder nada;
+- e, para os enfeites: (C) continuar com o ciclo fixo da arte ou (D) torná-los itens comprados e postos pelo jogador.
+
+**Decisão:** B e D.
+- **Mureta da frente:**
+  - nas duas bordas da frente, no lugar da cerca, a parte de baixo da parede (44 px, o lambri) com o mesmo revestimento e acabamento branco por cima;
+  - o desenho é a faixa de baixo do próprio painel da parede (polígono com textura): todo revestimento já serve, sem arte nova;
+  - ela pode ser pintada trecho a trecho na reforma (`bottom` e `right`);
+  - a porta fica no trecho da entrada, com batente, toldo listrado e a plaquinha "ABERTO", e acompanha a expansão.
+- **Itens de parede:**
+  - `WallItemDefinition` e `WallItemCatalog`, em `data/wall_items`: 13 itens, entre eles os 5 enfeites de sempre e 8 novos (TV, rádio, janela redonda, janelão em arco, lousa de cardápio, neon de xícara, espelho dourado e planta pendurada);
+  - cada item fica num trecho das paredes do fundo (a mureta é baixa demais);
+  - pendurar usa o mesmo modo da reforma: escolher na aba Paredes, marcar os trechos e confirmar, pagando por trecho; o que estava lá sai;
+  - o cartão "Tirar enfeite" tira de graça;
+  - janelas deixam a luz entrar no chão.
+- **Jogo novo e saves antigos** ficam com os enfeites de sempre (o antigo ciclo da arte, agora como itens). O save versão 7 guarda os itens.
+- **Beleza:**
+  - os itens somam beleza;
+  - os enfeites baratos de sempre valem 1 cada, para o jogo novo não passar da primeira meta da conquista de beleza;
+  - essa meta subiu de 50 para 55, porque os enfeites passaram a contar.
+
+---
+
 ## DT-041 — Reforma piso a piso, cobrada por célula
 
 **Problema:** o PO pediu que a reforma fosse cobrada por "frame" (célula). Escolher uma parede nova não deve pintar tudo: deve aparecer um retângulo para ir tocando onde quer, para poder misturar duas cores. O mesmo vale para o piso.

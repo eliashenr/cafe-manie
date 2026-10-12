@@ -46,6 +46,9 @@ var mode := Mode.VIEW
 ## parede ("borda:índice") marcados.
 var painting: SurfaceDefinition
 var paint_targets: Array = []
+## Pendurando itens de parede (no mesmo modo): o item escolhido, ou null para tirar enfeites.
+var hanging_items := false
+var hanging: WallItemDefinition
 ## Sessão de construção em andamento (só no modo BUILD).
 var session: PlacementSession
 var selected_cell := CafeGrid.NO_CELL
@@ -445,9 +448,42 @@ func _apply_style() -> void:
 		if surface != null:
 			wall_segments[wall_segment] = surface
 	wall_view.painted = wall_segments
+	front_view.wall_style = wall_view.wall_style
+	front_view.painted = wall_segments
+	var hung := {}
+	var items := style.hung_items()
+	for wall_segment: String in items:
+		var item := simulation.wall_items.get_definition(items[wall_segment])
+		if item != null:
+			hung[wall_segment] = item
+	wall_view.items = hung
 
 
 # --- Reforma (Mode.PAINT) ---------------------------------------------------------
+
+## Começa a pendurar um item de parede (&"" = tirar enfeites): o jogador marca os trechos e confirma.
+func start_hanging(item_id: StringName) -> bool:
+	var item: WallItemDefinition = null
+	if item_id != &"":
+		item = simulation.wall_items.get_definition(item_id)
+		if item == null:
+			return false
+		if item.min_level > simulation.progression.level:
+			last_service_result = ServiceResult.FURNITURE_LOCKED
+			state_changed.emit()
+			return false
+	if session != null:
+		_end_session()
+	clear_selection()
+	painting = null
+	hanging_items = true
+	hanging = item
+	paint_targets = []
+	mode = Mode.PAINT
+	last_service_result = ServiceResult.OK
+	_show_paint_preview()
+	state_changed.emit()
+	return true
 
 ## Começa a reforma com um revestimento: o jogador marca pisos ou trechos de parede e confirma.
 func start_painting(surface_id: StringName) -> bool:
@@ -462,6 +498,8 @@ func start_painting(surface_id: StringName) -> bool:
 		_end_session()
 	clear_selection()
 	painting = definition
+	hanging_items = false
+	hanging = null
 	paint_targets = []
 	mode = Mode.PAINT
 	last_service_result = ServiceResult.OK
@@ -484,6 +522,8 @@ func toggle_paint_at(world_position: Vector2) -> void:
 		target = cell
 	else:
 		var wall_segment := wall_view.segment_at(world_position)
+		if wall_segment.is_empty() and not hanging_items:
+			wall_segment = front_view.segment_at(world_position)
 		if wall_segment.is_empty():
 			return
 		target = wall_segment
@@ -502,6 +542,8 @@ func paint_all() -> void:
 		for y in layout.grid.size.y:
 			for x in layout.grid.size.x:
 				paint_targets.append(Vector2i(x, y))
+	elif hanging_items:
+		paint_targets.append_array(simulation.item_segments())
 	else:
 		paint_targets.append_array(simulation.wall_segments())
 	paint_targets = _changing_targets()
@@ -517,19 +559,41 @@ func clear_paint() -> void:
 
 ## Quantos dos marcados realmente mudam (os que já têm o revestimento não contam nem custam).
 func paint_target_count() -> int:
-	return _changing_targets().size() if painting != null else 0
+	return _changing_targets().size() if painting != null or hanging_items else 0
 
 
 func paint_cost() -> int:
+	if hanging_items:
+		return (hanging.price if hanging != null else 0) * paint_target_count()
 	return simulation.paint_price(painting) * paint_target_count() if painting != null else 0
+
+
+## Nome do que está sendo aplicado (revestimento, item ou "tirar enfeites"), para a barra e os avisos.
+func paint_subject() -> String:
+	if hanging_items:
+		return hanging.display_name if hanging != null else "Tirar enfeites"
+	return painting.display_name if painting != null else ""
 
 
 ## Paga e pinta. Recusa (nível, ouro) mantém o modo e explica na barra.
 func confirm_paint() -> int:
-	if painting == null:
+	if painting == null and not hanging_items:
 		return ServiceResult.UNKNOWN_ITEM
 	var cost := paint_cost()
 	var count := paint_target_count()
+	if hanging_items:
+		var targets: Array[String] = []
+		targets.assign(paint_targets)
+		last_service_result = simulation.hang_items(hanging, targets)
+		if last_service_result != ServiceResult.OK:
+			sound_board.play(&"error")
+			state_changed.emit()
+			return last_service_result
+		if count > 0:
+			EventBus.message_posted.emit(("Pendurado: %s ×%d%s" % [hanging.display_name, count, " (-%d ouro)" % cost if cost > 0 else ""])
+				if hanging != null else "Enfeites tirados: %d" % count)
+		_end_paint()
+		return last_service_result
 	if is_painting_floor():
 		var cells: Array[Vector2i] = []
 		cells.assign(paint_targets)
@@ -556,14 +620,22 @@ func cancel_paint() -> void:
 
 func _end_paint() -> void:
 	painting = null
+	hanging_items = false
+	hanging = null
 	paint_targets = []
 	mode = Mode.VIEW
 	floor_view.clear_paint_preview()
 	wall_view.clear_paint_preview()
+	wall_view.clear_item_preview()
+	front_view.clear_paint_preview()
 	state_changed.emit()
 
 
 func _changing_targets() -> Array:
+	if hanging_items:
+		var wall_segments: Array[String] = []
+		wall_segments.assign(paint_targets)
+		return simulation.item_segments_to_change(hanging, wall_segments)
 	if is_painting_floor():
 		var cells: Array[Vector2i] = []
 		cells.assign(paint_targets)
@@ -574,15 +646,21 @@ func _changing_targets() -> Array:
 
 
 func _show_paint_preview() -> void:
+	var segments: Array[String] = []
+	if hanging_items:
+		segments.assign(paint_targets)
+		wall_view.set_item_preview(hanging, segments)
+		return
 	if is_painting_floor():
 		var cells: Array[Vector2i] = []
 		cells.assign(paint_targets)
 		floor_view.set_paint_preview(painting, cells)
 		wall_view.clear_paint_preview()
+		front_view.clear_paint_preview()
 	else:
-		var segments: Array[String] = []
 		segments.assign(paint_targets)
 		wall_view.set_paint_preview(painting, segments)
+		front_view.set_paint_preview(painting, segments)
 		floor_view.clear_paint_preview()
 
 

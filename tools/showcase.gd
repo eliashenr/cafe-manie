@@ -131,8 +131,10 @@ func _set_panel() -> void:
 			var style = _cafe.simulation.style
 			var mixed: Array[Vector2i] = [Vector2i(5, 5), Vector2i(6, 5), Vector2i(5, 6), Vector2i(6, 6), Vector2i(7, 6)]
 			style.paint_floor(mixed, &"floor_70s")
-			var walls: Array[String] = ["top:4", "top:5", "left:3"]
+			var walls: Array[String] = ["top:4", "top:5", "left:3", "bottom:2", "bottom:3", "right:1"]
 			style.paint_walls(walls, &"wall_brick")
+			for spot in [["top:1", &"tv"], ["top:6", &"janelao"], ["left:4", &"neon_xicara"], ["left:6", &"lousa"], ["top:3", &"radio"]]:
+				style.hang([spot[0]] as Array[String], spot[1])
 			_cafe.start_painting(StringName(_panel.get_slice(":", 1)) if _panel.contains(":") else &"floor_wood")
 			for cell in [Vector2i(5, 2), Vector2i(6, 2), Vector2i(5, 3), Vector2i(6, 3)]:
 				_cafe.toggle_paint_at(IsoProjection.cell_center(cell))

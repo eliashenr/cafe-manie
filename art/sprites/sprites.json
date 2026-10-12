@@ -421,6 +421,294 @@
     260.67
    ]
   },
+  "chair_tulip_r0": {
+   "anchor": [
+    62.67,
+    243.67
+   ]
+  },
+  "chair_tulip_r1": {
+   "anchor": [
+    62.67,
+    212.67
+   ]
+  },
+  "chair_tulip_r2": {
+   "anchor": [
+    63.67,
+    212.67
+   ]
+  },
+  "chair_tulip_r3": {
+   "anchor": [
+    63.67,
+    243.67
+   ]
+  },
+  "bench_country_r0": {
+   "anchor": [
+    62.67,
+    251.67
+   ]
+  },
+  "bench_country_r1": {
+   "anchor": [
+    62.67,
+    221.67
+   ]
+  },
+  "bench_country_r2": {
+   "anchor": [
+    62.67,
+    221.67
+   ]
+  },
+  "bench_country_r3": {
+   "anchor": [
+    62.67,
+    251.67
+   ]
+  },
+  "chair_party_blue_r0": {
+   "anchor": [
+    62.67,
+    247.67
+   ]
+  },
+  "chair_party_blue_r1": {
+   "anchor": [
+    62.67,
+    216.67
+   ]
+  },
+  "chair_party_blue_r2": {
+   "anchor": [
+    63.67,
+    216.67
+   ]
+  },
+  "chair_party_blue_r3": {
+   "anchor": [
+    63.67,
+    247.67
+   ]
+  },
+  "chair_diner_r0": {
+   "anchor": [
+    62.67,
+    247.67
+   ]
+  },
+  "chair_diner_r1": {
+   "anchor": [
+    62.67,
+    216.67
+   ]
+  },
+  "chair_diner_r2": {
+   "anchor": [
+    63.67,
+    216.67
+   ]
+  },
+  "chair_diner_r3": {
+   "anchor": [
+    63.67,
+    247.67
+   ]
+  },
+  "chair_equipal_r0": {
+   "anchor": [
+    62.67,
+    256.67
+   ]
+  },
+  "chair_equipal_r1": {
+   "anchor": [
+    62.67,
+    225.67
+   ]
+  },
+  "chair_equipal_r2": {
+   "anchor": [
+    65.67,
+    225.67
+   ]
+  },
+  "chair_equipal_r3": {
+   "anchor": [
+    65.67,
+    256.67
+   ]
+  },
+  "chair_80s_pink_r0": {
+   "anchor": [
+    62.67,
+    243.67
+   ]
+  },
+  "chair_80s_pink_r1": {
+   "anchor": [
+    62.67,
+    212.67
+   ]
+  },
+  "chair_80s_pink_r2": {
+   "anchor": [
+    63.67,
+    212.67
+   ]
+  },
+  "chair_80s_pink_r3": {
+   "anchor": [
+    63.67,
+    243.67
+   ]
+  },
+  "chair_tuscan_r0": {
+   "anchor": [
+    62.67,
+    256.67
+   ]
+  },
+  "chair_tuscan_r1": {
+   "anchor": [
+    62.67,
+    225.67
+   ]
+  },
+  "chair_tuscan_r2": {
+   "anchor": [
+    65.67,
+    225.67
+   ]
+  },
+  "chair_tuscan_r3": {
+   "anchor": [
+    65.67,
+    256.67
+   ]
+  },
+  "stool_zen_r0": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_zen_r1": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_zen_r2": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_zen_r3": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "chair_french_red_r0": {
+   "anchor": [
+    62.67,
+    246.67
+   ]
+  },
+  "chair_french_red_r1": {
+   "anchor": [
+    62.67,
+    216.67
+   ]
+  },
+  "chair_french_red_r2": {
+   "anchor": [
+    65.67,
+    216.67
+   ]
+  },
+  "chair_french_red_r3": {
+   "anchor": [
+    65.67,
+    246.67
+   ]
+  },
+  "chair_brazil_flag_r0": {
+   "anchor": [
+    62.67,
+    247.67
+   ]
+  },
+  "chair_brazil_flag_r1": {
+   "anchor": [
+    62.67,
+    216.67
+   ]
+  },
+  "chair_brazil_flag_r2": {
+   "anchor": [
+    63.67,
+    216.67
+   ]
+  },
+  "chair_brazil_flag_r3": {
+   "anchor": [
+    63.67,
+    247.67
+   ]
+  },
+  "stool_industrial_r0": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_industrial_r1": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_industrial_r2": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_industrial_r3": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_club_r0": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_club_r1": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_club_r2": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
+  "stool_club_r3": {
+   "anchor": [
+    61.67,
+    169.67
+   ]
+  },
   "table_70s_r0": {
    "anchor": [
     86.67,
@@ -490,6 +778,78 @@
   "table_club_r0": {
    "anchor": [
     86.67,
+    223.67
+   ]
+  },
+  "table_70s_square_r0": {
+   "anchor": [
+    114.67,
+    207.67
+   ]
+  },
+  "table_country_round_r0": {
+   "anchor": [
+    86.67,
+    199.67
+   ]
+  },
+  "table_party_square_r0": {
+   "anchor": [
+    114.67,
+    207.67
+   ]
+  },
+  "table_diner_round_r0": {
+   "anchor": [
+    86.67,
+    199.67
+   ]
+  },
+  "table_mexican_round_r0": {
+   "anchor": [
+    86.67,
+    199.67
+   ]
+  },
+  "table_80s_square_r0": {
+   "anchor": [
+    114.67,
+    207.67
+   ]
+  },
+  "table_italian_round_r0": {
+   "anchor": [
+    86.67,
+    218.67
+   ]
+  },
+  "table_japanese_round_r0": {
+   "anchor": [
+    86.67,
+    189.67
+   ]
+  },
+  "table_french_square_r0": {
+   "anchor": [
+    114.67,
+    207.67
+   ]
+  },
+  "table_brazil_round_r0": {
+   "anchor": [
+    86.67,
+    199.67
+   ]
+  },
+  "table_2010s_round_r0": {
+   "anchor": [
+    86.67,
+    199.67
+   ]
+  },
+  "table_club_square_r0": {
+   "anchor": [
+    114.67,
     223.67
    ]
   },
@@ -631,6 +991,150 @@
     309.67
    ]
   },
+  "stove_steel_r0": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_steel_r1": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_steel_r2": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_steel_r3": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_mint_r0": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_mint_r1": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_mint_r2": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_mint_r3": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_black_r0": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_black_r1": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_black_r2": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "stove_black_r3": {
+   "anchor": [
+    116.67,
+    240.67
+   ]
+  },
+  "counter_steel_r0": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_steel_r1": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "counter_steel_r2": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_steel_r3": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "counter_wood_r0": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_wood_r1": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "counter_wood_r2": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_wood_r3": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "counter_pastel_r0": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_pastel_r1": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
+  "counter_pastel_r2": {
+   "anchor": [
+    255.67,
+    317.67
+   ]
+  },
+  "counter_pastel_r3": {
+   "anchor": [
+    127.67,
+    317.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -694,7 +1198,7 @@
   "encosto_chair_mexican_r1": {
    "anchor": [
     1.67,
-    217.67
+    218.67
    ]
   },
   "encosto_chair_mexican_r2": {
@@ -785,6 +1289,114 @@
    "anchor": [
     63.67,
     229.67
+   ]
+  },
+  "encosto_chair_tulip_r1": {
+   "anchor": [
+    1.67,
+    212.67
+   ]
+  },
+  "encosto_chair_tulip_r2": {
+   "anchor": [
+    63.67,
+    212.67
+   ]
+  },
+  "encosto_bench_country_r1": {
+   "anchor": [
+    1.67,
+    221.67
+   ]
+  },
+  "encosto_bench_country_r2": {
+   "anchor": [
+    62.67,
+    221.67
+   ]
+  },
+  "encosto_chair_party_blue_r1": {
+   "anchor": [
+    1.67,
+    216.67
+   ]
+  },
+  "encosto_chair_party_blue_r2": {
+   "anchor": [
+    63.67,
+    216.67
+   ]
+  },
+  "encosto_chair_diner_r1": {
+   "anchor": [
+    1.67,
+    216.67
+   ]
+  },
+  "encosto_chair_diner_r2": {
+   "anchor": [
+    63.67,
+    216.67
+   ]
+  },
+  "encosto_chair_equipal_r1": {
+   "anchor": [
+    3.67,
+    225.67
+   ]
+  },
+  "encosto_chair_equipal_r2": {
+   "anchor": [
+    65.67,
+    225.67
+   ]
+  },
+  "encosto_chair_80s_pink_r1": {
+   "anchor": [
+    1.67,
+    212.67
+   ]
+  },
+  "encosto_chair_80s_pink_r2": {
+   "anchor": [
+    63.67,
+    212.67
+   ]
+  },
+  "encosto_chair_tuscan_r1": {
+   "anchor": [
+    3.67,
+    225.67
+   ]
+  },
+  "encosto_chair_tuscan_r2": {
+   "anchor": [
+    65.67,
+    225.67
+   ]
+  },
+  "encosto_chair_french_red_r1": {
+   "anchor": [
+    3.67,
+    216.67
+   ]
+  },
+  "encosto_chair_french_red_r2": {
+   "anchor": [
+    65.67,
+    216.67
+   ]
+  },
+  "encosto_chair_brazil_flag_r1": {
+   "anchor": [
+    1.67,
+    216.67
+   ]
+  },
+  "encosto_chair_brazil_flag_r2": {
+   "anchor": [
+    63.67,
+    216.67
    ]
   },
   "panela_coffee": {
@@ -3064,7 +3676,7 @@
   "parede_wall_cream_R": {
    "anchor": [
     5.48,
-    307.24
+    306.24
    ]
   },
   "parede_wall_cream_L": {
@@ -3076,7 +3688,7 @@
   "parede_wall_mint_stripes_R": {
    "anchor": [
     3.48,
-    307.24
+    306.24
    ]
   },
   "parede_wall_mint_stripes_L": {
@@ -3088,7 +3700,7 @@
   "parede_wall_brick_R": {
    "anchor": [
     3.48,
-    307.24
+    306.24
    ]
   },
   "parede_wall_brick_L": {
@@ -3100,7 +3712,7 @@
   "parede_wall_navy_R": {
    "anchor": [
     3.48,
-    307.24
+    306.24
    ]
   },
   "parede_wall_navy_L": {
@@ -3112,7 +3724,7 @@
   "parede_wall_70s_R": {
    "anchor": [
     3.48,
-    307.24
+    306.24
    ]
   },
   "parede_wall_70s_L": {
@@ -3124,7 +3736,7 @@
   "parede_wall_country_R": {
    "anchor": [
     3.48,
-    307.24
+    306.24
    ]
   },
   "parede_wall_country_L": {
@@ -3136,7 +3748,7 @@
   "parede_wall_party_R": {
    "anchor": [
     3.48,
-    307.24
+    306.24
    ]
   },
   "parede_wall_party_L": {
@@ -3311,6 +3923,114 @@
    "anchor": [
     -7.52,
     296.33
+   ]
+  },
+  "enfeite_tv_R": {
+   "anchor": [
+    -9.52,
+    231.24
+   ]
+  },
+  "enfeite_tv_L": {
+   "anchor": [
+    -9.52,
+    295.33
+   ]
+  },
+  "enfeite_radio_R": {
+   "anchor": [
+    -13.52,
+    214.24
+   ]
+  },
+  "enfeite_radio_L": {
+   "anchor": [
+    -13.52,
+    301.33
+   ]
+  },
+  "enfeite_janela_redonda_R": {
+   "anchor": [
+    -9.52,
+    236.24
+   ]
+  },
+  "enfeite_janela_redonda_L": {
+   "anchor": [
+    -9.52,
+    299.33
+   ]
+  },
+  "enfeite_janelao_R": {
+   "anchor": [
+    -4.52,
+    263.24
+   ]
+  },
+  "enfeite_janelao_L": {
+   "anchor": [
+    -4.52,
+    327.33
+   ]
+  },
+  "enfeite_lousa_R": {
+   "anchor": [
+    -12.52,
+    242.24
+   ]
+  },
+  "enfeite_lousa_L": {
+   "anchor": [
+    -12.52,
+    306.33
+   ]
+  },
+  "enfeite_neon_xicara_R": {
+   "anchor": [
+    -3.52,
+    242.24
+   ]
+  },
+  "enfeite_neon_xicara_L": {
+   "anchor": [
+    -3.52,
+    305.33
+   ]
+  },
+  "enfeite_espelho_R": {
+   "anchor": [
+    -22.52,
+    234.24
+   ]
+  },
+  "enfeite_espelho_L": {
+   "anchor": [
+    -22.52,
+    298.33
+   ]
+  },
+  "enfeite_planta_pendurada_R": {
+   "anchor": [
+    -26.52,
+    262.24
+   ]
+  },
+  "enfeite_planta_pendurada_L": {
+   "anchor": [
+    -26.52,
+    326.33
+   ]
+  },
+  "enfeite_porta_R": {
+   "anchor": [
+    11.48,
+    263.24
+   ]
+  },
+  "enfeite_porta_L": {
+   "anchor": [
+    11.48,
+    327.33
    ]
   },
   "gramado": {
@@ -3715,6 +4435,78 @@
    "2": "chair_club_r2",
    "3": "chair_club_r3"
   },
+  "chair_tulip": {
+   "0": "chair_tulip_r0",
+   "1": "chair_tulip_r1",
+   "2": "chair_tulip_r2",
+   "3": "chair_tulip_r3"
+  },
+  "bench_country": {
+   "0": "bench_country_r0",
+   "1": "bench_country_r1",
+   "2": "bench_country_r2",
+   "3": "bench_country_r3"
+  },
+  "chair_party_blue": {
+   "0": "chair_party_blue_r0",
+   "1": "chair_party_blue_r1",
+   "2": "chair_party_blue_r2",
+   "3": "chair_party_blue_r3"
+  },
+  "chair_diner": {
+   "0": "chair_diner_r0",
+   "1": "chair_diner_r1",
+   "2": "chair_diner_r2",
+   "3": "chair_diner_r3"
+  },
+  "chair_equipal": {
+   "0": "chair_equipal_r0",
+   "1": "chair_equipal_r1",
+   "2": "chair_equipal_r2",
+   "3": "chair_equipal_r3"
+  },
+  "chair_80s_pink": {
+   "0": "chair_80s_pink_r0",
+   "1": "chair_80s_pink_r1",
+   "2": "chair_80s_pink_r2",
+   "3": "chair_80s_pink_r3"
+  },
+  "chair_tuscan": {
+   "0": "chair_tuscan_r0",
+   "1": "chair_tuscan_r1",
+   "2": "chair_tuscan_r2",
+   "3": "chair_tuscan_r3"
+  },
+  "stool_zen": {
+   "0": "stool_zen_r0",
+   "1": "stool_zen_r1",
+   "2": "stool_zen_r2",
+   "3": "stool_zen_r3"
+  },
+  "chair_french_red": {
+   "0": "chair_french_red_r0",
+   "1": "chair_french_red_r1",
+   "2": "chair_french_red_r2",
+   "3": "chair_french_red_r3"
+  },
+  "chair_brazil_flag": {
+   "0": "chair_brazil_flag_r0",
+   "1": "chair_brazil_flag_r1",
+   "2": "chair_brazil_flag_r2",
+   "3": "chair_brazil_flag_r3"
+  },
+  "stool_industrial": {
+   "0": "stool_industrial_r0",
+   "1": "stool_industrial_r1",
+   "2": "stool_industrial_r2",
+   "3": "stool_industrial_r3"
+  },
+  "stool_club": {
+   "0": "stool_club_r0",
+   "1": "stool_club_r1",
+   "2": "stool_club_r2",
+   "3": "stool_club_r3"
+  },
   "table_70s": {
    "0": "table_70s_r0",
    "1": "table_70s_r0",
@@ -3786,6 +4578,78 @@
    "1": "table_club_r0",
    "2": "table_club_r0",
    "3": "table_club_r0"
+  },
+  "table_70s_square": {
+   "0": "table_70s_square_r0",
+   "1": "table_70s_square_r0",
+   "2": "table_70s_square_r0",
+   "3": "table_70s_square_r0"
+  },
+  "table_country_round": {
+   "0": "table_country_round_r0",
+   "1": "table_country_round_r0",
+   "2": "table_country_round_r0",
+   "3": "table_country_round_r0"
+  },
+  "table_party_square": {
+   "0": "table_party_square_r0",
+   "1": "table_party_square_r0",
+   "2": "table_party_square_r0",
+   "3": "table_party_square_r0"
+  },
+  "table_diner_round": {
+   "0": "table_diner_round_r0",
+   "1": "table_diner_round_r0",
+   "2": "table_diner_round_r0",
+   "3": "table_diner_round_r0"
+  },
+  "table_mexican_round": {
+   "0": "table_mexican_round_r0",
+   "1": "table_mexican_round_r0",
+   "2": "table_mexican_round_r0",
+   "3": "table_mexican_round_r0"
+  },
+  "table_80s_square": {
+   "0": "table_80s_square_r0",
+   "1": "table_80s_square_r0",
+   "2": "table_80s_square_r0",
+   "3": "table_80s_square_r0"
+  },
+  "table_italian_round": {
+   "0": "table_italian_round_r0",
+   "1": "table_italian_round_r0",
+   "2": "table_italian_round_r0",
+   "3": "table_italian_round_r0"
+  },
+  "table_japanese_round": {
+   "0": "table_japanese_round_r0",
+   "1": "table_japanese_round_r0",
+   "2": "table_japanese_round_r0",
+   "3": "table_japanese_round_r0"
+  },
+  "table_french_square": {
+   "0": "table_french_square_r0",
+   "1": "table_french_square_r0",
+   "2": "table_french_square_r0",
+   "3": "table_french_square_r0"
+  },
+  "table_brazil_round": {
+   "0": "table_brazil_round_r0",
+   "1": "table_brazil_round_r0",
+   "2": "table_brazil_round_r0",
+   "3": "table_brazil_round_r0"
+  },
+  "table_2010s_round": {
+   "0": "table_2010s_round_r0",
+   "1": "table_2010s_round_r0",
+   "2": "table_2010s_round_r0",
+   "3": "table_2010s_round_r0"
+  },
+  "table_club_square": {
+   "0": "table_club_square_r0",
+   "1": "table_club_square_r0",
+   "2": "table_club_square_r0",
+   "3": "table_club_square_r0"
   },
   "lava_lamp": {
    "0": "lava_lamp_r0",
@@ -3925,6 +4789,42 @@
    "2": "disco_ball_r0",
    "3": "disco_ball_r0"
   },
+  "stove_steel": {
+   "0": "stove_steel_r0",
+   "1": "stove_steel_r1",
+   "2": "stove_steel_r2",
+   "3": "stove_steel_r3"
+  },
+  "stove_mint": {
+   "0": "stove_mint_r0",
+   "1": "stove_mint_r1",
+   "2": "stove_mint_r2",
+   "3": "stove_mint_r3"
+  },
+  "stove_black": {
+   "0": "stove_black_r0",
+   "1": "stove_black_r1",
+   "2": "stove_black_r2",
+   "3": "stove_black_r3"
+  },
+  "counter_steel": {
+   "0": "counter_steel_r0",
+   "1": "counter_steel_r1",
+   "2": "counter_steel_r2",
+   "3": "counter_steel_r3"
+  },
+  "counter_wood": {
+   "0": "counter_wood_r0",
+   "1": "counter_wood_r1",
+   "2": "counter_wood_r2",
+   "3": "counter_wood_r3"
+  },
+  "counter_pastel": {
+   "0": "counter_pastel_r0",
+   "1": "counter_pastel_r1",
+   "2": "counter_pastel_r2",
+   "3": "counter_pastel_r3"
+  },
   "dj_booth": {
    "0": "dj_booth_r0",
    "1": "dj_booth_r1",
@@ -3946,7 +4846,19 @@
   "table_french": 45.33,
   "table_brazil": 42.67,
   "table_2010s": 42.67,
-  "table_club": 48.0
+  "table_club": 48.0,
+  "table_70s_square": 42.67,
+  "table_country_round": 45.33,
+  "table_party_square": 42.67,
+  "table_diner_round": 45.33,
+  "table_mexican_round": 45.33,
+  "table_80s_square": 42.67,
+  "table_italian_round": 45.33,
+  "table_japanese_round": 40.0,
+  "table_french_square": 42.67,
+  "table_brazil_round": 45.33,
+  "table_2010s_round": 45.33,
+  "table_club_square": 48.0
  },
  "chair_backrests": {
   "chair_wood": {
@@ -4000,6 +4912,54 @@
   "chair_club": {
    "1": "encosto_chair_club_r1",
    "2": "encosto_chair_club_r2"
+  },
+  "chair_tulip": {
+   "1": "encosto_chair_tulip_r1",
+   "2": "encosto_chair_tulip_r2"
+  },
+  "bench_country": {
+   "1": "encosto_bench_country_r1",
+   "2": "encosto_bench_country_r2"
+  },
+  "chair_party_blue": {
+   "1": "encosto_chair_party_blue_r1",
+   "2": "encosto_chair_party_blue_r2"
+  },
+  "chair_diner": {
+   "1": "encosto_chair_diner_r1",
+   "2": "encosto_chair_diner_r2"
+  },
+  "chair_equipal": {
+   "1": "encosto_chair_equipal_r1",
+   "2": "encosto_chair_equipal_r2"
+  },
+  "chair_80s_pink": {
+   "1": "encosto_chair_80s_pink_r1",
+   "2": "encosto_chair_80s_pink_r2"
+  },
+  "chair_tuscan": {
+   "1": "encosto_chair_tuscan_r1",
+   "2": "encosto_chair_tuscan_r2"
+  },
+  "stool_zen": {
+   "1": "",
+   "2": ""
+  },
+  "chair_french_red": {
+   "1": "encosto_chair_french_red_r1",
+   "2": "encosto_chair_french_red_r2"
+  },
+  "chair_brazil_flag": {
+   "1": "encosto_chair_brazil_flag_r1",
+   "2": "encosto_chair_brazil_flag_r2"
+  },
+  "stool_industrial": {
+   "1": "",
+   "2": ""
+  },
+  "stool_club": {
+   "1": "",
+   "2": ""
   }
  },
  "cookware": {

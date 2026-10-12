@@ -15,8 +15,12 @@ extends RefCounted
 ## recompensa diária e nome da cafeteria; 4 = as cadeiras dos saves antigos
 ## viram para a mesa uma vez (com a arte, para onde a cadeira olha aparece);
 ## 5 = acrescenta quantos garçons a cafeteria contratou; 6 = revestimento pintado piso a piso e
-## trecho a trecho de parede.
-const CURRENT_VERSION := 6
+## trecho a trecho de parede; 7 = itens de parede escolhidos pelo jogador (antes, enfeites fixos).
+const CURRENT_VERSION := 7
+
+## Marca posta pela migração para a versão 7: o decode pendura os enfeites de sempre, para o save antigo
+## continuar com a mesma cara. A marca não volta a ser gravada.
+const LEGACY_WALL_ITEMS_KEY := "hang_legacy_wall_items"
 
 ## Marca posta pela migração para a versão 4: o decode vira as cadeiras e a marca
 ## não volta a ser gravada.
@@ -140,6 +144,8 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.achievements.restore(_dict(data.get("achievements")))
 	simulation.daily.restore(_dict(data.get("daily")))
 	simulation.restore_waiter_count(int(data.get("waiters", 1)))
+	if data.get(LEGACY_WALL_ITEMS_KEY, false):
+		simulation.hang_legacy_wall_items()
 	var saved_name := str(data.get("cafe_name", ""))
 	if not saved_name.is_empty() and not simulation.set_cafe_name(saved_name):
 		result.warnings.append("Nome da cafeteria ignorado: %s" % saved_name)
@@ -168,6 +174,11 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 			applied = simulation.surfaces.default_for(kind)
 			if applied != null:
 				style.apply(applied)  # a base inválida vira a inicial (e a pintura dessa parte sai)
+	# Item de parede que deixou de existir sai da parede.
+	for wall_segment: String in style.hung_items():
+		if simulation.wall_items.get_definition(style.hung_items()[wall_segment]) == null:
+			result.warnings.append("Item de parede ignorado: %s" % wall_segment)
+			style.hang([wall_segment] as Array[String], &"")
 	# Pintura com revestimento que deixou de existir (ou de outro tipo) volta para a base.
 	for cell: Vector2i in style.painted_floor():
 		var surface := simulation.surfaces.get_definition(style.painted_floor()[cell])
@@ -186,7 +197,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -218,6 +229,12 @@ static func _v3_to_v4(data: Dictionary) -> Dictionary:
 ## Versão 5 acrescentou a contratação de garçons: saves antigos têm o garçom que vinha com a cafeteria.
 static func _v4_to_v5(data: Dictionary) -> Dictionary:
 	data["waiters"] = 1
+	return data
+
+
+## Versão 7: os enfeites das paredes viraram itens do jogador. O save antigo ganha os de sempre (no decode).
+static func _v6_to_v7(data: Dictionary) -> Dictionary:
+	data[LEGACY_WALL_ITEMS_KEY] = true
 	return data
 
 

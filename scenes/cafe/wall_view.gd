@@ -36,6 +36,14 @@ var painted: Dictionary = {}:
 var paint_surface: SurfaceDefinition
 var paint_segments: Array[String] = []
 
+## Itens pendurados ({"borda:índice": WallItemDefinition}) e a prévia de pendurar (item null = tirar).
+var items: Dictionary = {}:
+	set(value):
+		items = value
+		queue_redraw()
+var item_preview: WallItemDefinition
+var item_preview_segments: Array[String] = []
+
 ## Espessura da parede vista de cima (em pisos) e cores do acabamento da arte v3.
 const CAP_DEPTH := 0.16
 const CAP_RIGHT := Color("ffffff")
@@ -92,6 +100,30 @@ func clear_paint_preview() -> void:
 	queue_redraw()
 
 
+func set_item_preview(item: WallItemDefinition, segments: Array[String]) -> void:
+	item_preview = item
+	item_preview_segments = segments.duplicate()
+	queue_redraw()
+
+
+func clear_item_preview() -> void:
+	item_preview = null
+	item_preview_segments = []
+	queue_redraw()
+
+
+## Item que aparece no trecho (com a prévia de pendurar por cima), ou null.
+func item_at(wall_segment: String) -> WallItemDefinition:
+	if item_preview_segments.has(wall_segment):
+		return item_preview
+	return items.get(wall_segment)
+
+
+func _item_sprite(wall_segment: String, side: String) -> ArtSprites.Sprite:
+	var item := item_at(wall_segment)
+	return null if item == null else ArtSprites.get_sprite("enfeite_%s_%s" % [item.art, side])
+
+
 ## Revestimento que aparece neste trecho (com a reforma em andamento por cima).
 func surface_at(wall_segment: String) -> SurfaceDefinition:
 	if paint_surface != null and paint_segments.has(wall_segment):
@@ -141,13 +173,17 @@ func _draw_art_walls() -> void:
 		outline.append(outline[0])
 		draw_polyline(outline, FloorView.COLOR_PAINT_LINE, 2.5, true)
 	for y in grid_size.y:
-		var deco := ArtSprites.wall_decoration("L", y)
+		var deco := _item_sprite(CafeStyle.segment(CafeStyle.EDGE_LEFT, y), "L")
 		if deco != null:
 			draw_texture_rect(deco.texture, deco.rect_at(_left_anchor(y)), false)
 	for x in grid_size.x:
-		var deco := ArtSprites.wall_decoration("R", x)
+		var deco := _item_sprite(CafeStyle.segment(CafeStyle.EDGE_TOP, x), "R")
 		if deco != null:
 			draw_texture_rect(deco.texture, deco.rect_at(_right_anchor(x)), false)
+	for wall_segment in item_preview_segments:
+		var outline := segment_polygon(wall_segment)
+		outline.append(outline[0])
+		draw_polyline(outline, FloorView.COLOR_PAINT_LINE, 2.5, true)
 	_draw_caps()
 
 
@@ -176,19 +212,24 @@ func _draw_floor_light() -> void:
 		_at(Vector2(0.0, n.y))]), PackedColorArray([FLOOR_SHADOW, clear, clear, FLOOR_SHADOW]))
 	# A janela ocupa o meio da célula (como na arte); a luz entra em diagonal e para no fim do piso.
 	for x in grid_size.x:
-		if ArtSprites.wall_decoration_name("R", x) == "janela":
+		if _lets_light_in(CafeStyle.segment(CafeStyle.EDGE_TOP, x)):
 			var a := x + 0.21
 			var b := x + 0.79
 			_draw_light(PackedVector2Array([Vector2(a + 0.4, 0.05), Vector2(b + 0.4, 0.05),
 				Vector2(b + 0.4 + WINDOW_LIGHT_SHIFT, WINDOW_LIGHT_REACH),
 				Vector2(a + 0.4 + WINDOW_LIGHT_SHIFT, WINDOW_LIGHT_REACH)]), n)
 	for y in grid_size.y:
-		if ArtSprites.wall_decoration_name("L", y) == "janela":
+		if _lets_light_in(CafeStyle.segment(CafeStyle.EDGE_LEFT, y)):
 			var a := y + 0.21
 			var b := y + 0.79
 			_draw_light(PackedVector2Array([Vector2(0.05, a + 0.4), Vector2(0.05, b + 0.4),
 				Vector2(WINDOW_LIGHT_REACH, b + 0.4 + WINDOW_LIGHT_SHIFT),
 				Vector2(WINDOW_LIGHT_REACH, a + 0.4 + WINDOW_LIGHT_SHIFT)]), n)
+
+
+func _lets_light_in(wall_segment: String) -> bool:
+	var item := item_at(wall_segment)
+	return item != null and item.lets_light_in
 
 
 ## Mancha de luz em pisos, cortada na borda do piso.

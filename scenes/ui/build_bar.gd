@@ -106,6 +106,7 @@ var _tabs: HBoxContainer
 var _chips: HBoxContainer
 var _items: HBoxContainer
 var _prev_page: Button
+var _remove_card: WallItemDefinition
 var _next_page: Button
 var _page_label: Label
 ## Confirmação de compras que acontecem na hora (expansão, revestimento): seção 32.
@@ -323,6 +324,9 @@ func _shop_items() -> Array:
 		ShopTab.FLOOR, ShopTab.WALL:
 			var kind := SurfaceDefinition.Kind.FLOOR if shop_tab == ShopTab.FLOOR else SurfaceDefinition.Kind.WALL
 			items.assign(cafe.simulation.surfaces.all(kind))
+			if shop_tab == ShopTab.WALL:
+				items.append_array(cafe.simulation.wall_items.all())
+				items.append(_remove_item_card())
 		_:
 			for definition in cafe.catalog.all():
 				if SHOP_TAB_CATEGORIES[shop_tab].has(definition.category):
@@ -520,6 +524,8 @@ func _show_shop() -> void:
 	for item: Resource in page:
 		if item is FurnitureDefinition:
 			_add_furniture_item(item)
+		elif item is WallItemDefinition:
+			_add_wall_item(item)
 		else:
 			_add_surface_item(item)
 	var pages := shop_page_count()
@@ -613,6 +619,30 @@ func _pick_furniture(furniture_id: StringName) -> void:
 	if cafe.start_placing(furniture_id):
 		shop_open = false
 	_request_rebuild()
+
+
+## Cartão "Tirar enfeite" no fim da aba Paredes: um item sem id, que tira o que estiver pendurado.
+func _remove_item_card() -> WallItemDefinition:
+	if _remove_card == null:
+		_remove_card = WallItemDefinition.new()
+		_remove_card.display_name = "Tirar enfeite"
+	return _remove_card
+
+
+func _add_wall_item(wall_item: WallItemDefinition) -> void:
+	var simulation := cafe.simulation
+	var art := ArtSprites.get_sprite("enfeite_%s_R" % wall_item.art) if wall_item.id != &"" else ArtSprites.get_sprite("botao_close")
+	var item := _add_item("WallItem_" + (String(wall_item.id) if wall_item.id != &"" else "remove"), wall_item.display_name, art,
+		func() -> void: cafe.start_hanging(wall_item.id))
+	_updaters.append(func() -> void:
+		var locked := wall_item.min_level > simulation.progression.level
+		if wall_item.id == &"":
+			item.show_state(0, 0, "Grátis", true)
+		elif locked:
+			item.show_state(wall_item.price, wall_item.min_level, "", false)
+		else:
+			item.show_state(wall_item.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, wall_item.price))
+		item.disabled = locked)
 
 
 func _add_surface_item(surface: SurfaceDefinition) -> void:
@@ -770,13 +800,13 @@ func _show_stove_controls(stove_id: StringName) -> void:
 
 ## Reforma: marcar pisos (ou trechos de parede) tocando neles, Tudo, Limpar, Confirmar e Cancelar.
 func _show_paint_controls() -> void:
-	var simulation := cafe.simulation
-	var surface := cafe.painting
-	var floor := surface.kind == SurfaceDefinition.Kind.FLOOR
+	var floor := cafe.is_painting_floor()
+	var hanging := cafe.hanging_items
 	_message_source = func() -> String:
 		var count := cafe.paint_target_count()
 		var cost := cafe.paint_cost()
-		var text := "Reforma: %s — toque nos %s para marcar" % [surface.display_name, "pisos" if floor else "trechos de parede"]
+		var where := "pisos" if floor else ("paredes do fundo" if hanging else "trechos de parede")
+		var text := "%s: %s — toque nos %s para marcar" % ["Parede" if hanging else "Reforma", cafe.paint_subject(), where]
 		text += "  (%d marcados · %s)" % [count, "%s ouro" % UiTheme.thousands(cost) if cost > 0 else "grátis"]
 		var problem := _problem_text()
 		return text + ("  —  " + problem if not problem.is_empty() else "")
@@ -796,8 +826,12 @@ func ask_confirm_paint() -> void:
 	if cost == 0:
 		cafe.confirm_paint()
 		return
+	if cafe.hanging_items:
+		_ask("Pendurar?", "Pendurar %s em %d trecho(s) de parede por %s Café Ouro? O que estiver lá sai." % [
+			cafe.paint_subject(), count, UiTheme.thousands(cost)], "Pendurar", func() -> void: cafe.confirm_paint())
+		return
 	var what := "pisos" if cafe.is_painting_floor() else "trechos de parede"
-	_ask("Reformar?", "Pintar %d %s com %s por %s Café Ouro?" % [count, what, cafe.painting.display_name, UiTheme.thousands(cost)],
+	_ask("Reformar?", "Pintar %d %s com %s por %s Café Ouro?" % [count, what, cafe.paint_subject(), UiTheme.thousands(cost)],
 		"Reformar", func() -> void: cafe.confirm_paint())
 
 

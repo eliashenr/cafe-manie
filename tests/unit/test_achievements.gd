@@ -92,7 +92,9 @@ func test_beauty_achievement_counts_surfaces() -> void:
 	sim.progression.add_xp(450)
 	for id in [&"floor_marble", &"wall_navy"]:
 		sim.use_surface(sim.surfaces.get_definition(id))
-	assert_eq(sim.achievements.unlocked_tiers(&"a05_beauty"), 1, "50 de beleza: Caprichoso")
+	assert_eq(sim.achievements.unlocked_tiers(&"a05_beauty"), 0, "50 de beleza ainda não chega à meta (55)")
+	sim.layout.place(sim.furniture.get_definition(&"plant_pot"), Vector2i(0, 7))
+	assert_eq(sim.achievements.unlocked_tiers(&"a05_beauty"), 1, "com a planta passa de 55: Caprichoso")
 
 
 func test_save_keeps_counters_and_does_not_pay_again() -> void:

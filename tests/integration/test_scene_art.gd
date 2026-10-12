@@ -1,7 +1,8 @@
 extends CafeTestCase
 ## Arte v3 do cenário: todo revestimento tem peças de piso e de parede, o xadrez
 ## alterna, as variações são estáveis, a parede tem enfeites e a altura da arte,
-## e o exterior (gramado, calçada, cerca) acompanha o tamanho do grid e a entrada.
+## os itens de parede têm desenho, e o exterior (gramado, calçada, mureta e porta) acompanha o tamanho
+## do grid e a entrada.
 
 
 func test_every_surface_in_the_catalog_has_art() -> void:
@@ -29,14 +30,13 @@ func test_checker_floor_alternates_and_variations_are_stable() -> void:
 	assert_true(seen.size() > 1, "o assoalho mistura tábuas diferentes")
 
 
-func test_walls_have_windows_and_the_cycle_repeats() -> void:
-	var windows := 0
-	for index in 8:
-		if ArtSprites.wall_decoration_name("R", index) == "janela":
-			windows += 1
-			assert_true(ArtSprites.wall_decoration("R", index) != null)
-	assert_true(windows >= 1, "a parede tem janela")
-	assert_eq(ArtSprites.wall_decoration_name("L", 9), ArtSprites.wall_decoration_name("L", 1), "o ciclo se repete")
+func test_every_wall_item_has_art_on_both_walls_and_the_door_exists() -> void:
+	var catalog := WallItemCatalog.load_from()
+	assert_true(catalog.size() >= 13, "janelas, quadros, relógio, prateleira, TV, rádio...")
+	for item in catalog.all():
+		for side in ["R", "L"]:
+			assert_true(ArtSprites.get_sprite("enfeite_%s_%s" % [item.art, side]) != null, "%s sem desenho %s" % [item.id, side])
+	assert_true(ArtSprites.get_sprite("enfeite_porta_L") != null, "a porta da entrada")
 
 
 func test_scene_uses_the_art_and_frames_the_taller_walls() -> void:
@@ -45,20 +45,22 @@ func test_scene_uses_the_art_and_frames_the_taller_walls() -> void:
 	assert_true(cafe.wall_view.has_art(), "parede com arte")
 	assert_eq(cafe.wall_view.wall_height, ArtSprites.wall_height(), "a altura da parede é a da arte")
 	assert_true(cafe.exterior_view.has_art() and cafe.front_view.has_art(), "exterior com arte")
-	assert_true(cafe.front_view.z_index > cafe.world_layer.z_index, "a cerca da frente fica por cima do salão")
+	assert_true(cafe.front_view.z_index > cafe.world_layer.z_index, "a mureta da frente fica por cima do salão")
 
 
-func test_fence_opens_only_at_the_entrance_row() -> void:
+func test_front_walls_close_the_cafe_except_the_door_and_stay_low() -> void:
 	var cafe := await spawn_cafe()
-	var entrance := cafe.layout.entrance
-	var middle := entrance.y + 0.5
-	var edge_x := float(cafe.layout.grid.size.x) + FrontView.FENCE_OFFSET
-	for segment: Array in cafe.front_view.fence_segments():
-		var from: Vector2 = segment[0]
-		var to: Vector2 = segment[1]
-		if is_equal_approx(from.x, edge_x) and is_equal_approx(to.x, edge_x):
-			assert_false(middle > minf(from.y, to.y) and middle < maxf(from.y, to.y), "a cerca não fecha a entrada")
-	assert_eq(cafe.front_view.fence_segments().size(), 3, "frente esquerda inteira e direita em dois trechos")
+	var segments := cafe.front_view.front_segments()
+	assert_eq(segments.size(), 8 + 7, "a frente da esquerda inteira e a da direita sem o trecho da porta")
+	var door := CafeStyle.segment(CafeStyle.EDGE_RIGHT, cafe.layout.entrance.y)
+	assert_false(segments.has(door), "a entrada fica livre")
+	assert_true(FrontView.FRONT_WALL_HEIGHT < cafe.wall_view.wall_height * 0.5, "baixa: o salão continua à vista")
+	var stretch := CafeStyle.segment(CafeStyle.EDGE_BOTTOM, 3)
+	var center := Vector2.ZERO
+	for point in cafe.front_view.segment_polygon(stretch):
+		center += point / 4.0
+	assert_eq(cafe.front_view.segment_at(center), stretch, "dá para tocar na mureta")
+	assert_eq(cafe.front_view.wall_style.id, &"wall_cream", "a mureta usa o revestimento da parede")
 
 
 func test_outside_follows_the_expansion() -> void:
@@ -69,6 +71,6 @@ func test_outside_follows_the_expansion() -> void:
 	var cafe := await spawn_cafe(simulation)
 	assert_eq(cafe.expand_cafe(), ServiceResult.OK)
 	assert_eq(cafe.exterior_view.grid_size, cafe.layout.grid.size, "a calçada acompanha")
-	assert_eq(cafe.front_view.grid_size, cafe.layout.grid.size, "a cerca acompanha")
-	assert_eq(cafe.front_view.entrance, cafe.layout.entrance, "a abertura acompanha a entrada")
+	assert_eq(cafe.front_view.grid_size, cafe.layout.grid.size, "a mureta acompanha")
+	assert_eq(cafe.front_view.entrance, cafe.layout.entrance, "a porta acompanha a entrada")
 	assert_eq(cafe.exterior_view.entrance, cafe.layout.entrance, "o caminho acompanha a entrada")
