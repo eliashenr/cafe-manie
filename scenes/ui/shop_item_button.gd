@@ -44,6 +44,10 @@ func _init() -> void:
 
 
 ## Atualiza o que aparece; só redesenha se algo mudou.
+## Texto depois do preço (ex.: "/piso").
+var price_suffix := ""
+
+
 func show_state(new_price: int, new_locked_level: int, new_note: String, new_affordable: bool) -> void:
 	if new_price == price and new_locked_level == locked_level and new_note == note and new_affordable == affordable:
 		return
@@ -80,7 +84,7 @@ func _draw() -> void:
 	if not note.is_empty():
 		_draw_centered(font, note, size.y - 12.0, NOTE_SIZE, NOTE_COLOR)
 	elif locked_level == 0:
-		var text := UiTheme.thousands(price)
+		var text := UiTheme.thousands(price) + price_suffix
 		var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PRICE_SIZE).x
 		var coin := ArtSprites.get_sprite("icone_moeda")
 		var left := (size.x - width - 24.0) / 2.0

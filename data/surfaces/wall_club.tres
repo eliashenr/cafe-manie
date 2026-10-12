@@ -10,6 +10,7 @@ kind = 1
 is_default = false
 collection = &"balada"
 price = 420
+tile_price = 105
 min_level = 8
 beauty = 32
 pattern = 5

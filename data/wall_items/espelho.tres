@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WallItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/wall_item_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"espelho"
+display_name = "Espelho Dourado"
+art = "espelho"
+collection = &"classico"
+lets_light_in = false
+price = 140
+min_level = 4
+beauty = 10

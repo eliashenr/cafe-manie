@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WallItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/wall_item_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"planta_pendurada"
+display_name = "Planta Pendurada"
+art = "planta_pendurada"
+collection = &"brasileiro"
+lets_light_in = false
+price = 110
+min_level = 3
+beauty = 9

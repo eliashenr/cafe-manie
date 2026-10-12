@@ -10,6 +10,7 @@ kind = 1
 is_default = false
 collection = &"americano"
 price = 200
+tile_price = 50
 min_level = 4
 beauty = 20
 pattern = 5

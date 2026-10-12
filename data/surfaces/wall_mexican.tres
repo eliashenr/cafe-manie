@@ -10,6 +10,7 @@ kind = 1
 is_default = false
 collection = &"mexicano"
 price = 210
+tile_price = 53
 min_level = 4
 beauty = 20
 pattern = 3

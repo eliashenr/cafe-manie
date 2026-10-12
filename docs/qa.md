@@ -66,6 +66,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Reforma piso a piso (10 de 10 pegos):** pintar cobrando o revestimento inteiro, cobrando pisos que já tinham, sem nível, beleza ignorando a pintura, save esquecendo a pintura, pintar com a base sem apagar, reforma paga sem confirmação, toque achando qualquer trecho de parede, prévia sem aparecer, piso pintado sem aparecer.
 - **Atendimento e andar (19 de 19 pegos):** cliente só pedindo do balcão, cardápio sem peso, fila que não anda, fila sem paciência, sem fila, garçom que não busca no fogão, garçom parado, dois garçons no mesmo prato, contratar sem cobrar, contratar sem nível, paciência igual com o prato no fogão, nível sem acelerar os clientes (refeito: a primeira versão do defeito nem compilava), porção que nunca chega ao pedido, save que esquece os garçons, contratar sem perguntar, bolinha de pedidos sumida, fila surgindo na porta, pernas paradas no andar, andar sem quique.
 - **Coleções e encosto (9 de 9 pegos, mais 1 equivalente):** encosto nunca desenhado, encosto da cadeira errada, cena sem dizer em que cadeira o cliente sentou, loja ignorando a coleção, página sem cortar, aba nova mantendo a coleção, coleção nova sem voltar à página 1 (pego depois de fortalecer o teste: nenhuma coleção sozinha passa de uma página, e o limite escondia o defeito), coleções fora de ordem, móvel sem coleção. A mutação "encosto também de frente" não mudava nada, porque a arte só tem encosto nas rotações 1 e 2. A checagem redundante saiu do código.
 
@@ -90,6 +91,15 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Reforma piso a piso (etapa 3)
+
+1. [ ] Na loja, aba **Pisos**: o preço aparece por piso (ex.: "6/piso"). Toque num piso: a loja sai e entra a reforma.
+2. [ ] Toque em alguns pisos: eles ficam com contorno amarelo e já mostram o piso novo. Tocar de novo desmarca. A barra mostra quantos e quanto custa.
+3. [ ] **Tudo** marca o piso inteiro; **Limpar** desmarca; **Cancelar** sai sem mudar nada.
+4. [ ] **Confirmar** pergunta antes de cobrar (Cancelar já selecionado). Depois, só os pisos marcados mudam; dá para misturar dois pisos.
+5. [ ] Na aba **Paredes**, o mesmo com os trechos de parede (cada trecho tem a largura de um piso).
+6. [ ] Revestimentos que você já tinha comprado inteiros pintam de graça.
 
 ## Roteiro de teste manual — Atendimento e andar (etapas 1 e 2 do pacote de 12/10)
 

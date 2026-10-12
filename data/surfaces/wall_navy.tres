@@ -9,6 +9,7 @@ display_name = "Azul-marinho"
 kind = 1
 is_default = false
 price = 250
+tile_price = 63
 min_level = 4
 beauty = 20
 pattern = 3

@@ -9,6 +9,7 @@ display_name = "Listras menta"
 kind = 1
 is_default = false
 price = 180
+tile_price = 45
 min_level = 2
 beauty = 15
 pattern = 5

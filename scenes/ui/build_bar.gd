@@ -364,6 +364,8 @@ func _rebuild() -> void:
 	var showing_shop := false
 	if cafe.mode == Cafe.Mode.BUILD:
 		_show_build_controls()
+	elif cafe.mode == Cafe.Mode.PAINT:
+		_show_paint_controls()
 	elif _has_selection():
 		_show_selection_controls()
 	elif shop_open:
@@ -618,23 +620,22 @@ func _add_surface_item(surface: SurfaceDefinition) -> void:
 	var art := ArtSprites.floor_tile(surface.id, Vector2i.ZERO) if surface.kind == SurfaceDefinition.Kind.FLOOR \
 		else ArtSprites.wall_panel(surface.id, "R")
 	var item := _add_item("Surface_" + String(surface.id), surface.display_name, art,
-		func() -> void: ask_use_surface(surface.id))
+		func() -> void: cafe.start_painting(surface.id))
+	var unit := "/piso" if surface.kind == SurfaceDefinition.Kind.FLOOR else "/parede"
+	item.price_suffix = unit
 	_updaters.append(func() -> void:
-		var in_use := simulation.style.current(surface.kind) == surface.id
-		var locked := surface.min_level > simulation.progression.level
-		if in_use:
-			item.text = "%s\nEm uso" % surface.display_name
-			item.show_state(surface.price, 0, "Em uso", true)
-		elif simulation.style.owns(surface.id):
-			item.text = "%s\nAplicar" % surface.display_name
-			item.show_state(surface.price, 0, "Aplicar", true)
-		elif locked:
+		var price := simulation.paint_price(surface)
+		var locked := not simulation.style.owns(surface.id) and surface.min_level > simulation.progression.level
+		if locked:
 			item.text = "%s\nNível %d" % [surface.display_name, surface.min_level]
-			item.show_state(surface.price, surface.min_level, "", false)
+			item.show_state(price, surface.min_level, "", false)
+		elif price == 0:
+			item.text = "%s\nGrátis" % surface.display_name
+			item.show_state(0, 0, "Grátis", true)
 		else:
-			item.text = "%s\n%d ouro" % [surface.display_name, surface.price]
-			item.show_state(surface.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, surface.price))
-		item.disabled = in_use or simulation.can_use_surface(surface) != ServiceResult.OK)
+			item.text = "%s\n%d ouro%s" % [surface.display_name, price, unit]
+			item.show_state(price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, price))
+		item.disabled = locked)
 
 
 func _add_item(button_name: String, title: String, art: ArtSprites.Sprite, action: Callable) -> ShopItemButton:
@@ -765,6 +766,58 @@ func _show_stove_controls(stove_id: StringName) -> void:
 
 ## Cartão da receita: o desenho do prato em cima, o nome e o tempo e o custo embaixo.
 ## Bolinha vermelha no canto da receita: quantos clientes esperam esse prato (que não está no balcão).
+# --- Reforma ---------------------------------------------------------------------
+
+## Reforma: marcar pisos (ou trechos de parede) tocando neles, Tudo, Limpar, Confirmar e Cancelar.
+func _show_paint_controls() -> void:
+	var simulation := cafe.simulation
+	var surface := cafe.painting
+	var floor := surface.kind == SurfaceDefinition.Kind.FLOOR
+	_message_source = func() -> String:
+		var count := cafe.paint_target_count()
+		var cost := cafe.paint_cost()
+		var text := "Reforma: %s — toque nos %s para marcar" % [surface.display_name, "pisos" if floor else "trechos de parede"]
+		text += "  (%d marcados · %s)" % [count, "%s ouro" % UiTheme.thousands(cost) if cost > 0 else "grátis"]
+		var problem := _problem_text()
+		return text + ("  —  " + problem if not problem.is_empty() else "")
+	_add_text_button("PaintAllButton", "Tudo", cafe.paint_all)
+	_add_text_button("PaintClearButton", "Limpar", cafe.clear_paint)
+	var confirm := _add_square(_buttons, "ConfirmButton", "check", "Confirmar", ask_confirm_paint)
+	_updaters.append(func() -> void: confirm.disabled = cafe.paint_target_count() == 0)
+	_add_square(_buttons, "CancelButton", "close", "Cancelar", cafe.cancel_paint)
+
+
+## Reforma paga pede confirmação (Cancelar já selecionado); de graça, aplica direto.
+func ask_confirm_paint() -> void:
+	var count := cafe.paint_target_count()
+	if count == 0:
+		return
+	var cost := cafe.paint_cost()
+	if cost == 0:
+		cafe.confirm_paint()
+		return
+	var what := "pisos" if cafe.is_painting_floor() else "trechos de parede"
+	_ask("Reformar?", "Pintar %d %s com %s por %s Café Ouro?" % [count, what, cafe.painting.display_name, UiTheme.thousands(cost)],
+		"Reformar", func() -> void: cafe.confirm_paint())
+
+
+func _add_text_button(button_name: String, text: String, action: Callable) -> Button:
+	var button := Button.new()
+	button.name = button_name
+	button.text = text
+	button.custom_minimum_size = Vector2(96, 52)
+	button.focus_mode = Control.FOCUS_NONE
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		button.add_theme_stylebox_override(state, UiTheme.button_box(UiTheme.BLUE.lightened(0.1) if state == "hover" else UiTheme.BLUE,
+			UiTheme.BLUE_DARK))
+	button.add_theme_color_override("font_outline_color", UiTheme.BLUE_DARK)
+	button.add_theme_constant_override("outline_size", 4)
+	button.add_theme_font_size_override("font_size", 18)
+	button.pressed.connect(func() -> void: action.call())
+	_buttons.add_child(button)
+	return button
+
+
 func _add_demand_badge(button: Button) -> Label:
 	var badge := Label.new()
 	badge.name = "DemandBadge"

@@ -16,6 +16,8 @@ const COLOR_ENTRANCE := Color("8fb8c9")
 const COLOR_ENTRANCE_MARK := Color(0.1, 0.2, 0.28, 0.85)
 const COLOR_SELECTED_FILL := Color(1.0, 0.82, 0.3, 0.5)
 const COLOR_SELECTED_LINE := Color("f29f1f")
+## Contorno dos pisos (e trechos de parede) marcados na reforma.
+const COLOR_PAINT_LINE := Color("ffd23f")
 const COLOR_PREVIEW_VALID := Color(0.3, 0.8, 0.35, 0.45)
 const COLOR_PREVIEW_INVALID := Color(0.9, 0.25, 0.2, 0.45)
 ## Laje da arte v3: espessura (pixels de mundo) e cores das duas faces da frente.
@@ -42,6 +44,16 @@ var floor_style: SurfaceDefinition:
 		floor_style = value
 		queue_redraw()
 
+## Pisos pintados com outro revestimento: {Vector2i: SurfaceDefinition}.
+var painted: Dictionary = {}:
+	set(value):
+		painted = value
+		queue_redraw()
+
+## Reforma em andamento: os pisos marcados já aparecem com o revestimento escolhido.
+var paint_surface: SurfaceDefinition
+var paint_cells: Array[Vector2i] = []
+
 var selected_cell := CafeGrid.NO_CELL:
 	set(value):
 		selected_cell = value
@@ -56,6 +68,25 @@ func set_preview(cells: Array[Vector2i], valid: bool) -> void:
 	_preview_cells = cells
 	_preview_valid = valid
 	queue_redraw()
+
+
+func set_paint_preview(surface: SurfaceDefinition, cells: Array[Vector2i]) -> void:
+	paint_surface = surface
+	paint_cells = cells.duplicate()
+	queue_redraw()
+
+
+func clear_paint_preview() -> void:
+	paint_surface = null
+	paint_cells = []
+	queue_redraw()
+
+
+## Revestimento que aparece neste piso (com a reforma em andamento por cima).
+func surface_at(cell: Vector2i) -> SurfaceDefinition:
+	if paint_surface != null and paint_cells.has(cell):
+		return paint_surface
+	return painted.get(cell, floor_style)
 
 
 func clear_preview() -> void:
@@ -103,8 +134,13 @@ func _draw_art_floor() -> void:
 	for y in grid_size.y:
 		for x in grid_size.x:
 			var cell := Vector2i(x, y)
-			var tile := ArtSprites.floor_tile(floor_style.id, cell)
+			var tile := ArtSprites.floor_tile(surface_at(cell).id, cell)
+			if tile == null:
+				tile = ArtSprites.floor_tile(floor_style.id, cell)
 			draw_texture_rect(tile.texture, tile.rect_at(IsoProjection.cell_top_vertex(cell)), false)
+	for cell in paint_cells:
+		if _is_inside(cell):
+			draw_polyline(_closed(IsoProjection.cell_polygon(cell)), COLOR_PAINT_LINE, 2.5, true)
 	var mat := ArtSprites.floor_entrance()
 	if mat != null and _is_inside(entrance):
 		draw_texture_rect(mat.texture, mat.rect_at(IsoProjection.cell_top_vertex(entrance)), false)

@@ -14,8 +14,9 @@ extends RefCounted
 ## 3 = acrescenta revestimentos (piso e parede), contadores, conquistas,
 ## recompensa diária e nome da cafeteria; 4 = as cadeiras dos saves antigos
 ## viram para a mesa uma vez (com a arte, para onde a cadeira olha aparece);
-## 5 = acrescenta quantos garçons a cafeteria contratou.
-const CURRENT_VERSION := 5
+## 5 = acrescenta quantos garçons a cafeteria contratou; 6 = revestimento pintado piso a piso e
+## trecho a trecho de parede.
+const CURRENT_VERSION := 6
 
 ## Marca posta pela migração para a versão 4: o decode vira as cadeiras e a marca
 ## não volta a ser gravada.
@@ -165,8 +166,19 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 		if applied == null or applied.kind != kind or not style.owns(applied.id):
 			result.warnings.append("Revestimento ignorado: %s" % style.current(kind))
 			applied = simulation.surfaces.default_for(kind)
-		if applied != null:
-			style.apply(applied)
+			if applied != null:
+				style.apply(applied)  # a base inválida vira a inicial (e a pintura dessa parte sai)
+	# Pintura com revestimento que deixou de existir (ou de outro tipo) volta para a base.
+	for cell: Vector2i in style.painted_floor():
+		var surface := simulation.surfaces.get_definition(style.painted_floor()[cell])
+		if surface == null or surface.kind != SurfaceDefinition.Kind.FLOOR:
+			result.warnings.append("Piso pintado ignorado: %s" % cell)
+			style.paint_floor([cell] as Array[Vector2i], style.floor_id)
+	for wall_segment: String in style.painted_walls():
+		var surface := simulation.surfaces.get_definition(style.painted_walls()[wall_segment])
+		if surface == null or surface.kind != SurfaceDefinition.Kind.WALL:
+			result.warnings.append("Parede pintada ignorada: %s" % wall_segment)
+			style.paint_walls([wall_segment] as Array[String], style.wall_id)
 
 
 # --- Versões ---------------------------------------------------------------
@@ -174,7 +186,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -206,6 +218,15 @@ static func _v3_to_v4(data: Dictionary) -> Dictionary:
 ## Versão 5 acrescentou a contratação de garçons: saves antigos têm o garçom que vinha com a cafeteria.
 static func _v4_to_v5(data: Dictionary) -> Dictionary:
 	data["waiters"] = 1
+	return data
+
+
+## Versão 6 acrescentou a pintura piso a piso: saves antigos ficam só com o revestimento de base.
+static func _v5_to_v6(data: Dictionary) -> Dictionary:
+	var style: Dictionary = data.get("style", {}) if data.get("style") is Dictionary else {}
+	style["floor_cells"] = []
+	style["wall_cells"] = []
+	data["style"] = style
 	return data
 
 

@@ -9,6 +9,7 @@ display_name = "Tijolinho"
 kind = 1
 is_default = false
 price = 120
+tile_price = 30
 min_level = 1
 beauty = 10
 pattern = 4

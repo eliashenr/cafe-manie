@@ -12,7 +12,7 @@ extends Node2D
 ## Emitido sempre que algo que a interface mostra muda (modo, seleção, prévia).
 signal state_changed
 
-enum Mode { VIEW, BUILD }
+enum Mode { VIEW, BUILD, PAINT }
 
 const FEEDBACK_GOLD := Color("ffd35c")
 const FEEDBACK_GOOD := Color("9be08f")
@@ -42,6 +42,10 @@ var game_clock: GameClock
 var layout: CafeLayout
 var catalog: FurnitureCatalog
 var mode := Mode.VIEW
+## Reforma em andamento (Mode.PAINT): o revestimento escolhido e os pisos (Vector2i) ou trechos de
+## parede ("borda:índice") marcados.
+var painting: SurfaceDefinition
+var paint_targets: Array = []
 ## Sessão de construção em andamento (só no modo BUILD).
 var session: PlacementSession
 var selected_cell := CafeGrid.NO_CELL
@@ -421,11 +425,165 @@ func _fit_floor_and_camera() -> void:
 	camera.frame(bounds, ui_top_inset, ui_bottom_inset)
 
 
-## Piso e parede com os revestimentos aplicados.
+## Piso e parede com os revestimentos aplicados (a base e o que foi pintado por cima).
 func _apply_style() -> void:
 	var surfaces := simulation.surfaces
-	floor_view.floor_style = surfaces.get_definition(simulation.style.floor_id)
-	wall_view.wall_style = surfaces.get_definition(simulation.style.wall_id)
+	var style := simulation.style
+	floor_view.floor_style = surfaces.get_definition(style.floor_id)
+	wall_view.wall_style = surfaces.get_definition(style.wall_id)
+	var floor_cells := {}
+	var painted_floor := style.painted_floor()
+	for cell: Vector2i in painted_floor:
+		var surface := surfaces.get_definition(painted_floor[cell])
+		if surface != null:
+			floor_cells[cell] = surface
+	floor_view.painted = floor_cells
+	var wall_segments := {}
+	var painted_walls := style.painted_walls()
+	for wall_segment: String in painted_walls:
+		var surface := surfaces.get_definition(painted_walls[wall_segment])
+		if surface != null:
+			wall_segments[wall_segment] = surface
+	wall_view.painted = wall_segments
+
+
+# --- Reforma (Mode.PAINT) ---------------------------------------------------------
+
+## Começa a reforma com um revestimento: o jogador marca pisos ou trechos de parede e confirma.
+func start_painting(surface_id: StringName) -> bool:
+	var definition := simulation.surfaces.get_definition(surface_id)
+	if definition == null:
+		return false
+	if not simulation.style.owns(surface_id) and definition.min_level > simulation.progression.level:
+		last_service_result = ServiceResult.SURFACE_LOCKED
+		state_changed.emit()
+		return false
+	if session != null:
+		_end_session()
+	clear_selection()
+	painting = definition
+	paint_targets = []
+	mode = Mode.PAINT
+	last_service_result = ServiceResult.OK
+	_show_paint_preview()
+	state_changed.emit()
+	return true
+
+
+func is_painting_floor() -> bool:
+	return painting != null and painting.kind == SurfaceDefinition.Kind.FLOOR
+
+
+## Marca ou desmarca o piso (ou trecho de parede) tocado.
+func toggle_paint_at(world_position: Vector2) -> void:
+	var target: Variant
+	if is_painting_floor():
+		var cell := IsoProjection.world_to_cell(world_position)
+		if not layout.grid.is_inside(cell):
+			return
+		target = cell
+	else:
+		var wall_segment := wall_view.segment_at(world_position)
+		if wall_segment.is_empty():
+			return
+		target = wall_segment
+	if paint_targets.has(target):
+		paint_targets.erase(target)
+	else:
+		paint_targets.append(target)
+	_show_paint_preview()
+	state_changed.emit()
+
+
+## Marca tudo o que mudaria de revestimento.
+func paint_all() -> void:
+	paint_targets = []
+	if is_painting_floor():
+		for y in layout.grid.size.y:
+			for x in layout.grid.size.x:
+				paint_targets.append(Vector2i(x, y))
+	else:
+		paint_targets.append_array(simulation.wall_segments())
+	paint_targets = _changing_targets()
+	_show_paint_preview()
+	state_changed.emit()
+
+
+func clear_paint() -> void:
+	paint_targets = []
+	_show_paint_preview()
+	state_changed.emit()
+
+
+## Quantos dos marcados realmente mudam (os que já têm o revestimento não contam nem custam).
+func paint_target_count() -> int:
+	return _changing_targets().size() if painting != null else 0
+
+
+func paint_cost() -> int:
+	return simulation.paint_price(painting) * paint_target_count() if painting != null else 0
+
+
+## Paga e pinta. Recusa (nível, ouro) mantém o modo e explica na barra.
+func confirm_paint() -> int:
+	if painting == null:
+		return ServiceResult.UNKNOWN_ITEM
+	var cost := paint_cost()
+	var count := paint_target_count()
+	if is_painting_floor():
+		var cells: Array[Vector2i] = []
+		cells.assign(paint_targets)
+		last_service_result = simulation.paint_floor(painting, cells)
+	else:
+		var segments: Array[String] = []
+		segments.assign(paint_targets)
+		last_service_result = simulation.paint_walls(painting, segments)
+	if last_service_result != ServiceResult.OK:
+		sound_board.play(&"error")
+		state_changed.emit()
+		return last_service_result
+	if count > 0:
+		EventBus.message_posted.emit("Reforma feita: %d %s com %s%s" % [count, "pisos" if is_painting_floor() else "trechos de parede",
+			painting.display_name, " (-%d ouro)" % cost if cost > 0 else ""])
+	_end_paint()
+	return last_service_result
+
+
+func cancel_paint() -> void:
+	if mode == Mode.PAINT:
+		_end_paint()
+
+
+func _end_paint() -> void:
+	painting = null
+	paint_targets = []
+	mode = Mode.VIEW
+	floor_view.clear_paint_preview()
+	wall_view.clear_paint_preview()
+	state_changed.emit()
+
+
+func _changing_targets() -> Array:
+	if is_painting_floor():
+		var cells: Array[Vector2i] = []
+		cells.assign(paint_targets)
+		return simulation.floor_cells_to_paint(painting, cells)
+	var segments: Array[String] = []
+	segments.assign(paint_targets)
+	return simulation.wall_segments_to_paint(painting, segments)
+
+
+func _show_paint_preview() -> void:
+	if is_painting_floor():
+		var cells: Array[Vector2i] = []
+		cells.assign(paint_targets)
+		floor_view.set_paint_preview(painting, cells)
+		wall_view.clear_paint_preview()
+	else:
+		var segments: Array[String] = []
+		segments.assign(paint_targets)
+		wall_view.set_paint_preview(painting, segments)
+		floor_view.clear_paint_preview()
 
 
 ## Compra (se preciso) e aplica um revestimento. A confirmação da compra fica na barra.
@@ -624,6 +782,9 @@ func _on_tapped(world_position: Vector2) -> void:
 	if mode == Mode.VIEW:
 		tap_at_world(world_position)
 		return
+	if mode == Mode.PAINT:
+		toggle_paint_at(world_position)
+		return
 	var cell := IsoProjection.world_to_cell(world_position)
 	if not layout.grid.is_inside(cell):
 		return
@@ -660,6 +821,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		KEY_ESCAPE:
 			if mode == Mode.BUILD:
 				cancel_placement()
+			elif mode == Mode.PAINT:
+				cancel_paint()
 			else:
 				clear_selection()
 		KEY_DELETE, KEY_BACKSPACE:

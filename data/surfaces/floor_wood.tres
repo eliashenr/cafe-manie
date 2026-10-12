@@ -9,6 +9,7 @@ display_name = "Assoalho de madeira"
 kind = 0
 is_default = false
 price = 90
+tile_price = 6
 min_level = 1
 beauty = 10
 pattern = 1

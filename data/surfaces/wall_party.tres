@@ -10,6 +10,7 @@ kind = 1
 is_default = false
 collection = &"festa"
 price = 170
+tile_price = 43
 min_level = 3
 beauty = 18
 pattern = 3

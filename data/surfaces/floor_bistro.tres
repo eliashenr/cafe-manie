@@ -9,6 +9,7 @@ display_name = "Xadrez bistrô"
 kind = 0
 is_default = false
 price = 220
+tile_price = 14
 min_level = 3
 beauty = 20
 pattern = 0

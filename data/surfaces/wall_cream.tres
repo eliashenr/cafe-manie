@@ -9,6 +9,7 @@ display_name = "Parede creme"
 kind = 1
 is_default = true
 price = 0
+tile_price = 0
 min_level = 1
 beauty = 0
 pattern = 3

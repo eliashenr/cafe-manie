@@ -10,6 +10,7 @@ kind = 0
 is_default = false
 collection = &"brasileiro"
 price = 300
+tile_price = 19
 min_level = 6
 beauty = 26
 pattern = 5

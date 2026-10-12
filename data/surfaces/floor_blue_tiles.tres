@@ -9,6 +9,7 @@ display_name = "Azulejo azul"
 kind = 0
 is_default = false
 price = 160
+tile_price = 10
 min_level = 2
 beauty = 15
 pattern = 2

@@ -127,6 +127,92 @@ func _round_trip() -> SaveCodec.DecodeResult:
 	return SaveCodec.decode(SaveCodec.migrate(JSON.parse_string(text)), clock, 5)
 
 
+func test_painting_charges_per_cell_only_for_cells_that_change() -> void:
+	_setup(100)
+	var wood := _surface(&"floor_wood")
+	var cells: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0)]
+	assert_eq(sim.paint_floor(wood, cells), ServiceResult.OK)
+	assert_eq(sim.wallet.balance(Wallet.SOFT), 100 - wood.tile_price * 3)
+	assert_eq(sim.style.floor_at(Vector2i(1, 0)), &"floor_wood")
+	assert_eq(sim.style.floor_at(Vector2i(3, 0)), &"floor_beige", "o resto não muda")
+	var again: Array[Vector2i] = [Vector2i(2, 0), Vector2i(3, 0), Vector2i(99, 99)]
+	assert_eq(sim.paint_floor(wood, again), ServiceResult.OK)
+	assert_eq(sim.wallet.balance(Wallet.SOFT), 100 - wood.tile_price * 4, "piso que já era de madeira e piso fora não custam")
+	assert_false(sim.style.owns(&"floor_wood"), "pintar não compra o revestimento inteiro")
+
+
+func test_painting_refused_without_gold_or_level_changes_nothing() -> void:
+	_setup(10)
+	var cells: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0)]
+	assert_eq(sim.paint_floor(_surface(&"floor_marble"), cells), ServiceResult.SURFACE_LOCKED)
+	var all: Array[Vector2i] = []
+	for x in 8:
+		all.append(Vector2i(x, 0))
+	assert_eq(sim.paint_floor(_surface(&"floor_wood"), all), ServiceResult.NOT_ENOUGH_GOLD)
+	assert_eq(sim.style.floor_at(Vector2i(0, 0)), &"floor_beige")
+	assert_eq(sim.wallet.balance(Wallet.SOFT), 10)
+	var walls: Array[String] = [CafeStyle.segment(CafeStyle.EDGE_TOP, 0)]
+	assert_eq(sim.paint_walls(_surface(&"floor_wood"), walls), ServiceResult.UNKNOWN_ITEM, "piso não vai na parede")
+
+
+func test_painting_back_with_the_base_erases_the_paint() -> void:
+	_setup()
+	var cells: Array[Vector2i] = [Vector2i(4, 4)]
+	sim.paint_floor(_surface(&"floor_wood"), cells)
+	assert_eq(sim.style.painted_floor().size(), 1)
+	assert_eq(sim.paint_floor(_surface(&"floor_beige"), cells), ServiceResult.OK)
+	assert_eq(sim.style.painted_floor().size(), 0, "voltar para a base só apaga a pintura")
+
+
+func test_beauty_counts_the_average_of_the_cells() -> void:
+	_setup(100000)
+	var base := sim.beauty()
+	var club := _surface(&"floor_club")
+	sim.progression.add_xp(99999)
+	var half: Array[Vector2i] = []
+	for y in 4:
+		for x in 8:
+			half.append(Vector2i(x, y))
+	sim.paint_floor(club, half)
+	var beige := _surface(&"floor_beige").beauty
+	assert_eq(sim.beauty(), base + roundi((club.beauty - beige) / 2.0), "metade do piso, metade da beleza")
+	var walls := sim.wall_segments()
+	assert_eq(walls.size(), 16)
+	sim.paint_walls(_surface(&"wall_club"), walls)
+	var expected := base + roundi((club.beauty - beige) / 2.0) + (_surface(&"wall_club").beauty - _surface(&"wall_cream").beauty)
+	assert_eq(sim.beauty(), expected, "a parede inteira vale a beleza dela")
+
+
+func test_save_keeps_painted_cells_and_old_saves_open_plain() -> void:
+	_setup()
+	var cells: Array[Vector2i] = [Vector2i(1, 2), Vector2i(5, 6)]
+	sim.paint_floor(_surface(&"floor_wood"), cells)
+	var walls: Array[String] = [CafeStyle.segment(CafeStyle.EDGE_LEFT, 2)]
+	sim.paint_walls(_surface(&"wall_brick"), walls)
+	var loaded := _round_trip().simulation
+	assert_eq(loaded.style.floor_at(Vector2i(5, 6)), &"floor_wood")
+	assert_eq(loaded.style.floor_at(Vector2i(0, 0)), &"floor_beige")
+	assert_eq(loaded.style.wall_at(CafeStyle.segment(CafeStyle.EDGE_LEFT, 2)), &"wall_brick")
+	var data := SaveCodec.encode(sim)
+	data["save_version"] = 5
+	data["style"].erase("floor_cells")
+	data["style"].erase("wall_cells")
+	var old := SaveCodec.decode(SaveCodec.migrate(JSON.parse_string(JSON.stringify(data))), clock).simulation
+	assert_eq(old.style.painted_floor().size(), 0, "save antigo: só a base")
+	assert_eq(old.style.floor_id, &"floor_beige")
+
+
+func test_save_drops_paint_of_unknown_surfaces() -> void:
+	_setup()
+	var data := SaveCodec.encode(sim)
+	data["style"]["floor_cells"] = [[1, 1, "piso_que_sumiu"], [2, 2, "wall_brick"], [3, 3, "floor_wood"]]
+	var result := SaveCodec.decode(JSON.parse_string(JSON.stringify(data)), clock)
+	assert_eq(result.simulation.style.floor_at(Vector2i(1, 1)), &"floor_beige")
+	assert_eq(result.simulation.style.floor_at(Vector2i(2, 2)), &"floor_beige", "parede não vai no piso")
+	assert_eq(result.simulation.style.floor_at(Vector2i(3, 3)), &"floor_wood")
+	assert_eq(result.warnings.size(), 2)
+
+
 func test_save_keeps_owned_and_applied_surfaces() -> void:
 	_setup()
 	sim.use_surface(_surface(&"floor_wood"))

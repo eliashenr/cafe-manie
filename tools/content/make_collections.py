@@ -210,6 +210,7 @@ kind = {kind}
 is_default = false
 collection = &"{cid}"
 price = {price}
+tile_price = {max(5, -(-price // 4)) if kind == WALL else max(2, -(-price // 16))}
 min_level = {level}
 beauty = {beauty}
 pattern = {pattern}

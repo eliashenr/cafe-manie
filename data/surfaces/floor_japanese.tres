@@ -10,6 +10,7 @@ kind = 0
 is_default = false
 collection = &"japones"
 price = 280
+tile_price = 18
 min_level = 6
 beauty = 25
 pattern = 2

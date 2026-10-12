@@ -10,6 +10,7 @@ kind = 1
 is_default = false
 collection = &"frances"
 price = 300
+tile_price = 75
 min_level = 7
 beauty = 26
 pattern = 3

@@ -23,48 +23,84 @@ func test_new_cafe_draws_default_floor_and_walls() -> void:
 	assert_eq(cafe.wall_view.grid_size, Vector2i(8, 8))
 
 
-func test_buying_a_floor_asks_first_then_applies() -> void:
+func test_choosing_a_floor_starts_a_renovation_where_taps_mark_cells() -> void:
 	var cafe := await spawn_cafe()
 	cafe.build_bar.show_shop_tab(BuildBar.ShopTab.FLOOR)
+	cafe.build_bar.show_shop_collection(&"classico")
 	await settle()
 	var wood := cafe.build_bar.find_button("Surface_floor_wood")
-	assert_true(wood.text.contains("90 ouro"), wood.text)
+	assert_true(wood.text.contains("6 ouro/piso"), "o preço é por piso: " + wood.text)
 	wood.pressed.emit()
+	await settle()
+	assert_eq(cafe.mode, Cafe.Mode.PAINT, "escolher o piso começa a reforma")
+	assert_true(cafe.build_bar.find_button("Surface_floor_wood") == null and cafe.build_bar.find_button("ConfirmButton") != null,
+		"a loja sai da frente e entram os controles da reforma (ao terminar, ela volta)")
+	tap_cell(cafe, Vector2i(2, 2))
+	tap_cell(cafe, Vector2i(3, 2))
+	tap_cell(cafe, Vector2i(4, 2))
+	tap_cell(cafe, Vector2i(4, 2))  # tocar de novo desmarca
+	await settle()
+	assert_eq(cafe.paint_target_count(), 2)
+	assert_eq(cafe.floor_view.surface_at(Vector2i(2, 2)).id, &"floor_wood", "a prévia já mostra o piso novo")
+	assert_true(cafe.build_bar.message_text().contains("2 marcados · 12 ouro"), cafe.build_bar.message_text())
+	assert_eq(cafe.simulation.style.floor_at(Vector2i(2, 2)), &"floor_beige", "nada muda antes de confirmar")
+
+	cafe.build_bar.find_button("ConfirmButton").pressed.emit()
 	var dialog := cafe.build_bar.confirm_dialog()
-	assert_true(dialog.visible, "comprar pede confirmação (seção 32)")
+	assert_true(dialog.visible, "pagar pede confirmação (seção 32)")
 	assert_true(dialog.get_cancel_button().has_focus(), "Cancelar já selecionado")
-	assert_eq(cafe.simulation.style.floor_id, &"floor_beige", "nada muda antes de confirmar")
-
 	dialog.get_ok_button().pressed.emit()
-	assert_eq(cafe.simulation.style.floor_id, &"floor_wood")
-	assert_eq(cafe.floor_view.floor_style.id, &"floor_wood", "o piso desenhado acompanha")
-	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 110)
 	await settle()
-	assert_true(wood.text.contains("Em uso") and wood.disabled, wood.text)
-	var beige := cafe.build_bar.find_button("Surface_floor_beige")
-	assert_true(beige.text.contains("Aplicar"), beige.text)
+	assert_eq(cafe.simulation.style.floor_at(Vector2i(2, 2)), &"floor_wood")
+	assert_eq(cafe.simulation.style.floor_at(Vector2i(3, 2)), &"floor_wood")
+	assert_eq(cafe.simulation.style.floor_at(Vector2i(0, 0)), &"floor_beige", "o resto continua como estava")
+	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 188, "6 ouro por piso")
+	assert_eq(cafe.floor_view.surface_at(Vector2i(3, 2)).id, &"floor_wood", "o piso desenhado acompanha")
+	assert_eq(cafe.mode, Cafe.Mode.VIEW)
+	assert_true(all_messages(cafe).contains("Reforma feita"), all_messages(cafe))
 
 
-func test_owned_surface_applies_without_asking() -> void:
+func test_walls_are_painted_one_stretch_at_a_time() -> void:
 	var cafe := await spawn_cafe()
-	cafe.simulation.use_surface(cafe.simulation.surfaces.get_definition(&"wall_brick"))
-	cafe.simulation.use_surface(cafe.simulation.surfaces.get_definition(&"wall_cream"))
-	cafe.build_bar.show_shop_tab(BuildBar.ShopTab.WALL)
+	assert_true(cafe.start_painting(&"wall_brick"))
+	var stretch := CafeStyle.segment(CafeStyle.EDGE_TOP, 3)
+	var center := Vector2.ZERO
+	for point in cafe.wall_view.segment_polygon(stretch):
+		center += point / 4.0
+	assert_eq(cafe.wall_view.segment_at(center), stretch, "o toque acha o trecho de parede")
+	cafe.toggle_paint_at(center)
+	assert_eq(cafe.paint_cost(), 30)
+	cafe.build_bar.ask_confirm_paint()
+	cafe.build_bar.confirm_dialog().get_ok_button().pressed.emit()
 	await settle()
-	var gold := cafe.simulation.wallet.balance(Wallet.SOFT)
-	cafe.build_bar.find_button("Surface_wall_brick").pressed.emit()
-	assert_false(cafe.build_bar.confirm_dialog().visible, "já é seu: troca direto")
-	assert_eq(cafe.wall_view.wall_style.id, &"wall_brick")
-	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), gold)
+	assert_eq(cafe.simulation.style.wall_at(stretch), &"wall_brick")
+	assert_eq(cafe.simulation.style.wall_at(CafeStyle.segment(CafeStyle.EDGE_TOP, 4)), &"wall_cream", "só o trecho tocado")
+	assert_eq(cafe.wall_view.surface_at(stretch).id, &"wall_brick", "a parede desenhada acompanha")
+	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 170)
 
 
-func test_cancelling_a_surface_purchase_changes_nothing() -> void:
+func test_paint_all_then_cancel_changes_nothing() -> void:
 	var cafe := await spawn_cafe()
-	cafe.build_bar.show_shop_tab(BuildBar.ShopTab.WALL)
+	cafe.start_painting(&"wall_brick")
 	await settle()
-	cafe.build_bar.find_button("Surface_wall_brick").pressed.emit()
-	cafe.build_bar.confirm_dialog().get_cancel_button().pressed.emit()
-	assert_eq(cafe.simulation.style.wall_id, &"wall_cream")
+	cafe.build_bar.find_button("PaintAllButton").pressed.emit()
+	assert_eq(cafe.paint_target_count(), 16, "Tudo marca as duas paredes inteiras (8 + 8 trechos)")
+	cafe.build_bar.find_button("CancelButton").pressed.emit()
+	await settle()
+	assert_eq(cafe.mode, Cafe.Mode.VIEW)
+	assert_eq(cafe.simulation.style.wall_at(CafeStyle.segment(CafeStyle.EDGE_TOP, 0)), &"wall_cream")
+	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 200)
+	assert_eq(cafe.wall_view.paint_segments.size(), 0, "a prévia some")
+
+
+func test_surface_bought_before_paints_for_free_without_asking() -> void:
+	var cafe := await spawn_cafe()
+	cafe.simulation.style.own(&"wall_brick")  # comprada inteira num save antigo
+	cafe.start_painting(&"wall_brick")
+	cafe.paint_all()
+	cafe.build_bar.ask_confirm_paint()
+	assert_false(cafe.build_bar.confirm_dialog().visible, "de graça: não precisa perguntar")
+	assert_eq(cafe.simulation.style.wall_at(CafeStyle.segment(CafeStyle.EDGE_LEFT, 5)), &"wall_brick")
 	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 200)
 
 

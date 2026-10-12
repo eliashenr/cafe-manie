@@ -10,6 +10,7 @@ kind = 0
 is_default = false
 collection = &"italiano"
 price = 260
+tile_price = 17
 min_level = 5
 beauty = 23
 pattern = 2

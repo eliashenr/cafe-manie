@@ -26,6 +26,16 @@ var wall_style: SurfaceDefinition:
 		wall_style = value
 		queue_redraw()
 
+## Trechos pintados com outro revestimento: {"borda:índice": SurfaceDefinition} (ver CafeStyle).
+var painted: Dictionary = {}:
+	set(value):
+		painted = value
+		queue_redraw()
+
+## Reforma em andamento: os trechos marcados já aparecem com o revestimento escolhido.
+var paint_surface: SurfaceDefinition
+var paint_segments: Array[String] = []
+
 ## Espessura da parede vista de cima (em pisos) e cores do acabamento da arte v3.
 const CAP_DEPTH := 0.16
 const CAP_RIGHT := Color("ffffff")
@@ -70,15 +80,66 @@ func _draw() -> void:
 	_draw_wall(top, right_end, 0.0)
 
 
+func set_paint_preview(surface: SurfaceDefinition, segments: Array[String]) -> void:
+	paint_surface = surface
+	paint_segments = segments.duplicate()
+	queue_redraw()
+
+
+func clear_paint_preview() -> void:
+	paint_surface = null
+	paint_segments = []
+	queue_redraw()
+
+
+## Revestimento que aparece neste trecho (com a reforma em andamento por cima).
+func surface_at(wall_segment: String) -> SurfaceDefinition:
+	if paint_surface != null and paint_segments.has(wall_segment):
+		return paint_surface
+	return painted.get(wall_segment, wall_style)
+
+
+## Contorno na tela de um trecho de parede ("top:3", "left:0"): a base no chão e o alto da parede.
+func segment_polygon(wall_segment: String) -> PackedVector2Array:
+	var index := int(wall_segment.get_slice(":", 1))
+	var a: Vector2
+	var b: Vector2
+	if wall_segment.begins_with(CafeStyle.EDGE_TOP):
+		a = IsoProjection.cell_top_vertex(Vector2i(index, 0))
+		b = IsoProjection.cell_top_vertex(Vector2i(index + 1, 0))
+	else:
+		a = IsoProjection.cell_top_vertex(Vector2i(0, index))
+		b = IsoProjection.cell_top_vertex(Vector2i(0, index + 1))
+	var up := Vector2(0.0, wall_height)
+	return PackedVector2Array([a, b, b - up, a - up])
+
+
+## Trecho de parede sob este ponto do mundo ("" se nenhum).
+func segment_at(world_point: Vector2) -> String:
+	for wall_segment in CafeStyle.back_wall_segments(grid_size):
+		if Geometry2D.is_point_in_polygon(world_point, segment_polygon(wall_segment)):
+			return wall_segment
+	return ""
+
+
+func _panel(wall_segment: String, side: String) -> ArtSprites.Sprite:
+	var panel := ArtSprites.wall_panel(surface_at(wall_segment).id, side)
+	return panel if panel != null else ArtSprites.wall_panel(wall_style.id, side)
+
+
 ## Sombra e luz no chão, painéis, enfeites e acabamento.
 func _draw_art_walls() -> void:
 	_draw_floor_light()
-	var right := ArtSprites.wall_panel(wall_style.id, "R")
-	var left := ArtSprites.wall_panel(wall_style.id, "L")
 	for y in grid_size.y:
+		var left := _panel(CafeStyle.segment(CafeStyle.EDGE_LEFT, y), "L")
 		draw_texture_rect(left.texture, left.rect_at(_left_anchor(y)), false)
 	for x in grid_size.x:
+		var right := _panel(CafeStyle.segment(CafeStyle.EDGE_TOP, x), "R")
 		draw_texture_rect(right.texture, right.rect_at(_right_anchor(x)), false)
+	for wall_segment in paint_segments:
+		var outline := segment_polygon(wall_segment)
+		outline.append(outline[0])
+		draw_polyline(outline, FloorView.COLOR_PAINT_LINE, 2.5, true)
 	for y in grid_size.y:
 		var deco := ArtSprites.wall_decoration("L", y)
 		if deco != null:

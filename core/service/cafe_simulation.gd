@@ -331,6 +331,74 @@ func store_furniture(id: StringName) -> CafeLayout.Check:
 	return CafeLayout.Check.OK
 
 
+## Preço de pintar um piso ou trecho de parede com este revestimento (0 se o jogador já o tem inteiro).
+func paint_price(definition: SurfaceDefinition) -> int:
+	return 0 if style.owns(definition.id) else definition.tile_price
+
+
+## Pode pintar [param count] células com este revestimento?
+func can_paint(definition: SurfaceDefinition, count: int) -> int:
+	if not style.owns(definition.id) and definition.min_level > progression.level:
+		return ServiceResult.SURFACE_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, paint_price(definition) * count):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	return ServiceResult.OK
+
+
+## Pisos que mudariam de revestimento (dentro da cafeteria e com outro revestimento hoje).
+func floor_cells_to_paint(definition: SurfaceDefinition, cells: Array[Vector2i]) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	for cell in cells:
+		if layout.grid.is_inside(cell) and style.floor_at(cell) != definition.id and not result.has(cell):
+			result.append(cell)
+	return result
+
+
+## Trechos de parede que mudariam de revestimento.
+func wall_segments_to_paint(definition: SurfaceDefinition, segments: Array[String]) -> Array[String]:
+	var valid := wall_segments()
+	var result: Array[String] = []
+	for wall_segment in segments:
+		if valid.has(wall_segment) and style.wall_at(wall_segment) != definition.id and not result.has(wall_segment):
+			result.append(wall_segment)
+	return result
+
+
+## Trechos das paredes da cafeteria (hoje, as do fundo).
+func wall_segments() -> Array[String]:
+	return CafeStyle.back_wall_segments(layout.grid.size)
+
+
+## Pinta pisos com o revestimento, cobrando paint_price por piso que muda. Nada é cobrado se recusar.
+func paint_floor(definition: SurfaceDefinition, cells: Array[Vector2i]) -> int:
+	if definition.kind != SurfaceDefinition.Kind.FLOOR:
+		return ServiceResult.UNKNOWN_ITEM
+	var targets := floor_cells_to_paint(definition, cells)
+	var result := can_paint(definition, targets.size())
+	if result == ServiceResult.OK and not targets.is_empty():
+		_charge_paint(definition, targets.size())
+		style.paint_floor(targets, definition.id)
+	return result
+
+
+func paint_walls(definition: SurfaceDefinition, segments: Array[String]) -> int:
+	if definition.kind != SurfaceDefinition.Kind.WALL:
+		return ServiceResult.UNKNOWN_ITEM
+	var targets := wall_segments_to_paint(definition, segments)
+	var result := can_paint(definition, targets.size())
+	if result == ServiceResult.OK and not targets.is_empty():
+		_charge_paint(definition, targets.size())
+		style.paint_walls(targets, definition.id)
+	return result
+
+
+func _charge_paint(definition: SurfaceDefinition, count: int) -> void:
+	var cost := paint_price(definition) * count
+	if cost > 0:
+		wallet.spend(Wallet.SOFT, cost, "Reforma: %s (%d)" % [definition.display_name, count])
+	surface_bought.emit(definition)
+
+
 ## Pode aplicar este revestimento? Os já comprados sempre podem.
 func can_use_surface(definition: SurfaceDefinition) -> int:
 	if style.owns(definition.id):
@@ -356,16 +424,29 @@ func use_surface(definition: SurfaceDefinition) -> int:
 	return ServiceResult.OK
 
 
-## Beleza total: móveis posicionados mais o piso e a parede aplicados (seção 35).
+## Beleza total: móveis posicionados mais o piso e a parede (seção 35). Piso e parede valem a média
+## das células: o piso inteiro com um revestimento vale a beleza dele; metade, a metade.
 func beauty() -> int:
 	var total := 0
 	for placement in layout.placements():
 		total += placement.definition.beauty
-	for kind in [SurfaceDefinition.Kind.FLOOR, SurfaceDefinition.Kind.WALL]:
-		var surface := surfaces.get_definition(style.current(kind)) if surfaces != null else null
-		if surface != null:
-			total += surface.beauty
-	return total
+	if surfaces == null:
+		return total
+	var floor_sum := 0.0
+	var size := layout.grid.size
+	for y in size.y:
+		for x in size.x:
+			floor_sum += _surface_beauty(style.floor_at(Vector2i(x, y)))
+	var wall_sum := 0.0
+	var segments := wall_segments()
+	for wall_segment in segments:
+		wall_sum += _surface_beauty(style.wall_at(wall_segment))
+	return total + roundi(floor_sum / maxi(size.x * size.y, 1) + wall_sum / maxi(segments.size(), 1))
+
+
+func _surface_beauty(id: StringName) -> int:
+	var surface := surfaces.get_definition(id)
+	return surface.beauty if surface != null else 0
 
 
 ## De 0 a 1: quanto do bônus máximo de beleza a cafeteria já alcançou.

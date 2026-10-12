@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WallItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/wall_item_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"neon_xicara"
+display_name = "Neon de Xícara"
+art = "neon_xicara"
+collection = &"anos80"
+lets_light_in = false
+price = 180
+min_level = 4
+beauty = 12

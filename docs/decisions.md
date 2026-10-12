@@ -4,6 +4,31 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-041 — Reforma piso a piso, cobrada por célula
+
+**Problema:** o PO pediu que a reforma fosse cobrada por "frame" (célula). Escolher uma parede nova não deve pintar tudo: deve aparecer um retângulo para ir tocando onde quer, para poder misturar duas cores. O mesmo vale para o piso.
+
+**Opções:** (A) continuar com um revestimento para a cafeteria inteira; (B) guardar o revestimento de cada piso e de cada trecho de parede.
+
+**Decisão:** B.
+- **Estilo:** o `CafeStyle` guarda o piso e a parede **de base** (que cobrem tudo) e só o que foi pintado por cima: `{piso: revestimento}` e `{"borda:índice": revestimento}`. As paredes do fundo são `top` (ao longo de x) e `left` (ao longo de y). Pintar com a base apaga a pintura.
+- **Preço:**
+  - cada revestimento ganhou `tile_price`: no piso, 1/16 do preço antigo por célula; na parede, 1/4 por trecho;
+  - pintar a cafeteria 8×8 inteira custa cerca de 4 vezes o preço antigo, para a reforma consumir ouro, como o PO quer;
+  - os revestimentos iniciais são grátis;
+  - os comprados inteiros em saves antigos continuam pintando de graça;
+  - só as células que mudam são cobradas.
+- **Beleza:** piso e parede valem a **média** das células. O piso inteiro vale a beleza do revestimento; metade dele, metade.
+- **Na tela (modo de reforma):**
+  - escolher um piso ou uma parede na loja abre a reforma;
+  - cada toque marca ou desmarca o piso ou o trecho de parede, que aparece já com o revestimento novo e contorno amarelo;
+  - a barra mostra quantos estão marcados e quanto custa, com os botões Tudo, Limpar, Confirmar e Cancelar;
+  - confirmar uma reforma paga pede confirmação, com Cancelar selecionado;
+  - ao terminar, volta-se para a loja.
+- **Save versão 6:** a pintura de piso e de parede. Os saves antigos ficam só com a base, e a pintura com um revestimento que deixou de existir volta para a base, com aviso.
+
+---
+
 ## DT-040 — Andar com joelho: ciclo de 8 quadros e corpo sem balanço
 
 **Problema:** o PO achou o andar ainda "engessado, parecendo pinguim". Dois motivos:

@@ -27,7 +27,7 @@ separadamente:
   - garçons buscam os pratos prontos nos fogões e circulam pela cozinha;
   - contratar garçons.
 - [x] **2. Andar natural** (DT-040): ciclo de 8 quadros com joelho, sem o balanço de pinguim.
-- [ ] **3. Reforma piso a piso:**
+- [x] **3. Reforma piso a piso** (DT-041):
   - escolher um piso ou parede e pintar célula por célula, pagando por célula;
   - misturar cores e estilos.
 - [ ] **4. Paredes completas:**

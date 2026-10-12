@@ -10,6 +10,7 @@ kind = 1
 is_default = false
 collection = &"anos80"
 price = 230
+tile_price = 58
 min_level = 5
 beauty = 22
 pattern = 3

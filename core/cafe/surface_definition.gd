@@ -2,8 +2,8 @@ class_name SurfaceDefinition
 extends Resource
 ## Revestimento de piso ou de parede (dado de conteúdo, em res://data/surfaces).
 ##
-## Um revestimento cobre a cafeteria inteira: comprar uma vez libera para
-## sempre, e trocar entre os já comprados é grátis (seção 34).
+## O jogador pinta piso a piso e trecho a trecho de parede, pagando tile_price por célula (pedido
+## do PO: dá para misturar revestimentos). Os comprados inteiros antes disso pintam de graça.
 
 enum Kind { FLOOR, WALL }
 ## Desenho usado até existir arte final (PLACEHOLDER_SURFACE).
@@ -19,7 +19,10 @@ enum Pattern { CHECKER, PLANKS, TILES, PLAIN, BRICK, STRIPES }
 @export var collection: StringName = &"classico"
 
 @export_group("Balanceamento")
+## Preço antigo do revestimento inteiro (referência para o tile_price e para saves antigos).
 @export var price := 0
+## Preço de pintar um piso ou um trecho de parede.
+@export var tile_price := 0
 @export var min_level := 1
 @export_range(0, 100) var beauty := 0
 
@@ -30,4 +33,4 @@ enum Pattern { CHECKER, PLANKS, TILES, PLAIN, BRICK, STRIPES }
 
 
 func is_valid() -> bool:
-	return id != &"" and price >= 0 and min_level >= 1
+	return id != &"" and price >= 0 and tile_price >= 0 and min_level >= 1

@@ -10,6 +10,7 @@ kind = 1
 is_default = false
 collection = &"country"
 price = 160
+tile_price = 40
 min_level = 3
 beauty = 16
 pattern = 3

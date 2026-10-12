@@ -9,6 +9,7 @@ display_name = "Mármore"
 kind = 0
 is_default = false
 price = 400
+tile_price = 25
 min_level = 5
 beauty = 30
 pattern = 2

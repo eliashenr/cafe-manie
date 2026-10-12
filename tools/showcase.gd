@@ -126,6 +126,16 @@ func _set_panel() -> void:
 		"construir":
 			_cafe.start_placing(&"table_round")
 			_cafe._on_tapped(IsoProjection.cell_center(Vector2i(5, 2)))  # o toque do modo de construção
+		"reforma":
+			# Piso e parede já misturados, e uma reforma em andamento com alguns pisos marcados.
+			var style = _cafe.simulation.style
+			var mixed: Array[Vector2i] = [Vector2i(5, 5), Vector2i(6, 5), Vector2i(5, 6), Vector2i(6, 6), Vector2i(7, 6)]
+			style.paint_floor(mixed, &"floor_70s")
+			var walls: Array[String] = ["top:4", "top:5", "left:3"]
+			style.paint_walls(walls, &"wall_brick")
+			_cafe.start_painting(StringName(_panel.get_slice(":", 1)) if _panel.contains(":") else &"floor_wood")
+			for cell in [Vector2i(5, 2), Vector2i(6, 2), Vector2i(5, 3), Vector2i(6, 3)]:
+				_cafe.toggle_paint_at(IsoProjection.cell_center(cell))
 	_panel = ""
 
 
