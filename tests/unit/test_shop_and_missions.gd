@@ -107,7 +107,6 @@ func test_expanding_grows_the_grid_moves_the_entrance_and_charges() -> void:
 	assert_eq(sim.layout.grid.size, Vector2i(10, 8))
 	assert_eq(sim.layout.entrance, Vector2i(9, 4), "entrada acompanha a borda da frente")
 	assert_true(sim.layout.grid.is_free(sim.layout.entrance))
-	assert_eq(sim.waiters[0].home, sim.layout.entrance, "o garçom usa a nova entrada")
 	assert_eq(sim.wallet.balance(Wallet.SOFT), 1000 - _def(&"table_round").price - 150)
 	assert_eq(expanded, [Vector2i(10, 8)])
 	var goals := sim.navigation.access_cells(sim.last_placed_id)

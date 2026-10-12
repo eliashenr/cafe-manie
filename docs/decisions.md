@@ -4,6 +4,69 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-040 — Andar com joelho: ciclo de 8 quadros e corpo sem balanço
+
+**Problema:** o PO achou o andar ainda "engessado, parecendo pinguim". Dois motivos:
+- as pernas só trocavam entre 3 desenhos retos (em pé e uma passada para cada lado);
+- o corpo inteiro inclinava de um lado para o outro a cada passo, o que dá o gingado de pinguim.
+
+**Opções:** (A) animação por ossos no jogo (Skeleton2D); (B) mais quadros desenhados pelo mesmo gerador da arte.
+
+**Decisão:** B. A arte continua saindo do código das pranchas, e o jogo só escolhe o quadro.
+- `people3.py` desenha um **ciclo de 8 quadros** (`passo_0` a `passo_7`), com duas passadas, uma de cada perna. Cada perna tem joelho:
+  - **no apoio**, o pé fica no chão e vai da frente para trás;
+  - **no balanço**, o joelho dobra, o pé sobe e volta para a frente, e o sapato gira de leve (calcanhar na chegada, ponta na saída);
+  - os braços balançam ao contrário das pernas.
+- **Perspectiva:** o boneco é desenhado quase de frente, então andar para a frente é ir em direção à câmera. O pé da frente desce na tela e o de trás sobe (de costas, ao contrário); a perna que está mais ao fundo é desenhada primeiro. Mover os pés para os lados fazia as pernas se cruzarem.
+- **No jogo:**
+  - o `AgentView` escolhe o quadro pelo quanto o desenho andou, então o pé não escorrega;
+  - o corpo não inclina mais;
+  - o quique caiu de 4 para 2 px, com o corpo no alto quando as pernas se cruzam;
+  - as pranchas continuam com as poses "andar" de antes.
+- A folha de personagens agora também cresce em várias imagens (`personagens`, `personagens_2`...), como a de móveis.
+
+---
+
+## DT-039 — Atendimento que pressiona: cardápio, fila, garçons que trabalham sozinhos e contratação
+
+**Problema:** o PO achou o jogo fácil demais. Os pontos dele:
+- os clientes só pediam o que estava no balcão;
+- ninguém esperava lá fora;
+- o garçom ficava parado na porta;
+- o jogador precisava tocar no fogão para levar cada prato;
+- não dava para contratar mais garçons.
+
+O foco que ele quer: o jogador precisar expandir e gastar moeda.
+
+**Opções:** (A) só aumentar o número de clientes; (B) mudar as regras do atendimento para criar demanda de verdade, mantendo o jogador no papel de cozinhar e decorar.
+
+**Decisão:** B, toda a regra em `core/` e cada número em dados (`service.tres`, `economy.tres`).
+- **Cardápio:**
+  - sentado, o cliente olha o cardápio por 1,5 s e pede;
+  - 40% das vezes ele pede qualquer prato liberado, mesmo o que não está no balcão (sem nada no balcão, todos pedem assim);
+  - pratos rápidos saem mais (o peso é 1/√tempo de preparo): café sai bem mais que lasanha;
+  - o pedido sem porção espera o jogador cozinhar e pega a porção assim que ela chega a um balcão;
+  - enquanto o prato está no fogão, a paciência gasta pela metade: o cliente vê que estão preparando.
+- **Fila na calçada:**
+  - sem cadeira livre, até 5 clientes esperam na calçada, de frente para a porta;
+  - o primeiro entra quando vaga uma cadeira;
+  - quem cansa (30 s) vai embora e custa popularidade.
+- **Mais gente com o nível:** cada nível encurta em 6% o intervalo entre chegadas (até 45% do original) e põe mais um cliente lá dentro.
+- **Garçons:**
+  - servem os pedidos que já têm porção no balcão;
+  - buscam sozinhos nos fogões os pratos prontos e levam ao balcão (o XP é do jogador);
+  - **nunca começam a cozinhar**, porque isso é o que prende o jogador;
+  - sem tarefa, circulam entre fogões e balcões em vez de ficar na porta;
+  - dois garçons nunca vão buscar o mesmo prato.
+- **Contratação:**
+  - garçons 2, 3 e 4, liberados nos níveis 3, 5 e 8, por 500, 1.500 e 4.000 Café Ouro;
+  - o botão "Garçom" fica na faixa de baixo e pede confirmação (Cancelar já selecionado);
+  - o save versão 5 guarda quantos garçons há, e os saves antigos ficam com 1.
+- **No painel do fogão:** uma bolinha vermelha em cada receita diz quantos clientes esperam aquele prato, e a barra escreve "Clientes esperando: Café ×2".
+- **Teste do robô:** ele aprendeu a cozinhar o que os clientes pedem. O teste separa quem desistiu da fila (a pressão que se quer, já que esse robô não compra mesas) de quem saiu irritado da mesa (atendimento que falhou, que precisa ficar abaixo de 25%).
+
+---
+
 ## DT-038 — Coleções da loja: estilos e culturas como conteúdo
 
 **Problema:** o PO achou a loja com poucos itens. Ele pediu móveis de estilos e de culturas: anos 70, 80 e 2010, balada, festa, country, americano, mexicano, "todas culturas". A loja tinha 9 móveis e 9 revestimentos, numa fila só por aba.

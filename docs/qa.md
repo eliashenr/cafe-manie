@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 312 testes
+## Cobertura atual — 329 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -26,9 +26,10 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
 | `unit/test_progression.gd` | 7 | curva de níveis, subir vários níveis de uma vez, nível máximo |
 | `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
-| `unit/test_cafe_simulation.gd` | 17 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo |
-| `unit/test_long_shift.gd` | 2 | 30 min simulados com o "jogador robô": ninguém preso, lucro, níveis; o robô conclui as 6 missões iniciais |
-| `unit/test_save_codec.gd` | 16 | ida e volta por JSON de tudo o que é salvo; preparo continua com o jogo fechado; conteúdo desconhecido pulado; migração das versões 1, 2 e 3; nome da cafeteria; cadeiras de save antigo viram para a mesa uma vez |
+| `unit/test_cafe_simulation.gd` | 30 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo; **pedido do cardápio fora do balcão** (com o que falta cozinhar), café sai mais que lasanha, paciência mais calma com o prato no fogão; **fila na calçada** (enche, anda, desiste); mais clientes por nível; **garçom busca no fogão, circula pela cozinha e nunca cozinha**; dois garçons não disputam o mesmo prato; contratação (nível, ouro, limite) |
+| `unit/test_long_shift.gd` | 2 | 30 min simulados com o "jogador robô" (que cozinha o que os clientes pedem): ninguém preso, lucro, níveis, menos de 25% irritados à mesa (desistências da fila contadas à parte); o robô conclui as 6 missões iniciais |
+| `unit/test_save_codec.gd` | 17 | ida e volta por JSON de tudo o que é salvo; preparo continua com o jogo fechado; conteúdo desconhecido pulado; migração das versões 1 a 4; nome da cafeteria; cadeiras de save antigo viram para a mesa uma vez; garçons contratados (saves antigos ficam com 1) |
+| `integration/test_staff_and_queue.gd` | 3 | botão Garçom (nível, preço, confirmação com Cancelar selecionado, garçom novo aparece); fila na calçada e quem desiste sai andando por ela; bolinha de pedidos no painel do fogão |
 | `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, `.bak`, save danificado, save de versão mais nova protegido, apagar |
 | `unit/test_shop_and_missions.gd` | 21 | compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
 | `unit/test_style_and_beauty.gd` | 11 | revestimentos (um inicial por tipo, compra única, troca grátis, bloqueios); beleza soma móveis e revestimentos; beleza aumenta a paciência; save e migração |
@@ -46,7 +47,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_furniture_art.gd` | 7 | todo móvel tem arte nas 4 rotações, com âncora e escala certas; a cena e a prévia usam a arte; panela de cada receita; forno aceso só de frente; fogão e balcão mostram receita, tempo, Pronto! e porções |
 | `integration/test_hud_art.gd` | 6 | moeda com ponto de milhar e nível; estrelas pela satisfação; presente com cronômetro; zoom pelos botões; medalhão de missões esconde e mostra; faixa de ícones abre a loja e as conquistas |
 | `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; janelas na parede; a cena usa a arte e enquadra a parede; cerca aberta só na entrada; exterior acompanha a expansão |
-| `integration/test_character_art.gd` | 15 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; passos alternados com quique; saltos das regras viram passinhos; senta só quando chega na cadeira; chega e sai pela calçada; sentado segue a cadeira; **encosto da própria cadeira por cima de quem senta de costas**; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
+| `integration/test_character_art.gd` | 15 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; ciclo de 8 quadros do andar, que nunca para no meio do passo, com o corpo subindo e descendo de leve; saltos das regras viram passinhos; senta só quando chega na cadeira; chega e sai pela calçada; sentado segue a cadeira; **encosto da própria cadeira por cima de quem senta de costas**; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
 | `integration/test_music.gd` | 3 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados |
 
 O executor também **reprova um arquivo de teste que nem compila**. Antes, ele sumia da contagem em silêncio (encontrado nesta etapa).
@@ -65,6 +66,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Atendimento e andar (19 de 19 pegos):** cliente só pedindo do balcão, cardápio sem peso, fila que não anda, fila sem paciência, sem fila, garçom que não busca no fogão, garçom parado, dois garçons no mesmo prato, contratar sem cobrar, contratar sem nível, paciência igual com o prato no fogão, nível sem acelerar os clientes (refeito: a primeira versão do defeito nem compilava), porção que nunca chega ao pedido, save que esquece os garçons, contratar sem perguntar, bolinha de pedidos sumida, fila surgindo na porta, pernas paradas no andar, andar sem quique.
 - **Coleções e encosto (9 de 9 pegos, mais 1 equivalente):** encosto nunca desenhado, encosto da cadeira errada, cena sem dizer em que cadeira o cliente sentou, loja ignorando a coleção, página sem cortar, aba nova mantendo a coleção, coleção nova sem voltar à página 1 (pego depois de fortalecer o teste: nenhuma coleção sozinha passa de uma página, e o limite escondia o defeito), coleções fora de ordem, móvel sem coleção. A mutação "encosto também de frente" não mudava nada, porque a arte só tem encosto nas rotações 1 e 2. A checagem redundante saiu do código.
 
 ## Roteiro de teste manual — Arte v3 (móveis e personagens)
@@ -88,6 +90,16 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Atendimento e andar (etapas 1 e 2 do pacote de 12/10)
+
+1. [ ] Os clientes às vezes pedem um prato que não está no balcão. O balão mostra o prato, e no painel do fogão a receita pedida ganha uma bolinha vermelha com quantos esperam.
+2. [ ] Cozinhe o prato pedido: enquanto está no fogão, a barra de paciência do cliente desce mais devagar. Quando fica pronto, o garçom busca sozinho e leva ao balcão; depois serve o cliente.
+3. [ ] O garçom nunca começa a cozinhar sozinho. Sem tarefa, ele anda entre fogões e balcões (não fica na porta).
+4. [ ] Com todas as cadeiras ocupadas, os clientes novos fazem fila na calçada, de frente para a porta. Quem espera demais vai embora e a popularidade cai.
+5. [ ] A cada nível chegam clientes mais rápido.
+6. [ ] O botão **Garçom** na faixa de baixo mostra o nível que libera (3) e depois o preço. Contratar pede confirmação; o garçom novo entra pela porta.
+7. [ ] O andar: as pernas dobram o joelho, o pé sobe e volta, e o corpo não balança de um lado para o outro. Ficou natural? *(anote)*
 
 ## Roteiro de teste manual — Movimento, música e coleções
 

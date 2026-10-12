@@ -1,8 +1,25 @@
 # Status
 
-## CAFÉ MANIE — STATUS (05/10/2026)
+## CAFÉ MANIE — STATUS (12/10/2026)
 
 🟢 **CONCLUÍDO**
+
+**Pacote de melhorias do PO de 12/10, etapas 1 e 2 de 6** (plano completo no [roadmap](roadmap.md))
+
+- **Atendimento que pressiona** (DT-039):
+  - os clientes também pedem pratos que não estão no balcão (pratos rápidos saem mais);
+  - o painel do fogão mostra quantos esperam cada prato;
+  - enquanto o prato está no fogão, eles esperam com mais calma;
+  - sem cadeira livre, formam fila na calçada; quem cansa vai embora e custa popularidade;
+  - a cada nível chegam mais clientes.
+- **Garçons que trabalham sozinhos** (DT-039):
+  - buscam nos fogões os pratos prontos e levam ao balcão;
+  - servem as mesas e circulam pela cozinha quando não há tarefa;
+  - nunca começam a cozinhar.
+- **Contratar garçons:** botão na faixa de baixo, com 3 garçons a mais (níveis 3, 5 e 8; 500, 1.500 e 4.000 de ouro), sempre com confirmação. O save passou para a versão 5.
+- **Andar natural** (DT-040): ciclo de 8 quadros com joelho e pé que sobe; o corpo não balança mais de lado.
+
+**Pedido do PO de 04/10**
 
 **Pedido do PO de 04/10: movimento, loja e música**
 
@@ -71,7 +88,15 @@
 
 🧪 **TESTADO**
 
-- **312 testes automatizados: PASSOU** no Windows. Os testes desta etapa conferem:
+- **329 testes automatizados: PASSOU** no Windows. Os da etapa de 12/10 conferem:
+  - pedidos do cardápio, fila, ritmo por nível;
+  - garçons (buscar no fogão, circular, não cozinhar, contratação);
+  - o save dos garçons, a tela do botão Garçom, da fila e da bolinha de pedidos;
+  - o andar com o ciclo de 8 quadros.
+  - **Defeitos inseridos de propósito: 19 de 19 pegos.**
+- **Turno de 30 min do robô:** 199 clientes servidos, 18% irritados à mesa, 30 desistências da fila (o robô não compra mesas), nível 7 e popularidade 63%.
+- **Cópia do save do PO** aberta com as regras novas: a migração para a versão 5 funciona, e o save de verdade não foi tocado.
+- **Os testes da etapa de 04/10** conferem:
   - se o desenho anda em vez de pular, quica e alterna os pés, senta só ao chegar na cadeira e chega e sai pela calçada;
   - se a música toca em loop, baixinho, com botão próprio lembrado no aparelho, separado do som dos efeitos;
   - se todo móvel e revestimento está numa coleção conhecida e se cada coleção tem cadeira, mesa, enfeite, piso e parede;
@@ -115,12 +140,15 @@
 - **Corrigido:** o teste de jogo novo lia o save de verdade de quem já jogou no PC e falhava (12 móveis e 282 de ouro no lugar dos valores de um jogo novo). Agora ele usa uma pasta própria.
 - ⚠️ **Balanceamento:** o robô continua rápido (6 missões em 5,2 min). Fica para o **FAÇA BALANCEAMENTO**.
 - **Anotado (sem efeito no jogo):** se o jogo fecha com a música tocando, às vezes a Godot avisa no console que a faixa ficou na memória. Nas fotos, isso aconteceu em 1 de cada 6 vezes. O jogo já para a música ao sair; o aviso vem de a Godot liberar o áudio numa linha de execução separada. Ele só aparece no modo de console, e o Windows libera a memória ao fechar. Não mexe no save.
+- **Encontrado no save do PO:** a popularidade estava em 2% com as regras antigas. Numa cópia, com o garçom buscando e servindo sozinho, ela subiu para 14% em 80 segundos. Fica de olho no **FAÇA BALANCEAMENTO**.
 - **Corrigido:** o guia dos sprites ainda citava as poses antigas de andar e não falava das coleções. O README principal também descrevia a loja antiga e não falava do botão de música.
 
 🏗️ **DECISÕES TÉCNICAS**
 
 Detalhes em [decisions.md](decisions.md):
 
+- **DT-039:** atendimento com cardápio, fila na calçada, ritmo por nível, garçons que buscam nos fogões e contratação. Tudo em `core/`, com os números em dados.
+- **DT-040:** andar em 8 quadros com joelho, desenhados pelo gerador da arte; sem o balanço do corpo.
 - **DT-036:** movimento suave só no desenho; as regras continuam no grid. O desenho persegue o personagem sem pular, e os passos ganharam quique e balanço.
 - **DT-037:** música composta e sintetizada por código (sem risco de direito autoral), em loop, com botão próprio.
 - **DT-038:** coleções como conteúdo (`data/collections`), com filtro e páginas na loja. Cadeiras e mesas saem de peças genéricas, e o encosto de quem senta de costas vem da própria cadeira.
@@ -132,6 +160,12 @@ Detalhes em [decisions.md](decisions.md):
 - **DT-035:** interface da v3 no formato do jogo antigo. A loja abre e fecha, e o que ainda não existe (vizinhos, grãos, correio) fica de fora.
 
 ➡️ **PRÓXIMO PASSO**
+
+- **Etapas 3 a 6 do pacote de 12/10:**
+  - reforma piso a piso;
+  - paredes completas com porta, mais janelas, TV e rádio;
+  - mais cadeiras e mesas por coleção e fogões e balcões modernos (a arte já está desenhada);
+  - compra de moedas.
 
 - **Conferência do PO** do movimento, da música e das coleções (roteiro "Movimento, música e coleções" em [qa.md](qa.md)), com o `.exe` novo.
 - **FAÇA BALANCEAMENTO:** os enfeites novos somam beleza e podem deixar o jogo mais fácil; o robô de teste já estava rápido (6 missões em 5,2 min).

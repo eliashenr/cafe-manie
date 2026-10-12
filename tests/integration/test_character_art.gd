@@ -3,7 +3,7 @@ extends CafeTestCase
 ## direção e o espelhamento seguem o movimento, quem senta segue a cadeira, a
 ## expressão segue a paciência e o prato de quem come vai para a mesa certa.
 
-const FRAMES: Array[String] = ["em_pe", "passo", "passo2"]
+const FRAMES: Array[String] = ["em_pe", "passo_0", "passo_1", "passo_2", "passo_3", "passo_4", "passo_5", "passo_6", "passo_7"]
 
 
 func _customer(serial := 0) -> Customer:
@@ -86,21 +86,22 @@ func test_walk_cycle_alternates_feet_bounces_and_stops_standing() -> void:
 	var view := _view(customer)
 	var seen := {}
 	var bounced := false
-	var swayed := false
 	for i in 90:
 		customer.position.x += customer.speed / 60.0
 		view.advance(1.0 / 60.0)
-		seen[String(view.pose()[0]).get_slice("_frente_", 1)] = true
-		bounced = bounced or view.step_motion()[0] > 1.0
-		swayed = swayed or absf(view.step_motion()[1]) > 0.02
+		if i >= 10:  # depois de embalar (o desenho sai do parado aos poucos)
+			seen[String(view.pose()[0]).get_slice("_frente_", 1)] = true
+		bounced = bounced or view.step_motion() > 1.0
 	for frame in FRAMES:
-		assert_true(seen.has(frame), "o ciclo passa por " + frame)
-	assert_true(bounced and swayed, "cada passada quica e balança o corpo")
+		if frame != "em_pe":
+			assert_true(seen.has(frame), "o ciclo passa por " + frame)
+	assert_false(seen.has("em_pe"), "andando, as pernas nunca param no meio do passo")
+	assert_true(bounced, "cada passada sobe e desce o corpo de leve")
 	for i in 120:
 		view.advance(1.0 / 60.0)
 	assert_false(view.walking(), "parou de andar")
 	assert_true(String(view.pose()[0]).ends_with("_frente_em_pe"), "parado fica em pé")
-	assert_eq(view.step_motion(), [0.0, 0.0], "parado não quica")
+	assert_eq(view.step_motion(), 0.0, "parado não quica")
 
 
 func test_jumps_in_the_rules_become_short_walks_on_screen() -> void:

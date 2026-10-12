@@ -30,9 +30,11 @@ const WALKING_SPEED := 0.35
 const SEAT_REACHED := 0.12
 ## Passadas por piso andado; cada passada alterna a perna da frente.
 const STEPS_PER_CELL := 2.2
-## Quique de cada passada (pixels de mundo) e balanço do corpo (radianos).
-const BOUNCE := 4.0
-const SWAY := 0.055
+## Quadros do ciclo de andar da arte ("passo_0" a "passo_7"): duas passadas, uma de cada perna.
+const WALK_FRAMES := 8
+## Quanto o corpo sobe quando as pernas se cruzam no meio da passada (pixels de mundo).
+## Sem balanço de lado: o corpo vai reto, quem anda são as pernas.
+const BOUNCE := 2.0
 ## Respiração de quem está parado ou sentado: quanto estica e quantas vezes por segundo.
 const BREATH := 0.012
 const BREATH_RATE := 0.45
@@ -175,12 +177,12 @@ func walking() -> bool:
 	return velocity.length() > WALKING_SPEED
 
 
-## Quique e balanço da passada atual: [quanto sobe (px), inclinação (rad)].
-func step_motion() -> Array:
+## Quanto o corpo está subindo na passada atual (px): no alto quando as pernas se cruzam, embaixo
+## quando o pé da frente toca o chão.
+func step_motion() -> float:
 	if not walking():
-		return [0.0, 0.0]
-	var phase := _traveled * STEPS_PER_CELL * PI
-	return [sin(fposmod(phase, PI)) * BOUNCE, sin(phase) * SWAY]
+		return 0.0
+	return sin(fposmod(_traveled * STEPS_PER_CELL * PI, PI)) * BOUNCE
 
 
 ## Nome do sprite do corpo e se ele sai espelhado. Ex.: ["cliente_03_frente_andar", true].
@@ -198,16 +200,13 @@ func pose() -> Array:
 	return [sprite_name, direction[1]]
 
 
-## Quadro das pernas: nos contatos com o chão, uma perna à frente (alternando a cada
-## passada); no meio da passada, em pé.
+## Quadro das pernas, pelo quanto o desenho andou: o ciclo de 8 quadros dá duas passadas (uma de
+## cada perna), então o pé não escorrega no chão. Parado, em pé.
 func _frame() -> String:
 	if not walking():
 		return "em_pe"
-	var phase := _traveled * STEPS_PER_CELL * PI
-	var within := fposmod(phase, PI) / PI
-	if within > 0.3 and within < 0.7:
-		return "em_pe"
-	return "passo" if posmod(floori(phase / PI), 2) == 0 else "passo2"
+	var cycle := fposmod(_traveled * STEPS_PER_CELL * PI, TAU) / TAU
+	return "passo_%d" % (floori(cycle * WALK_FRAMES) % WALK_FRAMES)
 
 
 ## Expressão do cliente sentado: comendo, ou conforme a paciência que sobra.
@@ -231,11 +230,11 @@ func _draw() -> void:
 	if sprite == null:
 		_draw_placeholder()
 		return
-	var motion := step_motion()
+	var lift := step_motion()
 	var breath := 1.0
 	if not walking():
 		breath += sin((_time * BREATH_RATE + agent.serial * 0.37) * TAU) * BREATH
-	draw_set_transform(Vector2(0.0, -SORT_NUDGE - motion[0]), motion[1], Vector2(-1.0 if body_pose[1] else 1.0, breath))
+	draw_set_transform(Vector2(0.0, -SORT_NUDGE - lift), 0.0, Vector2(-1.0 if body_pose[1] else 1.0, breath))
 	draw_texture_rect(sprite.texture, sprite.draw_rect(), false)
 	_draw_tray_food()
 	draw_set_transform(Vector2.ZERO)
@@ -257,7 +256,7 @@ func _draw_overlay() -> void:
 	var sprite := ArtSprites.get_sprite(pose()[0])
 	var head_top: Vector2
 	if sprite != null:
-		head_top = Vector2(0.0, -SORT_NUDGE - step_motion()[0] + sprite.draw_rect().position.y)
+		head_top = Vector2(0.0, -SORT_NUDGE - step_motion() + sprite.draw_rect().position.y)
 	else:
 		head_top = IsoProjection.grid_point_to_world(shown) - position + Vector2(0.0, -56.0)
 		if seated_on_screen():
@@ -306,6 +305,10 @@ func _draw_customer_overlay(head_top: Vector2) -> void:
 		Customer.State.WAITING_FOR_FOOD:
 			_draw_balloon(tip, ArtSprites.food(customer.order.id), customer.order.display_name,
 				customer.patience_fraction())
+		Customer.State.QUEUED:
+			# Na fila, o balão só aparece quando a paciência começa a acabar (para a fila não virar um varal de balões).
+			if customer.patience_fraction() < PATIENCE_WORRIED:
+				_draw_balloon(tip, null, "...", customer.patience_fraction())
 		Customer.State.LEAVING, Customer.State.GONE:
 			var face := ArtSprites.get_sprite("humor_feliz" if customer.happy else "humor_bravo")
 			if face != null:

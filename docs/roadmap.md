@@ -16,6 +16,29 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | 9 — QA | Testes, performance, segurança, regressão | | ⏳ |
 | 10 — Release | Android, publicação, analytics | | ⏳ |
 
+## Pacote de melhorias do PO (12/10/2026)
+
+O PO pediu um conjunto de melhorias depois de jogar. Elas entram em etapas, cada uma testada e entregue
+separadamente:
+
+- [x] **1. Atendimento** (DT-039):
+  - clientes pedem pratos que não estão no balcão;
+  - fila na calçada, e mais clientes a cada nível;
+  - garçons buscam os pratos prontos nos fogões e circulam pela cozinha;
+  - contratar garçons.
+- [x] **2. Andar natural** (DT-040): ciclo de 8 quadros com joelho, sem o balanço de pinguim.
+- [ ] **3. Reforma piso a piso:**
+  - escolher um piso ou parede e pintar célula por célula, pagando por célula;
+  - misturar cores e estilos.
+- [ ] **4. Paredes completas:**
+  - paredes da frente e dos lados, com porta, baixas o bastante para continuar vendo o salão;
+  - janelas, portas, TV e rádio para pôr nas paredes.
+- [ ] **5. Mais conteúdo:** mais cadeiras e mesas em cada coleção e fogões e balcões modernos.
+- [ ] **6. Compra de moedas:**
+  - pacotes de Café Ouro por dinheiro, oferecidos quando falta ouro, com a taxa calculada pela economia do jogo;
+  - o pagamento real depende da Play Store (conta de desenvolvedor do PO) e da revisão jurídica da Fase 7;
+  - até lá, a loja de pacotes aparece e explica isso.
+
 ## Fase 1 — detalhamento
 
 - [x] Grid lógico 8×8 com ocupação, colisão e expansão

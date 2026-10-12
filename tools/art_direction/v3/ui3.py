@@ -5,7 +5,7 @@ Tudo na caixa 64x64 dos ícones do canvas (centro em 32,32), menos fitas e listr
 """
 from icons3 import *  # noqa: F401,F403
 from icons3 import glyph as _canvas_glyph, _gloss
-from hud3 import medallion, ribbon, portrait, CHEF_BIA
+from hud3 import medallion, ribbon, portrait, CHEF_BIA, LEO
 
 GLYPH_STROKE = 'fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"'
 
@@ -44,6 +44,17 @@ def square_button(D, kind, color="blue"):
     o.append(f'<rect x="3" y="3" width="58" height="56" rx="{r}" fill="{D.lin([(0, pal[0]), (1, pal[1])])}" stroke="{pal[2]}" stroke-width="2"/>')
     o.append(f'<path d="M9,{r+1} a{r-4},{r-4} 0 0,1 {r-4},{-(r-4)} h{58-2*r} a{r-4},{r-4} 0 0,1 {r-4},{r-4} v6 h-50 Z" fill="#ffffff" opacity="0.3"/>')
     o.append(f'<g transform="translate(32,31) scale(0.62) translate(-32,-32)">{glyph(kind)}</g>')
+    return "".join(o)
+
+
+def waiter_icon(D):
+    """Léo, o garçom: cabeça, colarinho branco e gravata-borboleta (botão de contratar garçom)."""
+    o = [f'<path d="M13,63 Q13,47 32,46 Q51,47 51,63 Z" fill="{D.lin([(0, "#ffffff"), (1, "#dfe6ee")])}" stroke="{OL}" stroke-width="2.2"/>']
+    o.append(f'<path d="M26,47 L32,55 L38,47" fill="none" stroke="{OL}" stroke-width="1.8" stroke-linejoin="round"/>')
+    o.append(f'<g transform="translate(32,28)">{portrait(D, LEO, scale=0.6)}</g>')
+    o.append(f'<path d="M32,53 L22,48 L22,58 Z M32,53 L42,48 L42,58 Z" fill="{D.lin([(0, "#ff6b6b"), (1, "#c81e2a")])}" '
+             f'stroke="{OL}" stroke-width="1.6" stroke-linejoin="round"/>')
+    o.append(C(32, 53, 2.6, "#c81e2a", OL, 1.4))
     return "".join(o)
 
 
@@ -89,7 +100,7 @@ ICONS = {
     "moeda": coin, "estrela_chef": chef_star, "flor": flower, "sorriso": smiley, "estrela": star,
     "estrela_vazia": lambda D: star(D, "#d9e3f0", "#aab8cc"), "presente": gift, "trofeu": trophy,
     "prancheta": clipboard, "loja": shop_house, "rolo": roller, "expandir": expand, "livro": book,
-    "bolo": cake, "martelo": hammer, "cadeado": padlock,
+    "bolo": cake, "martelo": hammer, "cadeado": padlock, "garcom": waiter_icon,
 }
 
 BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("music", "blue"),

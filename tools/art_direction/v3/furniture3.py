@@ -240,13 +240,16 @@ def stove_glow(D, iso, x, y, front):
     return P(q(0.24, 0.76, 0.24, 0.5), "#ffab40", None, 'opacity="0.55"') + P(q(0.3, 0.7, 0.28, 0.38), "#ffe08a", None, 'opacity="0.6"')
 
 
-def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e"):
+def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e", top_color="#ffffff", panel=None, knob="#1f2027",
+          door=None, handle="#f4f7fa"):
     """Fogão retrô esmaltado: tampo preto com 4 bocas, painel cromado com botões e forno com visor.
-    front=None: frente virada para longe da câmera (só o corpo e as bocas)."""
+    front=None: frente virada para longe da câmera (só o corpo e as bocas). Os outros modelos mudam as cores
+    (corpo, borda do tampo, painel, botões, porta e puxador) e mantêm as medidas: a panela e o forno aceso
+    do jogo caem no mesmo lugar em todos."""
     k = K(iso)
     bx, by, w, d, h = x + STOVE_INSET, y + STOVE_INSET, STOVE_SIZE, STOVE_SIZE, STOVE_HEIGHT * k
     o = [soft_shadow(D, iso, x + 0.5, y + 0.5, 0.5, opacity=0.3)]
-    o.append(box3(D, iso, bx, by, w, d, h, enamel, top="#ffffff"))
+    o.append(box3(D, iso, bx, by, w, d, h, enamel, top=top_color))
     top = [iso.v(bx + 0.05, by + 0.05, h), iso.v(bx + w - 0.05, by + 0.05, h), iso.v(bx + w - 0.05, by + d - 0.05, h), iso.v(bx + 0.05, by + d - 0.05, h)]
     o.append(P(top, D.lin([(0, "#3a3c46"), (1, "#1c1d23")], 0, 0, 1, 1), INK3, 0.9))
     burners = STOVE_BURNERS
@@ -255,17 +258,19 @@ def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e"):
     if front is None:
         return "".join(o)
     q = lambda u0, u1, v0, v1: iso.quad(front, bx, by, w, d, 0, h, u0, u1, v0, v1)
-    o.append(P(q(0.0, 1.0, 0.78, 0.97), D.lin([(0, "#f4f7fa"), (0.5, CHROME), (1, "#8f9aa7")]), INK3, 0.8))
+    panel = panel or ("#f4f7fa", CHROME, "#8f9aa7")
+    door = door or (tint(enamel, 0.25), shade(enamel, 0.1))
+    o.append(P(q(0.0, 1.0, 0.78, 0.97), D.lin([(0, panel[0]), (0.5, panel[1]), (1, panel[2])]), INK3, 0.8))
     for u in (0.16, 0.38, 0.62, 0.84):
         px, py = iso.face_center(front, bx, by, w, d, 0, h, u, 0.875)
-        o.append(C(px, py, 3.3 * k, "#1f2027", INK3, 0.7) + line(px, py, px, py - 2.4 * k, "#ffffff", 1.0))
-    o.append(P(q(0.08, 0.92, 0.1, 0.7), D.lin([(0, tint(enamel, 0.25)), (1, shade(enamel, 0.1))]), INK3, 0.9))
+        o.append(C(px, py, 3.3 * k, knob, INK3, 0.7) + line(px, py, px, py - 2.4 * k, "#ffffff", 1.0))
+    o.append(P(q(0.08, 0.92, 0.1, 0.7), D.lin([(0, door[0]), (1, door[1])]), INK3, 0.9))
     o.append(P(q(0.18, 0.82, 0.2, 0.58), D.lin([(0, "#2a2230"), (1, "#120e16")]), INK3, 0.9))
     if cooking:
         o.append(P(q(0.24, 0.76, 0.24, 0.5), "#ffab40", None, 'opacity="0.55"'))
         o.append(P(q(0.3, 0.7, 0.28, 0.38), "#ffe08a", None, 'opacity="0.6"'))
     o.append(P(q(0.22, 0.4, 0.46, 0.56), "#ffffff", None, 'opacity="0.18"'))
-    o.append(P(q(0.14, 0.86, 0.63, 0.67), "#f4f7fa", INK3, 0.8))
+    o.append(P(q(0.14, 0.86, 0.63, 0.67), handle, INK3, 0.8))
     o.append(P(q(0.02, 0.98, 0.0, 0.06), "#2a2230", None, 'opacity="0.6"'))
     if cooking:
         u, v = burners[STOVE_COOK_BURNER]
@@ -273,9 +278,11 @@ def stove(D, iso, x, y, front="R", cooking=None, enamel="#ff4d5e"):
     return "".join(o)
 
 
-def counter(D, iso, x, y, front="R", dishes=(), body="#2ec4b6", top="#ffffff", cells=1, along="x"):
+def counter(D, iso, x, y, front="R", dishes=(), body="#2ec4b6", top="#ffffff", cells=1, along="x", face="panels",
+            rim="#e8edf2", veins=True):
     """Balcão de servir: frente colorida com frisos, tampo de mármore claro, pilhas de pratos com a contagem.
-    cells/along: comprimento em células e o eixo em que ele se estende. front=None: frente escondida."""
+    cells/along: comprimento em células e o eixo em que ele se estende. front=None: frente escondida.
+    face: 'panels' (frisos), 'planks' (tábuas) ou 'plain' (lisa, como inox); rim: cor da borda do tampo."""
     k = K(iso)
     if along == "x":
         bx, by, w, d = x + 0.02, y + 0.06, cells - 0.04, 0.88
@@ -289,13 +296,22 @@ def counter(D, iso, x, y, front="R", dishes=(), body="#2ec4b6", top="#ffffff", c
         q = lambda u0, u1, v0, v1: iso.quad(front, bx, by, w, d, 0, h, u0, u1, v0, v1)
         o.append(P(q(0, 1, 0, 0.1), shade(body, 0.35), None, 'opacity="0.7"'))
         n = cells if (front == "L") == (along == "x") else 1
-        for c in range(n):
-            for (u0, u1) in ((0.08, 0.46), (0.54, 0.92)):
-                a, b = (c + u0) / n, (c + u1) / n
-                o.append(P(q(a, b, 0.18, 0.84), D.lin([(0, tint(body, 0.3)), (1, shade(body, 0.1))]), INK3, 0.8))
-                o.append(P(q(a + 0.05 / n, b - 0.05 / n, 0.62, 0.72), "#ffffff", None, 'opacity="0.35"'))
-    o.append(box3(D, iso, bx - 0.03, by - 0.03, w + 0.06, d + 0.06, 5 * k, "#e8edf2", z=h, top=top))
-    for (a, b) in [((0.15, 0.2), (0.55, 0.35)), ((0.4, 0.62), (0.88, 0.72))]:
+        if face == "panels":
+            for c in range(n):
+                for (u0, u1) in ((0.08, 0.46), (0.54, 0.92)):
+                    a, b = (c + u0) / n, (c + u1) / n
+                    o.append(P(q(a, b, 0.18, 0.84), D.lin([(0, tint(body, 0.3)), (1, shade(body, 0.1))]), INK3, 0.8))
+                    o.append(P(q(a + 0.05 / n, b - 0.05 / n, 0.62, 0.72), "#ffffff", None, 'opacity="0.35"'))
+        elif face == "planks":
+            for i in range(1, 5 * n):
+                u = i / (5 * n)
+                p0, p1 = q(u, u, 0.1, 1.0)[0], q(u, u, 0.1, 1.0)[3]
+                o.append(line(p0[0], p0[1], p1[0], p1[1], shade(body, 0.3), 0.9, 'opacity="0.7"'))
+        else:
+            o.append(P(q(0.0, 1.0, 0.55, 0.62), "#ffffff", None, 'opacity="0.35"'))
+            o.append(P(q(0.0, 1.0, 0.2, 0.24), "#ffffff", None, 'opacity="0.2"'))
+    o.append(box3(D, iso, bx - 0.03, by - 0.03, w + 0.06, d + 0.06, 5 * k, rim, z=h, top=top))
+    for (a, b) in [((0.15, 0.2), (0.55, 0.35)), ((0.4, 0.62), (0.88, 0.72))] if veins else []:
         p0 = iso.v(bx + a[0] * w, by + a[1] * d, h + 5 * k)
         p1 = iso.v(bx + b[0] * w, by + b[1] * d, h + 5 * k)
         o.append(path(f"M{f(p0[0])},{f(p0[1])} Q{f((p0[0]+p1[0])/2+4)},{f((p0[1]+p1[1])/2-3)} {f(p1[0])},{f(p1[1])}",

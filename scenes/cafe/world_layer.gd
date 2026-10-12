@@ -69,6 +69,8 @@ func sync() -> void:
 const DISH_TOWARD_SEAT := 0.3
 ## Onde os clientes aparecem e somem: na calçada, este tanto para fora da entrada (em pisos).
 const SIDEWALK_OFFSET := Vector2(2.8, 0.0)
+## Quem entra na fila chega andando pela calçada (deste tanto além do seu lugar), e quem desiste sai por ela.
+const QUEUE_WALK := Vector2(0.0, 3.0)
 ## Texto do selo do fogão quando o prato fica pronto.
 const READY_TEXT := "Pronto!"
 
@@ -155,6 +157,9 @@ func _refresh_agents(simulation: CafeSimulation) -> void:
 			if agent is Customer and (agent as Customer).state == Customer.State.WALKING_IN:
 				view.refresh(agent)
 				view.arrive_from(_sidewalk_point())
+			elif agent is Customer and (agent as Customer).state == Customer.State.QUEUED:
+				view.refresh(agent)
+				view.arrive_from(agent.position + QUEUE_WALK)
 		var seat_rotation := -1
 		var seat_furniture: StringName = &""
 		if agent is Customer and (agent as Customer).is_seated():
@@ -168,7 +173,8 @@ func _refresh_agents(simulation: CafeSimulation) -> void:
 			var gone: AgentView = _agents[serial]
 			_agents.erase(serial)
 			if gone.agent is Customer:
-				gone.begin_exit(_sidewalk_point())
+				var gave_up := (gone.agent as Customer).gave_up_in_line
+				gone.begin_exit(gone.agent.position + QUEUE_WALK if gave_up else _sidewalk_point())
 				_exiting.append(gone)
 			else:
 				gone.queue_free()

@@ -54,6 +54,8 @@ const SERVICE_MESSAGES := {
 	ServiceResult.UNKNOWN_ITEM: "Item desconhecido",
 	ServiceResult.IN_USE: "Está em uso agora, espere terminar",
 	ServiceResult.LAST_ESSENTIAL: "É o último: sem ele não dá para cozinhar ou servir",
+	ServiceResult.NO_MORE_WAITERS: "A equipe de garçons já está completa",
+	ServiceResult.WAITER_LOCKED: "O próximo garçom ainda está bloqueado",
 }
 
 ## Abas da loja.
@@ -404,6 +406,7 @@ func _show_icon_bar() -> void:
 	_add_icon(_buttons, "ShopButton", "loja", "Loja", func() -> void: open_shop(ShopTab.SALON))
 	_add_icon(_buttons, "RenovateButton", "rolo", "Reformar", func() -> void: open_shop(ShopTab.FLOOR))
 	_add_expand_button()
+	_add_hire_button()
 	_add_icon(_buttons, "MissionsBarButton", "prancheta", "Missões", func() -> void:
 		var missions := cafe.hud.find_child("MissionsButton", true, false) as Button
 		if missions != null:
@@ -456,6 +459,31 @@ func _add_expand_button() -> void:
 		else:
 			expand.text = "Expandir\n%d×%d · %d" % [size.x, size.y, int(next["price"])]
 		expand.disabled = simulation.can_expand() != ServiceResult.OK)
+
+
+## Contratar garçom: mostra o preço, o nível que falta ou que a equipe está completa.
+func _add_hire_button() -> void:
+	var simulation := cafe.simulation
+	var hire := _add_icon(_buttons, "HireButton", "garcom", "", ask_hire_waiter)
+	hire.custom_minimum_size = Vector2(100, ICON_BUTTON_SIZE.y)
+	_updaters.append(func() -> void:
+		var price := simulation.next_waiter_price()
+		if price < 0:
+			hire.text = "Garçons\nCompleto"
+		elif simulation.next_waiter_level() > simulation.progression.level:
+			hire.text = "Garçom\nNível %d" % simulation.next_waiter_level()
+		else:
+			hire.text = "Garçom\n%s" % UiTheme.thousands(price)
+		hire.disabled = simulation.can_hire_waiter() != ServiceResult.OK)
+
+
+## Contratar custa caro: pede confirmação (o botão já selecionado é o Cancelar).
+func ask_hire_waiter() -> void:
+	var price := cafe.simulation.next_waiter_price()
+	if price < 0:
+		return
+	_ask("Contratar garçom?", "Contratar mais um garçom por %s Café Ouro? Ele busca os pratos prontos nos fogões e serve as mesas." % [
+		UiTheme.thousands(price)], "Contratar", func() -> void: cafe.hire_waiter())
 
 
 # --- Loja ------------------------------------------------------------------
@@ -705,7 +733,11 @@ func _show_stove_controls(stove_id: StringName) -> void:
 			for recipe in simulation.recipes.all():
 				var dish := recipe
 				var button := _add_recipe(dish, func() -> void: cafe.cook_on_selected(dish.id))
+				var badge := _add_demand_badge(button)
 				_updaters.append(func() -> void:
+					var waiting := int(simulation.waiting_demand().get(dish.id, 0))
+					badge.visible = waiting > 0
+					badge.text = str(waiting)
 					var locked := dish.unlock_level > simulation.progression.level
 					if locked:
 						button.text = "%s\nNível %d" % [dish.display_name, dish.unlock_level]
@@ -732,6 +764,29 @@ func _show_stove_controls(stove_id: StringName) -> void:
 
 
 ## Cartão da receita: o desenho do prato em cima, o nome e o tempo e o custo embaixo.
+## Bolinha vermelha no canto da receita: quantos clientes esperam esse prato (que não está no balcão).
+func _add_demand_badge(button: Button) -> Label:
+	var badge := Label.new()
+	badge.name = "DemandBadge"
+	badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	badge.custom_minimum_size = Vector2(24, 24)
+	badge.position = Vector2(RECIPE_BUTTON_SIZE.x - 20, -6)
+	badge.tooltip_text = "Clientes esperando este prato"
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color("e0303a")
+	box.border_color = Color.WHITE
+	box.set_border_width_all(2)
+	box.set_corner_radius_all(12)
+	box.anti_aliasing = true
+	badge.add_theme_stylebox_override("normal", box)
+	badge.add_theme_color_override("font_color", Color.WHITE)
+	badge.add_theme_font_size_override("font_size", 14)
+	badge.visible = false
+	button.add_child(badge)
+	return badge
+
+
 func _add_recipe(dish: RecipeDefinition, action: Callable) -> Button:
 	var button := Button.new()
 	button.name = "Cook_" + String(dish.id)
@@ -773,8 +828,19 @@ func _stove_message(id: StringName) -> String:
 		Kitchen.StoveStatus.COOKING:
 			return "Fogão: %s fica pronto em %s" % [kitchen.stove_recipe(id).display_name, WorldLayer.format_time(kitchen.time_left(id))]
 		Kitchen.StoveStatus.READY:
-			return "Fogão: %s pronto! Toque no fogão para levar ao balcão" % kitchen.stove_recipe(id).display_name
-	return "Fogão livre: escolha o que cozinhar"
+			return "Fogão: %s pronto! O garçom leva ao balcão (ou toque no fogão)" % kitchen.stove_recipe(id).display_name
+	var waiting := _demand_text()
+	return "Fogão livre: escolha o que cozinhar" + ("  —  Clientes esperando: " + waiting if not waiting.is_empty() else "")
+
+
+## "Café ×2, Pão de Queijo ×1": pratos pedidos que não estão em nenhum balcão.
+func _demand_text() -> String:
+	var parts: Array[String] = []
+	var demand := cafe.simulation.waiting_demand()
+	for recipe in cafe.simulation.recipes.all():
+		if demand.has(recipe.id):
+			parts.append("%s ×%d" % [recipe.display_name, demand[recipe.id]])
+	return ", ".join(parts)
 
 
 # --- Construção ------------------------------------------------------------------

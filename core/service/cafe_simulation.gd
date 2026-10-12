@@ -24,9 +24,12 @@ signal achievement_unlocked(achievement: AchievementDefinition, tier: int)
 ## (um revestimento que o jogador já tinha vira ouro).
 signal daily_reward_claimed(day: int, reward: Dictionary)
 signal cafe_name_changed(cafe_name: String)
+## Um garçom foi contratado; [param count] é quantos a cafeteria tem agora.
+signal waiter_hired(count: int)
 
 
-## Um pedido: qual cliente, qual receita e de qual balcão sai a porção.
+## Um pedido: qual cliente, qual receita e de qual balcão sai a porção
+## (&"" enquanto a receita não estiver em nenhum balcão: o jogador precisa cozinhar).
 class Order:
 	extends RefCounted
 	var customer: Customer
@@ -239,6 +242,47 @@ func collect(stove_id: StringName) -> int:
 		missions.record(MissionDefinition.Kind.COLLECT_DISHES)
 		stats.add(PlayerStats.DISHES_COOKED)
 	return result
+
+
+# --- Garçons ----------------------------------------------------------------
+
+## Preço da próxima contratação (-1 se já tem todos os garçons possíveis).
+func next_waiter_price() -> int:
+	return economy.waiter_prices[waiters.size()] if waiters.size() < economy.max_waiters() else -1
+
+
+## Nível que libera a próxima contratação (-1 se já tem todos).
+func next_waiter_level() -> int:
+	return economy.waiter_levels[waiters.size()] if waiters.size() < economy.max_waiters() else -1
+
+
+func can_hire_waiter() -> int:
+	if waiters.size() >= economy.max_waiters():
+		return ServiceResult.NO_MORE_WAITERS
+	if next_waiter_level() > progression.level:
+		return ServiceResult.WAITER_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, next_waiter_price()):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	return ServiceResult.OK
+
+
+## Contrata mais um garçom, cobrando o preço. Ele chega pela entrada.
+func hire_waiter() -> int:
+	var result := can_hire_waiter()
+	if result != ServiceResult.OK:
+		return result
+	var price := next_waiter_price()
+	if price > 0:
+		wallet.spend(Wallet.SOFT, price, "Contratação de garçom")
+	_hire_waiter()
+	waiter_hired.emit(waiters.size())
+	return ServiceResult.OK
+
+
+## Garçons de um save (sem cobrar): completa até [param count], dentro do máximo.
+func restore_waiter_count(count: int) -> void:
+	while waiters.size() < mini(count, economy.max_waiters()):
+		_hire_waiter()
 
 
 # --- Loja, inventário e expansão --------------------------------------------
@@ -467,10 +511,8 @@ func expand() -> int:
 		return ServiceResult.NO_MORE_EXPANSIONS
 	if int(step["price"]) > 0:
 		wallet.spend(Wallet.SOFT, int(step["price"]), "Expansão para %dx%d" % [step["size"].x, step["size"].y])
-	# A entrada pode ter mudado: garçom e quem já está saindo passam a usar a nova.
+	# A entrada pode ter mudado: quem já está saindo passa a usar a nova.
 	var exit: Array[Vector2i] = [layout.entrance]
-	for waiter in waiters:
-		waiter.home = layout.entrance
 	for customer in customers:
 		if customer.state == Customer.State.LEAVING:
 			customer.follow(navigation.path_to_any(customer.cell(), exit), exit)
@@ -489,6 +531,41 @@ func seats() -> Array[StringName]:
 		if placement.definition.category == FurnitureDefinition.Category.SEATING and not _tables_next_to(placement.id).is_empty():
 			result.append(placement.id)
 	return result
+
+
+## Clientes na fila da calçada, do primeiro ao último.
+func queued() -> Array[Customer]:
+	return customers.filter(func(c: Customer) -> bool: return c.state == Customer.State.QUEUED)
+
+
+## Clientes dentro da cafeteria (fora da fila e ainda não saíram).
+func inside_count() -> int:
+	var total := 0
+	for customer in customers:
+		if customer.state not in [Customer.State.QUEUED, Customer.State.GONE]:
+			total += 1
+	return total
+
+
+## Onde fica, na calçada, quem está na posição [param index] da fila (0 = o primeiro).
+func queue_spot(index: int) -> Vector2:
+	return Vector2(layout.entrance) + config.queue_offset + config.queue_spacing * index
+
+
+## Intervalo médio entre chegadas agora: popularidade, beleza e nível.
+func spawn_interval_now() -> float:
+	return config.spawn_interval_for(popularity) * (1.0 - beauty_factor() * config.beauty_spawn_bonus) \
+		* config.level_spawn_factor(progression.level)
+
+
+## Pedidos esperando um prato que não está em nenhum balcão: {id da receita: quantos}.
+## É o que o jogador precisa cozinhar.
+func waiting_demand() -> Dictionary:
+	var demand := {}
+	for order in _orders:
+		if order.counter_id == &"":
+			demand[order.recipe.id] = int(demand.get(order.recipe.id, 0)) + 1
+	return demand
 
 
 func free_seats() -> Array[StringName]:
@@ -538,7 +615,8 @@ func pending_orders() -> int:
 func reserved_servings() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for order in _orders:
-		result.append({"counter_id": order.counter_id, "recipe": order.recipe})
+		if order.counter_id != &"":
+			result.append({"counter_id": order.counter_id, "recipe": order.recipe})
 	return result
 
 
@@ -552,6 +630,8 @@ func restore_popularity(value: float) -> void:
 
 func tick(delta: float) -> void:
 	_update_arrivals(delta)
+	_update_queue(delta)
+	_assign_servings()
 	for customer in customers.duplicate():
 		_update_customer(customer, delta)
 	for waiter in waiters:
@@ -559,35 +639,79 @@ func tick(delta: float) -> void:
 	customers = customers.filter(func(c: Customer) -> bool: return c.state != Customer.State.GONE)
 
 
+## Chega um cliente de tempos em tempos. Com cadeira livre (e ninguém na frente dele na fila),
+## ele entra; senão espera na fila da calçada, se houver lugar nela.
 func _update_arrivals(delta: float) -> void:
 	_spawn_timer -= delta
 	if _spawn_timer > 0.0:
 		return
-	_spawn_timer = config.spawn_interval_for(popularity) * (1.0 - beauty_factor() * config.beauty_spawn_bonus) \
-		* rng.randf_range(1.0 - config.spawn_jitter, 1.0 + config.spawn_jitter)
-	if customers.size() >= config.max_customers or customer_types.is_empty():
+	_spawn_timer = spawn_interval_now() * rng.randf_range(1.0 - config.spawn_jitter, 1.0 + config.spawn_jitter)
+	if customer_types.is_empty():
 		return
-	var candidates := free_seats()
-	if candidates.is_empty():
-		return
-	var seat_id: StringName = candidates[rng.randi_range(0, candidates.size() - 1)]
-	var path := navigation.path_to_any(layout.entrance, navigation.access_cells(seat_id))
-	if path.is_empty():
-		return
-
 	var customer := Customer.new()
-	customer.serial = _take_serial()
 	customer.type = _pick_customer_type()
 	customer.speed = config.customer_walk_speed
+	if queued().is_empty() and _walk_in(customer):
+		pass
+	elif queued().size() < config.queue_capacity:
+		customer.state = Customer.State.QUEUED
+		customer.patience_total = config.queue_patience * customer.type.patience_multiplier
+		customer.patience_left = customer.patience_total
+		customer.position = queue_spot(queued().size())
+		customer.facing = Vector2(-1, 0)
+	else:
+		return  # fila cheia: o cliente passa direto
+	customer.serial = _take_serial()
+	customers.append(customer)
+	customer_arrived.emit(customer)
+
+
+## Leva o cliente da entrada até uma cadeira livre. False se não há cadeira, caminho ou lugar lá dentro.
+func _walk_in(customer: Customer) -> bool:
+	if inside_count() >= config.max_customers_at(progression.level):
+		return false
+	var candidates := free_seats()
+	if candidates.is_empty():
+		return false
+	var seat_id: StringName = candidates[rng.randi_range(0, candidates.size() - 1)]
+	var goals := navigation.access_cells(seat_id)
+	var path := navigation.path_to_any(layout.entrance, goals)
+	if path.is_empty():
+		return false
+	customer.state = Customer.State.WALKING_IN
 	customer.position = Vector2(layout.entrance)
 	customer.seat_id = seat_id
 	customer.seat_cell = layout.get_placement(seat_id).origin
 	customer.patience_total = config.customer_patience * customer.type.patience_multiplier \
 		* (1.0 + beauty_factor() * config.beauty_patience_bonus)
 	customer.patience_left = customer.patience_total
-	customer.follow(path, navigation.access_cells(seat_id))
-	customers.append(customer)
-	customer_arrived.emit(customer)
+	customer.follow(path, goals)
+	return true
+
+
+## A fila anda: o primeiro entra quando vaga uma cadeira; quem cansa de esperar vai embora.
+func _update_queue(delta: float) -> void:
+	var line := queued()
+	while not line.is_empty() and _walk_in(line[0]):
+		line.remove_at(0)
+	for i in line.size():
+		var customer := line[i]
+		customer.position = queue_spot(i)
+		customer.facing = Vector2(-1, 0)
+		customer.patience_left -= delta
+		if customer.patience_left <= 0.0:
+			customer.happy = false
+			customer.gave_up_in_line = true
+			customer.state = Customer.State.GONE
+			_change_popularity(-config.queue_popularity_loss)
+			customer_left.emit(customer)
+
+
+## Pedidos que esperavam um prato pegam a porção assim que ela chega a um balcão (por ordem de pedido).
+func _assign_servings() -> void:
+	for order in _orders:
+		if order.counter_id == &"":
+			order.counter_id = kitchen.take_serving(order.recipe)
 
 
 func _update_customer(customer: Customer, delta: float) -> void:
@@ -596,8 +720,11 @@ func _update_customer(customer: Customer, delta: float) -> void:
 			if customer.advance(delta):
 				customer.position = Vector2(customer.seat_cell)
 				customer.state = Customer.State.WAITING_TO_ORDER
+				customer.think_left = config.order_think_time
 		Customer.State.WAITING_TO_ORDER:
-			_try_to_order(customer)
+			customer.think_left -= delta
+			if customer.think_left <= 0.0:
+				_place_order(customer)
 			_lose_patience(customer, delta)
 		Customer.State.WAITING_FOR_FOOD:
 			_lose_patience(customer, delta)
@@ -612,11 +739,12 @@ func _update_customer(customer: Customer, delta: float) -> void:
 				customer_left.emit(customer)
 
 
-func _try_to_order(customer: Customer) -> void:
-	var available := kitchen.available_recipes()
-	if available.is_empty():
+## O cliente pede: às vezes o que está no balcão, às vezes qualquer prato do cardápio.
+## O que não está no balcão espera o jogador cozinhar.
+func _place_order(customer: Customer) -> void:
+	var recipe := _choose_order()
+	if recipe == null:
 		return
-	var recipe: RecipeDefinition = available[rng.randi_range(0, available.size() - 1)]
 	var order := Order.new()
 	order.customer = customer
 	order.recipe = recipe
@@ -626,7 +754,36 @@ func _try_to_order(customer: Customer) -> void:
 	customer.state = Customer.State.WAITING_FOR_FOOD
 
 
+func _choose_order() -> RecipeDefinition:
+	var available := kitchen.available_recipes()
+	if available.is_empty() or rng.randf() < config.menu_order_chance:
+		return _pick_from_menu()
+	return available[rng.randi_range(0, available.size() - 1)]
+
+
+## Uma receita liberada, sorteada com mais chance para as rápidas (café sai mais que lasanha).
+func _pick_from_menu() -> RecipeDefinition:
+	var menu := recipes.unlocked_at(progression.level)
+	var weights: Array[float] = []
+	var total := 0.0
+	for recipe in menu:
+		var weight := 1.0 / pow(maxf(recipe.cook_time, 1.0), config.menu_cook_time_weight)
+		weights.append(weight)
+		total += weight
+	var roll := rng.randf() * total
+	for i in menu.size():
+		roll -= weights[i]
+		if roll <= 0.0:
+			return menu[i]
+	return menu[-1] if not menu.is_empty() else null
+
+
+## A paciência gasta mais devagar quando o prato pedido ainda não está no balcão,
+## mas já está no fogão: o cliente vê que estão preparando.
 func _lose_patience(customer: Customer, delta: float) -> void:
+	var order := _order_of(customer)
+	if order != null and order.counter_id == &"" and kitchen.is_preparing(order.recipe):
+		delta *= config.patience_drain_while_cooking
 	customer.patience_left -= delta
 	if customer.patience_left <= 0.0:
 		_send_away(customer, false)
@@ -669,7 +826,7 @@ func _cancel_order_of(customer: Customer) -> void:
 	for order in _orders.duplicate():
 		if order.customer != customer:
 			continue
-		if not order.picked_up:
+		if not order.picked_up and order.counter_id != &"":
 			kitchen.return_serving(order.counter_id, order.recipe)
 		var waiter := _waiter_of(order)
 		if waiter != null:
@@ -677,23 +834,23 @@ func _cancel_order_of(customer: Customer) -> void:
 			waiter.carrying = null
 			waiter.stop()
 			waiter.state = Waiter.State.IDLE
+			waiter.timer = 0.0
 		_orders.erase(order)
 
 
 func _update_waiter(waiter: Waiter, delta: float) -> void:
 	match waiter.state:
 		Waiter.State.IDLE, Waiter.State.RETURNING:
-			var order := _next_unassigned_order()
-			if order != null and _send_waiter_to_counter(waiter, order):
+			if _give_task(waiter):
 				return
-			if waiter.state == Waiter.State.IDLE and waiter.cell() != waiter.home:
-				var home: Array[Vector2i] = [waiter.home]
-				var path := navigation.path_to_any(waiter.cell(), home)
-				if not path.is_empty():
-					waiter.follow(path, home)
-					waiter.state = Waiter.State.RETURNING
-			if waiter.state == Waiter.State.RETURNING and waiter.advance(delta):
-				waiter.state = Waiter.State.IDLE
+			if waiter.state == Waiter.State.RETURNING:
+				if waiter.advance(delta):
+					waiter.state = Waiter.State.IDLE
+					waiter.timer = config.waiter_idle_pause * rng.randf_range(0.6, 1.4)
+			else:
+				waiter.timer -= delta
+				if waiter.timer <= 0.0:
+					_walk_to_post(waiter)
 		Waiter.State.TO_COUNTER:
 			if waiter.advance(delta):
 				waiter.state = Waiter.State.PICKING_UP
@@ -715,6 +872,91 @@ func _update_waiter(waiter: Waiter, delta: float) -> void:
 			waiter.timer -= delta
 			if waiter.timer <= 0.0:
 				_deliver(waiter)
+		Waiter.State.TO_STOVE:
+			if waiter.advance(delta):
+				waiter.state = Waiter.State.COLLECTING
+				waiter.timer = config.handling_time
+		Waiter.State.COLLECTING:
+			waiter.timer -= delta
+			if waiter.timer <= 0.0:
+				_collect_for_player(waiter)
+		Waiter.State.TO_DROP:
+			if waiter.advance(delta):
+				waiter.state = Waiter.State.DROPPING
+				waiter.timer = config.handling_time
+		Waiter.State.DROPPING:
+			waiter.timer -= delta
+			if waiter.timer <= 0.0:
+				waiter.carrying = null
+				waiter.drop_counter = &""
+				waiter.state = Waiter.State.IDLE
+
+
+## Tarefa para um garçom livre: primeiro servir um pedido que já tem porção no balcão;
+## depois buscar um prato pronto num fogão (se couber em algum balcão).
+func _give_task(waiter: Waiter) -> bool:
+	var order := _next_unassigned_order()
+	if order != null and _send_waiter_to_counter(waiter, order):
+		return true
+	for stove in kitchen.ready_stoves():
+		if _stove_taken(stove) or kitchen.collect_destination(stove) == &"":
+			continue
+		var goals := navigation.access_cells(stove)
+		var path := navigation.path_to_any(waiter.cell(), goals)
+		if path.is_empty():
+			continue
+		waiter.stove_id = stove
+		waiter.follow(path, goals)
+		waiter.state = Waiter.State.TO_STOVE
+		return true
+	return false
+
+
+func _stove_taken(stove: StringName) -> bool:
+	for waiter in waiters:
+		if waiter.stove_id == stove:
+			return true
+	return false
+
+
+## O garçom tira o prato pronto do fogão (como o toque do jogador: o prato vai para o balcão
+## e o XP sai) e leva até o balcão. Se o jogador já tinha tocado no fogão, não há o que levar.
+func _collect_for_player(waiter: Waiter) -> void:
+	var stove := waiter.stove_id
+	waiter.stove_id = &""
+	waiter.state = Waiter.State.IDLE
+	waiter.timer = 0.0
+	var counter := kitchen.collect_destination(stove)
+	var recipe := kitchen.stove_recipe(stove)
+	if counter == &"" or collect(stove) != ServiceResult.OK:
+		return
+	var goals := navigation.access_cells(counter)
+	var path := navigation.path_to_any(waiter.cell(), goals)
+	if path.is_empty():
+		return
+	waiter.carrying = recipe
+	waiter.drop_counter = counter
+	waiter.follow(path, goals)
+	waiter.state = Waiter.State.TO_DROP
+
+
+## Sem tarefa, o garçom vai para perto de outro fogão ou balcão (em vez de ficar na porta).
+func _walk_to_post(waiter: Waiter) -> void:
+	var posts: Array[Vector2i] = []
+	for placement in layout.placements():
+		if placement.definition.category in [FurnitureDefinition.Category.COOKING, FurnitureDefinition.Category.COUNTER]:
+			for cell in navigation.access_cells(placement.id):
+				if cell != waiter.cell() and not posts.has(cell):
+					posts.append(cell)
+	waiter.timer = config.waiter_idle_pause
+	if posts.is_empty():
+		return
+	var goal: Array[Vector2i] = [posts[rng.randi_range(0, posts.size() - 1)]]
+	var path := navigation.path_to_any(waiter.cell(), goal)
+	if path.is_empty():
+		return
+	waiter.follow(path, goal)
+	waiter.state = Waiter.State.RETURNING
 
 
 func _send_waiter_to_counter(waiter: Waiter, order: Order) -> bool:
@@ -743,7 +985,14 @@ func _deliver(waiter: Waiter) -> void:
 
 func _next_unassigned_order() -> Order:
 	for order in _orders:
-		if _waiter_of(order) == null:
+		if order.counter_id != &"" and _waiter_of(order) == null:
+			return order
+	return null
+
+
+func _order_of(customer: Customer) -> Order:
+	for order in _orders:
+		if order.customer == customer:
 			return order
 	return null
 
@@ -785,7 +1034,6 @@ func _hire_waiter() -> void:
 	var waiter := Waiter.new()
 	waiter.serial = _take_serial()
 	waiter.speed = config.waiter_walk_speed
-	waiter.home = layout.entrance
 	waiter.position = Vector2(layout.entrance)
 	waiters.append(waiter)
 

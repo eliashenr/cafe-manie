@@ -20,4 +20,6 @@ enum {
 	UNKNOWN_ITEM,       ## item (móvel, revestimento) inexistente
 	IN_USE,             ## o móvel está sendo usado agora
 	LAST_ESSENTIAL,     ## é o último fogão ou balcão: sem ele o jogo trava
+	NO_MORE_WAITERS,    ## a cafeteria já tem todos os garçons possíveis
+	WAITER_LOCKED,      ## nível insuficiente para contratar o próximo garçom
 }

@@ -90,6 +90,7 @@ func _ready() -> void:
 	simulation.payment_received.connect(_on_payment_received)
 	simulation.leveled_up.connect(_on_leveled_up)
 	simulation.cafe_expanded.connect(_on_cafe_expanded)
+	simulation.waiter_hired.connect(_on_waiter_hired)
 	simulation.mission_completed.connect(_on_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
 	_connect_sounds()
@@ -243,6 +244,7 @@ func _connect_sounds() -> void:
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.cafe_expanded.connect(play.bind(&"purchase").unbind(1))
+	simulation.waiter_hired.connect(play.bind(&"purchase").unbind(1))
 	hud.mute_toggled.connect(sound_board.set_muted)
 	sound_board.muted_changed.connect(hud.show_sound_state)
 	hud.show_sound_state(sound_board.muted)
@@ -386,6 +388,17 @@ func expand_cafe() -> int:
 	last_service_result = simulation.expand()
 	state_changed.emit()
 	return last_service_result
+
+
+func hire_waiter() -> int:
+	last_service_result = simulation.hire_waiter()
+	state_changed.emit()
+	return last_service_result
+
+
+func _on_waiter_hired(count: int) -> void:
+	_mark_dirty()
+	EventBus.message_posted.emit("Garçom contratado! Agora são %d na equipe." % count)
 
 
 func _on_cafe_expanded(new_size: Vector2i) -> void:

@@ -97,6 +97,8 @@ func test_cooking_time_survives_json_precisely() -> void:
 
 func test_counter_servings_and_reserved_orders_come_back() -> void:
 	_setup()
+	sim.config = sim.config.duplicate()  # cópia: o recurso carregado é compartilhado entre os testes
+	sim.config.menu_order_chance = 0.0  # o cliente pede o café do balcão (reserva a porção)
 	sim.start_cooking(stove, &"coffee")
 	clock.advance(15.0)
 	sim.collect(stove)
@@ -194,6 +196,17 @@ func test_round_trip_keeps_the_cafe_name_and_old_saves_get_a_default() -> void:
 	data.erase("cafe_name")
 	var loaded := SaveCodec.decode(SaveCodec.migrate(JSON.parse_string(JSON.stringify(data))), clock).simulation
 	assert_eq(loaded.cafe_name, CafeSimulation.DEFAULT_CAFE_NAME, "quem já jogava não é interrompido")
+
+
+func test_round_trip_keeps_the_hired_waiters_and_old_saves_have_one() -> void:
+	_setup()
+	sim.restore_waiter_count(3)
+	assert_eq(_round_trip().simulation.waiters.size(), 3, "os garçons contratados continuam na equipe")
+	var data := SaveCodec.encode(sim)
+	data["save_version"] = 4
+	data.erase("waiters")
+	var loaded := SaveCodec.decode(SaveCodec.migrate(JSON.parse_string(JSON.stringify(data))), clock).simulation
+	assert_eq(loaded.waiters.size(), 1, "save antigo: o garçom que vinha com a cafeteria")
 
 
 func _chair_away_from_table() -> StringName:

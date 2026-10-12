@@ -114,6 +114,32 @@ func collect(stove_id: StringName) -> int:
 
 # --- Balcões ---------------------------------------------------------------
 
+## Algum fogão está preparando esta receita (ou já terminou e o prato espera ser levado)?
+func is_preparing(recipe: RecipeDefinition) -> bool:
+	for state: StoveState in _stoves.values():
+		if state.recipe == recipe:
+			return true
+	return false
+
+
+## Fogões com prato pronto, em ordem estável (id).
+func ready_stoves() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for id: StringName in _stoves.keys():
+		if stove_status(id) == StoveStatus.READY:
+			ids.append(id)
+	ids.sort_custom(func(a: StringName, b: StringName) -> bool: return String(a) < String(b))
+	return ids
+
+
+## Balcão para onde iria o prato pronto deste fogão; &"" se não está pronto ou não cabe em nenhum.
+func collect_destination(stove_id: StringName) -> StringName:
+	if stove_status(stove_id) != StoveStatus.READY:
+		return &""
+	var recipe: RecipeDefinition = _stoves[stove_id].recipe
+	return _find_counter_for(recipe, recipe.servings)
+
+
 ## O que está no balcão, ou null se vazio.
 func counter_stack(id: StringName) -> CounterStack:
 	return _counters.get(id)

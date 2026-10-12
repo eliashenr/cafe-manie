@@ -763,6 +763,133 @@ DECORATIONS = {
 }
 
 
+# --- Itens de parede que o jogador compra e pendura (TV, rádio, janelas, lousa...) ------------
+# Mesmo formato dos enfeites: desenho plano numa célula de parede (u de 0 a L, v para cima).
+
+def wall_tv(D):
+    """TV de tela plana na parede, passando um desenho de xícara."""
+    o = [f'<rect x="{f(L / 2 - 3)}" y="-50" width="6" height="4" fill="#3a3c46"/>']
+    o.append(f'<rect x="4" y="-78" width="{f(L - 8)}" height="28" rx="2.5" fill="#1d1d24" stroke="{INK3}" stroke-width="1.2"/>')
+    o.append(f'<rect x="6.5" y="-75.5" width="{f(L - 13)}" height="23" rx="1" fill="{D.lin([(0, "#4fc3ff"), (1, "#b06bff")])}"/>')
+    o.append(f'<path d="M{f(L / 2 - 6)},-68 h12 v6 a6,6 0 0,1 -12,0 Z" fill="#ffffff" stroke="{INK3}" stroke-width="0.8"/>')
+    o.append(f'<path d="M{f(L / 2 + 6)},-66 a3,3 0 0,1 0,5" fill="none" stroke="#ffffff" stroke-width="1.4"/>')
+    o.append(f'<path d="M{f(L / 2 - 3)},-71 q2,-3 0,-5 M{f(L / 2 + 2)},-71 q2,-3 0,-5" fill="none" stroke="#ffffff" stroke-width="1.1" opacity="0.8"/>')
+    o.append(f'<path d="M8,-75 L20,-75 L9,-56 Z" fill="#ffffff" opacity="0.18"/>')
+    o.append(f'<circle cx="{f(L - 7)}" cy="-52.5" r="0.9" fill="#ff4d5e"/>')
+    return "".join(o)
+
+
+def wall_radio(D):
+    """Prateleira com um rádio antigo de madeira e botões dourados."""
+    o = [f'<rect x="5" y="-50" width="{f(L - 10)}" height="4" rx="1.2" fill="#c98a52" stroke="{INK3}" stroke-width="0.9"/>']
+    o.append(f'<path d="M9,-46 l3,6 M{f(L - 9)},-46 l-3,6" stroke="#8a5530" stroke-width="1.6"/>')
+    o.append(f'<path d="M9,-50 V-66 Q9,-74 {f(L / 2)},-74 Q{f(L - 9)},-74 {f(L - 9)},-66 V-50 Z" '
+             f'fill="{D.lin([(0, "#d88a45"), (1, "#8a4f26")], 0, 0, 1, 0)}" stroke="{INK3}" stroke-width="1.1"/>')
+    grille = D.raw("grade_radio", '<pattern id="grade_radio" patternUnits="userSpaceOnUse" width="3" height="3">'
+                   '<rect width="3" height="3" fill="#f3e2c0"/><rect width="1.4" height="3" fill="#c9a46a"/></pattern>')
+    o.append(f'<path d="M12,-54 V-64 Q12,-70 {f(L / 2)},-70 Q{f(L / 2 + 3)},-70 {f(L / 2 + 3)},-66 V-54 Z" fill="{grille}" stroke="{INK3}" stroke-width="0.8"/>')
+    for yy in (-66, -59):
+        o.append(f'<circle cx="{f(L - 14)}" cy="{yy}" r="2.6" fill="#ffd23f" stroke="{INK3}" stroke-width="0.7"/>')
+    o.append(f'<path d="M{f(L / 2)},-74 L{f(L / 2 + 8)},-84" stroke="#3a3c46" stroke-width="1.2"/>')
+    return "".join(o)
+
+
+def wall_round_window(D):
+    """Janela redonda (escotilha) com céu e moldura branca."""
+    cx, cy, r = L / 2, -68, 13
+    o = [f'<circle cx="{f(cx)}" cy="{cy}" r="{r + 4}" fill="#ffffff" stroke="{INK3}" stroke-width="1.2"/>']
+    o.append(f'<circle cx="{f(cx)}" cy="{cy}" r="{r}" fill="{D.lin([(0, "#6cc8ff"), (1, "#e3f6ff")])}" stroke="{INK3}" stroke-width="0.9"/>')
+    o.append(f'<ellipse cx="{f(cx - 4)}" cy="{cy - 4}" rx="6" ry="3" fill="#ffffff" opacity="0.95"/>')
+    o.append(f'<path d="M{f(cx - r)},{cy + 5} Q{f(cx)},{cy - 1} {f(cx + r)},{cy + 4} L{f(cx + r - 2)},{cy + 8} A{r},{r} 0 0,1 {f(cx - r + 2)},{cy + 8} Z" fill="#8fe06a"/>')
+    o.append(f'<path d="M{f(cx - 7)},{cy + 6} L{f(cx + 2)},{cy - 9}" stroke="#ffffff" stroke-width="2.4" opacity="0.6"/>')
+    for a in range(0, 360, 90):
+        x, y = cx + math.cos(math.radians(a + 45)) * (r + 2), cy + math.sin(math.radians(a + 45)) * (r + 2)
+        o.append(f'<circle cx="{f(x)}" cy="{f(y)}" r="0.9" fill="#c9d3de"/>')
+    return "".join(o)
+
+
+def wall_arched_window(D):
+    """Janelão em arco, alto, com vidro dividido e floreira."""
+    u0, u1, z0, z1 = 8, L - 8, 38, 90
+    w = u1 - u0
+    arch = f"M{u0},{-z0} V{-z1 + w / 2} A{w / 2},{w / 2} 0 0,1 {u1},{-z1 + w / 2} V{-z0} Z"
+    o = [f'<path d="M{u0 - 4},{-z0 + 1} V{-z1 + w / 2} A{w / 2 + 4},{w / 2 + 4} 0 0,1 {u1 + 4},{-z1 + w / 2} V{-z0 + 1} Z" fill="#ffffff" stroke="{INK3}" stroke-width="1.2"/>']
+    o.append(f'<path d="{arch}" fill="{D.lin([(0, "#6cc8ff"), (0.7, "#c8ecff"), (1, "#eaf9ff")])}" stroke="{INK3}" stroke-width="0.9"/>')
+    o.append(f'<path d="M{u0},{-z0 - 10} Q{u0 + w * 0.4},{-z0 - 20} {u1},{-z0 - 13} V{-z0} H{u0} Z" fill="#8fe06a" opacity="0.9"/>')
+    o.append(f'<path d="M{f(L / 2)},{-z1} V{-z0} M{u0},{-z0 - 22} H{u1}" stroke="#ffffff" stroke-width="2.6"/>')
+    o.append(f'<path d="M{u0 + 4},{-z0 - 4} L{u0 + w * 0.45},{-z1 + 14}" stroke="#ffffff" stroke-width="2.6" opacity="0.6"/>')
+    o.append(f'<rect x="{u0 - 6}" y="{-z0}" width="{w + 12}" height="7" rx="2" fill="{D.lin([(0, "#e07a2e"), (1, "#b0532a")])}" stroke="{INK3}" stroke-width="1"/>')
+    for i, c in enumerate(("#ff4d8d", "#ffd23f", "#ff7a2f", "#b06bff")):
+        x = u0 + 2 + i * (w - 4) / 3
+        o.append(f'<circle cx="{f(x)}" cy="{-z0 - 3}" r="2.6" fill="{c}" stroke="{INK3}" stroke-width="0.6"/>')
+    return "".join(o)
+
+
+def wall_chalkboard(D):
+    """Lousa de cardápio com moldura de madeira e desenhos de giz."""
+    o = [f'<rect x="5" y="-82" width="{f(L - 10)}" height="36" rx="2" fill="#a86d40" stroke="{INK3}" stroke-width="1.2"/>']
+    o.append(f'<rect x="8" y="-79" width="{f(L - 16)}" height="30" rx="1" fill="{D.lin([(0, "#3a4a42"), (1, "#26332d")])}"/>')
+    o.append(f'<path d="M12,-73 h{f(L - 24)}" stroke="#ffffff" stroke-width="1.4" opacity="0.85"/>')
+    for i, y in enumerate((-67, -61, -55)):
+        o.append(f'<path d="M12,{y} h{f(L * 0.35)}" stroke="#ffffff" stroke-width="1" opacity="0.7"/>')
+        o.append(f'<circle cx="{f(L - 13)}" cy="{y}" r="1.4" fill="{("#ffd23f", "#ff8fb1", "#8fe3ff")[i]}" opacity="0.9"/>')
+    o.append(f'<path d="M{f(L - 20)},-71 h7 v3 a3.5,3.5 0 0,1 -7,0 Z" fill="none" stroke="#ffffff" stroke-width="0.9" opacity="0.8"/>')
+    o.append(f'<rect x="10" y="-47" width="{f(L - 20)}" height="2.4" rx="1" fill="#8a5530"/>')
+    return "".join(o)
+
+
+def wall_neon(D):
+    """Letreiro de neon em forma de xícara com coração, com brilho na parede."""
+    cx, cy = L / 2, -66
+    o = [f'<circle cx="{f(cx)}" cy="{cy}" r="20" fill="{D.rad([(0, "#ff4da6", 0.35), (1, "#ff4da6", 0)])}"/>']
+    cup = (f"M{f(cx - 10)},{cy - 6} h20 v8 a10,10 0 0,1 -20,0 Z M{f(cx + 10)},{cy - 3} a5,5 0 0,1 0,9 "
+           f"M{f(cx - 13)},{cy + 13} h26")
+    o.append(f'<path d="{cup}" fill="none" stroke="#ff4da6" stroke-width="4" stroke-linecap="round" opacity="0.5"/>')
+    o.append(f'<path d="{cup}" fill="none" stroke="#ffe3f3" stroke-width="1.6" stroke-linecap="round"/>')
+    heart = f"M{f(cx)},{cy - 9} c-2,-4 -8,-3 -6,2 l6,5 l6,-5 c2,-5 -4,-6 -6,-2 Z"
+    o.append(f'<path d="{heart}" transform="translate(0,-8)" fill="none" stroke="#4fe0ff" stroke-width="3.6" opacity="0.45"/>')
+    o.append(f'<path d="{heart}" transform="translate(0,-8)" fill="none" stroke="#e3fbff" stroke-width="1.3"/>')
+    return "".join(o)
+
+
+def wall_mirror(D):
+    """Espelho oval com moldura dourada trabalhada."""
+    cx, cy = L / 2, -66
+    o = [f'<ellipse cx="{f(cx)}" cy="{cy}" rx="13" ry="17" fill="{D.lin([(0, "#ffe7a0"), (0.5, "#d9b44a"), (1, "#8a6a2e")])}" stroke="{INK3}" stroke-width="1.2"/>']
+    o.append(f'<ellipse cx="{f(cx)}" cy="{cy}" rx="10" ry="14" fill="{D.lin([(0, "#e8f4ff"), (0.6, "#b9d4ea"), (1, "#8fb0cc")], 0, 0, 1, 1)}" stroke="{INK3}" stroke-width="0.8"/>')
+    o.append(f'<path d="M{f(cx - 6)},{cy + 4} L{f(cx + 2)},{cy - 10} M{f(cx - 2)},{cy + 8} L{f(cx + 5)},{cy - 4}" stroke="#ffffff" stroke-width="1.8" opacity="0.8"/>')
+    o.append(f'<circle cx="{f(cx)}" cy="{cy - 18}" r="2.6" fill="#d9b44a" stroke="{INK3}" stroke-width="0.7"/>')
+    return "".join(o)
+
+
+def wall_hanging_plant(D):
+    """Vaso pendurado no teto por cordas, com folhas caindo."""
+    cx = L / 2
+    o = [f'<path d="M{f(cx)},-96 L{f(cx - 7)},-72 M{f(cx)},-96 L{f(cx + 7)},-72" stroke="#c9a46a" stroke-width="1"/>']
+    o.append(f'<path d="M{f(cx - 9)},-72 h18 l-2,9 a6,3 0 0,1 -14,0 Z" fill="{D.lin([(0, "#ffffff"), (1, "#d9e1ea")], 0, 0, 1, 0)}" stroke="{INK3}" stroke-width="1"/>')
+    r = Rng(41)
+    for i in range(9):
+        x0 = cx - 8 + i * 2
+        ln = r.u(10, 26)
+        o.append(f'<path d="M{f(x0)},-70 q{f(r.u(-6, 6))},{f(ln / 2)} {f(r.u(-3, 3))},{f(ln)}" fill="none" stroke="#2f8a3a" stroke-width="1"/>')
+        for j in range(3):
+            yy = -70 + ln * (j + 1) / 3
+            o.append(f'<ellipse cx="{f(x0 + r.u(-2, 2))}" cy="{f(yy)}" rx="2.6" ry="1.6" fill="{mix("#3fbf4a", "#8fe06a", r.r())}" stroke="#1d6b33" stroke-width="0.5"/>')
+    return "".join(o)
+
+
+DECORATIONS.update({
+    "tv": lambda D, side: wall_tv(D),
+    "radio": lambda D, side: wall_radio(D),
+    "janela_redonda": lambda D, side: wall_round_window(D),
+    "janelao": lambda D, side: wall_arched_window(D),
+    "lousa": lambda D, side: wall_chalkboard(D),
+    "neon_xicara": lambda D, side: wall_neon(D),
+    "espelho": lambda D, side: wall_mirror(D),
+    "planta_pendurada": lambda D, side: wall_hanging_plant(D),
+})
+
+
 def wall_piece(side, flat):
     """Leva o desenho plano de uma célula para a parede da direita ('R', ao longo de x, desce para a
     direita) ou da esquerda ('L', ao longo de y, sobe para a direita), como o plane() do canvas.

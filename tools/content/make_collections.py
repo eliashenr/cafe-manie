@@ -31,6 +31,8 @@ COLLECTIONS = [
 ]
 
 TABLE, SEATING, COOKING, COUNTER, DECOR = 0, 1, 2, 3, 4
+# Eficiência dos móveis de cozinha (a mesma do fogão e do balcão clássicos).
+EFFICIENCY = {COOKING: 20, COUNTER: 10}
 
 # coleção, id, nome, categoria, pegada, preço, nível, beleza, conforto, cor provisória, altura provisória
 FURNITURE = [
@@ -82,6 +84,37 @@ FURNITURE = [
     ("balada", "table_club", "Mesa Neon", TABLE, (1, 1), 170, 8, 13, 11, "1d1d2b", 28),
     ("balada", "disco_ball", "Globo de Espelhos", DECOR, (1, 1), 220, 8, 36, 0, "c9d3de", 80),
     ("balada", "dj_booth", "Cabine de DJ", DECOR, (2, 1), 300, 9, 40, 0, "2a2d3e", 40),
+    # Mais uma cadeira e uma mesa por coleção, e fogões e balcões modernos (pedido do PO em 12/10).
+    ("anos70", "chair_tulip", "Cadeira Tulipa", SEATING, (1, 1), 55, 2, 6, 11, "ff8a3d", 22),
+    ("anos70", "table_70s_square", "Mesa de Fórmica", TABLE, (1, 1), 90, 3, 8, 10, "f2b33d", 26),
+    ("country", "bench_country", "Cadeira de Ripas", SEATING, (1, 1), 50, 2, 5, 11, "d9a066", 20),
+    ("country", "table_country_round", "Mesa Xadrez Azul", TABLE, (1, 1), 85, 3, 7, 10, "3a6ad9", 26),
+    ("festa", "chair_party_blue", "Cadeira de Laço Azul", SEATING, (1, 1), 60, 3, 6, 11, "8fd0ff", 20),
+    ("festa", "table_party_square", "Mesa Quadrada de Confete", TABLE, (1, 1), 100, 4, 9, 10, "e8f6ff", 26),
+    ("americano", "chair_diner", "Cadeira de Lanchonete", SEATING, (1, 1), 60, 3, 6, 11, "e0303a", 20),
+    ("americano", "table_diner_round", "Mesa Redonda Cromada", TABLE, (1, 1), 95, 4, 8, 10, "e0303a", 26),
+    ("mexicano", "chair_equipal", "Cadeira Equipal", SEATING, (1, 1), 65, 4, 7, 12, "c98a52", 20),
+    ("mexicano", "table_mexican_round", "Mesa com Toalha Laranja", TABLE, (1, 1), 115, 5, 10, 10, "ff7a2f", 26),
+    ("anos80", "chair_80s_pink", "Cadeira Neon Rosa", SEATING, (1, 1), 70, 4, 7, 11, "ff4dd2", 20),
+    ("anos80", "table_80s_square", "Mesa de Neon", TABLE, (1, 1), 125, 5, 11, 10, "1d1d2b", 26),
+    ("italiano", "chair_tuscan", "Cadeira Toscana", SEATING, (1, 1), 75, 5, 8, 12, "2f9e44", 20),
+    ("italiano", "table_italian_round", "Mesa à Luz de Velas", TABLE, (1, 1), 135, 6, 12, 10, "ffffff", 26),
+    ("japones", "stool_zen", "Banquinho Zen", SEATING, (1, 1), 70, 5, 7, 9, "d9433b", 18),
+    ("japones", "table_japanese_round", "Mesa Redonda de Madeira", TABLE, (1, 1), 130, 6, 11, 10, "8a5a34", 24),
+    ("frances", "chair_french_red", "Poltrona Bistrô Vermelha", SEATING, (1, 1), 90, 6, 9, 13, "c81e3a", 22),
+    ("frances", "table_french_square", "Mesa de Mármore Quadrada", TABLE, (1, 1), 160, 7, 13, 10, "f2f1ee", 26),
+    ("brasileiro", "chair_brazil_flag", "Cadeira Verde e Amarela", SEATING, (1, 1), 85, 6, 9, 12, "2fae4e", 20),
+    ("brasileiro", "table_brazil_round", "Mesa Redonda de Chita", TABLE, (1, 1), 150, 7, 12, 10, "2f6fd9", 26),
+    ("anos2010", "stool_industrial", "Banqueta Industrial", SEATING, (1, 1), 90, 7, 9, 9, "c98a52", 20),
+    ("anos2010", "table_2010s_round", "Mesa Escandinava", TABLE, (1, 1), 170, 8, 13, 10, "e8cfa4", 26),
+    ("balada", "stool_club", "Banqueta Neon", SEATING, (1, 1), 110, 8, 10, 9, "7a2fd0", 20),
+    ("balada", "table_club_square", "Mesa Espelhada", TABLE, (1, 1), 210, 9, 15, 10, "1d1d2b", 28),
+    ("americano", "stove_mint", "Fogão Retrô Menta", COOKING, (1, 1), 300, 3, 6, 0, "7fdcc0", 38),
+    ("anos2010", "stove_steel", "Fogão Inox Industrial", COOKING, (1, 1), 400, 5, 8, 0, "b9c3cf", 38),
+    ("frances", "stove_black", "Fogão Preto e Dourado", COOKING, (1, 1), 520, 7, 12, 0, "2a2a33", 38),
+    ("country", "counter_wood", "Balcão de Madeira", COUNTER, (2, 1), 260, 3, 6, 0, "a86d40", 34),
+    ("festa", "counter_pastel", "Balcão de Confeitaria", COUNTER, (2, 1), 280, 4, 7, 0, "ff9ec4", 34),
+    ("anos2010", "counter_steel", "Balcão Inox", COUNTER, (2, 1), 320, 5, 8, 0, "b9c3cf", 34),
 ]
 
 FLOOR, WALL = 0, 1
@@ -154,12 +187,12 @@ id = &"{fid}"
 display_name = "{name}"
 category = {category}
 footprint = Vector2i({fp[0]}, {fp[1]})
-needs_access = {"true" if category in (TABLE, SEATING) else "false"}
+needs_access = {"true" if category in (TABLE, SEATING, COOKING, COUNTER) else "false"}
 collection = &"{cid}"
 price = {price}
 min_level = {level}
 beauty = {beauty}
-efficiency = 0
+efficiency = {EFFICIENCY.get(category, 0)}
 comfort = {comfort}
 placeholder_color = {color(hex_code)}
 placeholder_height = {float(height)}

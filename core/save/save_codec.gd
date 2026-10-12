@@ -4,8 +4,8 @@ extends RefCounted
 ##
 ## O que é salvo: layout (móveis com os ids originais e tamanho da cafeteria),
 ## cozinha (receita e horário de início de cada fogão; porções de cada balcão),
-## carteira, XP, popularidade, inventário e missões. Personagens não são salvos: ao voltar, a cafeteria reabre
-## vazia, e as porções que estavam reservadas para pedidos voltam ao balcão.
+## carteira, XP, popularidade, inventário, missões e quantos garçons foram contratados. Os personagens em si não
+## são salvos: ao voltar, a cafeteria reabre vazia, e as porções que estavam reservadas para pedidos voltam ao balcão.
 ##
 ## Todo save tem save_version (seção 64). Mudou o formato? Aumente
 ## CURRENT_VERSION e acrescente um passo em migrations().
@@ -13,8 +13,9 @@ extends RefCounted
 ## Histórico: 1 = primeira versão; 2 = acrescenta inventário e missões;
 ## 3 = acrescenta revestimentos (piso e parede), contadores, conquistas,
 ## recompensa diária e nome da cafeteria; 4 = as cadeiras dos saves antigos
-## viram para a mesa uma vez (com a arte, para onde a cadeira olha aparece).
-const CURRENT_VERSION := 4
+## viram para a mesa uma vez (com a arte, para onde a cadeira olha aparece);
+## 5 = acrescenta quantos garçons a cafeteria contratou.
+const CURRENT_VERSION := 5
 
 ## Marca posta pela migração para a versão 4: o decode vira as cadeiras e a marca
 ## não volta a ser gravada.
@@ -64,6 +65,7 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"achievements": simulation.achievements.to_data(),
 		"daily": simulation.daily.to_data(),
 		"cafe_name": simulation.cafe_name,
+		"waiters": simulation.waiters.size(),
 	}
 
 
@@ -136,6 +138,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.stats.restore(_dict(data.get("stats")))
 	simulation.achievements.restore(_dict(data.get("achievements")))
 	simulation.daily.restore(_dict(data.get("daily")))
+	simulation.restore_waiter_count(int(data.get("waiters", 1)))
 	var saved_name := str(data.get("cafe_name", ""))
 	if not saved_name.is_empty() and not simulation.set_cafe_name(saved_name):
 		result.warnings.append("Nome da cafeteria ignorado: %s" % saved_name)
@@ -171,7 +174,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -197,6 +200,12 @@ static func _v2_to_v3(data: Dictionary) -> Dictionary:
 ## quando a rotação delas não aparecia. Elas viram para a mesa uma vez, no decode.
 static func _v3_to_v4(data: Dictionary) -> Dictionary:
 	data[TURN_SEATS_KEY] = true
+	return data
+
+
+## Versão 5 acrescentou a contratação de garçons: saves antigos têm o garçom que vinha com a cafeteria.
+static func _v4_to_v5(data: Dictionary) -> Dictionary:
+	data["waiters"] = 1
 	return data
 
 

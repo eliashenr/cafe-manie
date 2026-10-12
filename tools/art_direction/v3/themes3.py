@@ -181,7 +181,7 @@ def styled_chair(D, iso, x, y, facing, seat="#ff4d5e", legs="chrome", leg_color=
 # --- Mesa genérica -------------------------------------------------------------------------
 
 def _top_fill(T, kind, color, k):
-    """Desenho por cima do tampo quadrado T (topo, direita, frente, esquerda): 'talavera' ou 'wood'."""
+    """Desenho por cima do tampo quadrado T (topo, direita, frente, esquerda): 'talavera', 'wood', 'marble' ou 'glow'."""
     def at(u, v):
         return (T[0][0] + (T[1][0] - T[0][0]) * u + (T[3][0] - T[0][0]) * v,
                 T[0][1] + (T[1][1] - T[0][1]) * u + (T[3][1] - T[0][1]) * v)
@@ -197,6 +197,14 @@ def _top_fill(T, kind, color, k):
         for i in range(1, 4):
             a, b = at(0, i / 4), at(1, i / 4)
             o.append(line(a[0], a[1], b[0], b[1], shade(color, 0.25), 0.8, 'opacity="0.6"'))
+    elif kind == "marble":
+        for (u0, v0, u1, v1) in ((0.15, 0.3, 0.8, 0.45), (0.3, 0.7, 0.9, 0.85)):
+            a, b, c = at(u0, v0), at((u0 + u1) / 2, (v0 + v1) / 2 - 0.12), at(u1, v1)
+            o.append(path(f"M{f(a[0])},{f(a[1])} Q{f(b[0])},{f(b[1])} {f(c[0])},{f(c[1])}", "none", shade(color, 0.3), 0.8,
+                          'opacity="0.6"'))
+    elif kind == "glow":
+        o.append(P([at(0.04, 0.04), at(0.96, 0.04), at(0.96, 0.96), at(0.04, 0.96)], "none", "#4fe0ff", 2.2 * k, 'opacity="0.9"'))
+        o.append(P([at(0.12, 0.12), at(0.88, 0.12), at(0.88, 0.88), at(0.12, 0.88)], "none", "#ff4dd2", 1.4 * k, 'opacity="0.8"'))
     return "".join(o)
 
 
@@ -776,6 +784,52 @@ TABLES = {
     "table_brazil": (dict(shape="square", cloth=("chita", "#ff5a5a"), base="legs", base_color=WOOD_D, flower=("#ffd23f", "#ff4d8d")), 32),
     "table_2010s": (dict(shape="square", top=("wood", "#e8cfa4"), edge="#d9b77e", base="legs", base_color="#2a2c34", flower=("#ffffff", "#8fd18a")), 32),
     "table_club": (dict(shape="round", top=("glow", "#1d1d2b"), edge="#0d0d14", base="pedestal", base_color="#1d1d2b", vase=False, candle=True), 36),
+}
+
+# Mais uma cadeira e uma mesa em cada coleção (o PO pediu mais opções por estilo e cultura).
+CHAIRS.update({
+    "chair_tulip": dict(seat="#ffffff", legs="pedestal", leg_color="#ffffff", back="shell", back_color="#ff8a3d"),
+    "bench_country": dict(seat="#d9a066", legs="wood", leg_color=WOOD_D, back="slats", back_color=WOOD_M),
+    "chair_party_blue": dict(seat="#8fd0ff", legs="wood", leg_color="#ffffff", back="panel", back_color="#cfeaff"),
+    "chair_diner": dict(seat="#e0303a", legs="chrome", leg_color=CHROME, back="panel", back_color="#ffffff"),
+    "chair_equipal": dict(seat="#c98a52", legs="wood", leg_color="#8a5530", back="cane", back_color="#b8743e"),
+    "chair_80s_pink": dict(seat="#4fe0ff", legs="chrome", leg_color="#ff4dd2", back="shell", back_color="#ff4dd2"),
+    "chair_tuscan": dict(seat="#2f9e44", legs="wood", leg_color="#6b3a1e", back="cane", back_color="#d9b77e"),
+    "stool_zen": dict(seat="#d9433b", legs="wood", leg_color="#c9a46a", back=None),
+    "chair_french_red": dict(seat="#c81e3a", legs="wood", leg_color="#2a2d3e", back="wicker", back_color="#c9a46a"),
+    "chair_brazil_flag": dict(seat="#2fae4e", legs="wood", leg_color=WOOD_M, back="panel", back_color="#ffd23f"),
+    "stool_industrial": dict(seat="#c98a52", legs="chrome", leg_color="#3a3c46", back=None),
+    "stool_club": dict(seat="#7a2fd0", legs="pedestal", leg_color="#ffd23f", back=None),
+})
+
+TABLES.update({
+    "table_70s_square": (dict(shape="square", top=("solid", "#f2b33d"), edge="#b0532a", base="pedestal", base_color="#f2f0e8"), 32),
+    "table_country_round": (dict(shape="round", cloth=("gingham", "#3a6ad9"), base="pedestal", base_color=WOOD_D, flower=("#ffd23f", "#ffffff")), 34),
+    "table_party_square": (dict(shape="square", cloth=("confetti", "#e8f6ff"), base="legs", base_color="#ffffff", flower=("#ff4d6d", "#ffd23f")), 32),
+    "table_diner_round": (dict(shape="round", top=("solid", "#e0303a"), edge=CHROME, base="pedestal", base_color=CHROME), 34),
+    "table_mexican_round": (dict(shape="round", cloth=("plain", "#ff7a2f"), base="pedestal", base_color=WOOD_D, flower=("#ff4d8d", "#ffd23f")), 34),
+    "table_80s_square": (dict(shape="square", top=("glow", "#1d1d2b"), edge="#ff4dd2", base="pedestal", base_color="#4fe0ff", vase=False), 32),
+    "table_italian_round": (dict(shape="round", cloth=("plain", "#ffffff"), base="pedestal", base_color="#5a3020", vase=False, candle=True), 34),
+    "table_japanese_round": (dict(shape="round", top=("solid", "#8a5a34"), edge="#4a2a1e", base="pedestal", base_color="#2a1a12", flower=("#ff8fb1", "#ffffff")), 30),
+    "table_french_square": (dict(shape="square", top=("marble", "#f2f1ee"), edge="#d9b44a", base="legs", base_color="#2a2d3e"), 32),
+    "table_brazil_round": (dict(shape="round", cloth=("chita", "#2f6fd9"), base="pedestal", base_color=WOOD_D, flower=("#ffd23f", "#ff4d8d")), 34),
+    "table_2010s_round": (dict(shape="round", top=("solid", "#e8cfa4"), edge="#ffffff", base="pedestal", base_color="#2a2c34", flower=("#ffffff", "#8fd18a")), 34),
+    "table_club_square": (dict(shape="square", top=("glow", "#1d1d2b"), edge="#0d0d14", base="pedestal", base_color="#1d1d2b", vase=False, candle=True), 36),
+})
+
+# Fogões e balcões modernos: as medidas do fogão e a altura do balcão são as mesmas do clássico
+# (a panela, o forno aceso e as pilhas de pratos do jogo caem no lugar certo).
+STOVES = {
+    "stove_steel": dict(enamel="#b9c3cf", top_color="#e8edf2", panel=("#4a4d5a", "#2a2c34", "#15151b"), knob="#c9d3de",
+                        door=("#d9e0e8", "#8f9aa7"), handle="#2a2c34"),
+    "stove_mint": dict(enamel="#7fdcc0", knob="#ff4d5e"),
+    "stove_black": dict(enamel="#2a2a33", top_color="#4a4a55", panel=("#ffe7a0", "#d9b44a", "#8a6a2e"), knob="#d9b44a",
+                        door=("#3a3c46", "#15151b"), handle="#d9b44a"),
+}
+COUNTERS = {
+    "counter_steel": dict(body="#b9c3cf", top="#eef2f6", face="plain", rim="#c9d3de", veins=False),
+    "counter_wood": dict(body="#a86d40", top="#e0b97e", face="planks", rim="#b8743e", veins=False),
+    "counter_pastel": dict(body="#ff9ec4", top="#ffffff", face="panels", rim="#ffe0ef"),
 }
 
 DECOR = {

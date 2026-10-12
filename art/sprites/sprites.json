@@ -841,15 +841,51 @@
     206.33
    ]
   },
-  "cliente_01_frente_passo": {
+  "cliente_01_frente_passo_0": {
    "anchor": [
     46.0,
     206.33
    ]
   },
-  "cliente_01_frente_passo2": {
+  "cliente_01_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    206.33
+   ]
+  },
+  "cliente_01_frente_passo_2": {
+   "anchor": [
+    46.0,
+    206.33
+   ]
+  },
+  "cliente_01_frente_passo_3": {
+   "anchor": [
+    48.0,
+    206.33
+   ]
+  },
+  "cliente_01_frente_passo_4": {
+   "anchor": [
+    50.0,
+    206.33
+   ]
+  },
+  "cliente_01_frente_passo_5": {
+   "anchor": [
+    48.0,
+    206.33
+   ]
+  },
+  "cliente_01_frente_passo_6": {
+   "anchor": [
+    46.0,
+    206.33
+   ]
+  },
+  "cliente_01_frente_passo_7": {
+   "anchor": [
+    46.0,
     206.33
    ]
   },
@@ -859,15 +895,51 @@
     205.33
    ]
   },
-  "cliente_01_costas_passo": {
+  "cliente_01_costas_passo_0": {
    "anchor": [
     46.0,
     205.33
    ]
   },
-  "cliente_01_costas_passo2": {
+  "cliente_01_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_01_costas_passo_2": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_01_costas_passo_3": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_01_costas_passo_4": {
+   "anchor": [
+    50.0,
+    205.33
+   ]
+  },
+  "cliente_01_costas_passo_5": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_01_costas_passo_6": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_01_costas_passo_7": {
+   "anchor": [
+    46.0,
     205.33
    ]
   },
@@ -913,15 +985,51 @@
     211.33
    ]
   },
-  "cliente_02_frente_passo": {
+  "cliente_02_frente_passo_0": {
    "anchor": [
     46.0,
     211.33
    ]
   },
-  "cliente_02_frente_passo2": {
+  "cliente_02_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    211.33
+   ]
+  },
+  "cliente_02_frente_passo_2": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "cliente_02_frente_passo_3": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "cliente_02_frente_passo_4": {
+   "anchor": [
+    50.0,
+    211.33
+   ]
+  },
+  "cliente_02_frente_passo_5": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "cliente_02_frente_passo_6": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "cliente_02_frente_passo_7": {
+   "anchor": [
+    46.0,
     211.33
    ]
   },
@@ -931,15 +1039,51 @@
     205.33
    ]
   },
-  "cliente_02_costas_passo": {
+  "cliente_02_costas_passo_0": {
    "anchor": [
     46.0,
     205.33
    ]
   },
-  "cliente_02_costas_passo2": {
+  "cliente_02_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_02_costas_passo_2": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_02_costas_passo_3": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_02_costas_passo_4": {
+   "anchor": [
+    50.0,
+    205.33
+   ]
+  },
+  "cliente_02_costas_passo_5": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_02_costas_passo_6": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_02_costas_passo_7": {
+   "anchor": [
+    46.0,
     205.33
    ]
   },
@@ -985,13 +1129,49 @@
     219.33
    ]
   },
-  "cliente_03_frente_passo": {
+  "cliente_03_frente_passo_0": {
    "anchor": [
     60.0,
     219.33
    ]
   },
-  "cliente_03_frente_passo2": {
+  "cliente_03_frente_passo_1": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_frente_passo_2": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_frente_passo_3": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_frente_passo_4": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_frente_passo_5": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_frente_passo_6": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_frente_passo_7": {
    "anchor": [
     60.0,
     219.33
@@ -1003,13 +1183,49 @@
     219.33
    ]
   },
-  "cliente_03_costas_passo": {
+  "cliente_03_costas_passo_0": {
    "anchor": [
     60.0,
     219.33
    ]
   },
-  "cliente_03_costas_passo2": {
+  "cliente_03_costas_passo_1": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_passo_2": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_passo_3": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_passo_4": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_passo_5": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_passo_6": {
+   "anchor": [
+    60.0,
+    219.33
+   ]
+  },
+  "cliente_03_costas_passo_7": {
    "anchor": [
     60.0,
     219.33
@@ -1057,15 +1273,51 @@
     210.33
    ]
   },
-  "cliente_04_frente_passo": {
+  "cliente_04_frente_passo_0": {
    "anchor": [
     48.0,
     210.33
    ]
   },
-  "cliente_04_frente_passo2": {
+  "cliente_04_frente_passo_1": {
    "anchor": [
-    51.0,
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_04_frente_passo_2": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_04_frente_passo_3": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_04_frente_passo_4": {
+   "anchor": [
+    50.0,
+    210.33
+   ]
+  },
+  "cliente_04_frente_passo_5": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_04_frente_passo_6": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_04_frente_passo_7": {
+   "anchor": [
+    48.0,
     210.33
    ]
   },
@@ -1075,15 +1327,51 @@
     209.33
    ]
   },
-  "cliente_04_costas_passo": {
+  "cliente_04_costas_passo_0": {
    "anchor": [
     48.0,
     209.33
    ]
   },
-  "cliente_04_costas_passo2": {
+  "cliente_04_costas_passo_1": {
    "anchor": [
-    51.0,
+    48.0,
+    209.33
+   ]
+  },
+  "cliente_04_costas_passo_2": {
+   "anchor": [
+    48.0,
+    209.33
+   ]
+  },
+  "cliente_04_costas_passo_3": {
+   "anchor": [
+    48.0,
+    209.33
+   ]
+  },
+  "cliente_04_costas_passo_4": {
+   "anchor": [
+    50.0,
+    209.33
+   ]
+  },
+  "cliente_04_costas_passo_5": {
+   "anchor": [
+    48.0,
+    209.33
+   ]
+  },
+  "cliente_04_costas_passo_6": {
+   "anchor": [
+    48.0,
+    209.33
+   ]
+  },
+  "cliente_04_costas_passo_7": {
+   "anchor": [
+    48.0,
     209.33
    ]
   },
@@ -1129,15 +1417,51 @@
     210.33
    ]
   },
-  "cliente_05_frente_passo": {
+  "cliente_05_frente_passo_0": {
    "anchor": [
     46.0,
     210.33
    ]
   },
-  "cliente_05_frente_passo2": {
+  "cliente_05_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    210.33
+   ]
+  },
+  "cliente_05_frente_passo_2": {
+   "anchor": [
+    46.0,
+    210.33
+   ]
+  },
+  "cliente_05_frente_passo_3": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_05_frente_passo_4": {
+   "anchor": [
+    50.0,
+    210.33
+   ]
+  },
+  "cliente_05_frente_passo_5": {
+   "anchor": [
+    48.0,
+    210.33
+   ]
+  },
+  "cliente_05_frente_passo_6": {
+   "anchor": [
+    46.0,
+    210.33
+   ]
+  },
+  "cliente_05_frente_passo_7": {
+   "anchor": [
+    46.0,
     210.33
    ]
   },
@@ -1147,15 +1471,51 @@
     207.33
    ]
   },
-  "cliente_05_costas_passo": {
+  "cliente_05_costas_passo_0": {
    "anchor": [
     46.0,
     207.33
    ]
   },
-  "cliente_05_costas_passo2": {
+  "cliente_05_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    207.33
+   ]
+  },
+  "cliente_05_costas_passo_2": {
+   "anchor": [
+    46.0,
+    207.33
+   ]
+  },
+  "cliente_05_costas_passo_3": {
+   "anchor": [
+    48.0,
+    207.33
+   ]
+  },
+  "cliente_05_costas_passo_4": {
+   "anchor": [
+    50.0,
+    207.33
+   ]
+  },
+  "cliente_05_costas_passo_5": {
+   "anchor": [
+    48.0,
+    207.33
+   ]
+  },
+  "cliente_05_costas_passo_6": {
+   "anchor": [
+    46.0,
+    207.33
+   ]
+  },
+  "cliente_05_costas_passo_7": {
+   "anchor": [
+    46.0,
     207.33
    ]
   },
@@ -1201,13 +1561,49 @@
     212.33
    ]
   },
-  "cliente_06_frente_passo": {
+  "cliente_06_frente_passo_0": {
    "anchor": [
     52.0,
     212.33
    ]
   },
-  "cliente_06_frente_passo2": {
+  "cliente_06_frente_passo_1": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_frente_passo_2": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_frente_passo_3": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_frente_passo_4": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_frente_passo_5": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_frente_passo_6": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_06_frente_passo_7": {
    "anchor": [
     52.0,
     212.33
@@ -1219,13 +1615,49 @@
     208.33
    ]
   },
-  "cliente_06_costas_passo": {
+  "cliente_06_costas_passo_0": {
    "anchor": [
     51.0,
     208.33
    ]
   },
-  "cliente_06_costas_passo2": {
+  "cliente_06_costas_passo_1": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_costas_passo_2": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_costas_passo_3": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_costas_passo_4": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_costas_passo_5": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_costas_passo_6": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_06_costas_passo_7": {
    "anchor": [
     51.0,
     208.33
@@ -1258,7 +1690,7 @@
   "cliente_06_sentado_costas_r1": {
    "anchor": [
     51.0,
-    294.0
+    293.0
    ]
   },
   "cliente_06_sentado_costas_r2": {
@@ -1273,15 +1705,51 @@
     230.33
    ]
   },
-  "cliente_07_frente_passo": {
+  "cliente_07_frente_passo_0": {
    "anchor": [
     46.0,
     230.33
    ]
   },
-  "cliente_07_frente_passo2": {
+  "cliente_07_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    230.33
+   ]
+  },
+  "cliente_07_frente_passo_2": {
+   "anchor": [
+    46.0,
+    230.33
+   ]
+  },
+  "cliente_07_frente_passo_3": {
+   "anchor": [
+    48.0,
+    230.33
+   ]
+  },
+  "cliente_07_frente_passo_4": {
+   "anchor": [
+    50.0,
+    230.33
+   ]
+  },
+  "cliente_07_frente_passo_5": {
+   "anchor": [
+    48.0,
+    230.33
+   ]
+  },
+  "cliente_07_frente_passo_6": {
+   "anchor": [
+    46.0,
+    230.33
+   ]
+  },
+  "cliente_07_frente_passo_7": {
+   "anchor": [
+    46.0,
     230.33
    ]
   },
@@ -1291,15 +1759,51 @@
     205.33
    ]
   },
-  "cliente_07_costas_passo": {
+  "cliente_07_costas_passo_0": {
    "anchor": [
     46.0,
     205.33
    ]
   },
-  "cliente_07_costas_passo2": {
+  "cliente_07_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_07_costas_passo_2": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_07_costas_passo_3": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_07_costas_passo_4": {
+   "anchor": [
+    50.0,
+    205.33
+   ]
+  },
+  "cliente_07_costas_passo_5": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_07_costas_passo_6": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_07_costas_passo_7": {
+   "anchor": [
+    46.0,
     205.33
    ]
   },
@@ -1345,15 +1849,51 @@
     233.33
    ]
   },
-  "cliente_08_frente_passo": {
+  "cliente_08_frente_passo_0": {
    "anchor": [
     46.0,
     233.33
    ]
   },
-  "cliente_08_frente_passo2": {
+  "cliente_08_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    233.33
+   ]
+  },
+  "cliente_08_frente_passo_2": {
+   "anchor": [
+    46.0,
+    233.33
+   ]
+  },
+  "cliente_08_frente_passo_3": {
+   "anchor": [
+    48.0,
+    233.33
+   ]
+  },
+  "cliente_08_frente_passo_4": {
+   "anchor": [
+    50.0,
+    233.33
+   ]
+  },
+  "cliente_08_frente_passo_5": {
+   "anchor": [
+    48.0,
+    233.33
+   ]
+  },
+  "cliente_08_frente_passo_6": {
+   "anchor": [
+    46.0,
+    233.33
+   ]
+  },
+  "cliente_08_frente_passo_7": {
+   "anchor": [
+    46.0,
     233.33
    ]
   },
@@ -1363,15 +1903,51 @@
     233.33
    ]
   },
-  "cliente_08_costas_passo": {
+  "cliente_08_costas_passo_0": {
    "anchor": [
     46.0,
     233.33
    ]
   },
-  "cliente_08_costas_passo2": {
+  "cliente_08_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_passo_2": {
+   "anchor": [
+    46.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_passo_3": {
+   "anchor": [
+    48.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_passo_4": {
+   "anchor": [
+    50.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_passo_5": {
+   "anchor": [
+    48.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_passo_6": {
+   "anchor": [
+    46.0,
+    233.33
+   ]
+  },
+  "cliente_08_costas_passo_7": {
+   "anchor": [
+    46.0,
     233.33
    ]
   },
@@ -1417,15 +1993,51 @@
     197.33
    ]
   },
-  "cliente_09_frente_passo": {
+  "cliente_09_frente_passo_0": {
    "anchor": [
     46.0,
     197.33
    ]
   },
-  "cliente_09_frente_passo2": {
+  "cliente_09_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    197.33
+   ]
+  },
+  "cliente_09_frente_passo_2": {
+   "anchor": [
+    46.0,
+    197.33
+   ]
+  },
+  "cliente_09_frente_passo_3": {
+   "anchor": [
+    48.0,
+    197.33
+   ]
+  },
+  "cliente_09_frente_passo_4": {
+   "anchor": [
+    50.0,
+    197.33
+   ]
+  },
+  "cliente_09_frente_passo_5": {
+   "anchor": [
+    48.0,
+    197.33
+   ]
+  },
+  "cliente_09_frente_passo_6": {
+   "anchor": [
+    46.0,
+    197.33
+   ]
+  },
+  "cliente_09_frente_passo_7": {
+   "anchor": [
+    46.0,
     197.33
    ]
   },
@@ -1435,15 +2047,51 @@
     197.33
    ]
   },
-  "cliente_09_costas_passo": {
+  "cliente_09_costas_passo_0": {
    "anchor": [
     46.0,
     197.33
    ]
   },
-  "cliente_09_costas_passo2": {
+  "cliente_09_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_passo_2": {
+   "anchor": [
+    46.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_passo_3": {
+   "anchor": [
+    48.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_passo_4": {
+   "anchor": [
+    50.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_passo_5": {
+   "anchor": [
+    48.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_passo_6": {
+   "anchor": [
+    46.0,
+    197.33
+   ]
+  },
+  "cliente_09_costas_passo_7": {
+   "anchor": [
+    46.0,
     197.33
    ]
   },
@@ -1489,15 +2137,51 @@
     239.33
    ]
   },
-  "cliente_10_frente_passo": {
+  "cliente_10_frente_passo_0": {
    "anchor": [
     46.0,
     239.33
    ]
   },
-  "cliente_10_frente_passo2": {
+  "cliente_10_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    239.33
+   ]
+  },
+  "cliente_10_frente_passo_2": {
+   "anchor": [
+    46.0,
+    239.33
+   ]
+  },
+  "cliente_10_frente_passo_3": {
+   "anchor": [
+    48.0,
+    239.33
+   ]
+  },
+  "cliente_10_frente_passo_4": {
+   "anchor": [
+    50.0,
+    239.33
+   ]
+  },
+  "cliente_10_frente_passo_5": {
+   "anchor": [
+    48.0,
+    239.33
+   ]
+  },
+  "cliente_10_frente_passo_6": {
+   "anchor": [
+    46.0,
+    239.33
+   ]
+  },
+  "cliente_10_frente_passo_7": {
+   "anchor": [
+    46.0,
     239.33
    ]
   },
@@ -1507,15 +2191,51 @@
     239.33
    ]
   },
-  "cliente_10_costas_passo": {
+  "cliente_10_costas_passo_0": {
    "anchor": [
     46.0,
     239.33
    ]
   },
-  "cliente_10_costas_passo2": {
+  "cliente_10_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_passo_2": {
+   "anchor": [
+    46.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_passo_3": {
+   "anchor": [
+    48.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_passo_4": {
+   "anchor": [
+    50.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_passo_5": {
+   "anchor": [
+    48.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_passo_6": {
+   "anchor": [
+    46.0,
+    239.33
+   ]
+  },
+  "cliente_10_costas_passo_7": {
+   "anchor": [
+    46.0,
     239.33
    ]
   },
@@ -1561,13 +2281,49 @@
     212.33
    ]
   },
-  "cliente_11_frente_passo": {
+  "cliente_11_frente_passo_0": {
    "anchor": [
     52.0,
     212.33
    ]
   },
-  "cliente_11_frente_passo2": {
+  "cliente_11_frente_passo_1": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_frente_passo_2": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_frente_passo_3": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_frente_passo_4": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_frente_passo_5": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_frente_passo_6": {
+   "anchor": [
+    52.0,
+    212.33
+   ]
+  },
+  "cliente_11_frente_passo_7": {
    "anchor": [
     52.0,
     212.33
@@ -1579,13 +2335,49 @@
     208.33
    ]
   },
-  "cliente_11_costas_passo": {
+  "cliente_11_costas_passo_0": {
    "anchor": [
     51.0,
     208.33
    ]
   },
-  "cliente_11_costas_passo2": {
+  "cliente_11_costas_passo_1": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_costas_passo_2": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_costas_passo_3": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_costas_passo_4": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_costas_passo_5": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_costas_passo_6": {
+   "anchor": [
+    51.0,
+    208.33
+   ]
+  },
+  "cliente_11_costas_passo_7": {
    "anchor": [
     51.0,
     208.33
@@ -1618,13 +2410,13 @@
   "cliente_11_sentado_costas_r1": {
    "anchor": [
     51.0,
-    293.0
+    294.0
    ]
   },
   "cliente_11_sentado_costas_r2": {
    "anchor": [
     51.0,
-    293.0
+    294.0
    ]
   },
   "cliente_12_frente_em_pe": {
@@ -1633,15 +2425,51 @@
     211.33
    ]
   },
-  "cliente_12_frente_passo": {
+  "cliente_12_frente_passo_0": {
    "anchor": [
     46.0,
     211.33
    ]
   },
-  "cliente_12_frente_passo2": {
+  "cliente_12_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    211.33
+   ]
+  },
+  "cliente_12_frente_passo_2": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "cliente_12_frente_passo_3": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "cliente_12_frente_passo_4": {
+   "anchor": [
+    50.0,
+    211.33
+   ]
+  },
+  "cliente_12_frente_passo_5": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "cliente_12_frente_passo_6": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "cliente_12_frente_passo_7": {
+   "anchor": [
+    46.0,
     211.33
    ]
   },
@@ -1651,15 +2479,51 @@
     205.33
    ]
   },
-  "cliente_12_costas_passo": {
+  "cliente_12_costas_passo_0": {
    "anchor": [
     46.0,
     205.33
    ]
   },
-  "cliente_12_costas_passo2": {
+  "cliente_12_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_12_costas_passo_2": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_12_costas_passo_3": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_12_costas_passo_4": {
+   "anchor": [
+    50.0,
+    205.33
+   ]
+  },
+  "cliente_12_costas_passo_5": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "cliente_12_costas_passo_6": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "cliente_12_costas_passo_7": {
+   "anchor": [
+    46.0,
     205.33
    ]
   },
@@ -1711,27 +2575,99 @@
     211.33
    ]
   },
-  "garcom_frente_passo": {
+  "garcom_frente_passo_0": {
    "anchor": [
     46.0,
     211.33
    ]
   },
-  "garcom_frente_passo_bandeja": {
+  "garcom_frente_passo_0_bandeja": {
    "anchor": [
     46.0,
     211.33
    ]
   },
-  "garcom_frente_passo2": {
+  "garcom_frente_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
     211.33
    ]
   },
-  "garcom_frente_passo2_bandeja": {
+  "garcom_frente_passo_1_bandeja": {
    "anchor": [
-    51.0,
+    46.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_2": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_2_bandeja": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_3": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_3_bandeja": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_4": {
+   "anchor": [
+    50.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_4_bandeja": {
+   "anchor": [
+    50.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_5": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_5_bandeja": {
+   "anchor": [
+    48.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_6": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_6_bandeja": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_7": {
+   "anchor": [
+    46.0,
+    211.33
+   ]
+  },
+  "garcom_frente_passo_7_bandeja": {
+   "anchor": [
+    46.0,
     211.33
    ]
   },
@@ -1747,27 +2683,99 @@
     205.33
    ]
   },
-  "garcom_costas_passo": {
+  "garcom_costas_passo_0": {
    "anchor": [
     46.0,
     205.33
    ]
   },
-  "garcom_costas_passo_bandeja": {
+  "garcom_costas_passo_0_bandeja": {
    "anchor": [
     46.0,
     205.33
    ]
   },
-  "garcom_costas_passo2": {
+  "garcom_costas_passo_1": {
    "anchor": [
-    51.0,
+    46.0,
     205.33
    ]
   },
-  "garcom_costas_passo2_bandeja": {
+  "garcom_costas_passo_1_bandeja": {
    "anchor": [
-    51.0,
+    46.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_2": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_2_bandeja": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_3": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_3_bandeja": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_4": {
+   "anchor": [
+    50.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_4_bandeja": {
+   "anchor": [
+    50.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_5": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_5_bandeja": {
+   "anchor": [
+    48.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_6": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_6_bandeja": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_7": {
+   "anchor": [
+    46.0,
+    205.33
+   ]
+  },
+  "garcom_costas_passo_7_bandeja": {
+   "anchor": [
+    46.0,
     205.33
    ]
   },
@@ -2425,6 +3433,12 @@
    "anchor": [
     41.0,
     50.0
+   ]
+  },
+  "icone_garcom": {
+   "anchor": [
+    41.0,
+    45.0
    ]
   },
   "botao_zoom_in": {

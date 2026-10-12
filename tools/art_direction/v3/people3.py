@@ -561,10 +561,97 @@ TRAY_EMPTY = "vazia"
 TRAY_FOOD = (34.6, -77.0, 30.0)  # centro x, centro y e largura do prato
 
 
-# Passos do jogo ("passo", "passo2"): passada mais aberta que a das pranchas ("andar") e os braços
-# balançando ao contrário das pernas. As pranchas continuam com "andar".
-STRIDE_GAME = 5.2
-ARM_SWING = 11.0  # graus, em torno do ombro
+# --- Andar do jogo: ciclo de 8 quadros ("passo_0" a "passo_7") ------------------------------------
+# Cada perna tem joelho: no apoio, o pé fica no chão e vai da frente para trás; no balanço, o joelho
+# dobra, o pé sobe e volta para a frente. A perna direita começa tocando o chão à frente (quadro 0);
+# a esquerda está meio ciclo atrás. Os braços balançam ao contrário das pernas. As pranchas continuam
+# com "andar"/"andar2", que não mudam.
+WALK_FRAMES = 8
+# O boneco é desenhado quase de frente (olhando para a direita da tela): andar para a frente é ir na
+# direção da câmera. O pé da frente desce e vai um pouco para a direita; o de trás sobe (de costas, ao contrário).
+WALK_FORWARD = (2.4, 4.4)   # deslocamento do pé (x, y) com a perna toda à frente
+WALK_LIFT = 4.0             # altura do pé no meio do balanço
+WALK_KNEE = 2.6             # quanto o joelho vem à frente no balanço
+WALK_ARM = 10.0             # graus de balanço dos braços, em torno do ombro
+HIP_Y = -33.0
+ANKLE_Y = -5.4
+
+
+def walk_frame(pose):
+    """Índice do quadro de andar do jogo ("passo_3" -> 3), ou None."""
+    return int(pose[6:]) if pose.startswith("passo_") else None
+
+
+def leg_state(phase):
+    """(avanço do pé de -1 a 1, altura do pé, joelho à frente, giro do sapato) na fase 0..1
+    (0 = pé tocando o chão à frente)."""
+    phase %= 1.0
+    if phase < 0.5:  # apoio: o pé no chão, da frente para trás
+        t = phase / 0.5
+        ahead = math.cos(math.pi * t)
+        return ahead, 0.0, 0.25 * math.sin(math.pi * t), -7.0 * ahead
+    t = (phase - 0.5) / 0.5  # balanço: o pé sobe e volta para a frente
+    lift = math.sin(math.pi * t)
+    return -math.cos(math.pi * t), WALK_LIFT * lift, WALK_KNEE * lift, 8.0 * lift
+
+
+def _tube(points, widths):
+    """Contorno de um "tubo" que passa pelos pontos (quadril, joelho, tornozelo), com a largura de cada um."""
+    def normal(i):
+        a = points[max(i - 1, 0)]
+        b = points[min(i + 1, len(points) - 1)]
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        ln = math.hypot(dx, dy) or 1.0
+        return -dy / ln, dx / ln
+    left, right = [], []
+    for i, (p, w) in enumerate(zip(points, widths)):
+        nx, ny = normal(i)
+        left.append((p[0] + nx * w / 2, p[1] + ny * w / 2))
+        right.append((p[0] - nx * w / 2, p[1] - ny * w / 2))
+    (l0, l1, l2), (r0, r1, r2) = left, right
+    # o joelho é ponto de passagem: controle da curva = 2*joelho - média das pontas
+    lc = (2 * l1[0] - (l0[0] + l2[0]) / 2, 2 * l1[1] - (l0[1] + l2[1]) / 2)
+    rc = (2 * r1[0] - (r0[0] + r2[0]) / 2, 2 * r1[1] - (r0[1] + r2[1]) / 2)
+    return (f"M{f(l0[0])},{f(l0[1])} Q{f(lc[0])},{f(lc[1])} {f(l2[0])},{f(l2[1])} L{f(r2[0])},{f(r2[1])} "
+            f"Q{f(rc[0])},{f(rc[1])} {f(r0[0])},{f(r0[1])} Z")
+
+
+def _walk_legs(D, bottom, skin_fill, sk, shoes, frame, back):
+    """As duas pernas no quadro [frame] do ciclo; a que está mais ao fundo sai primeiro."""
+    bkind, bcol = bottom
+    depth = -1.0 if back else 1.0
+    cloth = _cloth(D, bcol, -14, 14, -34, -4)
+    legs = []
+    for s, phase in ((1, frame / WALK_FRAMES), (-1, frame / WALK_FRAMES + 0.5)):
+        ahead, lift, knee, turn = leg_state(phase)
+        hip = (s * 6.1, HIP_Y)
+        ankle = (s * 6.0 + ahead * WALK_FORWARD[0], ANKLE_Y + ahead * WALK_FORWARD[1] * depth - lift)
+        # o joelho vem para a frente (para a câmera, ou para o fundo de costas) quando a perna dobra
+        mid = ((hip[0] + ankle[0]) / 2 + knee * 0.5, (hip[1] + ankle[1]) / 2 + knee * depth)
+        legs.append((ankle[1], s, hip, mid, ankle, turn))
+    o = []
+    for (_, s, hip, mid, ankle, turn) in sorted(legs, key=lambda leg: leg[0]):
+        tube = _tube([hip, mid, ankle], [12.2, 10.6, 9.8])
+        shoe = g(_shoe(D, ankle[0], ankle[1] + 4.2, shoes), f"rotate({f(turn)} {f(ankle[0])} {f(ankle[1] + 2)})")
+        if bkind == "calca":
+            o.append(shoe + path(tube, cloth, LINE, 1.15))
+            o.append(path(f"M{f(hip[0])},{f(hip[1] + 5)} Q{f(mid[0])},{f(mid[1])} {f(ankle[0])},{f(ankle[1] - 2)}", "none",
+                          dark(bcol, 0.2), 0.8, 'opacity="0.55"'))
+        else:
+            o.append(shoe + path(tube, skin_fill, LINE, 1.1))
+            if bkind == "short":
+                top = _tube([hip, ((hip[0] * 2 + mid[0]) / 3, (hip[1] * 2 + mid[1]) / 3), mid], [13.4, 12.6, 12.2])
+                o.append(path(top, _cloth(D, bcol, -14, 14, -34, -18), LINE, 1.15))
+    if bkind == "saia":
+        o.append(path("M-12.6,-33 L12.6,-33 L17.6,-16.4 C8,-12.8 -8,-12.8 -17.6,-16.4 Z", _cloth(D, bcol, -18, 18, -34, -14), LINE, 1.15))
+        o.append(path("M-5,-31 L-7.4,-15 M5,-31 L7.4,-15", "none", dark(bcol, 0.25), 0.8, 'opacity="0.6"'))
+    return "".join(o)
+
+
+def walk_arm_angle(frame, s):
+    """Giro do braço do lado s (graus): vai para a frente quando a perna do outro lado vai para a frente."""
+    phase = frame / WALK_FRAMES + (0.5 if s == 1 else 0.0)  # a perna oposta ao braço
+    return -WALK_ARM * leg_state(phase)[0]
 
 
 def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, shoes="#5b4a66"):
@@ -576,15 +663,16 @@ def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, 
     sleeve = {"camiseta": "curta", "blusa": "curta", "regata": None, "vestido": "curta"}.get(kind, "longa")
     o = []
     # "andar2": a mesma passada com a outra perna à frente (as pernas espelhadas), para alternar com "andar".
-    other_leg = pose in ("andar2", "passo2")
-    arm_swing = 0.0
-    if pose in ("passo", "passo2"):
-        arm_swing = ARM_SWING if pose == "passo" else -ARM_SWING
+    other_leg = pose == "andar2"
+    walk = walk_frame(pose)
+    if walk is not None:
         pose = "passo"
     elif other_leg:
         pose = "andar"
     if pose == "sentado":
         o.append(_seated_legs(D, bottom, skin_fill, shoes, back))
+    elif walk is not None:
+        o.append(_walk_legs(D, bottom, skin_fill, sk, shoes, walk, back))
     elif other_leg:
         o.append(g(_legs(D, bottom, skin_fill, sk, shoes, pose), "scale(-1,1)"))
     else:
@@ -604,9 +692,8 @@ def body(D, skin, top, bottom, pose="em_pe", tray=None, apron=None, back=False, 
         if tray and s == 1:
             continue
         arm = _arm(D, s, sleeve, skin_fill, sk, _cloth(D, base), pose)
-        if arm_swing:
-            # Braço do lado da perna da frente vai para trás, o outro para a frente.
-            arm = g(arm, f"rotate({f(arm_swing * s)} {f(s * 13)} -55)")
+        if walk is not None:
+            arm = g(arm, f"rotate({f(walk_arm_angle(walk, s))} {f(s * 13)} -55)")
         b.append(arm)
     if tray:
         b.append(path("M12.8,-57.8 C19,-58.4 23.4,-55 23.8,-50.4 L28.2,-55.4 L32.4,-61.8 L28.8,-65.2 L20.6,-57.8 Z",

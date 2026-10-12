@@ -25,7 +25,7 @@ import subprocess
 import xml.etree.ElementTree as ElementTree
 
 from furniture3 import *  # noqa: F401,F403
-from people3 import person, TRAY_EMPTY, TRAY_FOOD
+from people3 import person, TRAY_EMPTY, TRAY_FOOD, WALK_FRAMES
 from food3 import food, mood_face
 
 TILE_W = 96.0
@@ -240,6 +240,21 @@ for _id, (_style, _height) in themes3.TABLES.items():
     TABLE_TOPS[_id] = float(_height)
 for _id, _draw in themes3.DECOR.items():
     FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
+def _collection_stove(style):
+    return lambda D, iso, fp, rotation: stove(D, iso, 0, 0, FACE.get(rotation), **style)
+
+
+def _collection_counter(style):
+    def draw(D, iso, fp, rotation):
+        along = "x" if fp[0] > 1 else "y"
+        return counter(D, iso, 0, 0, FACE.get(rotation), cells=max(fp), along=along, **style)
+    return draw
+
+
+for _id, _style in themes3.STOVES.items():
+    FURNITURE[_id] = ((1, 1), _collection_stove(_style), 4)
+for _id, _style in themes3.COUNTERS.items():
+    FURNITURE[_id] = ((2, 1), _collection_counter(_style), 4)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 
@@ -297,7 +312,7 @@ PERSON_SCALE = 0.6 * TILE_W / 84.0
 # Do vértice da frente da cadeira até os pés de quem senta: assento (seat_point) + 4, como no canvas.
 SEAT_DROP = 4.0
 EXPRESSIONS = ("feliz", "esperando", "bravo", "comendo")
-WALK = ("em_pe", "passo", "passo2")
+WALK = ("em_pe",) + tuple(f"passo_{i}" for i in range(WALK_FRAMES))
 
 # Clientes: os mesmos tipos de gente das pranchas aprovadas.
 CUSTOMERS = {
@@ -497,13 +512,14 @@ def export(out_dir=OUT):
     manifest = {"density": DENSITY, "sheets": {}, "sprites": {}, "furniture": {}}
     # A interface usa px da tela: design_tile = GAME_TILE_W dá 2 px de textura por px.
     furniture = SheetGroup("moveis")
-    sheets = [Sheet("personagens"), Sheet("pratos"), Sheet("cenario", tiles3.TW), Sheet("interface", GAME_TILE_W)]
+    people = SheetGroup("personagens")
+    sheets = [Sheet("pratos"), Sheet("cenario", tiles3.TW), Sheet("interface", GAME_TILE_W)]
     export_furniture(furniture, manifest)
-    export_people(sheets[0], manifest)
-    export_food(sheets[1], manifest)
-    export_scene(sheets[2], manifest)
-    export_ui(sheets[3], manifest)
-    for sheet in furniture.sheets + sheets:
+    export_people(people, manifest)
+    export_food(sheets[0], manifest)
+    export_scene(sheets[1], manifest)
+    export_ui(sheets[2], manifest)
+    for sheet in furniture.sheets + people.sheets + sheets:
         svg_path = os.path.join(out_dir, sheet.name + ".svg")
         markup = sheet.svg()
         try:
