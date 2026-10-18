@@ -1,8 +1,29 @@
 # Status
 
-## CAFÉ MANIE — STATUS (12/10/2026)
+## CAFÉ MANIE — STATUS (18/10/2026)
 
 🟢 **CONCLUÍDO**
+
+**Passe visual "AAA"** (DT-044): efeitos só na tela, sem mexer nas regras do jogo
+
+- **Raio-X:** quem passa atrás de um fogão, balcão ou estante aparece como silhueta azul, só na parte coberta. Mesas e cadeiras não tampam ninguém, e quem está sentado não ganha silhueta.
+- **Brilho:**
+  - o móvel escolhido ganha um halo laranja que pulsa;
+  - o fogão com prato pronto brilha em dourado;
+  - a prévia da compra não brilha.
+- **Mureta que abre:** a mureta da frente fica transparente perto de quem passa junto dela (também quem sai pela porta) e do piso escolhido.
+- **Animações curtas:**
+  - móvel novo surge crescendo do chão (ao abrir o jogo, a cafeteria já está montada);
+  - os pratos caem no balcão com um quique;
+  - os personagens esticam ao arrancar e achatam ao frear, de leve;
+  - a loja acende ao abrir, o aviso surge crescendo e o número do ouro quica quando entra ouro.
+- **Vapor e confete:**
+  - vapor nas panelas e nos pratos do balcão;
+  - confete dourado com faíscas quando o cliente paga;
+  - partículas leves, que rodam em qualquer celular.
+- **Toque:** todo botão de ícone tem pelo menos 48 px de área de toque.
+- **Zoom mais suave:** a regra de nitidez das texturas agora vale para o projeto inteiro (suave ao afastar o zoom).
+- **Ordem de desenho:** quem está atrás de um móvel aparece atrás dele e quem está na frente aparece na frente, inclusive com móvel girado (protegido por teste).
 
 **Pacote de melhorias do PO de 12/10: as 6 etapas** (plano no [roadmap](roadmap.md))
 
@@ -103,6 +124,16 @@
 - Nada bloqueado.
 
 🧪 **TESTADO**
+
+- **370 testes automatizados: PASSOU** no Windows: os 353 de antes, sem nenhuma mudança, e 17 novos dos efeitos.
+  - Os novos conferem o raio-X (atrás, na frente, mesa, sentado, saindo de trás), o brilho (seleção, fogão pronto, fantasma) e o vapor (fogão e balcão).
+  - Conferem também: o móvel que surge, a pilha que quica, a mureta que abre (também para quem sai pela porta), o confete que some sozinho, o esticar e achatar, a loja, o aviso e o ouro, as áreas de toque, o filtro de textura e a ordem de desenho.
+  - **Defeitos inseridos de propósito nos efeitos: 24 de 24 pegos, mais 1 equivalente.**
+- **Fotos conferidas:** o fogão pronto com halo dourado, o vapor nas panelas e a silhueta de uma cliente atrás do balcão; a interface continua nítida com o novo filtro.
+- **Cena principal: PASSOU** (900 frames), zero erros. Às vezes, ao fechar, a Godot avisa que 2 objetos ficaram na memória: o aviso já aparecia antes desta etapa (conferido na versão anterior) e não afeta o jogo; fica anotado para investigar.
+- **`.exe` novo** (`build\windows\CafeManie.exe`, 126 MB): a checagem automática do build **PASSOU** (`SMOKE OK`).
+
+**Etapa de 12/10:**
 
 - **353 testes automatizados: PASSOU** no Windows. Os da etapa de 12/10 conferem:
   - pedidos do cardápio, fila, ritmo por nível;

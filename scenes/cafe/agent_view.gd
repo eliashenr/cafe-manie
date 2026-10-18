@@ -35,6 +35,14 @@ const WALK_FRAMES := 8
 ## Quanto o corpo sobe quando as pernas se cruzam no meio da passada (pixels de mundo).
 ## Sem balanço de lado: o corpo vai reto, quem anda são as pernas.
 const BOUNCE := 2.0
+## Esticar e achatar (cartum, sutil): ao arrancar o corpo estica para cima, ao frear achata.
+## Quanto estica por piso/s² de aceleração, o limite e a suavização (por segundo).
+const STRETCH_PER_ACCEL := 0.006
+const STRETCH_MAX := 0.045
+const STRETCH_SMOOTHING := 12.0
+## Raio-X: z do filho que mostra a silhueta por cima dos móveis (abaixo dos balões) e a cor dela.
+const XRAY_Z := 4
+const XRAY_TINT := Color(0.33, 0.56, 1.0, 0.5)
 ## Respiração de quem está parado ou sentado: quanto estica e quantas vezes por segundo.
 const BREATH := 0.012
 const BREATH_RATE := 0.45
@@ -90,6 +98,14 @@ static var _balloon_style: StyleBoxFlat
 static var _balloon_shadow_style: StyleBoxFlat
 
 var _overlay := Node2D.new()
+## Esticar e achatar atual (positivo estica, negativo achata) e a velocidade do quadro anterior.
+var _stretch := 0.0
+var _previous_velocity := Vector2.ZERO
+## Raio-X: o pai recorta (só desenha os filhos dentro do formato dos móveis que tampam o personagem);
+## o filho desenha o corpo como silhueta.
+var _xray := Node2D.new()
+var _xray_body := Node2D.new()
+var _occluders: Array = []
 
 
 func _init() -> void:
@@ -99,6 +115,16 @@ func _init() -> void:
 	_overlay.z_index = OVERLAY_Z
 	_overlay.draw.connect(_draw_overlay)
 	add_child(_overlay)
+	_xray.name = "XRay"
+	_xray.z_index = XRAY_Z
+	_xray.clip_children = CanvasItem.CLIP_CHILDREN_ONLY
+	_xray.visible = false
+	_xray.draw.connect(_draw_xray_mask)
+	add_child(_xray)
+	_xray_body.name = "XRayBody"
+	_xray_body.material = FxMaterials.silhouette(XRAY_TINT)
+	_xray_body.draw.connect(_draw_xray_body)
+	_xray.add_child(_xray_body)
 
 
 ## Lê o estado do agente. Chamado a cada frame; o desenho anda em advance().
@@ -147,6 +173,10 @@ func advance(delta: float) -> void:
 	shown += step
 	velocity = step / delta
 	_traveled += step.length()
+	_update_stretch(delta)
+	if _xray.visible:
+		_xray.queue_redraw()
+		_xray_body.queue_redraw()
 	if exiting and shown.distance_to(_exit_target) < 0.05:
 		_alpha -= delta / FADE_TIME
 		if _alpha <= 0.0:
@@ -230,17 +260,85 @@ func _draw() -> void:
 	if sprite == null:
 		_draw_placeholder()
 		return
-	var lift := step_motion()
 	var breath := 1.0
 	if not walking():
 		breath += sin((_time * BREATH_RATE + agent.serial * 0.37) * TAU) * BREATH
-	draw_set_transform(Vector2(0.0, -SORT_NUDGE - lift), 0.0, Vector2(-1.0 if body_pose[1] else 1.0, breath))
-	draw_texture_rect(sprite.texture, sprite.draw_rect(), false)
-	_draw_tray_food()
+	_draw_body(self, sprite, body_pose[1], breath)
+	_draw_tray_food()  # na bandeja: segue o corpo (mesma transformação)
 	draw_set_transform(Vector2.ZERO)
 	var chair_back := backrest()
 	if chair_back != null:
 		draw_texture_rect(chair_back.texture, chair_back.rect_at(Vector2(0.0, -SORT_NUDGE)), false)
+
+
+## Corpo com quique, respiração, espelho e esticar/achatar (o mesmo para o desenho e para o raio-X).
+func _draw_body(canvas: CanvasItem, sprite: ArtSprites.Sprite, mirrored: bool, breath: float) -> void:
+	var squash := 1.0 - _stretch * 0.5
+	canvas.draw_set_transform(Vector2(0.0, -SORT_NUDGE - step_motion()), 0.0,
+		Vector2((-1.0 if mirrored else 1.0) * squash, breath * (1.0 + _stretch)))
+	canvas.draw_texture_rect(sprite.texture, sprite.draw_rect(), false)
+
+
+## Esticar e achatar pela aceleração do desenho: arrancando estica, freando achata; parado, volta ao normal.
+func _update_stretch(delta: float) -> void:
+	var speeding_up := velocity.length() >= _previous_velocity.length()
+	var acceleration := (velocity - _previous_velocity).length() / delta
+	_previous_velocity = velocity
+	var target := clampf(acceleration * STRETCH_PER_ACCEL, 0.0, STRETCH_MAX) * (1.0 if speeding_up else -1.0)
+	if seated_on_screen():
+		target = 0.0
+	_stretch = lerpf(_stretch, target, 1.0 - exp(-STRETCH_SMOOTHING * delta))
+
+
+## Quanto o corpo está esticado agora (positivo estica, negativo achata; 0 = normal).
+func stretch() -> float:
+	return _stretch
+
+
+## Retângulo do corpo desenhado, no mundo (vazio se não há arte).
+func body_rect() -> Rect2:
+	if agent == null:
+		return Rect2()
+	var sprite := ArtSprites.get_sprite(pose()[0])
+	if sprite == null:
+		return Rect2()
+	var rect := sprite.draw_rect()
+	return Rect2(position + rect.position - Vector2(0.0, SORT_NUDGE), rect.size)
+
+
+## Móveis que tampam o personagem agora (a silhueta aparece no formato deles).
+func set_occluders(views: Array) -> void:
+	if views == _occluders:
+		return
+	_occluders = views
+	_xray.visible = not views.is_empty()
+	_xray.queue_redraw()
+	_xray_body.queue_redraw()
+
+
+func occluders() -> Array:
+	return _occluders
+
+
+func shows_xray() -> bool:
+	return _xray.visible
+
+
+## Máscara do raio-X: o desenho dos móveis que tampam, na posição deles (o nó em si não aparece).
+func _draw_xray_mask() -> void:
+	for view: FurnitureView in _occluders:
+		if is_instance_valid(view) and view.sprite != null:
+			var rect := view.sprite.draw_rect()
+			_xray.draw_texture_rect(view.sprite.texture, Rect2(rect.position + view.position - position, rect.size), false)
+
+
+func _draw_xray_body() -> void:
+	if agent == null:
+		return
+	var body_pose := pose()
+	var sprite := ArtSprites.get_sprite(body_pose[0])
+	if sprite != null:
+		_draw_body(_xray_body, sprite, body_pose[1], 1.0)
 
 
 ## Encosto desenhado por cima de quem senta de costas: o da cadeira em que sentou. A arte só tem

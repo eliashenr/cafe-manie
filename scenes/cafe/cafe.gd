@@ -84,6 +84,8 @@ var grid: CafeGrid:
 @onready var front_view: FrontView = $FrontView
 @onready var world_layer: WorldLayer = $WorldLayer
 @onready var effects: Node2D = $Effects
+## Partículas soltas (confete do pagamento), logo abaixo dos números que sobem.
+@onready var particles: Node2D = $Particles
 @onready var camera: CafeCamera = $CafeCamera
 @onready var hud: GameHud = $GameHud
 @onready var build_bar: BuildBar = $BuildBar
@@ -137,6 +139,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	simulation.tick(delta)
 	world_layer.refresh(simulation)
+	front_view.set_focus(world_layer.front_focus_points(selected_cell))
 	_since_last_save += delta
 	_since_gold_offer += delta
 	if _save_dirty and _since_last_save >= autosave_min_interval:
@@ -360,6 +363,7 @@ func collect_stove(stove_id: StringName) -> int:
 func _on_payment_received(customer: Customer, amount: int) -> void:
 	var at := IsoProjection.grid_point_to_world(Vector2(customer.seat_cell)) + Vector2(0, -70)
 	FloatingText.spawn(effects, at, "+%d" % amount, FEEDBACK_GOLD)
+	FxParticles.gold_burst(particles, at + Vector2(0, 20))
 
 
 func _on_leveled_up(level: int) -> void:

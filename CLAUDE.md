@@ -38,6 +38,7 @@ No Windows, troque `godot` pelo caminho do executável `Godot_v4.7.2-stable_win6
 - **Scripts avulsos com `-s`** compilam antes dos autoloads existirem. Não use tipos que dependem do `EventBus` (como `Cafe`) com tipagem estática neles; carregue com `load()` e use variáveis sem tipo. O executor de testes já faz isso.
 - **Conteúdo novo** (móveis etc.) entra como `.tres` em `data/`, nunca como `if` no código.
 - **Mensagens na tela** entram numa fila no HUD. Em testes, use `all_messages(cafe)` para ver o aviso atual e os que esperam.
+- **Efeitos visuais** (shaders, Tweens, partículas) ficam em `scenes/fx/` e `art/shaders/`, como nós filhos ou funções prontas que as cenas ligam e desligam (DT-044). Só `CPUParticles2D`; nada de efeito em `core/`. Animação de interface mexe só em escala e transparência, nunca no tamanho ou posição da área de toque.
 - **Janelas de pergunta:** só uma por vez (`Cafe.is_dialog_open()`). Toda compra imediata pede confirmação com Cancelar já selecionado.
 - **O executor reprova arquivo de teste que não compila.** Se a contagem de testes cair, investigue.
 - **Exportar:** `godot --headless --export-release "Windows" build/windows/CafeManie.exe` e confira com `godot --headless --main-pack build/windows/CafeManie.exe -- --smoke-check`. Android: ver README (chave por variáveis de ambiente, nunca no repositório).

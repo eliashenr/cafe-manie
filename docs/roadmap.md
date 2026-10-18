@@ -39,6 +39,14 @@ separadamente:
   - o pagamento real depende da Play Store (conta de desenvolvedor do PO) e da revisão jurídica da Fase 7;
   - até lá, a loja de pacotes aparece e explica isso.
 
+## Passe visual (18/10/2026)
+
+- [x] **Efeitos visuais só na tela** (DT-044):
+  - raio-X atrás de móveis altos, halo no móvel escolhido e no fogão pronto, mureta que abre perto de quem passa;
+  - móvel que surge, pratos que quicam, esticar e achatar, loja, aviso e ouro animados;
+  - vapor e confete dourado;
+  - toque de 48 px, filtro de textura do projeto, ordem de desenho protegida por teste.
+
 ## Fase 1 — detalhamento
 
 - [x] Grid lógico 8×8 com ocupação, colisão e expansão

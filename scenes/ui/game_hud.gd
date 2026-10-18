@@ -71,6 +71,7 @@ var _toast_time := 0.0
 var _restart_dialog: ConfirmationDialog
 var _achievements_dialog: AcceptDialog
 var _coin_dialog: AcceptDialog
+var _shown_gold := -1
 var _coin_info_dialog: AcceptDialog
 var _coin_note: Label
 var _coin_packs: HBoxContainer
@@ -724,7 +725,11 @@ func refresh() -> void:
 	_level_label.text = str(progression.level)
 	_xp_bar.value = progression.level_progress()
 	_xp_bar.text = _xp_text()
-	_gold_label.text = UiTheme.thousands(simulation.wallet.balance(Wallet.SOFT))
+	var gold := simulation.wallet.balance(Wallet.SOFT)
+	if gold > _shown_gold and _shown_gold >= 0:
+		Juice.bump(_gold_label)  # ouro entrando: o número quica
+	_shown_gold = gold
+	_gold_label.text = UiTheme.thousands(gold)
 	var popularity := roundi(simulation.popularity)
 	_rating_label.text = "%d%%" % popularity
 	var lit := roundi(simulation.popularity / 100.0 * STARS)
@@ -789,6 +794,7 @@ func _show_now(text: String) -> void:
 	_toast.reset_size()
 	_toast.position.x = (_root.size.x - _toast.size.x) / 2.0
 	_toast_time = TOAST_SECONDS + text.length() * TOAST_SECONDS_PER_CHAR
+	Juice.pop_in(_toast)
 
 
 ## Avisos esperando a vez (para testes).

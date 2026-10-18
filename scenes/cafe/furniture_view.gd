@@ -63,6 +63,16 @@ const COUNT_SIZE := Vector2(34.7, 21.3)
 const COUNT_EDGE := Color("1f6fd1")
 const COUNT_TEXT_SIZE := 15
 const ART_INK := Color("33283a")
+## Halo: cores (selecionado, prato pronto) e quanto o desenho cresce nas duas camadas do brilho.
+const HALO_SELECTED := Color(1.0, 0.62, 0.12, 0.8)
+const HALO_READY := Color(1.0, 0.86, 0.25, 0.85)
+const HALO_SCALES: Array[float] = [1.1, 1.05]
+## Pilha do balcão: de quantos pixels acima ela cai quando chega prato.
+const STACK_POP_HEIGHT := 14.0
+## Vapor: onde sai, na panela (fração da altura do desenho da panela, a partir do topo) e acima da
+## pilha de pratos do balcão (pixels de mundo acima do tampo).
+const STEAM_HEIGHT := 0.35
+const STACK_STEAM_HEIGHT := 18.0
 
 var definition: FurnitureDefinition
 var origin := Vector2i.ZERO
@@ -88,6 +98,14 @@ var kitchen_count := 0
 var dishes: Array = []
 
 var _overlay := Node2D.new()
+## Halo de brilho atrás do desenho (selecionado ou fogão com prato pronto) e o vapor do fogão.
+var _halo := Node2D.new()
+var _steam: CPUParticles2D
+## Quanto a pilha de pratos do balcão está acima do lugar (anima quando chega prato).
+var stack_pop := 0.0:
+	set(value):
+		stack_pop = value
+		queue_redraw()
 
 
 func _init() -> void:
@@ -96,6 +114,12 @@ func _init() -> void:
 	_overlay.z_index = OVERLAY_Z
 	_overlay.draw.connect(_draw_overlay)
 	add_child(_overlay)
+	_halo.name = "Halo"
+	_halo.show_behind_parent = true
+	_halo.visible = false
+	_halo.material = FxMaterials.glow(HALO_SELECTED)
+	_halo.draw.connect(_draw_halo)
+	add_child(_halo)
 
 
 ## Troca os pratos sobre o tampo; só redesenha se algo mudou.
@@ -114,6 +138,9 @@ func set_status(text: String, progress := -1.0, ready := false, recipe: RecipeDe
 	if text == status_text and rounded == status_progress and ready == status_ready and recipe == kitchen_recipe \
 			and detail == kitchen_detail and count == kitchen_count:
 		return
+	if definition != null and definition.category == FurnitureDefinition.Category.COUNTER and count > kitchen_count \
+			and is_inside_tree():
+		Juice.settle(self, "stack_pop", -STACK_POP_HEIGHT, 0.0)
 	status_text = text
 	status_progress = rounded
 	status_ready = ready
@@ -122,6 +149,7 @@ func set_status(text: String, progress := -1.0, ready := false, recipe: RecipeDe
 	kitchen_count = count
 	queue_redraw()
 	_overlay.queue_redraw()
+	_refresh_fx()
 
 
 func configure(new_definition: FurnitureDefinition, new_origin: Vector2i, new_rotation_steps: int,
@@ -132,6 +160,7 @@ func configure(new_definition: FurnitureDefinition, new_origin: Vector2i, new_ro
 	look = new_look
 	sprite = ArtSprites.furniture(definition.id, rotation_steps)
 	position = IsoProjection.cell_top_vertex(origin + _footprint())
+	_refresh_fx()
 	match look:
 		Look.GHOST_VALID:
 			modulate = GHOST_VALID_MODULATE
@@ -254,9 +283,57 @@ func _draw_cooking() -> void:
 		draw_texture_rect(glow.texture, glow.draw_rect(), false)
 
 
+## Brilho: está aceso? (selecionado, ou fogão com prato pronto esperando)
+func glowing() -> bool:
+	return _halo.visible
+
+
+## Vapor saindo? (panela do fogão cozinhando ou com prato pronto, ou pratos quentes no balcão)
+func steaming() -> bool:
+	return _steam != null and _steam.emitting
+
+
+## Liga e desliga o halo e o vapor conforme o estado (seleção e cozinha). O fantasma da compra nunca
+## está selecionado nem recebe o estado da cozinha, então nunca brilha nem solta vapor.
+func _refresh_fx() -> void:
+	if definition == null:
+		return
+	var ready_stove := definition.category == FurnitureDefinition.Category.COOKING and status_ready
+	var glow := sprite != null and (look == Look.SELECTED or ready_stove)
+	if glow != _halo.visible or glow:
+		_halo.material.set_shader_parameter("glow_color", HALO_SELECTED if look == Look.SELECTED else HALO_READY)
+		_halo.visible = glow
+		_halo.queue_redraw()
+	var cooking := definition.category == FurnitureDefinition.Category.COOKING and kitchen_recipe != null
+	var hot_dishes := definition.category == FurnitureDefinition.Category.COUNTER and kitchen_count > 0
+	var hot := cooking or hot_dishes
+	if hot and _steam == null:
+		_steam = FxParticles.steam()
+		add_child(_steam)
+	if _steam != null:
+		if cooking:
+			var pot := ArtSprites.cookware(kitchen_recipe.id)
+			if pot != null:
+				var rect := pot.draw_rect()
+				_steam.position = rect.position + Vector2(rect.size.x / 2.0, rect.size.y * STEAM_HEIGHT)
+		elif hot_dishes:
+			_steam.position = _footprint_center() - Vector2(0.0, ArtSprites.counter_top() + STACK_STEAM_HEIGHT)
+		_steam.emitting = hot
+
+
+## Halo: o próprio desenho, maior, numa cor só e pulsando (o shader), atrás do móvel.
+func _draw_halo() -> void:
+	if sprite == null:
+		return
+	var rect := sprite.draw_rect()
+	var center := rect.get_center()
+	for grow in HALO_SCALES:
+		_halo.draw_texture_rect(sprite.texture, Rect2(center - rect.size * grow / 2.0, rect.size * grow), false)
+
+
 ## Pilha de pratos com a comida no meio do tampo do balcão (um prato a cada 4 porções, até 3).
 func _draw_stack() -> void:
-	var at := _footprint_center() - Vector2(0.0, ArtSprites.counter_top())
+	var at := _footprint_center() - Vector2(0.0, ArtSprites.counter_top() - stack_pop)
 	var plates := clampi(kitchen_count / STACK_SERVINGS_PER_PLATE, 1, STACK_MAX_PLATES)
 	for i in plates:
 		_draw_plate(at + Vector2(0.0, 1.3 - i * PLATE_STEP))

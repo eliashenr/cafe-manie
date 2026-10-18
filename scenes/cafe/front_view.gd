@@ -12,6 +12,9 @@ const CAP_DEPTH := 0.16
 const CAP_TOP := Color("ffffff")
 const ART_INK := Color("33283a")
 const PAINT_LINE := Color("ffd23f")
+## Esmaecimento perto de personagens e do piso escolhido (pixels de mundo) e o quanto sobra.
+const FADE_RADIUS := 80.0
+const FADE_MIN_ALPHA := 0.3
 ## Canteiros na grama da frente, em frações da largura e da profundidade do grid (mais um recuo em pisos).
 const FLOWER_BEDS: Array[Vector3] = [Vector3(0.28, 1.0, 1.6), Vector3(0.74, 1.0, 1.75)]
 ## Postes na calçada (x a partir da borda da entrada; y em frações do comprimento, mais um recuo em pisos).
@@ -38,6 +41,8 @@ var painted: Dictionary = {}:
 		painted = value
 		queue_redraw()
 
+var _focus := PackedVector2Array()
+
 ## Reforma em andamento nos trechos da mureta.
 var paint_surface: SurfaceDefinition
 var paint_segments: Array[String] = []
@@ -46,6 +51,19 @@ var paint_segments: Array[String] = []
 func _init() -> void:
 	z_index = 1
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	material = FxMaterials.fade(FADE_RADIUS, FADE_MIN_ALPHA)
+
+
+## Pontos (no mundo) perto dos quais a mureta fica transparente.
+func set_focus(points: PackedVector2Array) -> void:
+	if points == _focus:
+		return
+	_focus = points
+	FxMaterials.set_focus(material, points)
+
+
+func focus_points() -> PackedVector2Array:
+	return _focus
 
 
 func has_art() -> bool:

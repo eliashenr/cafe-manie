@@ -25,6 +25,8 @@ var _views: Dictionary = {}  # id do móvel -> FurnitureView
 var _agents: Dictionary = {}  # serial do personagem -> AgentView
 ## Clientes que já saíram e terminam a caminhada até a calçada (somem sozinhos).
 var _exiting: Array[AgentView] = []
+## O primeiro sync monta a cafeteria inteira (sem animação); depois, móvel novo surge crescendo.
+var _synced_once := false
 var _ghost: FurnitureView
 
 
@@ -51,6 +53,7 @@ func sync() -> void:
 	for placement in layout.placements():
 		alive[placement.id] = true
 		var view: FurnitureView = _views.get(placement.id)
+		var created := view == null
 		if view == null:
 			view = FurnitureView.new()
 			view.name = String(placement.id).replace("#", "_")
@@ -59,10 +62,13 @@ func sync() -> void:
 		var look := FurnitureView.Look.SELECTED if placement.id == selected_id else FurnitureView.Look.NORMAL
 		view.configure(placement.definition, placement.origin, placement.rotation, look)
 		view.visible = placement.id != hidden_id
+		if created and _synced_once:
+			Juice.pop_in(view)  # móvel novo surge crescendo do chão (ao abrir o jogo, já está lá)
 	for id: StringName in _views.keys():
 		if not alive.has(id):
 			_views[id].queue_free()
 			_views.erase(id)
+	_synced_once = true
 
 
 ## O prato de quem come fica no piso da mesa, puxado este tanto para o lado da cadeira.
@@ -75,11 +81,60 @@ const QUEUE_WALK := Vector2(0.0, 3.0)
 const READY_TEXT := "Pronto!"
 
 
+## Raio-X: só móvel desta altura (pixels de mundo) esconde alguém; mesas e cadeiras nunca.
+const XRAY_MIN_HEIGHT := 64.0
+## A mureta esmaece perto de quem está a até este tanto (em pisos) da borda da frente, em volta do meio
+## do corpo (pixels de mundo acima dos pés).
+const FRONT_FOCUS_REACH := 1.6
+const FRONT_FOCUS_LIFT := 30.0
+
+
 ## Atualiza o que muda a cada frame: etiquetas de fogões e balcões, pratos nas mesas e os personagens.
 func refresh(simulation: CafeSimulation) -> void:
 	_refresh_furniture_status(simulation.kitchen)
 	_refresh_table_dishes(simulation)
 	_refresh_agents(simulation)
+	_refresh_xray()
+
+
+## Quem está atrás de um móvel alto ganha a silhueta no formato do móvel (sentado não: a mesa na frente é normal).
+func _refresh_xray() -> void:
+	var views: Array[AgentView] = []
+	views.assign(_agents.values())
+	for view in views:
+		var occluders: Array = []
+		var body := view.body_rect()
+		if body.size != Vector2.ZERO and not view.seated_on_screen():
+			for furniture: FurnitureView in _views.values():
+				if furniture.visible and furniture.sprite != null and furniture.position.y > view.position.y \
+						and furniture.definition.category not in [FurnitureDefinition.Category.TABLE, FurnitureDefinition.Category.SEATING] \
+						and furniture.sprite.draw_rect().size.y >= XRAY_MIN_HEIGHT:
+					var rect := furniture.sprite.draw_rect()
+					if Rect2(furniture.position + rect.position, rect.size).intersects(body):
+						occluders.append(furniture)
+		view.set_occluders(occluders)
+
+
+## Pontos onde a mureta da frente fica transparente: personagens perto da borda da frente (inclusive quem
+## está saindo pela porta) e o piso escolhido.
+func front_focus_points(selected_cell: Vector2i) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	if layout == null:
+		return points
+	var size := Vector2(layout.grid.size)
+	_prune_exiting()
+	var everyone: Array[AgentView] = []
+	everyone.assign(_agents.values())
+	everyone.append_array(_exiting)
+	for view in everyone:
+		if view.agent == null:
+			continue
+		var at := view.shown
+		if at.x >= size.x - FRONT_FOCUS_REACH or at.y >= size.y - FRONT_FOCUS_REACH:
+			points.append(IsoProjection.grid_point_to_world(at) - Vector2(0.0, FRONT_FOCUS_LIFT))
+	if layout.grid.is_inside(selected_cell):
+		points.append(IsoProjection.cell_center(selected_cell))
+	return points
 
 
 func _refresh_furniture_status(kitchen: Kitchen) -> void:

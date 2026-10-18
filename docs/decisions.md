@@ -4,6 +4,51 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-044 — Passe visual: shaders leves, "juice" por Tween e partículas por CPU, só na tela
+
+**Problema:** o PO pediu um acabamento "AAA" (raio-X atrás dos móveis, brilho no que está selecionado e no fogão pronto, mureta que não esconde ninguém, animações de surgir e quicar, vapor e confete), sem quebrar os testes, sem mexer no loop do jogo e rodando bem em celular.
+
+**Opções:**
+- (A) efeitos espalhados dentro do desenho de cada cena;
+- (B) uma pasta de efeitos (`scenes/fx`) com funções prontas e nós filhos só de efeito, que as cenas apenas ligam e desligam.
+
+E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
+
+**Decisão:** B e D.
+- **Onde fica:**
+  - `art/shaders/`: 3 shaders `canvas_item`, cada um com uma leitura de textura por pixel (renderer `mobile`);
+  - `scenes/fx/fx_materials.gd`, `juice.gd` e `fx_particles.gd`: os materiais, as animações e as partículas;
+  - nada em `core/`: a regra do jogo não sabe que os efeitos existem. Os efeitos só leem o estado (seleção, fogão pronto, porções no balcão, pagamento).
+- **Raio-X:**
+  - quem passa atrás de um móvel alto (fogão, balcão, estante; 64 px ou mais) aparece como silhueta azul, só onde o móvel cobre;
+  - o personagem ganha um filho `XRay` com `clip_children`: ele desenha o formato dos móveis da frente como máscara e, dentro dela, o neto desenha o corpo com o shader de silhueta;
+  - mesas e cadeiras nunca tampam, e quem está sentado nunca ganha silhueta (a mesa na frente é o normal).
+- **Brilho:**
+  - um filho `Halo` atrás do móvel desenha o próprio desenho um pouco maior, numa cor só, pulsando;
+  - laranja para o móvel escolhido e dourado para o fogão com prato pronto;
+  - a prévia da compra (fantasma) não brilha.
+- **Mureta:** o shader esmaece a mureta da frente perto de quem está a até 1,6 piso da borda (também quem está saindo pela porta) e do piso escolhido (até 8 pontos, raio de 80 px, sobra 30% de opacidade).
+- **Juice:**
+  - móvel novo surge crescendo do chão (TRANS_BACK, EASE_OUT); ao abrir o jogo, a cafeteria já está montada, sem animação;
+  - a pilha de pratos cai no tampo do balcão quando chega prato;
+  - os personagens esticam ao arrancar e achatam ao frear, no máximo 4,5%;
+  - a loja acende, o aviso surge crescendo e o número do ouro quica quando entra ouro.
+  - As animações de interface só mudam a transparência e a escala do desenho. A área de toque não muda, então os testes de toque continuam valendo.
+- **Partículas:**
+  - `CPUParticles2D` (rodam em qualquer celular, sem depender da GPU);
+  - vapor nas panelas (cozinhando ou com prato pronto) e nos pratos do balcão;
+  - confete dourado com faíscas no pagamento, numa camada própria (`Particles`), que some sozinho;
+  - a única textura é uma bolinha de gradiente (`art/fx/soft_dot.tres`). Guardada como recurso, e não em variável estática, ela não vaza memória ao fechar.
+- **Toque:** todo botão de ícone tem no mínimo 48 px de área de toque (uns 9 mm num celular comum); o ícone continua do mesmo tamanho.
+- **Nitidez no zoom:**
+  - o padrão do projeto passou a ser `Linear Mipmap` (`rendering/textures/canvas_textures/default_texture_filter=2`), e as imagens já importavam com mipmaps;
+  - todo nó novo (efeitos, partículas) já nasce suave no zoom afastado, sem precisar lembrar de configurar.
+- **Ordem de desenho (y-sort):**
+  - conferida e protegida por teste: o móvel ordena pelo vértice da frente da pegada (também girado) e o personagem pelos pés;
+  - quem está atrás do balcão é desenhado antes, quem está na frente depois.
+
+---
+
 ## DT-043 — Compra de Café Ouro: pacotes, taxa e pagamento só pela loja oficial
 
 **Problema:** o PO pediu que, quando faltar ouro, o jogo ofereça pagar um valor X por Y moedas, e que eu calcule uma taxa boa.

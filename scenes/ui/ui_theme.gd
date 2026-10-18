@@ -151,10 +151,16 @@ static func outlined(text: String, size: int, color := Color.WHITE, outline := N
 
 
 ## Botão quadrado da arte (azul, verde, vermelho...) com o texto embaixo, ou só o quadrado.
+## Menor área de toque de um botão (px da tela de 1280x720, cerca de 9 mm num celular comum).
+const MIN_TOUCH := 48.0
+
+
 static func icon_button(button_name: String, kind: String, text := "", icon_size := 46) -> Button:
 	var button := Button.new()
 	button.name = button_name
 	button.text = text
+	# A área de toque cresce até MIN_TOUCH; o ícone fica do tamanho pedido, no meio (fundo transparente).
+	button.custom_minimum_size = Vector2.ONE * maxf(icon_size, MIN_TOUCH)
 	var sprite := ArtSprites.get_sprite("botao_" + kind)
 	if sprite != null:
 		button.icon = sprite.texture

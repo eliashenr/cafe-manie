@@ -377,6 +377,8 @@ func _rebuild() -> void:
 		showing_shop = true
 	else:
 		_show_icon_bar()
+	if showing_shop and not _shop.visible:
+		Juice.fade_in(_shop)
 	_shop.visible = showing_shop
 	_bar.visible = not showing_shop
 	_primary_card.visible = _primary.get_child_count() > 0
