@@ -4,6 +4,42 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-050 — Pausa sem bloqueio, balcão de 1 piso e mais fogões e balcões
+
+**Problema:**
+- Com a pausa da DT-049, o PO ainda não conseguia mexer no que estava em uso (cadeira com cliente, mesa ocupada, balcão com porção reservada) nem pôr móvel onde havia gente em pé. Ele pediu que a pausa deixe fazer **qualquer** movimento, ou então que zere os clientes.
+- O balcão ocupava 2 pisos para guardar um prato só.
+- Ele pediu mais modelos de fogões e balcões.
+
+**Opções para a pausa:**
+- (A) ao pausar, todos os clientes vão embora (zerar o salão);
+- (B) pausado, nada bloqueia, e o jogo acerta na hora as consequências de cada mudança.
+
+**Decisão:** B.
+- É o que o PO pediu primeiro, e não joga fora os clientes que já estão comendo.
+- **Pausado, sem bloqueio** (`CafeSimulation.is_in_use` e `agent_cells` ficam vazios na pausa):
+  - mover, girar, guardar e vender qualquer móvel, mesmo em uso;
+  - pôr móvel onde há gente em pé.
+- **O que o jogo acerta a cada mudança** (`_settle_after_layout_change`):
+  - cadeira que mudou de lugar leva o cliente junto (sentado ou ainda indo para ela);
+  - cliente cuja cadeira saiu ou ficou sem mesa vai embora satisfeito, sem tirar popularidade; o pedido é cancelado e a porção volta ao balcão;
+  - pedido que tinha porção num balcão que saiu volta a esperar outra porção;
+  - garçom indo a um móvel que mudou de lugar refaz o caminho; se o móvel saiu, fica livre para outra tarefa;
+  - quem ficou em pé em cima de um móvel novo vai para o piso livre mais perto.
+- **Fogão aceso que muda de lugar continua cozinhando.** Fogão guardado ou vendido com comida perde a comida (a escolha é do jogador).
+- **Sem a pausa, as proteções continuam iguais.** A regra de acesso (não fechar a passagem até um móvel) vale sempre.
+
+**Balcão de 1 piso:**
+- Todos os balcões passam a ocupar 1 piso, com a mesma capacidade de porções.
+- Saves antigos abrem com o balcão no mesmo lugar, ocupando só o primeiro piso.
+
+**Modelos novos:**
+- fogões: Retrô Creme (anos 70), de Cobre (italiano), Azul e Dourado (japonês) e Amarelo Canário (festa);
+- balcões: de Mármore (italiano), de Azulejos (mexicano), Neon (balada) e de Lanchonete (americano).
+- Agora são 8 fogões e 8 balcões, todos com as mesmas medidas (a panela e a pilha de pratos caem no mesmo lugar).
+
+---
+
 ## DT-049 — Pausa de verdade e a loja que continua aberta depois da compra
 
 **Problema:**

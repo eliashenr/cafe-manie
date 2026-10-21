@@ -70,7 +70,8 @@ var kitchen: Kitchen
 var navigation: Navigation
 var popularity := 50.0
 ## Jogo pausado: ninguém anda, ninguém perde paciência, ninguém chega e os fogões param.
-## O jogador continua podendo comprar, mover, cozinhar e reformar.
+## O jogador continua podendo comprar, mover, cozinhar e reformar, sem bloqueio nenhum: dá para mexer
+## até no que está em uso e pôr móvel onde há gente em pé (as consequências são acertadas na hora).
 var paused := false
 ## Móveis guardados, que podem ser recolocados de graça.
 var inventory := Inventory.new()
@@ -796,6 +797,8 @@ func free_seats() -> Array[StringName]:
 ## Um móvel está em uso se a cozinha está usando, se é a cadeira de um cliente,
 ## a mesa dessa cadeira ou um balcão de onde o garçom ainda vai tirar um prato.
 func is_in_use(id: StringName) -> bool:
+	if paused:
+		return false  # pausado, mexe em tudo (_settle_after_layout_change acerta clientes e garçons)
 	if kitchen.is_in_use(id):
 		return true
 	for customer in customers:
@@ -812,6 +815,8 @@ func is_in_use(id: StringName) -> bool:
 ## Pisos ocupados por personagens em pé ou andando. Chaves de um Dictionary.
 func agent_cells() -> Dictionary:
 	var cells := {}
+	if paused:
+		return cells  # pausado, móvel pode cair onde há gente em pé (ela vai para o piso livre mais perto)
 	for customer in customers:
 		if customer.state == Customer.State.GONE or customer.is_seated():
 			continue
@@ -1248,6 +1253,7 @@ func _record_beauty() -> void:
 
 func _on_layout_changed() -> void:
 	_record_beauty()
+	_settle_after_layout_change()
 	var agents: Array[Agent] = []
 	agents.append_array(customers)
 	agents.append_array(waiters)
@@ -1259,6 +1265,99 @@ func _on_layout_changed() -> void:
 			agent.position = Vector2(layout.entrance)
 			path = navigation.path_to_any(agent.cell(), agent.goals)
 		agent.follow(path, agent.goals)
+
+
+## Acerta clientes e garçons depois de o layout mudar. Com o jogo pausado dá para mexer até no que está
+## em uso, então: cadeira que mudou de lugar leva o cliente junto; cliente cuja cadeira sumiu ou ficou sem
+## mesa vai embora sem tirar popularidade (a porção volta ao balcão); garçom que ia a um móvel que mudou
+## refaz o caminho e, se o móvel saiu, fica livre; quem ficou em cima de um móvel vai para o piso livre
+## mais perto. Sem a pausa, nada disso acontece (o que está em uso não sai do lugar).
+func _settle_after_layout_change() -> void:
+	for customer in customers.duplicate():
+		if customer.seat_id == &"" or customer.state in [Customer.State.LEAVING, Customer.State.GONE, Customer.State.QUEUED]:
+			continue
+		var seat := layout.get_placement(customer.seat_id)
+		if seat == null or _tables_next_to(customer.seat_id).is_empty():
+			_send_away(customer, true)  # sai sem reclamar: não tira popularidade
+			continue
+		if seat.origin != customer.seat_cell:
+			customer.seat_cell = seat.origin
+			if customer.is_seated():
+				customer.position = Vector2(seat.origin)
+			else:
+				customer.goals = navigation.access_cells(seat.id)
+	for order in _orders:
+		if order.counter_id != &"" and not order.picked_up and layout.get_placement(order.counter_id) == null:
+			order.counter_id = &""  # a porção foi junto com o balcão; o pedido espera outra
+	for waiter in waiters:
+		_retarget_waiter(waiter)
+	_rescue_agents()
+
+
+## O garçom refaz o destino da tarefa (o móvel pode ter mudado de lugar) ou fica livre se o móvel saiu.
+func _retarget_waiter(waiter: Waiter) -> void:
+	var order: Order = waiter.order
+	match waiter.state:
+		Waiter.State.TO_COUNTER, Waiter.State.PICKING_UP:
+			if order == null or order.counter_id == &"":
+				_free_waiter(waiter)
+			elif waiter.state == Waiter.State.TO_COUNTER:
+				waiter.goals = navigation.access_cells(order.counter_id)
+		Waiter.State.TO_TABLE:
+			if order != null and order.customer.seat_id != &"":
+				waiter.goals = navigation.access_cells(order.customer.seat_id)
+		Waiter.State.TO_STOVE, Waiter.State.COLLECTING:
+			if layout.get_placement(waiter.stove_id) == null:
+				_free_waiter(waiter)
+			elif waiter.state == Waiter.State.TO_STOVE:
+				waiter.goals = navigation.access_cells(waiter.stove_id)
+		Waiter.State.TO_DROP, Waiter.State.DROPPING:
+			if layout.get_placement(waiter.drop_counter) == null:
+				_free_waiter(waiter)
+			elif waiter.state == Waiter.State.TO_DROP:
+				waiter.goals = navigation.access_cells(waiter.drop_counter)
+
+
+func _free_waiter(waiter: Waiter) -> void:
+	waiter.order = null
+	waiter.carrying = null
+	waiter.stove_id = &""
+	waiter.drop_counter = &""
+	waiter.stop()
+	waiter.state = Waiter.State.IDLE
+	waiter.timer = 0.0
+
+
+## Quem está em pé em cima de um móvel (posto com o jogo pausado) vai para o piso livre mais perto.
+func _rescue_agents() -> void:
+	var standing: Array[Agent] = []
+	for customer in customers:
+		if not customer.is_seated() and customer.state not in [Customer.State.GONE, Customer.State.QUEUED]:
+			standing.append(customer)
+	standing.append_array(waiters)
+	for agent in standing:
+		var cell := agent.cell()
+		if not layout.grid.is_inside(cell) or layout.grid.occupant_at(cell) == &"":
+			continue
+		var free := _nearest_free_cell(cell)
+		if free != CafeGrid.NO_CELL:
+			agent.position = Vector2(free)
+
+
+## Piso livre mais perto (busca em largura pelos vizinhos), ou NO_CELL se não há nenhum.
+func _nearest_free_cell(from: Vector2i) -> Vector2i:
+	var seen := {from: true}
+	var queue: Array[Vector2i] = [from]
+	while not queue.is_empty():
+		var cell: Vector2i = queue.pop_front()
+		if layout.grid.is_inside(cell) and layout.grid.occupant_at(cell) == &"":
+			return cell
+		for step in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.DOWN, Vector2i.UP]:
+			var next: Vector2i = cell + step
+			if layout.grid.is_inside(next) and not seen.has(next):
+				seen[next] = true
+				queue.append(next)
+	return CafeGrid.NO_CELL
 
 
 # --- Interno ---------------------------------------------------------------

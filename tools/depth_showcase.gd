@@ -4,7 +4,7 @@ extends SceneTree
 ## Uso (na pasta do projeto):
 ##   godot -s res://tools/depth_showcase.gd -- <saida.png> [zoom] [foco x,y]
 ##
-## Monta uma cafeteria parada com: o garçom na frente da metade de trás de um balcão de 2 pisos,
+## Monta uma cafeteria parada com: o garçom na frente de um balcão,
 ## um vaso na frente de outro balcão, alguém atrás da estante (raio-X) e quatro clientes sentados
 ## em duas mesas, nas quatro direções, em banqueta e em cadeiras. Não lê nem grava save.
 

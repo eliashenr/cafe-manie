@@ -4,6 +4,19 @@
 
 🟢 **CONCLUÍDO**
 
+**Pedidos de 22/10 (2ª parte): pausa sem bloqueio, balcão de 1 piso e o relatório** (DT-050)
+
+- **Pausado, dá para mexer em tudo**, mesmo com clientes:
+  - mover a cadeira de quem está sentado (o cliente vai junto);
+  - tirar ou vender mesa ocupada;
+  - guardar balcão com porção reservada;
+  - mover fogão aceso;
+  - pôr móvel onde há alguém em pé (a pessoa vai para o piso livre mais perto).
+- Cliente que fica sem cadeira ou sem mesa vai embora satisfeito, sem tirar popularidade.
+- **Balcão ocupa 1 piso**, com as mesmas porções.
+- **Mais 4 fogões e 4 balcões:** Retrô Creme, de Cobre, Azul e Dourado e Amarelo Canário; de Mármore, de Azulejos, Neon e de Lanchonete.
+- **Relatório do Café Mania original** em [relatorio_cafe_mania.md](relatorio_cafe_mania.md): fontes lidas, o que temos e o que falta, e propostas na ordem sugerida. As fotos do Facebook ficaram pendentes (pedem login).
+
 **Pedidos de 22/10: pausa e loja aberta** (DT-049)
 
 - **Botão de pausa** (laranja, no alto da coluna da direita, ou a tecla P):
@@ -182,6 +195,12 @@
 
 🧪 **TESTADO**
 
+- **Pedidos de 22/10 (2ª parte): 433 testes automatizados PASSARAM.**
+  - Os novos conferem, com o jogo pausado: mover a cadeira com cliente sentado (ele vai junto), cadeira sem mesa (o cliente sai sem tirar popularidade), vender mesa ocupada e pôr móvel em cima do garçom (ele vai para o piso livre mais perto).
+  - Conferem também guardar o balcão com porção reservada (o garçom fica livre e o pedido continua), mover o fogão aceso e mover pela barra a cadeira de quem está sentado.
+  - E os balcões de 1 piso, com 8 fogões e 8 balcões.
+  - **Defeitos inseridos de propósito: 10 de 10 pegos.**
+  - **Cena principal: PASSOU**, zero erros.
 - **Pedidos de 22/10: 425 testes automatizados PASSARAM.**
   - Os novos conferem que, pausado, ninguém chega, anda ou perde paciência, e que o fogão para e segue de onde parou.
   - Conferem também o preparo começado na pausa, o save feito durante a pausa e que dá para construir, cozinhar e levar prato com o jogo pausado.

@@ -59,6 +59,9 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 
 - [x] **Pausa** (DT-049): o jogo inteiro para (clientes, garçons, fogões, trânsito) e o jogador mexe à vontade.
 - [x] **Loja aberta depois da compra** (DT-049): volta na mesma aba depois de posicionar o móvel.
+- [x] **Pausa sem bloqueio** (DT-050): pausado, mexe em tudo, mesmo com clientes.
+- [x] **Balcão de 1 piso e mais fogões e balcões** (DT-050): 8 de cada.
+- [x] **Relatório do Café Mania original** ([relatorio_cafe_mania.md](relatorio_cafe_mania.md)): o que aprender e a ordem sugerida.
 
 ## Passe visual (18/10/2026)
 

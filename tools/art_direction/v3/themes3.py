@@ -825,11 +825,21 @@ STOVES = {
     "stove_mint": dict(enamel="#7fdcc0", knob="#ff4d5e"),
     "stove_black": dict(enamel="#2a2a33", top_color="#4a4a55", panel=("#ffe7a0", "#d9b44a", "#8a6a2e"), knob="#d9b44a",
                         door=("#3a3c46", "#15151b"), handle="#d9b44a"),
+    "stove_cream": dict(enamel="#f4ead6", top_color="#fffaf0", knob="#7a4a2e", door=("#fff6e6", "#e2d2b4"), handle="#c9a46a"),
+    "stove_copper": dict(enamel="#c47a3a", top_color="#e8b27a", panel=("#ffe7a0", "#d9a44a", "#8a5a2e"), knob="#3a2a1a",
+                         door=("#e0a46a", "#8a4a1e"), handle="#ffd29a"),
+    "stove_blue": dict(enamel="#2f5fbf", top_color="#ffffff", panel=("#fff3c4", "#e0c25a", "#9a7a2e"), knob="#e0c25a",
+                       door=("#5a86e0", "#1d3f86"), handle="#e0c25a"),
+    "stove_yellow": dict(enamel="#ffcf3f", top_color="#ffffff", knob="#2a2c34", door=("#ffe48a", "#e0a800"), handle="#2a2c34"),
 }
 COUNTERS = {
     "counter_steel": dict(body="#b9c3cf", top="#eef2f6", face="plain", rim="#c9d3de", veins=False),
     "counter_wood": dict(body="#a86d40", top="#e0b97e", face="planks", rim="#b8743e", veins=False),
     "counter_pastel": dict(body="#ff9ec4", top="#ffffff", face="panels", rim="#ffe0ef"),
+    "counter_marble": dict(body="#ece6dc", top="#ffffff", face="plain", rim="#d9b44a"),
+    "counter_tile": dict(body="#2f6fd9", top="#ffffff", face="panels", rim="#ffffff", veins=False),
+    "counter_neon": dict(body="#1d1d2b", top="#2a2a3a", face="plain", rim="#ff4dd2", veins=False),
+    "counter_red": dict(body="#e0303a", top="#ffffff", face="panels", rim="#c9d3de"),
 }
 
 DECOR = {

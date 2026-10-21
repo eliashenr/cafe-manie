@@ -112,9 +112,17 @@ FURNITURE = [
     ("americano", "stove_mint", "Fogão Retrô Menta", COOKING, (1, 1), 300, 3, 6, 0, "7fdcc0", 38),
     ("anos2010", "stove_steel", "Fogão Inox Industrial", COOKING, (1, 1), 400, 5, 8, 0, "b9c3cf", 38),
     ("frances", "stove_black", "Fogão Preto e Dourado", COOKING, (1, 1), 520, 7, 12, 0, "2a2a33", 38),
-    ("country", "counter_wood", "Balcão de Madeira", COUNTER, (2, 1), 260, 3, 6, 0, "a86d40", 34),
-    ("festa", "counter_pastel", "Balcão de Confeitaria", COUNTER, (2, 1), 280, 4, 7, 0, "ff9ec4", 34),
-    ("anos2010", "counter_steel", "Balcão Inox", COUNTER, (2, 1), 320, 5, 8, 0, "b9c3cf", 34),
+    ("anos70", "stove_cream", "Fogão Retrô Creme", COOKING, (1, 1), 320, 3, 6, 0, "f4ead6", 38),
+    ("italiano", "stove_copper", "Fogão de Cobre", COOKING, (1, 1), 460, 6, 10, 0, "c47a3a", 38),
+    ("japones", "stove_blue", "Fogão Azul e Dourado", COOKING, (1, 1), 480, 6, 10, 0, "2f5fbf", 38),
+    ("festa", "stove_yellow", "Fogão Amarelo Canário", COOKING, (1, 1), 340, 4, 7, 0, "ffcf3f", 38),
+    ("country", "counter_wood", "Balcão de Madeira", COUNTER, (1, 1), 260, 3, 6, 0, "a86d40", 34),
+    ("festa", "counter_pastel", "Balcão de Confeitaria", COUNTER, (1, 1), 280, 4, 7, 0, "ff9ec4", 34),
+    ("anos2010", "counter_steel", "Balcão Inox", COUNTER, (1, 1), 320, 5, 8, 0, "b9c3cf", 34),
+    ("italiano", "counter_marble", "Balcão de Mármore", COUNTER, (1, 1), 380, 6, 10, 0, "ece6dc", 34),
+    ("mexicano", "counter_tile", "Balcão de Azulejos", COUNTER, (1, 1), 300, 4, 8, 0, "2f6fd9", 34),
+    ("balada", "counter_neon", "Balcão Neon", COUNTER, (1, 1), 360, 8, 10, 0, "1d1d2b", 34),
+    ("americano", "counter_red", "Balcão de Lanchonete", COUNTER, (1, 1), 290, 3, 7, 0, "e0303a", 34),
 ]
 
 FLOOR, WALL = 0, 1

@@ -190,7 +190,7 @@ FURNITURE = {
     "table_round": ((1, 1), table_round_sprite, 1),
     "table_long": ((2, 1), table_long_sprite, 2),
     "stove_basic": ((1, 1), stove_sprite, 4),
-    "counter_basic": ((2, 1), counter_sprite, 4),
+    "counter_basic": ((1, 1), counter_sprite, 4),
     "bookshelf": ((2, 1), bookshelf_sprite, 4),
     "plant_pot": ((1, 1), plant_sprite, 1),
     "flower_vase": ((1, 1), flower_vase_sprite, 1),
@@ -254,7 +254,7 @@ def _collection_counter(style):
 for _id, _style in themes3.STOVES.items():
     FURNITURE[_id] = ((1, 1), _collection_stove(_style), 4)
 for _id, _style in themes3.COUNTERS.items():
-    FURNITURE[_id] = ((2, 1), _collection_counter(_style), 4)
+    FURNITURE[_id] = ((1, 1), _collection_counter(_style), 4)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 

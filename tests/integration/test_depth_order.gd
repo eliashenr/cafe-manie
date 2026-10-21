@@ -1,8 +1,8 @@
 extends CafeTestCase
 ## Ordem de desenho do salão: o desenho de cada móvel é cortado em faixas, cada uma no y-sort pela
 ## borda da frente da pegada naquele trecho. Quem passa na frente de qualquer parte do móvel
-## (inclusive da metade de trás de um balcão de 2 pisos) aparece na frente dele, e quem está atrás
-## fica atrás.
+## (inclusive da metade de trás de um móvel de 2 pisos, como a estante) aparece na frente dele, e quem
+## está atrás fica atrás.
 
 
 func _place(cafe: Cafe, id: StringName, cell: Vector2i, rotation := 0) -> StringName:
@@ -66,7 +66,7 @@ func _drawn_before_all(agent: AgentView, view: FurnitureView) -> bool:
 
 func test_waiter_in_front_of_the_back_half_of_a_counter_is_drawn_in_front() -> void:
 	var cafe := await spawn_cafe()
-	var counter := cafe.world_layer.view_for(_place(cafe, &"counter_basic", Vector2i(2, 0)))
+	var counter := cafe.world_layer.view_for(_place(cafe, &"table_long", Vector2i(2, 0)))
 	var waiter := _standing(cafe, Vector2(2.0, 1.0))
 	assert_true(counter.y_sort_enabled, "as faixas entram no y-sort do salão")
 	assert_true(waiter.position.y < counter.position.y, "pela ponta da frente, ele ficaria atrás (o defeito)")
@@ -76,7 +76,7 @@ func test_waiter_in_front_of_the_back_half_of_a_counter_is_drawn_in_front() -> v
 
 func test_passing_close_to_the_counter_edge_still_counts_as_in_front() -> void:
 	var cafe := await spawn_cafe()
-	var counter := cafe.world_layer.view_for(_place(cafe, &"counter_basic", Vector2i(2, 0)))
+	var counter := cafe.world_layer.view_for(_place(cafe, &"table_long", Vector2i(2, 0)))
 	for x in [1.8, 2.2, 2.6, 3.0, 3.4]:
 		var walker := _standing(cafe, Vector2(x, 0.8), 91 + int(x * 10))
 		assert_true(_drawn_after_all(walker, counter), "passando a 0,3 piso da borda em x = %s" % x)
@@ -84,7 +84,7 @@ func test_passing_close_to_the_counter_edge_still_counts_as_in_front() -> void:
 
 func test_customer_behind_a_counter_is_drawn_behind_every_slice() -> void:
 	var cafe := await spawn_cafe()
-	var counter := cafe.world_layer.view_for(_place(cafe, &"counter_basic", Vector2i(2, 3)))
+	var counter := cafe.world_layer.view_for(_place(cafe, &"bookshelf", Vector2i(2, 3)))
 	var behind := _standing(cafe, Vector2(2.5, 2.0))
 	assert_true(_drawn_before_all(behind, counter))
 	assert_true(behind.shows_xray(), "o balcão alto tampa: aparece a silhueta")
@@ -92,14 +92,14 @@ func test_customer_behind_a_counter_is_drawn_behind_every_slice() -> void:
 
 func test_rotated_counter_sorts_the_same_way() -> void:
 	var cafe := await spawn_cafe()
-	var counter := cafe.world_layer.view_for(_place(cafe, &"counter_basic", Vector2i(0, 2), 1))
+	var counter := cafe.world_layer.view_for(_place(cafe, &"bookshelf", Vector2i(0, 2), 1))
 	var in_front := _standing(cafe, Vector2(1.0, 2.0))
 	assert_true(_drawn_after_all(in_front, counter), "na frente da metade de trás do balcão girado")
 
 
 func test_plant_in_front_of_a_counter_is_drawn_in_front_of_it() -> void:
 	var cafe := await spawn_cafe()
-	var counter := cafe.world_layer.view_for(_place(cafe, &"counter_basic", Vector2i(2, 0)))
+	var counter := cafe.world_layer.view_for(_place(cafe, &"bookshelf", Vector2i(2, 0)))
 	var plant := cafe.world_layer.view_for(_place(cafe, &"plant_pot", Vector2i(2, 1)))
 	var plant_rect := Rect2(plant.position + plant.sprite.draw_rect().position, plant.sprite.draw_rect().size)
 	var over := _slices_over(counter, plant_rect)

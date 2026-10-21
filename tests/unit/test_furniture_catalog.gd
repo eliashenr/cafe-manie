@@ -75,3 +75,17 @@ func test_add_rejects_duplicate_and_invalid_definitions() -> void:
 
 func test_unknown_id_returns_null() -> void:
 	assert_eq(FurnitureCatalog.load_from().get_definition(&"nao_existe"), null)
+
+
+func test_counters_take_a_single_cell_and_there_are_more_stoves_and_counters() -> void:
+	var catalog := FurnitureCatalog.load_from()
+	var stoves := 0
+	var counters := 0
+	for definition: FurnitureDefinition in catalog.all():
+		if definition.category == FurnitureDefinition.Category.COUNTER:
+			counters += 1
+			assert_eq(definition.footprint, Vector2i.ONE, "%s ocupa 1 piso" % definition.id)
+		elif definition.category == FurnitureDefinition.Category.COOKING:
+			stoves += 1
+	assert_true(stoves >= 8, "fogões variados (%d)" % stoves)
+	assert_true(counters >= 8, "balcões variados (%d)" % counters)

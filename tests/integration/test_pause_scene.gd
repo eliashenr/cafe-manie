@@ -82,3 +82,30 @@ func test_building_while_paused() -> void:
 	await settle()
 	assert_eq(cafe.layout.count(), 1, "comprou e pôs a mesa com o jogo pausado")
 	assert_true(cafe.is_paused(), "sem tirar a pausa")
+
+
+func test_paused_the_bar_moves_the_chair_of_a_seated_customer() -> void:
+	var cafe := await spawn_cafe()
+	cafe.layout.place(cafe.catalog.get_definition(&"table_round"), Vector2i(4, 4))
+	var chair := cafe.layout.place(cafe.catalog.get_definition(&"chair_wood"), Vector2i(3, 4), 3)
+	var customer := Customer.new()
+	customer.serial = 70
+	customer.type = load("res://data/customers/regular.tres")
+	customer.seat_id = chair
+	customer.seat_cell = Vector2i(3, 4)
+	customer.position = Vector2(3, 4)
+	customer.state = Customer.State.EATING
+	customer.eat_left = 999.0
+	customer.order = load("res://data/recipes/coffee.tres")
+	cafe.simulation.customers.append(customer)
+	await settle()
+	tap_cell(cafe, Vector2i(3, 4))
+	assert_false(cafe.start_moving_selected(), "rodando, a cadeira ocupada não sai do lugar")
+	cafe.set_paused(true)
+	tap_cell(cafe, Vector2i(3, 4))
+	assert_true(cafe.start_moving_selected(), "pausado, sai")
+	tap_cell(cafe, Vector2i(4, 3))
+	tap_cell(cafe, Vector2i(4, 3))
+	await settle()
+	assert_eq(cafe.layout.get_placement(chair).origin, Vector2i(4, 3), "a cadeira mudou de lugar")
+	assert_eq(customer.seat_cell, Vector2i(4, 3), "com o cliente junto")

@@ -79,9 +79,10 @@ func test_invalid_spot_is_refused_with_a_reason_and_cancel_leaves_nothing() -> v
 	assert_eq(cafe.layout.count(), 0)
 
 
-func test_counter_rotates_during_placement() -> void:
+func test_long_table_rotates_during_placement() -> void:
 	var cafe := await spawn_cafe()
-	cafe.start_placing(&"counter_basic")
+	cafe.simulation.progression.add_xp(80)  # a mesa comprida libera no nível 3
+	cafe.start_placing(&"table_long")
 	tap_cell(cafe, Vector2i(1, 1))
 	assert_eq(cafe.floor_view.preview_cells().size(), 2)
 	press_key(KEY_R)
@@ -137,14 +138,14 @@ func test_cancelling_a_move_keeps_the_furniture_where_it_was() -> void:
 func test_rotate_selected_in_place_and_refusal_is_explained() -> void:
 	var cafe := await spawn_cafe()
 	var catalog := cafe.catalog
-	var id := cafe.layout.place(catalog.get_definition(&"counter_basic"), Vector2i(0, 7))
+	var id := cafe.layout.place(catalog.get_definition(&"table_long"), Vector2i(0, 7))
 	tap_cell(cafe, Vector2i(0, 7))
 	assert_eq(cafe.rotate_selected(), CafeLayout.Check.OUT_OF_BOUNDS, "encostado na borda não há espaço para girar")
 	await settle()
 	assert_true(cafe.build_bar.message_text().contains("Não cabe"), "a barra explica a recusa")
 	assert_eq(cafe.layout.get_placement(id).rotation, 0)
 
-	var other := cafe.layout.place(catalog.get_definition(&"counter_basic"), Vector2i(3, 3))
+	var other := cafe.layout.place(catalog.get_definition(&"table_long"), Vector2i(3, 3))
 	tap_cell(cafe, Vector2i(3, 3))
 	assert_eq(cafe.rotate_selected(), CafeLayout.Check.OK)
 	assert_eq(cafe.layout.get_placement(other).rotation, 1)
