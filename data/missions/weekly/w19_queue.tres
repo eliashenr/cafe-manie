@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"w19_queue"
+order = 19
+title = "Sente %d clientes que esperavam na fila"
+hint = "Com o salão cheio, chega gente na fila da calçada."
+kind = 18
+target = 10
+target_per_level = 0.5
+furniture_category = -1
+min_level = 1
+min_cook_time = 0.0
+limit_to_unlocked_recipes = false
+reward_gold = 250
+reward_gold_per_level = 12.0
+reward_xp = 60
+reward_xp_per_level = 3.0

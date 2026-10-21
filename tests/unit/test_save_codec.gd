@@ -165,6 +165,34 @@ func test_round_trip_keeps_inventory_and_mission_progress() -> void:
 	assert_eq(loaded.missions.progress(), 1)
 
 
+func test_round_trip_keeps_daily_and_weekly_mission_progress() -> void:
+	_setup()
+	sim.refresh_mission_periods()
+	sim.start_cooking(stove, &"coffee")
+	clock.advance(15.0)
+	sim.collect(stove)
+	var loaded := _round_trip().simulation
+	assert_eq(loaded.daily_missions.period, sim.daily_missions.period)
+	assert_eq(loaded.daily_missions.entries()[0].progress, 1, "o prato de hoje continua contando")
+	assert_eq(loaded.weekly_missions.entries()[0].progress, 1)
+	clock.advance(86400.0)
+	var next_day := _round_trip().simulation
+	assert_eq(next_day.daily_missions.entries()[0].progress, 0, "aberto no dia seguinte: diárias do zero")
+	assert_eq(next_day.weekly_missions.entries()[0].progress, 1, "a semana continua")
+
+
+func test_version_7_save_starts_the_missions_of_today() -> void:
+	_setup()
+	var data := SaveCodec.encode(sim)
+	data.erase("mission_boards")
+	data["save_version"] = 7
+	var loaded := SaveCodec.decode(SaveCodec.migrate(data), clock, 11).simulation
+	assert_true(loaded != null)
+	assert_eq(loaded.daily_missions.size(), 10)
+	assert_eq(loaded.daily_missions.period, clock.local_day(), "já começa as diárias de hoje")
+	assert_eq(loaded.daily_missions.completed_count(), 0)
+
+
 func test_migration_runs_each_step_in_order() -> void:
 	var steps: Array[Callable] = [
 		func(d: Dictionary) -> Dictionary:

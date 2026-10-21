@@ -70,6 +70,7 @@ var _toast: Label
 var _toast_time := 0.0
 var _restart_dialog: ConfirmationDialog
 var _achievements_dialog: AcceptDialog
+var _missions_dialog: MissionsPanel
 var _coin_dialog: AcceptDialog
 var _shown_gold := -1
 var _coin_info_dialog: AcceptDialog
@@ -87,7 +88,7 @@ var _mission_bar: ProgressBar
 var _mission_count: Label
 var _mission_reward: Label
 var _mission_hint: Label
-## O jogador escondeu o cartão da missão (tocando no medalhão)?
+## O jogador escondeu o cartão da missão (tocando nele)? Abrir as missões mostra de novo.
 var _mission_collapsed := false
 
 
@@ -271,9 +272,7 @@ func _medallion(button_name: String, art_name: String, label: String, center: Ve
 
 
 func _build_medallions() -> void:
-	_medallion("MissionsButton", "missoes", "MISSÕES", Vector2(46, 178), func() -> void:
-		_mission_collapsed = not _mission_collapsed
-		_refresh_mission())
+	_medallion("MissionsButton", "missoes", "MISSÕES", Vector2(46, 178), show_missions)
 	var gift := _medallion("GiftButton", "presente", "PRESENTE", Vector2(46, 278), func() -> void: daily_requested.emit())
 	_daily_badge = _badge("1")
 	_place(gift, _daily_badge, Vector2(56, -4), Vector2(24, 24))
@@ -300,11 +299,17 @@ func _badge(text: String) -> Control:
 
 
 ## Cartão da missão atual, ao lado do medalhão: as missões iniciais são o tutorial
-## (seção 143), então a dica fica à vista (o medalhão esconde e mostra o cartão).
+## (seção 143), então a dica fica à vista. Tocar no cartão esconde; abrir as missões mostra de novo.
 func _build_mission_card() -> void:
 	_mission_card = PanelContainer.new()
 	_mission_card.name = "MissionCard"
-	_mission_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_mission_card.mouse_filter = Control.MOUSE_FILTER_STOP
+	_mission_card.gui_input.connect(func(event: InputEvent) -> void:
+		var click := event as InputEventMouseButton
+		if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+			_mission_collapsed = true
+			_refresh_mission()
+			_mission_card.accept_event())
 	_mission_card.add_theme_stylebox_override("panel", UiTheme.card_box(12, 10))
 	_anchored(_mission_card, Vector2.ZERO, Vector2(92, 140), Vector2(MISSION_CARD_WIDTH, 0))
 	var column := VBoxContainer.new()
@@ -407,6 +412,8 @@ func _build_toast() -> void:
 
 func _build_dialogs() -> void:
 	_build_achievements_dialog()
+	_missions_dialog = MissionsPanel.new()
+	_add_dialog(_missions_dialog)
 	_build_coin_dialogs()
 	_build_daily_dialog()
 	_build_name_dialog()
@@ -689,6 +696,21 @@ func daily_dialog() -> AcceptDialog:
 
 func achievements_dialog() -> AcceptDialog:
 	return _achievements_dialog
+
+
+func missions_dialog() -> MissionsPanel:
+	return _missions_dialog
+
+
+## Abre a janela das missões (diárias, semanais e as do começo) e volta a mostrar o cartão do tutorial.
+## Com outra janela aberta, não abre (uma pergunta por vez).
+func show_missions() -> void:
+	_mission_collapsed = false
+	_refresh_mission()
+	for dialog: Window in find_children("*", "Window", true, false):
+		if dialog.visible and dialog != _missions_dialog:
+			return
+	_missions_dialog.show_for(simulation)
 
 
 func ask_restart() -> void:

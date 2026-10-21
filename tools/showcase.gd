@@ -6,7 +6,7 @@ extends SceneTree
 ##
 ## O foco é a célula que fica no meio da foto (ex.: 1,1 para a cozinha).
 ## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir, reforma,
-## reforma:<revestimento> ou moedas (a vitrine de Café Ouro).
+## reforma:<revestimento>, moedas (a vitrine de Café Ouro) ou missoes (a janela das missões).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -132,6 +132,13 @@ func _set_panel() -> void:
 		"moedas":
 			_keep_window = "CoinShopDialog"
 			_cafe.hud.show_coin_shop(true)
+		"missoes":
+			_keep_window = "MissionsDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			_cafe.simulation.refresh_mission_periods()
+			_cafe.simulation.claim_daily()
+			_cafe.hud.show_missions()
 		"reforma":
 			# Piso e parede já misturados, e uma reforma em andamento com alguns pisos marcados.
 			var style = _cafe.simulation.style

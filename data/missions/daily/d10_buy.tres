@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"d10_buy"
+order = 10
+title = "Compre 1 móvel ou enfeite"
+hint = "A Loja fica na faixa de baixo."
+kind = 3
+target = 1
+target_per_level = 0.0
+furniture_category = -1
+min_level = 1
+min_cook_time = 0.0
+limit_to_unlocked_recipes = false
+reward_gold = 45
+reward_gold_per_level = 2.0
+reward_xp = 10
+reward_xp_per_level = 0.5

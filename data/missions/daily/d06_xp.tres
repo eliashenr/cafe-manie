@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"d06_xp"
+order = 6
+title = "Ganhe %d de XP"
+hint = "Cozinhar e servir dão XP."
+kind = 7
+target = 40
+target_per_level = 8.0
+furniture_category = -1
+min_level = 1
+min_cook_time = 0.0
+limit_to_unlocked_recipes = false
+reward_gold = 40
+reward_gold_per_level = 2.0
+reward_xp = 0
+reward_xp_per_level = 0.0

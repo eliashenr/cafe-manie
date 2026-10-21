@@ -4,6 +4,39 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-047 — Missões diárias (10) e semanais (20)
+
+**Problema:** o PO pediu um roteiro de missões, com 10 diárias e 20 semanais criadas a partir do conteúdo do jogo.
+
+**Opções:**
+- (A) sortear algumas missões de uma lista maior a cada dia;
+- (B) uma lista fixa de 10 diárias e 20 semanais, todas valendo ao mesmo tempo, com metas que crescem com o nível.
+
+**Decisão:** B.
+- É o que o PO pediu ao pé da letra, e o jogador sempre sabe o que tem para fazer.
+- O roteiro completo, com metas e recompensas nos níveis 1, 10 e 30, está em [missoes.md](missoes.md).
+- **Como funciona:**
+  - `MissionBoard` (em `core/progression`) guarda as missões de um período;
+  - as diárias recomeçam à meia-noite local e as semanais na segunda-feira à meia-noite;
+  - a meta e a recompensa são calculadas no começo do período (meta + por_nível × (nível − 1), em número redondo) e ficam congeladas até o fim dele;
+  - missão com nível mínimo fica com o cadeado até o período seguinte (os pratos demorados pedem o nível 3);
+  - "pratos diferentes" nunca pede mais receitas do que as liberadas.
+- **O que conta:**
+  - os eventos que já existiam: pratos levados ao balcão, clientes servidos, vendas e compras;
+  - 13 tipos novos: clientes satisfeitos (servidos antes de a paciência cair da metade), XP ganho cozinhando e servindo, pratos diferentes, presente diário, pedidos do cardápio (o que não estava no balcão), ouro em ingredientes, pisos reformados, trechos de parede pintados, itens pendurados, diárias concluídas, pratos demorados, popularidade e clientes da fila que sentaram;
+  - XP de recompensa de missão não conta para "Ganhe XP" (senão uma missão alimentaria outra).
+- **Recompensa:** entra sozinha quando a missão é concluída, com um aviso ("Missão diária concluída: … +40 ouro +10 XP").
+  - As 10 diárias dão uns 450 de ouro no nível 1 (um terço de hora de jogo ativo) e as 20 semanais uns 4.500.
+  - No nível 30, umas 2,5 vezes mais.
+- **Na tela:**
+  - o medalhão **MISSÕES** e o ícone **Missões** abrem a janela com as abas Diárias, Semanais e Começo (o tutorial, que some quando acaba);
+  - cada missão mostra o progresso, a recompensa e o cadeado;
+  - a janela diz quanto falta para as missões recomeçarem;
+  - tocar no cartão do tutorial esconde o cartão, e abrir as missões mostra de novo.
+- **Save versão 8:** o progresso do dia e da semana fica salvo. Aberto num dia (ou semana) que já passou, recomeça. Saves antigos começam do zero.
+
+---
+
 ## DT-046 — Nível máximo 30
 
 **Problema:** o PO pediu o nível máximo 30 (era 10). Do 10 em diante o jogo não tem receita nem móvel novo para liberar.

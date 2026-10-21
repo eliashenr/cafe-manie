@@ -26,6 +26,8 @@ signal daily_reward_claimed(day: int, reward: Dictionary)
 signal cafe_name_changed(cafe_name: String)
 ## Um garçom foi contratado; [param count] é quantos a cafeteria tem agora.
 signal waiter_hired(count: int)
+## Missão diária ou semanal concluída (a recompensa já foi entregue).
+signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção
@@ -40,6 +42,10 @@ class Order:
 
 const CUSTOMERS_DIR := "res://data/customers"
 const MISSIONS_DIR := "res://data/missions"
+const DAILY_MISSIONS_DIR := "res://data/missions/daily"
+const WEEKLY_MISSIONS_DIR := "res://data/missions/weekly"
+## O dia 0 do relógio (1º/1/1970) foi uma quinta: somar 3 faz a semana começar na segunda.
+const WEEK_DAY_OFFSET := 3
 const ACHIEVEMENTS_DIR := "res://data/achievements"
 const EXPANSIONS_PATH := "res://data/config/expansions.tres"
 const ECONOMY_PATH := "res://data/config/economy.tres"
@@ -66,6 +72,9 @@ var popularity := 50.0
 ## Móveis guardados, que podem ser recolocados de graça.
 var inventory := Inventory.new()
 var missions: MissionTracker
+## Missões diárias e semanais: valem todas ao mesmo tempo e recomeçam a cada dia e a cada semana.
+var daily_missions: MissionBoard
+var weekly_missions: MissionBoard
 var stats := PlayerStats.new()
 ## Nome escolhido pelo jogador. Vazio = ainda não escolheu (o jogo pergunta).
 var cafe_name := ""
@@ -119,6 +128,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	coin_shop = CoinShop.load_from(wallet)
 	var no_missions: Array[MissionDefinition] = []
 	set_missions(no_missions)
+	set_mission_boards(no_missions, no_missions)
 	var no_achievements: Array[AchievementDefinition] = []
 	set_achievements(no_achievements)
 	if random_seed != 0:
@@ -156,6 +166,7 @@ static func with_game_data(game_clock: GameClock, cafe_layout: CafeLayout, furni
 		furniture_catalog, RecipeCatalog.load_from(), load("res://data/progression/levels.tres"),
 		types, random_seed)
 	simulation.set_missions(default_missions())
+	simulation.set_mission_boards(load_missions(DAILY_MISSIONS_DIR), load_missions(WEEKLY_MISSIONS_DIR))
 	simulation.set_achievements(default_achievements())
 	simulation.daily = DailyRewards.new(load(DAILY_REWARDS_PATH))
 	simulation.record_progress_stats()
@@ -175,9 +186,14 @@ static func default_achievements() -> Array[AchievementDefinition]:
 
 ## Missões iniciais de res://data/missions, na ordem do campo [code]order[/code].
 static func default_missions() -> Array[MissionDefinition]:
+	return load_missions(MISSIONS_DIR)
+
+
+## Missões de uma pasta (só os arquivos dela, sem as subpastas), na ordem do campo [code]order[/code].
+static func load_missions(dir_path: String) -> Array[MissionDefinition]:
 	var store := DefinitionStore.new(
 		func(a: MissionDefinition, b: MissionDefinition) -> bool: return a.order < b.order)
-	store.load_dir(MISSIONS_DIR, MissionDefinition)
+	store.load_dir(dir_path, MissionDefinition)
 	var mission_list: Array[MissionDefinition] = []
 	mission_list.assign(store.all())
 	return mission_list
@@ -210,6 +226,42 @@ func record_progress_stats() -> void:
 	stats.record_max(PlayerStats.BEAUTY, beauty())
 
 
+## Troca as missões diárias e semanais (começam no próximo refresh_mission_periods()).
+func set_mission_boards(daily_list: Array[MissionDefinition], weekly_list: Array[MissionDefinition]) -> void:
+	daily_missions = MissionBoard.new(daily_list)
+	daily_missions.mission_completed.connect(_on_board_mission_completed.bind(daily_missions))
+	weekly_missions = MissionBoard.new(weekly_list)
+	weekly_missions.mission_completed.connect(_on_board_mission_completed.bind(weekly_missions))
+
+
+## Semana do relógio local (muda toda segunda-feira à meia-noite).
+func mission_week() -> int:
+	return floori(float(clock.local_day() + WEEK_DAY_OFFSET) / 7.0)
+
+
+## Segundos até as semanais recomeçarem (meia-noite da próxima segunda).
+func seconds_until_new_week() -> float:
+	var days_left := 6 - posmod(clock.local_day() + WEEK_DAY_OFFSET, 7)
+	return clock.seconds_to_next_local_day() + days_left * 86400.0
+
+
+## Começa as diárias de hoje e as semanais desta semana, se ainda não começaram (com as metas do
+## nível atual). Chamado a cada tick e ao carregar.
+func refresh_mission_periods() -> void:
+	var unlocked := recipes.unlocked_at(progression.level).size()
+	var new_day := daily_missions.start_period(clock.local_day(), progression.level, unlocked)
+	var new_week := weekly_missions.start_period(mission_week(), progression.level, unlocked)
+	if new_day or new_week:
+		_record(MissionDefinition.Kind.REACH_POPULARITY, roundi(popularity))
+
+
+## Registra um evento nas missões iniciais e nas diárias e semanais.
+func _record(kind: MissionDefinition.Kind, amount := 1, recipe: RecipeDefinition = null, furniture_category := -1) -> void:
+	missions.record(kind, amount, furniture_category)
+	daily_missions.record(kind, amount, recipe, furniture_category)
+	weekly_missions.record(kind, amount, recipe, furniture_category)
+
+
 ## Troca a sequência de missões (começa da primeira).
 func set_missions(mission_list: Array[MissionDefinition]) -> void:
 	missions = MissionTracker.new(mission_list)
@@ -236,6 +288,7 @@ func start_cooking(stove_id: StringName, recipe_id: StringName) -> int:
 	var result := kitchen.start_cooking(stove_id, recipe)
 	if result == ServiceResult.OK and recipe.ingredient_cost > 0:
 		wallet.spend(Wallet.SOFT, recipe.ingredient_cost, "Ingredientes: %s" % recipe.display_name)
+		_record(MissionDefinition.Kind.SPEND_INGREDIENTS, recipe.ingredient_cost)
 	return result
 
 
@@ -246,7 +299,10 @@ func collect(stove_id: StringName) -> int:
 	if result == ServiceResult.OK:
 		progression.add_xp(recipe.xp_reward)
 		dish_collected.emit(stove_id, recipe)
-		missions.record(MissionDefinition.Kind.COLLECT_DISHES)
+		_record(MissionDefinition.Kind.COLLECT_DISHES, 1, recipe)
+		_record(MissionDefinition.Kind.COOK_DIFFERENT, 1, recipe)
+		_record(MissionDefinition.Kind.COOK_SLOW, 1, recipe)
+		_record(MissionDefinition.Kind.EARN_XP, recipe.xp_reward)
 		stats.add(PlayerStats.DISHES_COOKED)
 	return result
 
@@ -322,7 +378,7 @@ func acquire_and_place(definition: FurnitureDefinition, origin: Vector2i, rotati
 	if definition.price > 0:
 		wallet.spend(Wallet.SOFT, definition.price, "Compra: %s" % definition.display_name)
 	furniture_bought.emit(definition)
-	missions.record(MissionDefinition.Kind.BUY_FURNITURE, 1, definition.category)
+	_record(MissionDefinition.Kind.BUY_FURNITURE, 1, null, definition.category)
 	stats.add(PlayerStats.FURNITURE_BOUGHT)
 	return ServiceResult.OK
 
@@ -433,6 +489,8 @@ func hang_items(item: WallItemDefinition, segments: Array[String]) -> int:
 	if item != null and item.price > 0:
 		wallet.spend(Wallet.SOFT, item.price * targets.size(), "Parede: %s (%d)" % [item.display_name, targets.size()])
 	style.hang(targets, item.id if item != null else &"")
+	if item != null:
+		_record(MissionDefinition.Kind.HANG_WALL_ITEMS, targets.size())
 	return ServiceResult.OK
 
 
@@ -445,6 +503,7 @@ func paint_floor(definition: SurfaceDefinition, cells: Array[Vector2i]) -> int:
 	if result == ServiceResult.OK and not targets.is_empty():
 		_charge_paint(definition, targets.size())
 		style.paint_floor(targets, definition.id)
+		_record(MissionDefinition.Kind.PAINT_FLOOR, targets.size())
 	return result
 
 
@@ -456,6 +515,7 @@ func paint_walls(definition: SurfaceDefinition, segments: Array[String]) -> int:
 	if result == ServiceResult.OK and not targets.is_empty():
 		_charge_paint(definition, targets.size())
 		style.paint_walls(targets, definition.id)
+		_record(MissionDefinition.Kind.PAINT_WALL, targets.size())
 	return result
 
 
@@ -588,6 +648,7 @@ func claim_daily() -> Dictionary:
 	if delivered["xp"] > 0:
 		progression.add_xp(delivered["xp"])
 	daily_reward_claimed.emit(day, delivered)
+	_record(MissionDefinition.Kind.CLAIM_DAILY_GIFT)
 	return delivered
 
 
@@ -670,7 +731,7 @@ func expand() -> int:
 		if customer.state == Customer.State.LEAVING:
 			customer.follow(navigation.path_to_any(customer.cell(), exit), exit)
 	cafe_expanded.emit(layout.grid.size)
-	missions.record(MissionDefinition.Kind.EXPAND_CAFE)
+	_record(MissionDefinition.Kind.EXPAND_CAFE)
 	stats.add(PlayerStats.EXPANSIONS)
 	return ServiceResult.OK
 
@@ -782,6 +843,7 @@ func restore_popularity(value: float) -> void:
 # --- Tick ------------------------------------------------------------------
 
 func tick(delta: float) -> void:
+	refresh_mission_periods()
 	_update_arrivals(delta)
 	_update_queue(delta)
 	_assign_servings()
@@ -847,6 +909,7 @@ func _update_queue(delta: float) -> void:
 	var line := queued()
 	while not line.is_empty() and _walk_in(line[0]):
 		line.remove_at(0)
+		_record(MissionDefinition.Kind.QUEUE_SEATED)
 	for i in line.size():
 		var customer := line[i]
 		customer.position = queue_spot(i)
@@ -904,6 +967,7 @@ func _place_order(customer: Customer) -> void:
 	order.counter_id = kitchen.take_serving(recipe)
 	_orders.append(order)
 	customer.order = recipe
+	customer.ordered_from_menu = order.counter_id == &""
 	customer.state = Customer.State.WAITING_FOR_FOOD
 
 
@@ -949,8 +1013,13 @@ func _pay(customer: Customer) -> void:
 	progression.add_xp(config.customer_xp)
 	_change_popularity(config.popularity_gain * lerpf(0.5, 1.0, customer.patience_when_served))
 	payment_received.emit(customer, amount)
-	missions.record(MissionDefinition.Kind.SERVE_CUSTOMERS)
-	missions.record(MissionDefinition.Kind.EARN_GOLD, amount)
+	_record(MissionDefinition.Kind.SERVE_CUSTOMERS)
+	_record(MissionDefinition.Kind.EARN_GOLD, amount)
+	_record(MissionDefinition.Kind.EARN_XP, config.customer_xp)
+	if customer.patience_when_served >= config.happy_patience:
+		_record(MissionDefinition.Kind.HAPPY_CUSTOMERS)
+	if customer.ordered_from_menu:
+		_record(MissionDefinition.Kind.MENU_ORDERS)
 	stats.add(PlayerStats.CUSTOMERS_SERVED)
 	stats.add(PlayerStats.GOLD_EARNED, amount)
 
@@ -1251,6 +1320,19 @@ func _change_popularity(delta: float) -> void:
 	popularity = clampf(popularity + delta, 0.0, 100.0)
 	if popularity != previous:
 		popularity_changed.emit(popularity)
+		_record(MissionDefinition.Kind.REACH_POPULARITY, roundi(popularity))
+
+
+## Missão diária ou semanal concluída: entrega o ouro e o XP, e a diária conta para a semanal.
+func _on_board_mission_completed(entry: MissionBoard.Entry, board: MissionBoard) -> void:
+	var period := "diária" if board == daily_missions else "semanal"
+	if entry.reward_gold > 0:
+		wallet.earn(Wallet.SOFT, entry.reward_gold, "Missão %s: %s" % [period, entry.title()])
+	board_mission_completed.emit(board, entry)
+	if entry.reward_xp > 0:
+		progression.add_xp(entry.reward_xp)
+	if board == daily_missions:
+		weekly_missions.record(MissionDefinition.Kind.COMPLETE_DAILY)
 
 
 func _take_serial() -> int:

@@ -16,7 +16,7 @@ extends RefCounted
 ## viram para a mesa uma vez (com a arte, para onde a cadeira olha aparece);
 ## 5 = acrescenta quantos garçons a cafeteria contratou; 6 = revestimento pintado piso a piso e
 ## trecho a trecho de parede; 7 = itens de parede escolhidos pelo jogador (antes, enfeites fixos).
-const CURRENT_VERSION := 7
+const CURRENT_VERSION := 8
 
 ## Marca posta pela migração para a versão 7: o decode pendura os enfeites de sempre, para o save antigo
 ## continuar com a mesma cara. A marca não volta a ser gravada.
@@ -65,6 +65,7 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"popularity": simulation.popularity,
 		"inventory": simulation.inventory.to_data(),
 		"missions": simulation.missions.to_data(),
+		"mission_boards": {"daily": simulation.daily_missions.to_data(), "weekly": simulation.weekly_missions.to_data()},
 		"style": simulation.style.to_data(),
 		"stats": simulation.stats.to_data(),
 		"achievements": simulation.achievements.to_data(),
@@ -143,6 +144,11 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.stats.restore(_dict(data.get("stats")))
 	simulation.achievements.restore(_dict(data.get("achievements")))
 	simulation.daily.restore(_dict(data.get("daily")))
+	var boards := _dict(data.get("mission_boards"))
+	var unlocked := simulation.recipes.unlocked_at(simulation.progression.level).size()
+	simulation.daily_missions.restore(_dict(boards.get("daily")), simulation.progression.level, unlocked)
+	simulation.weekly_missions.restore(_dict(boards.get("weekly")), simulation.progression.level, unlocked)
+	simulation.refresh_mission_periods()  # salvo num dia (ou semana) que já passou: começa de novo
 	simulation.restore_waiter_count(int(data.get("waiters", 1)))
 	if data.get(LEGACY_WALL_ITEMS_KEY, false):
 		simulation.hang_legacy_wall_items()
@@ -197,7 +203,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -235,6 +241,12 @@ static func _v4_to_v5(data: Dictionary) -> Dictionary:
 ## Versão 7: os enfeites das paredes viraram itens do jogador. O save antigo ganha os de sempre (no decode).
 static func _v6_to_v7(data: Dictionary) -> Dictionary:
 	data[LEGACY_WALL_ITEMS_KEY] = true
+	return data
+
+
+## Versão 8 acrescentou as missões diárias e semanais: saves antigos começam o dia e a semana do zero.
+static func _v7_to_v8(data: Dictionary) -> Dictionary:
+	data["mission_boards"] = {}
 	return data
 
 

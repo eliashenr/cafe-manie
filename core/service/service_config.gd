@@ -34,6 +34,8 @@ extends Resource
 @export_range(0.1, 1.0) var spawn_level_floor := 0.45
 ## Clientes a mais dentro da cafeteria por nível acima do 1.
 @export var extra_customers_per_level := 1.0
+## Cliente satisfeito (missões): servido antes de a paciência cair desta fração.
+@export_range(0.0, 1.0) var happy_patience := 0.5
 
 @export_group("Fila")
 ## Quantos esperam na calçada quando não há cadeira livre (0 = sem fila).

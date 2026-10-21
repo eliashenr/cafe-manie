@@ -49,7 +49,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **2. Nível máximo 30** (DT-046):
   - curva de XP até o 30, com ouro a cada nível;
   - novas expansões e garçons para os níveis altos.
-- [ ] **3. Missões diárias e semanais:**
+- [x] **3. Missões diárias e semanais** (DT-047, roteiro em [missoes.md](missoes.md)):
   - 10 diárias e 20 semanais, criadas a partir do conteúdo do jogo;
   - metas que acompanham o nível.
 - [ ] **4. Cidade em volta do café:**

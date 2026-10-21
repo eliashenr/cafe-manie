@@ -415,10 +415,7 @@ func _show_icon_bar() -> void:
 	_add_icon(_buttons, "RenovateButton", "rolo", "Reformar", func() -> void: open_shop(ShopTab.FLOOR))
 	_add_expand_button()
 	_add_hire_button()
-	_add_icon(_buttons, "MissionsBarButton", "prancheta", "Missões", func() -> void:
-		var missions := cafe.hud.find_child("MissionsButton", true, false) as Button
-		if missions != null:
-			missions.pressed.emit())
+	_add_icon(_buttons, "MissionsBarButton", "prancheta", "Missões", func() -> void: cafe.hud.show_missions())
 	_add_icon(_buttons, "GiftsBarButton", "presente", "Presentes", func() -> void: cafe.hud.daily_requested.emit())
 	_add_icon(_buttons, "AchievementsBarButton", "trofeu", "Conquistas", func() -> void: cafe.hud.show_achievements())
 

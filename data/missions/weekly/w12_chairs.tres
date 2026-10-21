@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"w12_chairs"
+order = 12
+title = "Compre %d cadeiras"
+hint = "Cadeira do lado da mesa já vira para ela."
+kind = 3
+target = 2
+target_per_level = 0.0
+furniture_category = 1
+min_level = 1
+min_cook_time = 0.0
+limit_to_unlocked_recipes = false
+reward_gold = 150
+reward_gold_per_level = 8.0
+reward_xp = 40
+reward_xp_per_level = 2.0

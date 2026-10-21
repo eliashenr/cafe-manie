@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 383 testes
+## Cobertura atual — 404 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -28,12 +28,13 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
 | `unit/test_cafe_simulation.gd` | 30 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo; **pedido do cardápio fora do balcão** (com o que falta cozinhar), café sai mais que lasanha, paciência mais calma com o prato no fogão; **fila na calçada** (enche, anda, desiste); mais clientes por nível; **garçom busca no fogão, circula pela cozinha e nunca cozinha**; dois garçons não disputam o mesmo prato; contratação (nível, ouro, limite) |
 | `unit/test_long_shift.gd` | 2 | 30 min simulados com o "jogador robô" (que cozinha o que os clientes pedem): ninguém preso, lucro, níveis, menos de 25% irritados à mesa (desistências da fila contadas à parte); o robô conclui as 6 missões iniciais |
-| `unit/test_save_codec.gd` | 17 | ida e volta por JSON de tudo o que é salvo; preparo continua com o jogo fechado; conteúdo desconhecido pulado; migração das versões 1 a 4; nome da cafeteria; cadeiras de save antigo viram para a mesa uma vez; garçons contratados (saves antigos ficam com 1) |
+| `unit/test_save_codec.gd` | 19 | missões do dia e da semana (e o save versão 7 começando as de hoje); ida e volta por JSON de tudo o que é salvo; preparo continua com o jogo fechado; conteúdo desconhecido pulado; migração das versões 1 a 4; nome da cafeteria; cadeiras de save antigo viram para a mesa uma vez; garçons contratados (saves antigos ficam com 1) |
 | `integration/test_staff_and_queue.gd` | 3 | botão Garçom (nível, preço, confirmação com Cancelar selecionado, garçom novo aparece); fila na calçada e quem desiste sai andando por ela; bolinha de pedidos no painel do fogão |
 | `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, `.bak`, save danificado, save de versão mais nova protegido, apagar |
 | `unit/test_shop_and_missions.gd` | 23 | ouro dos níveis altos, garçons 5 e 6; compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
 | `unit/test_style_and_beauty.gd` | 24 | revestimentos (um inicial por tipo, bloqueios); **pintura por célula** (cobra só o que muda, recusa sem mudar nada, pintar com a base apaga); beleza pela média das células e dos itens de parede; **itens de parede** (dados, enfeites de sempre no jogo novo, pendurar cobra por trecho, tirar é grátis, bloqueio); mureta pintável sem a porta; save da pintura e dos itens, migração das versões 5 e 6 |
 | `unit/test_coin_shop.gd` | 4 | pacotes de Café Ouro válidos e em ordem, taxa melhor nos maiores; este build nunca entrega ouro; ouro só com o pagamento confirmado (cancelado ou recusado não muda nada) |
+| `unit/test_mission_boards.gd` | 14 | **missões diárias e semanais:** 10 e 20 válidas; metas e recompensas pelo nível, em número redondo, limitadas às receitas liberadas; o quadro congela a meta e recomeça no período seguinte; concluir avisa uma vez; cadeado; pratos diferentes, categoria da compra e popularidade; save; cada evento do jogo que conta; recompensa e diária contando para a semanal; pedido do cardápio só quando o prato não estava no balcão; dia novo e segunda-feira |
 | `unit/test_achievements.gd` | 10 | conquista Mestre até o nível 30; dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
@@ -47,11 +48,12 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_progress_scene.gd` | 17 | avisos de conquista em fila, painel de conquistas, recompensa diária (abre, paga, volta no dia seguinte, não empilha janelas), nome da cafeteria, sons e botão de som |
 | `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade**; toque no botão não vaza para o piso |
 | `integration/test_furniture_art.gd` | 7 | todo móvel tem arte nas 4 rotações, com âncora e escala certas; a cena e a prévia usam a arte; panela de cada receita; forno aceso só de frente; fogão e balcão mostram receita, tempo, Pronto! e porções |
-| `integration/test_hud_art.gd` | 6 | moeda com ponto de milhar e nível; estrelas pela satisfação; presente com cronômetro; zoom pelos botões; medalhão de missões esconde e mostra; faixa de ícones abre a loja e as conquistas |
+| `integration/test_hud_art.gd` | 6 | moeda com ponto de milhar e nível; estrelas pela satisfação; presente com cronômetro; zoom pelos botões; tocar no cartão da missão esconde e o medalhão abre as missões; faixa de ícones abre a loja e as conquistas |
 | `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; todo item de parede tem desenho nas duas paredes e a porta existe; a cena usa a arte e enquadra a parede; **mureta** nas duas bordas da frente, baixa, sem fechar a porta; exterior acompanha a expansão |
 | `integration/test_character_art.gd` | 15 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; ciclo de 8 quadros do andar, que nunca para no meio do passo, com o corpo subindo e descendo de leve; saltos das regras viram passinhos; senta só quando chega na cadeira; chega e sai pela calçada; sentado segue a cadeira; **encosto da própria cadeira por cima de quem senta de costas**; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
 | `integration/test_visual_fx.gd` | 17 | **efeitos visuais:** raio-X atrás de móvel alto (só onde cobre; nunca na frente, atrás de mesa ou sentado; some ao sair de trás); halo no móvel escolhido e dourado no fogão pronto, nunca no fantasma; vapor no fogão e nos pratos do balcão; pilha que cai no tampo; móvel novo surge (ao abrir o jogo, não); mureta abre perto de quem está junto da frente (também quem sai pela porta) e do piso escolhido; confete do pagamento some sozinho; esticar ao arrancar e achatar ao frear, sutil; loja acende, aviso surge, ouro quica só ao ganhar; botões de ícone com 48 px de toque; filtro de textura do projeto; âncoras da ordem de desenho (y-sort) |
 | `integration/test_depth_order.gd` | 7 | **ordem de desenho em faixas:** o garçom na frente da metade de trás do balcão (também passando a 0,3 piso da borda e com o balcão girado), sem raio-X; quem está atrás do balcão fica atrás de todas as faixas, com silhueta; vaso na frente do balcão aparece na frente; as faixas cobrem o desenho inteiro, encostadas, antes do vértice da frente; mover o móvel não recorta |
+| `integration/test_missions_scene.gd` | 5 | janela das missões: 10 diárias e 20 semanais com meta, recompensa, cadeado e contagem; progresso e aviso de concluída; uma janela por vez; aba do começo some no fim; texto do tempo |
 | `integration/test_music.gd` | 3 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados |
 
 O executor também **reprova um arquivo de teste que nem compila**. Antes, ele sumia da contagem em silêncio (encontrado nesta etapa).
@@ -70,6 +72,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Missões diárias e semanais (14 de 14 pegos (um depois de reforçar o teste)):** quadro que não recomeça, compra ignorando a categoria, prato repetido contando como diferente, missão com cadeado contando, popularidade somando em vez de guardar o maior valor, missão sem pagar o ouro, diária sem contar para a semanal, todo cliente contando como satisfeito, pedido do cardápio nunca marcado (escapou na primeira rodada: o teste marcava à mão; um teste novo faz o pedido de verdade), semana começando na quinta, save esquecendo as missões, janela abrindo por cima de outra, missão concluída sem aviso, metas sem crescer com o nível.
 - **Nível 30 (5 de 5 pegos):** nível alto sem ouro, ouro do nível errado (um nível adiantado), aviso sem o ouro, tabela aceitando ouro de tamanho errado, garçons dos níveis altos sem a trava de nível.
 - **Sentar e ordem de desenho (9 de 9 pegos):** faixas sem altura própria, lados da pegada trocados, móvel sem y-sort próprio, faixa larga demais (128 px: quem passa perto da borda some atrás), raio-X pela altura do nó, frente só em x, halo na frente do móvel, contorno de seleção na frente do móvel, vapor atrás do fogão.
 - **Efeitos visuais (24 de 24 pegos, mais 1 equivalente):** raio-X para quem está na frente, raio-X atrás de mesa, raio-X em quem está sentado, raio-X que nunca aparece, brilho sem seleção, fogão pronto sem brilho, fogão sem vapor, balcão sem vapor, pilha que não quica, móvel surgindo ao abrir o jogo, móvel novo sem surgir, mureta esmaecendo longe da frente, quem sai sem abrir a mureta, mureta sem foco, piso escolhido sem abrir a mureta, pagamento sem confete, confete que não some, frear esticando, esticar sem limite, ouro quicando ao gastar, loja sem acender, aviso sem surgir, botão pequeno demais, textura sem mipmap. A mutação "fantasma brilha" não mudava nada, porque o fantasma nunca fica selecionado nem pronto: a checagem redundante saiu do código.
@@ -100,6 +103,15 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Missões diárias e semanais (21/10)
+
+1. [ ] O medalhão **MISSÕES** abre a janela com as abas Diárias (10), Semanais (20) e Começo (enquanto o tutorial não acabou).
+2. [ ] Receba o presente do dia: aparece "Missão diária concluída: Receba o presente diário" e o ouro entra.
+3. [ ] Cozinhe e sirva um pouco: o progresso das diárias e das semanais anda.
+4. [ ] "Cozinhe 8 pratos demorados" aparece com o cadeado até o nível 3.
+5. [ ] No dia seguinte, as diárias começam do zero; as semanais só recomeçam na segunda.
+6. [ ] Tocar no cartão "Missão 1 de 6" esconde o cartão; abrir as missões mostra de novo.
 
 ## Roteiro de teste manual — Nível 30 (21/10)
 

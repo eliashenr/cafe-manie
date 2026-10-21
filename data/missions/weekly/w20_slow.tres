@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"w20_slow"
+order = 20
+title = "Cozinhe %d pratos demorados"
+hint = "Receitas de 3 minutos ou mais: bolo de cenoura, coxinha, lasanha."
+kind = 16
+target = 8
+target_per_level = 0.0
+furniture_category = -1
+min_level = 3
+min_cook_time = 180.0
+limit_to_unlocked_recipes = false
+reward_gold = 300
+reward_gold_per_level = 15.0
+reward_xp = 70
+reward_xp_per_level = 3.0

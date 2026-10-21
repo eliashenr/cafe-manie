@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"w03_sales"
+order = 3
+title = "Ganhe %d de Café Ouro em vendas"
+hint = "Lasanha e coxinha rendem mais por porção."
+kind = 2
+target = 2000
+target_per_level = 300.0
+furniture_category = -1
+min_level = 1
+min_cook_time = 0.0
+limit_to_unlocked_recipes = false
+reward_gold = 300
+reward_gold_per_level = 15.0
+reward_xp = 60
+reward_xp_per_level = 3.0

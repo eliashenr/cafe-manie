@@ -108,6 +108,7 @@ func _ready() -> void:
 	simulation.waiter_hired.connect(_on_waiter_hired)
 	hud.coin_pack_chosen.connect(_on_coin_pack_chosen)
 	simulation.mission_completed.connect(_on_mission_completed)
+	simulation.board_mission_completed.connect(_on_board_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
@@ -292,7 +293,7 @@ func _on_daily_requested() -> void:
 
 ## Alguma janela de pergunta aberta? Só cabe uma por vez na tela.
 func is_dialog_open() -> bool:
-	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(),
+	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(), hud.missions_dialog(),
 			hud.name_dialog(), build_bar.confirm_dialog(), hud.coin_dialog(), hud.coin_info_dialog()]:
 		if dialog.visible:
 			return true
@@ -378,6 +379,18 @@ func _on_leveled_up(level: int) -> void:
 	if not unlocked.is_empty():
 		text += "  Nova receita: %s" % ", ".join(unlocked)
 	EventBus.message_posted.emit(text)
+	state_changed.emit()
+
+
+## Missão diária ou semanal concluída: aviso com a recompensa (já entregue).
+func _on_board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry) -> void:
+	var rewards: Array[String] = []
+	if entry.reward_gold > 0:
+		rewards.append("+%s ouro" % UiTheme.thousands(entry.reward_gold))
+	if entry.reward_xp > 0:
+		rewards.append("+%d XP" % entry.reward_xp)
+	var period := "diária" if board == simulation.daily_missions else "semanal"
+	EventBus.message_posted.emit("Missão %s concluída: %s  %s" % [period, entry.title(), "  ".join(rewards)])
 	state_changed.emit()
 
 

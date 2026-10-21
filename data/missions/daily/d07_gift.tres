@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"d07_gift"
+order = 7
+title = "Receba o presente diário"
+hint = "O presente fica no canto de cima, à direita."
+kind = 9
+target = 1
+target_per_level = 0.0
+furniture_category = -1
+min_level = 1
+min_cook_time = 0.0
+limit_to_unlocked_recipes = false
+reward_gold = 30
+reward_gold_per_level = 1.0
+reward_xp = 5
+reward_xp_per_level = 0.3

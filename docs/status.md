@@ -4,6 +4,18 @@
 
 🟢 **CONCLUÍDO**
 
+**Pacote de 21/10, etapa 3: missões diárias e semanais** (DT-047)
+
+- **10 missões diárias e 20 semanais**, criadas a partir do conteúdo do jogo (o roteiro está em [missoes.md](missoes.md)).
+  - Alguns exemplos: cozinhar, servir, vender, deixar clientes satisfeitos, pratos diferentes, pedidos do cardápio, reformar pisos, pintar paredes, pendurar itens, popularidade e a fila da calçada.
+- As diárias recomeçam à meia-noite e as semanais na segunda-feira; as metas e as recompensas crescem com o nível.
+- A recompensa entra sozinha, com um aviso.
+- **Janela nova de missões** (medalhão MISSÕES ou ícone Missões):
+  - abas Diárias, Semanais e Começo;
+  - progresso, recompensa e cadeado de cada missão;
+  - quanto falta para recomeçar.
+- O save passou para a versão 8.
+
 **Pacote de 21/10, etapa 2: nível máximo 30** (DT-046)
 
 - **Até o nível 30:** os níveis 1 a 10 ficaram iguais, e cada nível depois pede um pouco mais de XP.
@@ -147,6 +159,11 @@
 
 🧪 **TESTADO**
 
+- **Etapa 3 de 21/10: 404 testes automatizados PASSARAM.**
+  - Os novos conferem os dados (10 e 20, válidas e com dica), as metas pelo nível em números redondos e o quadro que congela a meta e recomeça no dia (e na segunda) seguinte.
+  - Conferem também cada evento que conta, a recompensa entregue, a diária contando para a semanal, o save versão 8 e a janela (abas, cadeado, contagem, uma janela por vez, aviso).
+  - **Defeitos inseridos de propósito: 14 de 14 pegos (um depois de reforçar o teste).**
+  - **Foto conferida:** a janela de missões aberta.
 - **Etapa 2 de 21/10: 383 testes automatizados PASSARAM.**
   - Os novos conferem a curva até o 30, o ouro só do 11 em diante (também subindo dois níveis de uma vez), o aviso com o ouro, os garçons 5 e 6 e a conquista Mestre.
   - **Defeitos inseridos de propósito: 5 de 5 pegos.**

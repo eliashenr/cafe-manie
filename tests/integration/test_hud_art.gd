@@ -62,19 +62,24 @@ func test_zoom_buttons_change_the_camera() -> void:
 	assert_true(cafe.camera.zoom.x > before, "aproximou")
 
 
-func test_missions_medallion_hides_and_shows_the_card() -> void:
+func test_mission_card_hides_on_tap_and_the_medallion_opens_the_missions() -> void:
 	var cafe := await spawn_cafe()
 	cafe.simulation.set_missions(CafeSimulation.default_missions())
 	await settle()
 	var card := _find(cafe, "MissionCard") as Control
 	assert_true(card.visible, "o cartão da missão começa à vista (tutorial)")
+	click(card.get_global_rect().get_center())
+	await settle()
+	assert_false(card.visible, "tocar no cartão esconde")
+	assert_false(cafe.hud.mission_text().is_empty(), "a missão continua valendo")
 	(_find(cafe, "MissionsButton") as Button).pressed.emit()
 	await settle()
-	assert_false(card.visible, "o medalhão esconde o cartão")
-	assert_false(cafe.hud.mission_text().is_empty(), "a missão continua valendo")
+	assert_true(cafe.hud.missions_dialog().visible, "o medalhão abre as missões")
+	assert_true(card.visible, "e o cartão volta")
+	cafe.hud.missions_dialog().hide()
 	(_find(cafe, "MissionsBarButton") as Button).pressed.emit()
 	await settle()
-	assert_true(card.visible, "o ícone de baixo mostra de novo")
+	assert_true(cafe.hud.missions_dialog().visible, "o ícone de baixo também abre")
 
 
 func test_icon_bar_opens_the_shop_and_the_achievements() -> void:
