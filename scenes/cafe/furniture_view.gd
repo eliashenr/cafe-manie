@@ -6,10 +6,29 @@ extends Node2D
 ## PLACEHOLDER_FURNITURE: caixa isométrica colorida, com o nome em cima, um ponto
 ## marcando a frente (para a rotação ficar visível) e uma etiqueta de texto.
 ##
-## O nó fica no vértice da frente do móvel, para que o y-sort da camada
-## desenhe na ordem de profundidade. Os selos ficam num filho com z_index alto.
+## O nó fica no vértice da frente do móvel. O desenho é cortado em faixas verticais (Slice), cada
+## uma no y-sort do salão pela altura da borda da frente da pegada no meio dela: quem passa na frente
+## de qualquer trecho do móvel (inclusive da metade de trás de um balcão de 2 pisos) é desenhado na
+## frente daquele trecho. O que fica em cima (panela, pilha, pratos) é desenhado pelo próprio nó, no
+## vértice da frente. Os selos ficam num filho com z_index alto.
 
 enum Look { NORMAL, SELECTED, GHOST_VALID, GHOST_INVALID }
+
+
+## Faixa vertical do desenho do móvel, no y-sort do salão pela posição dela.
+class Slice:
+	extends Node2D
+
+	var sprite: ArtSprites.Sprite
+	## Trecho do desenho que esta faixa mostra (pixels de mundo, relativo ao móvel).
+	var span := Rect2()
+
+	func _draw() -> void:
+		var rect := sprite.draw_rect()
+		var source := Rect2((span.position.x - rect.position.x) * sprite.density, 0.0, span.size.x * sprite.density,
+			sprite.texture.get_size().y)
+		draw_texture_rect_region(sprite.texture, Rect2(span.position - position, span.size), source)
+
 
 ## Quanto a caixa encolhe em relação às bordas das células (0 a 0.5).
 const INSET := 0.12
@@ -67,6 +86,9 @@ const ART_INK := Color("33283a")
 const HALO_SELECTED := Color(1.0, 0.62, 0.12, 0.8)
 const HALO_READY := Color(1.0, 0.86, 0.25, 0.85)
 const HALO_SCALES: Array[float] = [1.1, 1.05]
+## Largura das faixas do desenho (pixels de mundo, um quarto do piso). Quanto mais fina, mais perto
+## da borda alguém pode passar sem ser desenhado atrás do móvel.
+const SLICE_WIDTH := 32.0
 ## Pilha do balcão: de quantos pixels acima ela cai quando chega prato.
 const STACK_POP_HEIGHT := 14.0
 ## Vapor: onde sai, na panela (fração da altura do desenho da panela, a partir do topo) e acima da
@@ -98,8 +120,15 @@ var kitchen_count := 0
 var dishes: Array = []
 
 var _overlay := Node2D.new()
-## Halo de brilho atrás do desenho (selecionado ou fogão com prato pronto) e o vapor do fogão.
+## Faixas do desenho e para que desenho e pegada foram cortadas (só recorta quando muda).
+var _slices: Array[Slice] = []
+var _sliced_for: Array = []
+## Contorno laranja no chão (selecionado) e halo de brilho (selecionado ou fogão com prato pronto):
+## os dois ficam no y-sort logo antes da primeira faixa, para aparecerem atrás do móvel.
+var _floor_mark := Node2D.new()
 var _halo := Node2D.new()
+## O vapor fica num nó no vértice da frente, para sair por cima do desenho do fogão.
+var _fx := Node2D.new()
 var _steam: CPUParticles2D
 ## Quanto a pilha de pratos do balcão está acima do lugar (anima quando chega prato).
 var stack_pop := 0.0:
@@ -110,16 +139,21 @@ var stack_pop := 0.0:
 
 func _init() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	y_sort_enabled = true  # as faixas (filhas) entram no y-sort do salão, cada uma na sua altura
 	_overlay.name = "Overlay"
 	_overlay.z_index = OVERLAY_Z
 	_overlay.draw.connect(_draw_overlay)
 	add_child(_overlay)
+	_floor_mark.name = "FloorMark"
+	_floor_mark.draw.connect(_draw_floor_mark)
+	add_child(_floor_mark)
 	_halo.name = "Halo"
-	_halo.show_behind_parent = true
 	_halo.visible = false
 	_halo.material = FxMaterials.glow(HALO_SELECTED)
 	_halo.draw.connect(_draw_halo)
 	add_child(_halo)
+	_fx.name = "Fx"
+	add_child(_fx)
 
 
 ## Troca os pratos sobre o tampo; só redesenha se algo mudou.
@@ -160,6 +194,7 @@ func configure(new_definition: FurnitureDefinition, new_origin: Vector2i, new_ro
 	look = new_look
 	sprite = ArtSprites.furniture(definition.id, rotation_steps)
 	position = IsoProjection.cell_top_vertex(origin + _footprint())
+	_slice_sprite()
 	_refresh_fx()
 	match look:
 		Look.GHOST_VALID:
@@ -170,6 +205,58 @@ func configure(new_definition: FurnitureDefinition, new_origin: Vector2i, new_ro
 			modulate = Color.WHITE
 	queue_redraw()
 	_overlay.queue_redraw()
+	_floor_mark.queue_redraw()
+
+
+## Corta o desenho em faixas de SLICE_WIDTH. A faixa fica na altura (y) da borda da frente da pegada
+## no meio do trecho dela: a borda desce 1 pixel a cada 2 do vértice da esquerda até o da frente
+## (o nó) e sobe do mesmo jeito até o da direita. O que passa dos vértices dos lados (folhas, sombra)
+## vai junto com a faixa da ponta.
+func _slice_sprite() -> void:
+	var fp := _footprint()
+	if _sliced_for == [sprite, fp]:
+		return
+	_sliced_for = [sprite, fp]
+	for old in _slices:
+		old.queue_free()
+	_slices.clear()
+	if sprite == null:
+		return
+	var rect := sprite.draw_rect()
+	# vértices da esquerda (origem + (0, fp.y)) e da direita (origem + (fp.x, 0)), relativos ao da frente
+	var left := -fp.x * IsoProjection.HALF_TILE.x
+	var right := fp.y * IsoProjection.HALF_TILE.x
+	var cuts: Array[float] = [rect.position.x]
+	var cut := ceilf((maxf(left, rect.position.x) + 0.01) / SLICE_WIDTH) * SLICE_WIDTH
+	while cut < minf(right, rect.end.x) - 0.01:
+		cuts.append(cut)
+		cut += SLICE_WIDTH
+	cuts.append(rect.end.x)
+	var slope := IsoProjection.HALF_TILE.y / IsoProjection.HALF_TILE.x
+	for i in cuts.size() - 1:
+		var middle := (clampf(cuts[i], left, right) + clampf(cuts[i + 1], left, right)) / 2.0
+		var slice := Slice.new()
+		slice.name = "Slice%d" % i
+		slice.sprite = sprite
+		slice.span = Rect2(cuts[i], rect.position.y, cuts[i + 1] - cuts[i], rect.size.y)
+		slice.position = Vector2(0.0, -absf(middle) * slope)
+		add_child(slice)
+		_slices.append(slice)
+	var behind := Vector2(0.0, _slices.reduce(func(low: float, s: Slice) -> float: return minf(low, s.position.y), 0.0) - 1.0)
+	_floor_mark.position = behind
+	_halo.position = behind
+
+
+## Faixas do desenho (no y-sort do salão, cada uma na sua altura).
+func slices() -> Array[Slice]:
+	return _slices
+
+
+## O ponto do grid (centro da célula (x, y) = Vector2(x, y)) está na frente do móvel? Na frente é
+## depois da borda da frente da pegada em x ou em y (a câmera olha de +x, +y).
+func is_in_front(point: Vector2) -> bool:
+	var far := Vector2(origin + _footprint()) - Vector2(0.5, 0.5)
+	return point.x > far.x or point.y > far.y
 
 
 ## A cozinha deste móvel aparece com arte (panela, pilha e selos) em vez da etiqueta de texto?
@@ -241,14 +328,10 @@ func _draw() -> void:
 	_draw_status(Vector2((top[0].x + top[2].x) / 2.0, top[0].y))
 
 
-## Arte do móvel; selecionado, ganha um contorno laranja no chão, embaixo dele.
+## O que fica em cima da arte do móvel (o desenho dele está nas faixas): pratos, panela, pilha ou etiqueta.
 func _draw_sprite() -> void:
 	var b := _base()
-	if look == Look.SELECTED:
-		draw_colored_polygon(b, SELECTED_FILL)
-		draw_polyline(PackedVector2Array([b[0], b[1], b[2], b[3], b[0]]), SELECTED_OUTLINE, 3.0, true)
 	var rect := sprite.draw_rect()
-	draw_texture_rect(sprite.texture, rect, false)
 	_draw_dishes()
 	if shows_kitchen_art():
 		if definition.category == FurnitureDefinition.Category.COOKING:
@@ -309,7 +392,7 @@ func _refresh_fx() -> void:
 	var hot := cooking or hot_dishes
 	if hot and _steam == null:
 		_steam = FxParticles.steam()
-		add_child(_steam)
+		_fx.add_child(_steam)
 	if _steam != null:
 		if cooking:
 			var pot := ArtSprites.cookware(kitchen_recipe.id)
@@ -326,9 +409,20 @@ func _draw_halo() -> void:
 	if sprite == null:
 		return
 	var rect := sprite.draw_rect()
-	var center := rect.get_center()
+	var center := rect.get_center() - _halo.position
 	for grow in HALO_SCALES:
 		_halo.draw_texture_rect(sprite.texture, Rect2(center - rect.size * grow / 2.0, rect.size * grow), false)
+
+
+## Selecionado: contorno laranja no chão, embaixo do móvel.
+func _draw_floor_mark() -> void:
+	if sprite == null or look != Look.SELECTED:
+		return
+	var b := _base()
+	for i in b.size():
+		b[i] -= _floor_mark.position
+	_floor_mark.draw_colored_polygon(b, SELECTED_FILL)
+	_floor_mark.draw_polyline(PackedVector2Array([b[0], b[1], b[2], b[3], b[0]]), SELECTED_OUTLINE, 3.0, true)
 
 
 ## Pilha de pratos com a comida no meio do tampo do balcão (um prato a cada 4 porções, até 3).

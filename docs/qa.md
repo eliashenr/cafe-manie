@@ -51,6 +51,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; todo item de parede tem desenho nas duas paredes e a porta existe; a cena usa a arte e enquadra a parede; **mureta** nas duas bordas da frente, baixa, sem fechar a porta; exterior acompanha a expansão |
 | `integration/test_character_art.gd` | 15 | todo cliente e o garçom têm todas as poses; toda receita tem prato; direção e espelho; ciclo de 8 quadros do andar, que nunca para no meio do passo, com o corpo subindo e descendo de leve; saltos das regras viram passinhos; senta só quando chega na cadeira; chega e sai pela calçada; sentado segue a cadeira; **encosto da própria cadeira por cima de quem senta de costas**; expressão segue a paciência; bandeja; prato na mesa certa; balão por cima |
 | `integration/test_visual_fx.gd` | 17 | **efeitos visuais:** raio-X atrás de móvel alto (só onde cobre; nunca na frente, atrás de mesa ou sentado; some ao sair de trás); halo no móvel escolhido e dourado no fogão pronto, nunca no fantasma; vapor no fogão e nos pratos do balcão; pilha que cai no tampo; móvel novo surge (ao abrir o jogo, não); mureta abre perto de quem está junto da frente (também quem sai pela porta) e do piso escolhido; confete do pagamento some sozinho; esticar ao arrancar e achatar ao frear, sutil; loja acende, aviso surge, ouro quica só ao ganhar; botões de ícone com 48 px de toque; filtro de textura do projeto; âncoras da ordem de desenho (y-sort) |
+| `integration/test_depth_order.gd` | 7 | **ordem de desenho em faixas:** o garçom na frente da metade de trás do balcão (também passando a 0,3 piso da borda e com o balcão girado), sem raio-X; quem está atrás do balcão fica atrás de todas as faixas, com silhueta; vaso na frente do balcão aparece na frente; as faixas cobrem o desenho inteiro, encostadas, antes do vértice da frente; mover o móvel não recorta |
 | `integration/test_music.gd` | 3 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados |
 
 O executor também **reprova um arquivo de teste que nem compila**. Antes, ele sumia da contagem em silêncio (encontrado nesta etapa).
@@ -69,6 +70,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Sentar e ordem de desenho (9 de 9 pegos):** faixas sem altura própria, lados da pegada trocados, móvel sem y-sort próprio, faixa larga demais (128 px: quem passa perto da borda some atrás), raio-X pela altura do nó, frente só em x, halo na frente do móvel, contorno de seleção na frente do móvel, vapor atrás do fogão.
 - **Efeitos visuais (24 de 24 pegos, mais 1 equivalente):** raio-X para quem está na frente, raio-X atrás de mesa, raio-X em quem está sentado, raio-X que nunca aparece, brilho sem seleção, fogão pronto sem brilho, fogão sem vapor, balcão sem vapor, pilha que não quica, móvel surgindo ao abrir o jogo, móvel novo sem surgir, mureta esmaecendo longe da frente, quem sai sem abrir a mureta, mureta sem foco, piso escolhido sem abrir a mureta, pagamento sem confete, confete que não some, frear esticando, esticar sem limite, ouro quicando ao gastar, loja sem acender, aviso sem surgir, botão pequeno demais, textura sem mipmap. A mutação "fantasma brilha" não mudava nada, porque o fantasma nunca fica selecionado nem pronto: a checagem redundante saiu do código.
 - **Compra de moedas (6 de 6 pegos):** ouro sem pagamento, pacote dando o ouro errado, oferta sem pausa, sem oferta quando falta ouro, aviso de indisponível sumido, vitrine sem pacotes.
 - **Paredes completas e itens de parede (12 de 12 pegos):** mureta fechando a porta, pendurar cobrando onde já tinha, pendurar sem nível, item sem beleza, save esquecendo os itens, save antigo sem os enfeites de sempre, jogo novo sem enfeites, pendurar na mureta, toque sem achar a mureta, prévia do item sem aparecer, pendurar sem confirmação, mureta sem o revestimento da parede.
@@ -97,6 +99,13 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Sentar e ordem de desenho (21/10)
+
+1. [ ] Os clientes sentados de frente aparecem sentados: coxa no assento, joelho dobrado, canela pendurada. Confira na banqueta e em cadeiras de coleções diferentes.
+2. [ ] O garçom passando na frente de um balcão de 2 pisos aparece **na frente** dele, nas duas metades, sem silhueta azul.
+3. [ ] Ponha um vaso ou planta na frente de um balcão: o vaso aparece na frente.
+4. [ ] Só quem passa **atrás** de um móvel alto ganha a silhueta azul.
 
 ## Roteiro de teste manual — Passe visual (efeitos)
 

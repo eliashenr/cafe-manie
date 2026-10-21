@@ -541,18 +541,45 @@ def _torso_details(D, kind, base, sk):
     return "".join(o)
 
 
+# Sentado de frente (olhando para +x: para a direita e para baixo na tela). As coxas vão para a frente em
+# cima do assento até a borda dele, o joelho dobra e a canela fica pendurada na frente do assento, com o
+# pé no ar (o assento é mais alto que a perna do boneco). Unidades do boneco, pés de quem está em pé em (0, 0).
+SEAT_HIP = (1.0, -3.0)        # meio do quadril, logo abaixo do tronco (que desce 26 ao sentar)
+SEAT_SIDE = (-5.0, 2.5)       # do meio do quadril até a perna de perto (ao longo de +y, para a câmera)
+SEAT_FORWARD = (17.0, 8.5)    # do quadril ao joelho, ao longo de +x: a borda da frente do assento
+SEAT_SHIN = (1.0, 14.0)       # do joelho ao tornozelo: a canela pendurada
+
+
+def _mid(a, b):
+    return ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+
+
+def seated_leg_points(side):
+    """(quadril, joelho, tornozelo) da perna sentada; side -1 = a de longe, +1 = a de perto."""
+    hip = (SEAT_HIP[0] + side * SEAT_SIDE[0], SEAT_HIP[1] + side * SEAT_SIDE[1])
+    knee = (hip[0] + SEAT_FORWARD[0], hip[1] + SEAT_FORWARD[1])
+    ankle = (knee[0] + SEAT_SHIN[0], knee[1] + SEAT_SHIN[1])
+    return hip, knee, ankle
+
+
 def _seated_legs(D, bottom, skin_fill, shoes, back):
     bkind, bcol = bottom
     if back:
-        return ""
-    o = []
-    cloth = _cloth(D, bcol, -14, 14, -8, 16) if bkind == "calca" else skin_fill
-    for s in (-1, 1):
-        x = s * 6.8
-        o.append(path(f"M{f(x-5.2)},2 L{f(x-4.8)},14 C{f(x-4.8)},15.6 {f(x+4.8)},15.6 {f(x+4.8)},14 L{f(x+5.2)},2 Z", cloth, LINE, 1.1))
-        o.append(_shoe(D, x, 18.6, shoes))
-    o.append(path("M-13.6,-7 C-14,0 -12.6,4.6 -7,4.6 L7,4.6 C12.6,4.6 14,0 13.6,-7 Z", _cloth(D, bcol, -14, 14, -10, 6), LINE, 1.2))
-    o.append(path("M0,-5 L0,4", "none", LINE, 0.8, 'opacity="0.6"'))
+        return ""  # de costas, as pernas ficam escondidas atrás do corpo e do assento
+    cloth = _cloth(D, bcol, -12, 30, -8, 26)
+    thigh_fill = cloth  # calça, short e saia cobrem a coxa de quem senta
+    shin_fill = cloth if bkind == "calca" else skin_fill
+    # quadril em cima do assento, entre o tronco e as coxas
+    o = [E(SEAT_HIP[0] + 1.6, SEAT_HIP[1] + 0.4, 12.8, 5.8, thigh_fill, LINE, 1.1)]
+    for side in (-1, 1):  # a perna de longe primeiro; a de perto passa por cima
+        hip, knee, ankle = seated_leg_points(side)
+        o.append(g(_shoe(D, ankle[0] + 1.4, ankle[1] + 4.0, shoes), f"rotate(16 {f(ankle[0])} {f(ankle[1] + 2)})"))
+        o.append(path(_tube([knee, _mid(knee, ankle), ankle], [10.8, 10.0, 9.4]), shin_fill, LINE, 1.1))
+        o.append(path(_tube([hip, _mid(hip, knee), knee], [13.4, 12.6, 11.4]), thigh_fill, LINE, 1.15))
+        # joelho redondo e a luz de cima da coxa: ela fica deitada no assento, de frente para o alto
+        o.append(E(knee[0] + 0.6, knee[1] + 0.4, 5.9, 5.5, thigh_fill, LINE, 1.1))
+        o.append(path(f"M{f(hip[0] + 1)},{f(hip[1] - 3.6)} Q{f(_mid(hip, knee)[0])},{f(_mid(hip, knee)[1] - 4.6)} "
+                      f"{f(knee[0] - 1)},{f(knee[1] - 4.2)}", "none", "#ffffff", 1.4, 'opacity="0.35"'))
     return "".join(o)
 
 

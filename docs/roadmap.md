@@ -39,6 +39,22 @@ separadamente:
   - o pagamento real depende da Play Store (conta de desenvolvedor do PO) e da revisão jurídica da Fase 7;
   - até lá, a loja de pacotes aparece e explica isso.
 
+## Pacote de pedidos do PO (21/10/2026)
+
+O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram uma de cada vez, testadas e entregues:
+
+- [x] **1. Sentar de verdade e o garçom que entrava no balcão** (DT-045, urgente):
+  - pose sentada nova;
+  - móveis desenhados em faixas, na ordem certa.
+- [ ] **2. Nível máximo 30:**
+  - curva de XP até o 30, com ouro a cada nível;
+  - novas expansões e garçons para os níveis altos.
+- [ ] **3. Missões diárias e semanais:**
+  - 10 diárias e 20 semanais, criadas a partir do conteúdo do jogo;
+  - metas que acompanham o nível.
+- [ ] **4. Cidade em volta do café:**
+  - ruas, calçadas, prédios e táxis no estilo de Nova York, no lugar do gramado.
+
 ## Passe visual (18/10/2026)
 
 - [x] **Efeitos visuais só na tela** (DT-044):

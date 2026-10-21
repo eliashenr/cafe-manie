@@ -4,6 +4,39 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-045 — Quem senta, senta de verdade; e cada móvel desenhado em faixas na ordem certa
+
+**Problema:** o PO mostrou duas coisas feias:
+- quem senta de frente parecia em pé em cima da cadeira (as canelas tinham 12 de altura e os pés acabavam no assento);
+- o garçom "entrava" no balcão: passando na frente da metade de trás de um balcão de 2 pisos, ele era desenhado atrás, e o raio-X ainda chamava atenção para isso.
+
+**Opções para a ordem de desenho:**
+- (A) corrigir só os personagens, ajustando a altura de ordenação de cada um contra os móveis próximos;
+- (B) cortar o desenho de cada móvel em faixas verticais, cada uma ordenada pela borda da frente da pegada naquele trecho (a técnica padrão dos jogos isométricos).
+
+**Decisão:** B.
+- A opção A não resolve um vaso na frente da metade de trás do balcão: o balcão inteiro ainda seria ordenado pela ponta da frente.
+- **As faixas:**
+  - o `FurnitureView` liga o y-sort próprio, e as faixas (`FurnitureView.Slice`, filhas) entram no y-sort do salão, cada uma na sua altura;
+  - cada faixa tem 32 px (um quarto do piso);
+  - a altura de cada faixa é a da borda da frente da pegada no meio do trecho dela (desce 1 px a cada 2 do vértice da esquerda até o da frente e sobe do mesmo jeito até o da direita);
+  - o que passa dos vértices dos lados (folhas, sombra) vai com a faixa da ponta.
+- **O que fica em cima** (panela, pilha de pratos, pratos da mesa) continua no próprio nó, no vértice da frente, depois de todas as faixas.
+- **Atrás de todas as faixas:** o contorno laranja de selecionado e o halo de brilho.
+- **O vapor** fica num nó no vértice da frente, para sair por cima do fogão.
+- **Folga:** quem passa a até um quarto de piso da borda ainda aparece na frente; antes, no meio do lado do móvel, precisava estar a meio piso.
+- **Raio-X:** usa a mesma regra da pegada ("atrás" é não estar depois da borda da frente em x nem em y). Só aparece quando a pessoa está de fato atrás de um móvel alto.
+- **Durante a animação de surgir** (0,38 s), as faixas acompanham a escala do móvel.
+
+**Sentar:** o boneco é chibi e o assento (30) é mais alto que a perna dele (23).
+- O pé não alcança o chão, como criança em cadeira de adulto.
+- A pose nova de frente (`people3._seated_legs`): o quadril fica no assento, as coxas vão para a frente até a borda dele (com volume, luz por cima e joelho redondo) e as canelas ficam penduradas na frente do assento.
+- De costas continua como era: o encosto cobre a pessoa.
+
+**Ferramenta de foto** `tools/depth_showcase.gd`: monta o garçom na frente do balcão, um vaso na frente de outro, alguém atrás da estante e clientes sentados nas 4 direções em banqueta e cadeiras.
+
+---
+
 ## DT-044 — Passe visual: shaders leves, "juice" por Tween e partículas por CPU, só na tela
 
 **Problema:** o PO pediu um acabamento "AAA" (raio-X atrás dos móveis, brilho no que está selecionado e no fogão pronto, mureta que não esconde ninguém, animações de surgir e quicar, vapor e confete), sem quebrar os testes, sem mexer no loop do jogo e rodando bem em celular.

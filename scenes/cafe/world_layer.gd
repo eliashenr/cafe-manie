@@ -98,6 +98,7 @@ func refresh(simulation: CafeSimulation) -> void:
 
 
 ## Quem está atrás de um móvel alto ganha a silhueta no formato do móvel (sentado não: a mesa na frente é normal).
+## Atrás é pela pegada no grid, a mesma regra das faixas do desenho do móvel.
 func _refresh_xray() -> void:
 	var views: Array[AgentView] = []
 	views.assign(_agents.values())
@@ -106,7 +107,7 @@ func _refresh_xray() -> void:
 		var body := view.body_rect()
 		if body.size != Vector2.ZERO and not view.seated_on_screen():
 			for furniture: FurnitureView in _views.values():
-				if furniture.visible and furniture.sprite != null and furniture.position.y > view.position.y \
+				if furniture.visible and furniture.sprite != null and not furniture.is_in_front(view.shown) \
 						and furniture.definition.category not in [FurnitureDefinition.Category.TABLE, FurnitureDefinition.Category.SEATING] \
 						and furniture.sprite.draw_rect().size.y >= XRAY_MIN_HEIGHT:
 					var rect := furniture.sprite.draw_rect()

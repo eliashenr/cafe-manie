@@ -4,6 +4,19 @@
 
 🟢 **CONCLUÍDO**
 
+**Pacote de 21/10, etapa 1: sentar de verdade e a ordem de desenho** (DT-045)
+
+- **Quem senta de frente agora senta:**
+  - o quadril fica no assento e as coxas vão para a frente até a borda;
+  - o joelho dobra e as canelas ficam penduradas na frente do assento;
+  - vale para todas as cadeiras e banquetas.
+- **O garçom não entra mais no balcão:**
+  - cada móvel é desenhado em faixas, e cada faixa sabe quem está na frente dela;
+  - quem passa na frente de qualquer parte de um móvel aparece na frente, inclusive da metade de trás de um balcão de 2 pisos;
+  - um vaso na frente de um balcão também aparece na frente.
+- **Raio-X só quando faz sentido:** a silhueta aparece só para quem está de fato atrás de um móvel alto.
+- **Foto de conferência nova** (`tools/depth_showcase.gd`): garçom na frente do balcão e clientes sentados nas 4 direções.
+
 **Passe visual "AAA"** (DT-044): efeitos só na tela, sem mexer nas regras do jogo
 
 - **Raio-X:** quem passa atrás de um fogão, balcão ou estante aparece como silhueta azul, só na parte coberta. Mesas e cadeiras não tampam ninguém, e quem está sentado não ganha silhueta.
@@ -124,6 +137,13 @@
 - Nada bloqueado.
 
 🧪 **TESTADO**
+
+- **Etapa 1 de 21/10: 377 testes automatizados PASSARAM** no Windows.
+  - Os novos conferem: o garçom na frente da metade de trás do balcão (também passando perto da borda e com o balcão girado), quem está atrás de um balcão e o vaso na frente do balcão.
+  - Conferem também se as faixas cobrem o desenho inteiro, sem buraco, e se não mudam ao mover o móvel.
+  - **Defeitos inseridos de propósito: 9 de 9 pegos.**
+  - **Foto conferida:** o garçom na frente do balcão, o vaso na frente do outro balcão, a silhueta só atrás da estante e os clientes sentados (na banqueta aparece o pé dela embaixo).
+  - **Cena principal: PASSOU**, zero erros.
 
 - **370 testes automatizados: PASSOU** no Windows: os 353 de antes, sem nenhuma mudança, e 17 novos dos efeitos.
   - Os novos conferem o raio-X (atrás, na frente, mesa, sentado, saindo de trás), o brilho (seleção, fogão pronto, fantasma) e o vapor (fogão e balcão).
