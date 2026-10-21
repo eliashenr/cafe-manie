@@ -4,6 +4,35 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-049 — Pausa de verdade e a loja que continua aberta depois da compra
+
+**Problema:**
+- Com o café lotado, o PO não conseguia arrumar (comprar mesas, fogões e balcões) porque o movimento não parava. Ele pediu uma pausa em que o jogo inteiro fique parado e ele mexa à vontade.
+- Na loja, depois de comprar e posicionar uma mesa, o jogo voltava para a faixa de ícones, e era preciso abrir a loja de novo para comprar a cadeira.
+
+**Opções para a pausa:**
+- (A) só parar a tela (personagens), deixando os fogões correrem pelo relógio;
+- (B) a regra do jogo sabe que está pausada, e os fogões param junto.
+
+**Decisão:** B.
+- Com A, pausar viraria um truque: a lasanha ficaria pronta sem ninguém perder paciência.
+- **Na regra** (`CafeSimulation.paused`, `Kitchen.set_paused`):
+  - pausado, o tick não faz nada: ninguém chega, anda, perde paciência ou pede;
+  - os fogões guardam o horário em que o jogo pausou e calculam tudo a partir dele; ao continuar, cada preparo anda o tempo da pausa para a frente;
+  - um preparo começado durante a pausa só começa a contar depois;
+  - salvo durante a pausa, o tempo dela não conta como cozinhado;
+  - o jogo sempre abre rodando.
+- **O jogador continua jogando:** comprar, mover, guardar, vender, cozinhar, levar prato ao balcão, reformar e expandir.
+  - As proteções continuam (móvel em uso, personagem no caminho), só que nada se mexe.
+- **Na tela:**
+  - botão laranja de pausa no alto da coluna da direita, que vira o verde de continuar;
+  - tecla P;
+  - faixa "JOGO PAUSADO" acima da barra de baixo;
+  - personagens, vapor e trânsito ficam parados; o resto (avisos, animação de surgir, câmera) continua.
+- **Loja:** escolher um móvel esconde a loja só enquanto ele é posicionado. Depois de confirmar ou cancelar, ela volta na mesma aba, coleção e página. Fechar a loja continua no X.
+
+---
+
 ## DT-048 — A cidade em volta do café (Nova York)
 
 **Problema:** o PO achou o café "escondido, só com mato dos lados" e pediu um exterior bonito e moderno, como se fosse uma cidade (Nova York).

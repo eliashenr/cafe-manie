@@ -55,6 +55,11 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **4. Cidade em volta do café** (DT-048):
   - ruas, calçadas, prédios e táxis no estilo de Nova York, no lugar do gramado.
 
+## Pedidos do PO (22/10/2026)
+
+- [x] **Pausa** (DT-049): o jogo inteiro para (clientes, garçons, fogões, trânsito) e o jogador mexe à vontade.
+- [x] **Loja aberta depois da compra** (DT-049): volta na mesma aba depois de posicionar o móvel.
+
 ## Passe visual (18/10/2026)
 
 - [x] **Efeitos visuais só na tela** (DT-044):

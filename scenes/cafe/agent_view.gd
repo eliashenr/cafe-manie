@@ -140,6 +140,15 @@ func refresh(target: Agent, new_seat_rotation := -1, new_seat_furniture: StringN
 	_overlay.queue_redraw()
 
 
+## Pausa: o desenho para onde está. Quem ainda estava aparecendo aos poucos aparece inteiro na hora,
+## para ninguém ficar invisível durante a pausa (quem está indo embora fica como está).
+func set_frozen(value: bool) -> void:
+	process_mode = Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
+	if value and not exiting:
+		_alpha = 1.0
+		modulate.a = 1.0
+
+
 ## Cliente novo: o desenho começa em [param point] (na calçada) e vem andando.
 func arrive_from(point: Vector2) -> void:
 	shown = point

@@ -4,6 +4,15 @@
 
 🟢 **CONCLUÍDO**
 
+**Pedidos de 22/10: pausa e loja aberta** (DT-049)
+
+- **Botão de pausa** (laranja, no alto da coluna da direita, ou a tecla P):
+  - o jogo inteiro para: clientes, garçons, paciência, chegada de gente, fogões, carros e vapor;
+  - dá para comprar, mover, cozinhar e reformar à vontade;
+  - uma faixa avisa "JOGO PAUSADO", e o botão verde continua o jogo;
+  - os fogões param junto e, ao continuar, seguem de onde pararam.
+- **A loja continua aberta:** depois de posicionar o móvel comprado (ou cancelar), ela volta na mesma aba. Dá para comprar a cadeira logo depois da mesa.
+
 **Pacote de 21/10, etapa 4: a cidade de Nova York em volta do café** (DT-048)
 
 - **O café fica numa esquina de Nova York, no lugar do gramado:**
@@ -172,6 +181,14 @@
 - Nada bloqueado.
 
 🧪 **TESTADO**
+
+- **Pedidos de 22/10: 425 testes automatizados PASSARAM.**
+  - Os novos conferem que, pausado, ninguém chega, anda ou perde paciência, e que o fogão para e segue de onde parou.
+  - Conferem também o preparo começado na pausa, o save feito durante a pausa e que dá para construir, cozinhar e levar prato com o jogo pausado.
+  - Na tela: o botão, a faixa, a tecla P, personagens, vapor e trânsito parados (também num fogão posto durante a pausa) e a loja voltando depois da compra.
+  - **Defeitos inseridos de propósito: 14 de 14 pegos (um depois de reforçar o teste).**
+  - **Foto conferida:** o jogo pausado, com a faixa e o botão de continuar. Ela revelou um defeito, já corrigido: quem ainda estava aparecendo aos poucos ficava invisível durante a pausa.
+  - **Cena principal: PASSOU**, zero erros.
 
 - **Etapa 4 de 21/10: 414 testes automatizados PASSARAM.**
   - Os novos conferem se toda a arte da cidade existe, as ruas nas duas frentes e o cruzamento, e os prédios atrás (sem encostar no café, nas ruas, nas calçadas nem uns nos outros, também no 12×10 e no 16×16).

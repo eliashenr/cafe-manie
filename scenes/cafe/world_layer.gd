@@ -87,12 +87,11 @@ const READY_TEXT := "Pronto!"
 ## Para (pausa) ou solta os personagens e o vapor dos fogões.
 func set_frozen(value: bool) -> void:
 	frozen = value
-	var mode := Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
 	for view: AgentView in _agents.values():
-		view.process_mode = mode
+		view.set_frozen(value)
 	for view in _exiting:
 		if is_instance_valid(view):
-			view.process_mode = mode
+			view.set_frozen(value)
 	for view: FurnitureView in _views.values():
 		view.set_frozen(value)
 
@@ -226,6 +225,7 @@ func _refresh_agents(simulation: CafeSimulation) -> void:
 			view.name = "Agent_%d" % agent.serial
 			add_child(view)
 			_agents[agent.serial] = view
+			view.set_frozen(frozen)
 			if agent is Customer and (agent as Customer).state == Customer.State.WALKING_IN:
 				view.refresh(agent)
 				view.arrive_from(_sidewalk_point())
