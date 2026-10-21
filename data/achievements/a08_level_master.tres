@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AchievementDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/achievement_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"a08_level_master"
+order = 8
+stat = &"level"
+description = "nível alcançado"
+tier_titles = Array[String](["Chef Renomado", "Lenda do Café", "Rei de Nova York"])
+tier_targets = Array[int]([15, 20, 30])
+tier_rewards = Array[int]([300, 600, 1500])

@@ -4,6 +4,15 @@
 
 🟢 **CONCLUÍDO**
 
+**Pacote de 21/10, etapa 2: nível máximo 30** (DT-046)
+
+- **Até o nível 30:** os níveis 1 a 10 ficaram iguais, e cada nível depois pede um pouco mais de XP.
+- **Do nível 11 em diante, cada nível dá Café Ouro:** 275 no 11, subindo até 750 no 30, avisado junto com o "Nível N!".
+- **Mais coisas para os níveis altos:**
+  - 4 expansões novas, até 16×16 no nível 20;
+  - mais 2 garçons (níveis 12 e 18);
+  - a conquista "Mestre", que vai até o nível 30.
+
 **Pacote de 21/10, etapa 1: sentar de verdade e a ordem de desenho** (DT-045)
 
 - **Quem senta de frente agora senta:**
@@ -138,6 +147,9 @@
 
 🧪 **TESTADO**
 
+- **Etapa 2 de 21/10: 383 testes automatizados PASSARAM.**
+  - Os novos conferem a curva até o 30, o ouro só do 11 em diante (também subindo dois níveis de uma vez), o aviso com o ouro, os garçons 5 e 6 e a conquista Mestre.
+  - **Defeitos inseridos de propósito: 5 de 5 pegos.**
 - **Etapa 1 de 21/10: 377 testes automatizados PASSARAM** no Windows.
   - Os novos conferem: o garçom na frente da metade de trás do balcão (também passando perto da borda e com o balcão girado), quem está atrás de um balcão e o vaso na frente do balcão.
   - Conferem também se as faixas cobrem o desenho inteiro, sem buraco, e se não mudam ao mover o móvel.

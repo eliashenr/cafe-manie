@@ -46,7 +46,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **1. Sentar de verdade e o garçom que entrava no balcão** (DT-045, urgente):
   - pose sentada nova;
   - móveis desenhados em faixas, na ordem certa.
-- [ ] **2. Nível máximo 30:**
+- [x] **2. Nível máximo 30** (DT-046):
   - curva de XP até o 30, com ouro a cada nível;
   - novas expansões e garçons para os níveis altos.
 - [ ] **3. Missões diárias e semanais:**

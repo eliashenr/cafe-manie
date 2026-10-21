@@ -19,6 +19,15 @@ func _achievement(id: StringName) -> AchievementDefinition:
 	return null
 
 
+func test_level_master_achievement_goes_to_level_30() -> void:
+	var master: AchievementDefinition = load("res://data/achievements/a08_level_master.tres")
+	assert_true(master.is_valid())
+	assert_eq(master.stat, PlayerStats.LEVEL)
+	assert_eq(master.tier_targets[-1], 30, "o último degrau é o nível máximo")
+	var tables: LevelTable = load("res://data/progression/levels.tres")
+	assert_true(master.tier_targets[-1] <= tables.max_level(), "dá para alcançar")
+
+
 func test_achievement_data_is_valid_and_progressive() -> void:
 	var list := CafeSimulation.default_achievements()
 	assert_true(list.size() >= 6)

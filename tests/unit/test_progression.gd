@@ -8,10 +8,36 @@ func _table(values: Array) -> LevelTable:
 	return table
 
 
-func test_level_data_file_is_valid_with_ten_levels() -> void:
+func test_level_data_file_is_valid_up_to_level_30() -> void:
 	var table: LevelTable = load("res://data/progression/levels.tres")
 	assert_true(table.is_valid())
-	assert_eq(table.max_level(), 10, "o MVP vai até o nível 10 (seção 119)")
+	assert_eq(table.max_level(), 30, "o PO pediu o nível máximo 30")
+	assert_eq(table.xp_to_reach[9], 1830, "os níveis 1 a 10 continuam como eram")
+	for i in range(2, table.xp_to_reach.size()):
+		var step := table.xp_to_reach[i] - table.xp_to_reach[i - 1]
+		var before := table.xp_to_reach[i - 1] - table.xp_to_reach[i - 2]
+		assert_true(step > before, "cada nível pede mais XP que o anterior (nível %d)" % (i + 1))
+
+
+func test_high_levels_pay_gold_and_the_first_ten_do_not() -> void:
+	var table: LevelTable = load("res://data/progression/levels.tres")
+	for level in range(1, 11):
+		assert_eq(table.gold_for(level), 0, "até o 10 o nível libera receitas e móveis (nível %d)" % level)
+	assert_eq(table.gold_for(11), 275)
+	assert_eq(table.gold_for(30), 750)
+	for level in range(12, 31):
+		assert_true(table.gold_for(level) > table.gold_for(level - 1), "cada nível alto dá mais ouro")
+	assert_eq(table.gold_for(31), 0, "fora da tabela não dá nada")
+
+
+func test_level_gold_validation() -> void:
+	var table := _table([0, 10, 30])
+	table.level_up_gold = PackedInt32Array([0, 5])
+	assert_false(table.is_valid(), "uma recompensa por nível")
+	table.level_up_gold = PackedInt32Array([0, 5, -1])
+	assert_false(table.is_valid(), "sem ouro negativo")
+	table.level_up_gold = PackedInt32Array([0, 5, 9])
+	assert_true(table.is_valid())
 
 
 func test_table_validation() -> void:

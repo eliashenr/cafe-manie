@@ -144,6 +144,13 @@ func test_level_up_announces_the_new_recipe() -> void:
 	assert_true(cafe.hud.toast_text().contains("Misto-quente"), "diz o que desbloqueou")
 
 
+func test_high_level_up_announces_the_gold() -> void:
+	var cafe := await spawn_cafe()
+	var table := cafe.simulation.progression.table
+	cafe.simulation.progression.add_xp(table.xp_to_reach[10])
+	assert_true(all_messages(cafe).contains("Nível 11!  +275 de Café Ouro"), all_messages(cafe))
+
+
 func test_payment_shows_floating_gold() -> void:
 	var cafe := await spawn_cafe()
 	var customer := Customer.new()

@@ -1218,6 +1218,9 @@ func _pick_customer_type() -> CustomerType:
 
 
 func _on_leveled_up(level: int) -> void:
+	var gold := progression.table.gold_for(level)
+	if gold > 0:
+		wallet.earn(Wallet.SOFT, gold, "Nível %d" % level)
 	leveled_up.emit(level)
 	missions.record(MissionDefinition.Kind.REACH_LEVEL, level)
 	stats.record_max(PlayerStats.LEVEL, level)

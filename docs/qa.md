@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 370 testes
+## Cobertura atual — 383 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -24,23 +24,23 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_placement_session.gd` | 9 | modo de construção só muda o layout ao confirmar; cadeira levada para o lado da mesa vira para ela |
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
-| `unit/test_progression.gd` | 7 | curva de níveis, subir vários níveis de uma vez, nível máximo |
+| `unit/test_progression.gd` | 9 | curva de níveis até o **30**, cada nível pedindo mais XP; ouro só do 11 em diante; subir vários níveis de uma vez, nível máximo |
 | `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
 | `unit/test_cafe_simulation.gd` | 30 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo; **pedido do cardápio fora do balcão** (com o que falta cozinhar), café sai mais que lasanha, paciência mais calma com o prato no fogão; **fila na calçada** (enche, anda, desiste); mais clientes por nível; **garçom busca no fogão, circula pela cozinha e nunca cozinha**; dois garçons não disputam o mesmo prato; contratação (nível, ouro, limite) |
 | `unit/test_long_shift.gd` | 2 | 30 min simulados com o "jogador robô" (que cozinha o que os clientes pedem): ninguém preso, lucro, níveis, menos de 25% irritados à mesa (desistências da fila contadas à parte); o robô conclui as 6 missões iniciais |
 | `unit/test_save_codec.gd` | 17 | ida e volta por JSON de tudo o que é salvo; preparo continua com o jogo fechado; conteúdo desconhecido pulado; migração das versões 1 a 4; nome da cafeteria; cadeiras de save antigo viram para a mesa uma vez; garçons contratados (saves antigos ficam com 1) |
 | `integration/test_staff_and_queue.gd` | 3 | botão Garçom (nível, preço, confirmação com Cancelar selecionado, garçom novo aparece); fila na calçada e quem desiste sai andando por ela; bolinha de pedidos no painel do fogão |
 | `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, `.bak`, save danificado, save de versão mais nova protegido, apagar |
-| `unit/test_shop_and_missions.gd` | 21 | compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
+| `unit/test_shop_and_missions.gd` | 23 | ouro dos níveis altos, garçons 5 e 6; compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
 | `unit/test_style_and_beauty.gd` | 24 | revestimentos (um inicial por tipo, bloqueios); **pintura por célula** (cobra só o que muda, recusa sem mudar nada, pintar com a base apaga); beleza pela média das células e dos itens de parede; **itens de parede** (dados, enfeites de sempre no jogo novo, pendurar cobra por trecho, tirar é grátis, bloqueio); mureta pintável sem a porta; save da pintura e dos itens, migração das versões 5 e 6 |
 | `unit/test_coin_shop.gd` | 4 | pacotes de Café Ouro válidos e em ordem, taxa melhor nos maiores; este build nunca entrega ouro; ouro só com o pagamento confirmado (cancelado ou recusado não muda nada) |
-| `unit/test_achievements.gd` | 9 | dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
+| `unit/test_achievements.gd` | 10 | conquista Mestre até o nível 30; dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
 | `integration/test_save_scene.gd` | 8 | fechar e reabrir com tudo no lugar, pratos prontos com o jogo fechado, salvamento automático, minimizar salva, Recomeçar com confirmação |
 | `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento (com as paredes) |
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
-| `integration/test_service_scene.gd` | 11 | jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
+| `integration/test_service_scene.gd` | 12 | aviso de nível alto com o ouro; jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
 | `integration/test_shop_scene.gd` | 15 | loja, compra, Guardar, expansão com confirmação, missões; **Vender com confirmação** e recusa do último fogão; filtro por coleção e páginas |
 | `integration/test_style_scene.gd` | 12 | abas, piso e parede desenhados; **reforma**: escolher abre o modo, toques marcam, prévia, preço por piso, confirmação, trecho de parede e da mureta, Tudo e Cancelar, comprado antes pinta de graça; **pendurar a TV** com confirmação; tirar enfeite de graça; bloqueio; Beleza no HUD; paredes crescem com a expansão |
 | `integration/test_coin_shop_scene.gd` | 3 | o "+" do ouro abre a vitrine com os 5 pacotes; neste build a compra explica que ainda não existe e não dá ouro; com pagamento confirmado o ouro entra; faltando ouro, a vitrine aparece uma vez (sem insistir) |
@@ -70,6 +70,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Nível 30 (5 de 5 pegos):** nível alto sem ouro, ouro do nível errado (um nível adiantado), aviso sem o ouro, tabela aceitando ouro de tamanho errado, garçons dos níveis altos sem a trava de nível.
 - **Sentar e ordem de desenho (9 de 9 pegos):** faixas sem altura própria, lados da pegada trocados, móvel sem y-sort próprio, faixa larga demais (128 px: quem passa perto da borda some atrás), raio-X pela altura do nó, frente só em x, halo na frente do móvel, contorno de seleção na frente do móvel, vapor atrás do fogão.
 - **Efeitos visuais (24 de 24 pegos, mais 1 equivalente):** raio-X para quem está na frente, raio-X atrás de mesa, raio-X em quem está sentado, raio-X que nunca aparece, brilho sem seleção, fogão pronto sem brilho, fogão sem vapor, balcão sem vapor, pilha que não quica, móvel surgindo ao abrir o jogo, móvel novo sem surgir, mureta esmaecendo longe da frente, quem sai sem abrir a mureta, mureta sem foco, piso escolhido sem abrir a mureta, pagamento sem confete, confete que não some, frear esticando, esticar sem limite, ouro quicando ao gastar, loja sem acender, aviso sem surgir, botão pequeno demais, textura sem mipmap. A mutação "fantasma brilha" não mudava nada, porque o fantasma nunca fica selecionado nem pronto: a checagem redundante saiu do código.
 - **Compra de moedas (6 de 6 pegos):** ouro sem pagamento, pacote dando o ouro errado, oferta sem pausa, sem oferta quando falta ouro, aviso de indisponível sumido, vitrine sem pacotes.
@@ -99,6 +100,13 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Nível 30 (21/10)
+
+1. [ ] O seu nível e o XP continuam os mesmos depois de atualizar o jogo.
+2. [ ] Ao chegar no nível 11, o aviso mostra "Nível 11! +275 de Café Ouro" e o ouro entra.
+3. [ ] O botão Expandir continua oferecendo expansões depois do 12×12 (a próxima é 14×12, no nível 10).
+4. [ ] O botão Garçom oferece o 5º garçom no nível 12.
 
 ## Roteiro de teste manual — Sentar e ordem de desenho (21/10)
 

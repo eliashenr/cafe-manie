@@ -4,6 +4,25 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-046 — Nível máximo 30
+
+**Problema:** o PO pediu o nível máximo 30 (era 10). Do 10 em diante o jogo não tem receita nem móvel novo para liberar.
+
+**Decisão:**
+- **Curva de XP:** os níveis 1 a 10 continuam iguais (ninguém perde nível).
+  - Do 11 ao 30, o XP que falta para o próximo nível cresce 10 a mais a cada nível, a mesma regra de antes.
+  - O 30 pede 45.530 de XP no total: umas 15 a 20 horas de jogo ativo, mais as missões.
+- **Ouro pelo nível:** do 11 em diante, cada nível dá 25 × nível de Café Ouro (275 no 11, 750 no 30), avisado junto com o "Nível N!".
+  - O ouro fica em `levels.tres` (`level_up_gold`).
+  - Do 2 ao 10 não dá ouro, porque esses níveis já liberam receitas e móveis.
+- **O que mais libera nos níveis altos:**
+  - 4 expansões novas: 14×12 (nível 10), 14×14 (13), 16×14 (16) e 16×16 (20);
+  - 2 garçons a mais: o 5º no nível 12, por 8.000, e o 6º no 18, por 14.000;
+  - a conquista "Mestre" (Chef Renomado no 15, Lenda do Café no 20, Rei de Nova York no 30).
+- **Próximo passo sugerido:** receitas novas para os níveis 11 a 30 (cada uma precisa de desenho de prato e de panela).
+
+---
+
 ## DT-045 — Quem senta, senta de verdade; e cada móvel desenhado em faixas na ordem certa
 
 **Problema:** o PO mostrou duas coisas feias:

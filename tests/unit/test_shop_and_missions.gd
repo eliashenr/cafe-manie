@@ -85,7 +85,8 @@ func test_expansion_plan_data_is_valid_and_grows() -> void:
 	var plan: ExpansionPlan = load("res://data/config/expansions.tres")
 	assert_true(plan.is_valid())
 	assert_eq(plan.next_after(Vector2i(8, 8))["size"], Vector2i(10, 8))
-	assert_eq(plan.next_after(Vector2i(12, 12)), {}, "tamanho máximo")
+	assert_eq(plan.next_after(Vector2i(12, 12))["size"], Vector2i(14, 12), "os níveis altos continuam crescendo")
+	assert_eq(plan.next_after(Vector2i(16, 16)), {}, "tamanho máximo")
 
 
 func test_expansion_needs_level_and_gold() -> void:
@@ -115,11 +116,37 @@ func test_expanding_grows_the_grid_moves_the_entrance_and_charges() -> void:
 
 func test_expanding_all_the_way_then_stop() -> void:
 	_setup(100000)
-	sim.progression.add_xp(5000)
-	for i in 4:
+	sim.progression.add_xp(sim.progression.table.xp_to_reach[19])  # nível 20
+	for i in 8:
 		assert_eq(sim.expand(), ServiceResult.OK, "etapa %d" % (i + 1))
-	assert_eq(sim.layout.grid.size, Vector2i(12, 12))
+	assert_eq(sim.layout.grid.size, Vector2i(16, 16))
 	assert_eq(sim.expand(), ServiceResult.NO_MORE_EXPANSIONS)
+
+
+func test_reaching_a_high_level_pays_gold() -> void:
+	_setup(0)
+	var table := sim.progression.table
+	sim.progression.add_xp(table.xp_to_reach[9])
+	assert_eq(sim.progression.level, 10)
+	assert_eq(sim.wallet.balance(Wallet.SOFT), 0, "do 2 ao 10, nada de ouro pelo nível")
+	sim.progression.add_xp(table.xp_to_reach[11] - table.xp_to_reach[9])
+	assert_eq(sim.progression.level, 12)
+	assert_eq(sim.wallet.balance(Wallet.SOFT), 275 + 300, "o 11 e o 12 pagam, mesmo subindo dois de uma vez")
+
+
+func test_more_waiters_unlock_at_high_levels() -> void:
+	_setup(100000)
+	assert_eq(sim.economy.max_waiters(), 6)
+	sim.progression.add_xp(sim.progression.table.xp_to_reach[10])  # nível 11
+	for i in 3:
+		assert_eq(sim.hire_waiter(), ServiceResult.OK)
+	assert_eq(sim.can_hire_waiter(), ServiceResult.WAITER_LOCKED, "o 5º garçom libera no nível 12")
+	assert_eq(sim.next_waiter_level(), 12)
+	sim.progression.add_xp(sim.progression.table.xp_to_reach[17] - sim.progression.xp)  # nível 18
+	assert_eq(sim.hire_waiter(), ServiceResult.OK)
+	assert_eq(sim.hire_waiter(), ServiceResult.OK)
+	assert_eq(sim.waiters.size(), 6)
+	assert_eq(sim.can_hire_waiter(), ServiceResult.NO_MORE_WAITERS)
 
 
 func test_layout_never_shrinks() -> void:

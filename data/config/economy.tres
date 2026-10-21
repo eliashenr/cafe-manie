@@ -5,4 +5,6 @@
 [resource]
 script = ExtResource("1_cfg")
 sell_fraction = 0.5
+waiter_prices = Array[int]([0, 500, 1500, 4000, 8000, 14000])
+waiter_levels = Array[int]([1, 3, 5, 8, 12, 18])
 essential_categories = Array[int]([2, 3])

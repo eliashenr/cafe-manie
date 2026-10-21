@@ -372,6 +372,9 @@ func _on_leveled_up(level: int) -> void:
 		if recipe.unlock_level == level:
 			unlocked.append(recipe.display_name)
 	var text := "Nível %d!" % level
+	var gold := simulation.progression.table.gold_for(level)
+	if gold > 0:
+		text += "  +%s de Café Ouro" % UiTheme.thousands(gold)
 	if not unlocked.is_empty():
 		text += "  Nova receita: %s" % ", ".join(unlocked)
 	EventBus.message_posted.emit(text)
