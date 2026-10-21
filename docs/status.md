@@ -169,7 +169,7 @@
 
 🔴 **BLOQUEADO**
 
-- **Envio ao GitHub:** o login do GitHub expirou neste PC (o envio pede usuário e senha). Os commits das etapas 3 e 4 de 21/10 estão prontos aqui e sobem assim que o PO entrar de novo na janela do Git Credential Manager.
+- Nada bloqueado.
 
 🧪 **TESTADO**
 
