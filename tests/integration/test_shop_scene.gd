@@ -76,22 +76,34 @@ func test_money_spent_during_placement_is_refused_without_placing() -> void:
 	assert_true(cafe.build_bar.message_text().contains("insuficiente"), cafe.build_bar.message_text())
 
 
-func test_picking_an_item_closes_the_shop_and_the_close_button_works() -> void:
+func test_shop_hides_while_placing_and_comes_back_on_the_same_page_after_buying() -> void:
 	var cafe := await spawn_cafe()
-	cafe.build_bar.open_shop()
+	cafe.simulation.wallet.earn(Wallet.SOFT, 5000, "teste")
+	cafe.build_bar.open_shop(BuildBar.ShopTab.SALON)
 	await settle()
-	assert_true(cafe.build_bar.shop_open)
+	var shop := cafe.build_bar._shop
+	assert_true(shop.visible)
 	cafe.build_bar.find_button("Build_table_round").pressed.emit()
 	await settle()
 	assert_eq(cafe.mode, Cafe.Mode.BUILD)
-	assert_false(cafe.build_bar.shop_open, "a loja fecha para o salão aparecer")
-	cafe.cancel_placement()
-	cafe.build_bar.open_shop()
+	assert_false(shop.visible, "a loja some enquanto o móvel é posicionado (o salão aparece)")
+	tap_cell(cafe, Vector2i(4, 4))
+	tap_cell(cafe, Vector2i(4, 4))
 	await settle()
+	assert_eq(cafe.layout.count(), 1, "comprou a mesa")
+	assert_eq(cafe.mode, Cafe.Mode.VIEW)
+	assert_true(shop.visible, "a loja volta sozinha, para comprar a cadeira em seguida")
+	assert_eq(cafe.build_bar.shop_tab, BuildBar.ShopTab.SALON, "na mesma aba")
+	assert_true(cafe.build_bar.find_button("Build_chair_wood") != null, "a cadeira está à mão")
+	cafe.build_bar.find_button("Build_chair_wood").pressed.emit()
+	await settle()
+	cafe.cancel_placement()
+	await settle()
+	assert_true(shop.visible, "cancelar também volta para a loja")
 	(cafe.build_bar.find_child("CloseShopButton", true, false) as Button).pressed.emit()
 	await settle()
 	assert_false(cafe.build_bar.shop_open)
-	assert_true(cafe.build_bar.find_button("ShopButton") != null, "volta a faixa de ícones")
+	assert_true(cafe.build_bar.find_button("ShopButton") != null, "fechar volta a faixa de ícones")
 
 
 func test_shop_filters_by_collection_and_turns_pages() -> void:

@@ -27,6 +27,8 @@ var _agents: Dictionary = {}  # serial do personagem -> AgentView
 var _exiting: Array[AgentView] = []
 ## O primeiro sync monta a cafeteria inteira (sem animação); depois, móvel novo surge crescendo.
 var _synced_once := false
+## Jogo pausado: personagens e vapor ficam parados (o resto do salão continua respondendo).
+var frozen := false
 var _ghost: FurnitureView
 
 
@@ -58,6 +60,7 @@ func sync() -> void:
 			view = FurnitureView.new()
 			view.name = String(placement.id).replace("#", "_")
 			add_child(view)
+			view.set_frozen(frozen)
 			_views[placement.id] = view
 		var look := FurnitureView.Look.SELECTED if placement.id == selected_id else FurnitureView.Look.NORMAL
 		view.configure(placement.definition, placement.origin, placement.rotation, look)
@@ -79,6 +82,19 @@ const SIDEWALK_OFFSET := Vector2(2.8, 0.0)
 const QUEUE_WALK := Vector2(0.0, 3.0)
 ## Texto do selo do fogão quando o prato fica pronto.
 const READY_TEXT := "Pronto!"
+
+
+## Para (pausa) ou solta os personagens e o vapor dos fogões.
+func set_frozen(value: bool) -> void:
+	frozen = value
+	var mode := Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
+	for view: AgentView in _agents.values():
+		view.process_mode = mode
+	for view in _exiting:
+		if is_instance_valid(view):
+			view.process_mode = mode
+	for view: FurnitureView in _views.values():
+		view.set_frozen(value)
 
 
 ## Raio-X: só móvel desta altura (pixels de mundo) esconde alguém; mesas e cadeiras nunca.

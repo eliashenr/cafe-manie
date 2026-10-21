@@ -29,6 +29,11 @@ def glyph(kind):
         return (f'<circle cx="32" cy="32" r="21" {GLYPH_STROKE}/>'
                 '<path d="M38,22 c-2,-3 -12,-4 -12,2 c0,7 13,4 13,11 c0,6 -11,6 -14,2 M32,16 v6 M32,42 v6" '
                 'fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>')
+    if kind == "pause":
+        return ('<rect x="16" y="13" width="12" height="38" rx="3.5" fill="#ffffff"/>'
+                '<rect x="36" y="13" width="12" height="38" rx="3.5" fill="#ffffff"/>')
+    if kind == "play":
+        return '<path d="M21,12 L51,32 L21,52 Z" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round"/>'
     if kind == "serve":
         return ('<path d="M10,40 h44 a22,22 0 0,0 -44,0 Z" fill="#ffffff"/>'
                 f'<path d="M6,46 h52 M32,14 v4" {GLYPH_STROKE}/>')
@@ -104,7 +109,7 @@ ICONS = {
 }
 
 BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("music", "blue"),
-           ("music_off", "blue"), ("gear", "blue"),
+           ("music_off", "blue"), ("gear", "blue"), ("pause", "orange"), ("play", "green"),
            ("rotate", "blue"), ("move", "blue"), ("store", "blue"), ("sell", "orange"), ("serve", "green"),
            ("check", "green"), ("close", "red"), ("left", "blue"), ("right", "blue")]
 

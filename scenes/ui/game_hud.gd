@@ -30,6 +30,8 @@ signal daily_requested
 ## O jogador tocou num botão de zoom: multiplica o zoom por [param factor].
 signal zoom_requested(factor: float)
 ## O jogador escolheu um pacote de Café Ouro na vitrine.
+## O jogador tocou no botão de pausar (ou de continuar).
+signal pause_toggled
 signal coin_pack_chosen(pack_id: StringName)
 
 const SOFT_CURRENCY_NAME := "Café Ouro"
@@ -44,6 +46,7 @@ const STARS := 5
 const DAILY_TITLE := "PRESENTE DIÁRIO EM"
 const DAILY_READY_TITLE := "PRESENTE DIÁRIO"
 const DAILY_READY := "Receber!"
+const PAUSE_TEXT := "JOGO PAUSADO: mexa à vontade. Toque em ▶ para continuar."
 
 var simulation: CafeSimulation
 
@@ -53,6 +56,8 @@ var _sound_button: Button
 var _muted := false
 var _music_button: Button
 var _music_muted := false
+var _pause_button: Button
+var _pause_banner: PanelContainer
 var _name_dialog: ConfirmationDialog
 var _name_edit: LineEdit
 var _gold_label: Label
@@ -231,6 +236,10 @@ func _build_daily_timer() -> void:
 
 
 func _build_side_buttons() -> void:
+	_pause_button = UiTheme.icon_button("PauseButton", "pause", "", 42)
+	_pause_button.pressed.connect(func() -> void: pause_toggled.emit())
+	_anchored(_pause_button, Vector2(1.0, 0.0), Vector2(-52, 80), Vector2(48, 46))
+	_build_pause_banner()
 	var zoom_in := UiTheme.icon_button("ZoomInButton", "zoom_in", "", 42)
 	zoom_in.tooltip_text = "Aproximar"
 	zoom_in.pressed.connect(func() -> void: zoom_requested.emit(ZOOM_STEP))
@@ -251,6 +260,34 @@ func _build_side_buttons() -> void:
 	_anchored(settings, Vector2(1.0, 0.0), Vector2(-52, 324), Vector2(48, 46))
 	show_sound_state(false)
 	show_music_state(false)
+	show_pause_state(false)
+
+
+## Faixa no alto do salão enquanto o jogo está pausado.
+func _build_pause_banner() -> void:
+	_pause_banner = PanelContainer.new()
+	_pause_banner.name = "PauseBanner"
+	_pause_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_pause_banner.add_theme_stylebox_override("panel", UiTheme.card_box(14, 8))
+	_pause_banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_anchored(_pause_banner, Vector2(0.5, 1.0), Vector2(-250, -196), Vector2(500, 0))  # acima da barra de baixo, longe dos avisos
+	var label := UiTheme.outlined(PAUSE_TEXT, 17, UiTheme.ORANGE, Color(0, 0, 0, 0), 0)
+	label.name = "PauseText"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_pause_banner.add_child(label)
+
+
+## Botão de pausa vira "continuar" (e a faixa aparece) enquanto o jogo está pausado.
+func show_pause_state(paused: bool) -> void:
+	var sprite := ArtSprites.get_sprite("botao_play" if paused else "botao_pause")
+	if sprite != null:
+		_pause_button.icon = sprite.texture
+	_pause_button.tooltip_text = "Continuar o jogo (P)" if paused else "Pausar o jogo (P)"
+	_pause_banner.visible = paused
+
+
+func is_pause_banner_visible() -> bool:
+	return _pause_banner.visible
 
 
 func _medallion(button_name: String, art_name: String, label: String, center: Vector2, action: Callable) -> Button:

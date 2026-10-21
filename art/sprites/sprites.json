@@ -4420,6 +4420,18 @@
     60.0
    ]
   },
+  "botao_pause": {
+   "anchor": [
+    60.0,
+    60.0
+   ]
+  },
+  "botao_play": {
+   "anchor": [
+    60.0,
+    60.0
+   ]
+  },
   "botao_rotate": {
    "anchor": [
     60.0,

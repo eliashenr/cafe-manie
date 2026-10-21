@@ -613,10 +613,10 @@ func _add_furniture_item(furniture: FurnitureDefinition) -> void:
 		item.disabled = simulation.can_acquire(furniture) != ServiceResult.OK)
 
 
-## Escolheu um móvel na loja: a loja fecha para o salão aparecer e a construção começa.
+## Escolheu um móvel na loja: a loja some enquanto ele é posicionado e volta depois, na mesma aba,
+## coleção e página (para comprar a cadeira logo depois da mesa).
 func _pick_furniture(furniture_id: StringName) -> void:
-	if cafe.start_placing(furniture_id):
-		shop_open = false
+	cafe.start_placing(furniture_id)
 	_request_rebuild()
 
 

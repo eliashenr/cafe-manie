@@ -366,6 +366,11 @@ func _draw_cooking() -> void:
 		draw_texture_rect(glow.texture, glow.draw_rect(), false)
 
 
+## Pausa: o vapor fica parado no ar (o desenho e as animações de surgir continuam).
+func set_frozen(value: bool) -> void:
+	_fx.process_mode = Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
+
+
 ## Brilho: está aceso? (selecionado, ou fogão com prato pronto esperando)
 func glowing() -> bool:
 	return _halo.visible

@@ -109,6 +109,7 @@ func _ready() -> void:
 	simulation.cafe_expanded.connect(_on_cafe_expanded)
 	simulation.waiter_hired.connect(_on_waiter_hired)
 	hud.coin_pack_chosen.connect(_on_coin_pack_chosen)
+	hud.pause_toggled.connect(toggle_pause)
 	simulation.mission_completed.connect(_on_mission_completed)
 	simulation.board_mission_completed.connect(_on_board_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
@@ -147,6 +148,28 @@ func _process(delta: float) -> void:
 	_since_gold_offer += delta
 	if _save_dirty and _since_last_save >= autosave_min_interval:
 		save_now()
+
+
+# --- Pausa -----------------------------------------------------------------
+
+## Pausa (ou continua) o jogo inteiro: clientes, garçons, fogões, trânsito e vapor param, e o jogador
+## compra, move, cozinha e reforma à vontade (DT-049).
+func set_paused(value: bool) -> void:
+	if simulation.paused == value:
+		return
+	simulation.set_paused(value)
+	world_layer.set_frozen(value)
+	street_view.process_mode = Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
+	hud.show_pause_state(value)
+	state_changed.emit()
+
+
+func toggle_pause() -> void:
+	set_paused(not simulation.paused)
+
+
+func is_paused() -> bool:
+	return simulation.paused
 
 
 # --- Save ------------------------------------------------------------------
@@ -961,6 +984,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if key == null or not key.pressed or key.echo:
 		return
 	match key.keycode:
+		KEY_P:
+			toggle_pause()
+			get_viewport().set_input_as_handled()
 		KEY_R:
 			if mode == Mode.BUILD:
 				rotate_placement()

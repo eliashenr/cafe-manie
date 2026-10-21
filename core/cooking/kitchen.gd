@@ -4,7 +4,8 @@ extends RefCounted
 ##
 ## O preparo é guardado como "receita + horário de início". O estado
 ## (cozinhando / pronto) é calculado a partir do relógio, então um prato
-## continua ficando pronto com o jogo fechado.
+## continua ficando pronto com o jogo fechado. Com o jogo pausado, o tempo
+## dos fogões para; ao continuar, cada preparo segue de onde parou.
 ##
 ## A Kitchen não cobra nem paga nada: quem orquestra dinheiro e XP é a
 ## CafeSimulation.
@@ -34,6 +35,8 @@ var counter_capacity: int
 
 var _stoves: Dictionary = {}  # id do fogão -> StoveState
 var _counters: Dictionary = {}  # id do balcão -> CounterStack
+## Horário do relógio em que o jogo foi pausado (-1 = rodando).
+var _paused_at := -1.0
 
 
 func _init(game_clock: GameClock, cafe_layout: CafeLayout, capacity: int) -> void:
@@ -51,13 +54,42 @@ func is_counter(id: StringName) -> bool:
 	return _category_of(id) == FurnitureDefinition.Category.COUNTER
 
 
+# --- Pausa ----------------------------------------------------------------
+
+## Para (ou volta a correr) o tempo dos fogões. Ao voltar, todo preparo anda o tempo da pausa para a frente.
+func set_paused(value: bool) -> void:
+	if value == is_paused():
+		return
+	if value:
+		_paused_at = clock.now()
+		return
+	var pause := clock.now() - _paused_at
+	_paused_at = -1.0
+	for state: StoveState in _stoves.values():
+		state.started_at += pause
+
+
+func is_paused() -> bool:
+	return _paused_at >= 0.0
+
+
+## Agora, para os fogões: o relógio, ou o horário em que o jogo foi pausado.
+func now() -> float:
+	return _paused_at if is_paused() else clock.now()
+
+
+## Quanto o tempo da pausa atual já empurrou os preparos (0 rodando).
+func _pause_shift() -> float:
+	return clock.now() - _paused_at if is_paused() else 0.0
+
+
 # --- Fogões ----------------------------------------------------------------
 
 func stove_status(id: StringName) -> StoveStatus:
 	var state: StoveState = _stoves.get(id)
 	if state == null:
 		return StoveStatus.IDLE
-	return StoveStatus.READY if clock.now() >= state.started_at + state.recipe.cook_time else StoveStatus.COOKING
+	return StoveStatus.READY if now() >= state.started_at + state.recipe.cook_time else StoveStatus.COOKING
 
 
 ## Receita no fogão (cozinhando ou pronta), ou null se estiver livre.
@@ -71,7 +103,7 @@ func time_left(id: StringName) -> float:
 	var state: StoveState = _stoves.get(id)
 	if state == null:
 		return 0.0
-	return maxf(state.started_at + state.recipe.cook_time - clock.now(), 0.0)
+	return maxf(state.started_at + state.recipe.cook_time - now(), 0.0)
 
 
 ## Fração do preparo concluída (0 a 1). Livre = 0.
@@ -79,7 +111,7 @@ func progress(id: StringName) -> float:
 	var state: StoveState = _stoves.get(id)
 	if state == null:
 		return 0.0
-	return clampf((clock.now() - state.started_at) / state.recipe.cook_time, 0.0, 1.0)
+	return clampf((now() - state.started_at) / state.recipe.cook_time, 0.0, 1.0)
 
 
 func start_cooking(stove_id: StringName, recipe: RecipeDefinition) -> int:
@@ -89,7 +121,7 @@ func start_cooking(stove_id: StringName, recipe: RecipeDefinition) -> int:
 		return ServiceResult.STOVE_BUSY
 	var state := StoveState.new()
 	state.recipe = recipe
-	state.started_at = clock.now()
+	state.started_at = now()
 	_stoves[stove_id] = state
 	changed.emit()
 	return ServiceResult.OK
@@ -186,10 +218,10 @@ func return_serving(counter_id: StringName, recipe: RecipeDefinition) -> bool:
 	return true
 
 
-## Horário (do relógio do jogo) em que o prato do fogão fica pronto; -1 se livre.
+## Horário (do relógio do jogo) em que o prato do fogão fica pronto; -1 se livre. Pausado, conta a pausa até agora.
 func stove_ready_at(id: StringName) -> float:
 	var state: StoveState = _stoves.get(id)
-	return state.started_at + state.recipe.cook_time if state != null else -1.0
+	return state.started_at + state.recipe.cook_time + _pause_shift() if state != null else -1.0
 
 
 # --- Save ------------------------------------------------------------------
@@ -199,7 +231,8 @@ func to_data() -> Dictionary:
 	var stoves: Array[Dictionary] = []
 	for id: StringName in _stoves:
 		var state: StoveState = _stoves[id]
-		stoves.append({"id": String(id), "recipe": String(state.recipe.id), "started_at": state.started_at})
+		# salvo durante a pausa: o tempo dela não conta como cozinhado
+		stoves.append({"id": String(id), "recipe": String(state.recipe.id), "started_at": state.started_at + _pause_shift()})
 	var counters: Array[Dictionary] = []
 	for id: StringName in _counters:
 		var stack: CounterStack = _counters[id]

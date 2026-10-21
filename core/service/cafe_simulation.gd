@@ -69,6 +69,9 @@ var progression: PlayerProgression
 var kitchen: Kitchen
 var navigation: Navigation
 var popularity := 50.0
+## Jogo pausado: ninguém anda, ninguém perde paciência, ninguém chega e os fogões param.
+## O jogador continua podendo comprar, mover, cozinhar e reformar.
+var paused := false
 ## Móveis guardados, que podem ser recolocados de graça.
 var inventory := Inventory.new()
 var missions: MissionTracker
@@ -842,7 +845,15 @@ func restore_popularity(value: float) -> void:
 
 # --- Tick ------------------------------------------------------------------
 
+## Pausa ou continua o jogo (o tempo dos fogões para junto).
+func set_paused(value: bool) -> void:
+	paused = value
+	kitchen.set_paused(value)
+
+
 func tick(delta: float) -> void:
+	if paused:
+		return
 	refresh_mission_periods()
 	_update_arrivals(delta)
 	_update_queue(delta)
