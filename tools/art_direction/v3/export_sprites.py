@@ -465,6 +465,40 @@ def export_scene(sheet, manifest):
                             "lamp": "poste", "flower_bed": "canteiro"}
 
 
+# --- Cidade em volta do café (city3) ------------------------------------------------------
+
+import city3  # noqa: E402
+
+CITY_TEXTURE = 48.0  # lado da textura do concreto: 64 px de mundo
+CAR_DIRECTIONS = {"+x": "xp", "-x": "xn", "+y": "yp", "-y": "yn"}
+
+
+def export_city(sheet, manifest):
+    """Prédios (âncora no vértice da frente da pegada), enfeites e carros (âncora no chão) e o concreto."""
+    iso = Iso(0, 0, TILE_W, TILE_W / 2)
+    D = sheet.D
+    buildings = {}
+    for name, (fp, height, draw) in city3.BUILDINGS.items():
+        left = iso.v(0, fp[1])[0] - MARGIN_X
+        right = iso.v(fp[0], 0)[0] + MARGIN_X
+        bottom = iso.v(fp[0], fp[1])[1] + MARGIN_BOTTOM
+        top = -height - 40.0
+        sheet.add(name, draw(D, iso), (left, top, right - left, bottom - top), iso.v(fp[0], fp[1]))
+        buildings[name] = [fp[0], fp[1]]
+    for name, (draw, bounds) in city3.PROPS.items():
+        sheet.add(name, draw(D, iso), bounds)
+    cars = {}
+    for car_id, (body, taxi) in city3.CARS.items():
+        cars[car_id] = {}
+        for direction, suffix in CAR_DIRECTIONS.items():
+            name = f"{car_id}_{suffix}"
+            sheet.add(name, city3.car(D, iso, direction, body, taxi), city3.CAR_BOUNDS)
+            cars[car_id][direction] = name
+    sheet.add("concreto", city3.concrete_tile(D, CITY_TEXTURE), (0.0, 0.0, CITY_TEXTURE, CITY_TEXTURE), tile=True)
+    manifest["city"] = {"buildings": buildings, "props": list(city3.PROPS), "cars": cars, "concrete": "concreto",
+                        "concrete_world": round(CITY_TEXTURE * WORLD, 2)}
+
+
 # --- Interface -----------------------------------------------------------------------------
 
 import ui3  # noqa: E402
@@ -513,13 +547,15 @@ def export(out_dir=OUT):
     # A interface usa px da tela: design_tile = GAME_TILE_W dá 2 px de textura por px.
     furniture = SheetGroup("moveis")
     people = SheetGroup("personagens")
+    city = SheetGroup("cidade")
     sheets = [Sheet("pratos"), Sheet("cenario", tiles3.TW), Sheet("interface", GAME_TILE_W)]
     export_furniture(furniture, manifest)
     export_people(people, manifest)
+    export_city(city, manifest)
     export_food(sheets[0], manifest)
     export_scene(sheets[1], manifest)
     export_ui(sheets[2], manifest)
-    for sheet in furniture.sheets + people.sheets + sheets:
+    for sheet in furniture.sheets + people.sheets + city.sheets + sheets:
         svg_path = os.path.join(out_dir, sheet.name + ".svg")
         markup = sheet.svg()
         try:

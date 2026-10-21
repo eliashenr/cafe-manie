@@ -4,6 +4,20 @@
 
 🟢 **CONCLUÍDO**
 
+**Pacote de 21/10, etapa 4: a cidade de Nova York em volta do café** (DT-048)
+
+- **O café fica numa esquina de Nova York, no lugar do gramado:**
+  - duas ruas com faixa amarela dupla, faixas de pedestre e cruzamento;
+  - calçadas com postes de ferro, árvores com grade, hidrante, bancos, lixeira, caixa de correio e um carrinho de cachorro-quente;
+  - bueiros soltando vapor.
+- **Prédios atrás do café:** casas de pedra com escadinha, prédios de tijolo com escada de incêndio e caixa-d'água no telhado, lojas DELI e PIZZA com toldo, uma torre de vidro e uma torre art déco. Bem ao longe, os arranha-céus.
+- **Do outro lado das ruas, um parque** com árvores e bancos.
+- **Trânsito de verdade:**
+  - táxis amarelos e carros andando nos dois sentidos;
+  - param no semáforo vermelho antes da faixa de pedestre e não batem.
+- **A cidade cresce junto** quando o café expande.
+- **Dá para passear com a câmera** pela rua (a folga em volta do café aumentou).
+
 **Pacote de 21/10, etapa 3: missões diárias e semanais** (DT-047)
 
 - **10 missões diárias e 20 semanais**, criadas a partir do conteúdo do jogo (o roteiro está em [missoes.md](missoes.md)).
@@ -155,10 +169,16 @@
 
 🔴 **BLOQUEADO**
 
-- Nada bloqueado.
+- **Envio ao GitHub:** o login do GitHub expirou neste PC (o envio pede usuário e senha). Os commits das etapas 3 e 4 de 21/10 estão prontos aqui e sobem assim que o PO entrar de novo na janela do Git Credential Manager.
 
 🧪 **TESTADO**
 
+- **Etapa 4 de 21/10: 414 testes automatizados PASSARAM.**
+  - Os novos conferem se toda a arte da cidade existe, as ruas nas duas frentes e o cruzamento, e os prédios atrás (sem encostar no café, nas ruas, nas calçadas nem uns nos outros, também no 12×10 e no 16×16).
+  - Conferem também os enfeites longe da porta e da fila, o semáforo, o carro parando no vermelho e atravessando no verde (e não parando no meio), a distância entre carros, a volta pelo começo, a rua por cima da mureta e a cidade acompanhando a expansão.
+  - **Defeitos inseridos de propósito: 12 de 12 pegos (um depois de reforçar o teste).**
+  - **Fotos conferidas:** o café 8×8 no zoom normal e afastado, e o 16×16 com o quarteirão inteiro.
+  - **Cena principal: PASSOU**, zero erros.
 - **Etapa 3 de 21/10: 404 testes automatizados PASSARAM.**
   - Os novos conferem os dados (10 e 20, válidas e com dica), as metas pelo nível em números redondos e o quadro que congela a meta e recomeça no dia (e na segunda) seguinte.
   - Conferem também cada evento que conta, a recompensa entregue, a diária contando para a semanal, o save versão 8 e a janela (abas, cadeado, contagem, uma janela por vez, aviso).

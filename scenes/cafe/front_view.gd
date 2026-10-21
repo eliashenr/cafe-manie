@@ -1,9 +1,9 @@
 class_name FrontView
 extends Node2D
 ## O que fica na frente do salão (arte v3): a mureta nas duas bordas da frente (a parte de baixo da
-## parede, com o mesmo revestimento, baixa para o salão continuar à vista), a porta na entrada, os
-## canteiros de flores na grama e os postes da calçada. Nada fica na frente deles, então este nó desenha
-## por cima do piso, das paredes e do salão (z_index 1). Sem a arte, não desenha nada.
+## parede, com o mesmo revestimento, baixa para o salão continuar à vista) e a porta na entrada. Ela
+## desenha por cima do piso, das paredes e do salão (z_index 1). Os enfeites da calçada são da cidade
+## (StreetView, DT-048). Sem a arte, não desenha nada.
 
 ## Altura da mureta, em pixels de mundo: o lambri da parede, sem tampar o salão.
 const FRONT_WALL_HEIGHT := 44.0
@@ -15,11 +15,6 @@ const PAINT_LINE := Color("ffd23f")
 ## Esmaecimento perto de personagens e do piso escolhido (pixels de mundo) e o quanto sobra.
 const FADE_RADIUS := 80.0
 const FADE_MIN_ALPHA := 0.3
-## Canteiros na grama da frente, em frações da largura e da profundidade do grid (mais um recuo em pisos).
-const FLOWER_BEDS: Array[Vector3] = [Vector3(0.28, 1.0, 1.6), Vector3(0.74, 1.0, 1.75)]
-## Postes na calçada (x a partir da borda da entrada; y em frações do comprimento, mais um recuo em pisos).
-const LAMP_X := 1.65
-const LAMPS: Array[Vector2] = [Vector2(0.0, -0.8), Vector2(1.0, 0.8)]
 
 var grid_size := Vector2i.ZERO:
 	set(value):
@@ -120,22 +115,7 @@ func segment_at(world_point: Vector2) -> String:
 func _draw() -> void:
 	if grid_size == Vector2i.ZERO or not has_art():
 		return
-	var n := Vector2(grid_size)
 	_draw_front_walls()
-	var items: Array = []
-	var info := ArtSprites.exterior()
-	var bed := ArtSprites.get_sprite(info.get("flower_bed", ""))
-	if bed != null:
-		for spot in FLOWER_BEDS:
-			items.append([_at(Vector2(n.x * spot.x, n.y * spot.y + spot.z)), bed])
-	var lamp := ArtSprites.get_sprite(info.get("lamp", ""))
-	if lamp != null:
-		for spot in LAMPS:
-			items.append([_at(Vector2(n.x + LAMP_X, n.y * spot.x + spot.y)), lamp])
-	items.sort_custom(func(a: Array, b: Array) -> bool: return a[0].y < b[0].y)
-	for item: Array in items:
-		var sprite: ArtSprites.Sprite = item[1]
-		draw_texture_rect(sprite.texture, sprite.rect_at(item[0]), false)
 
 
 ## A mureta, trecho a trecho, com a parte de baixo do painel da parede, o acabamento branco e a porta.

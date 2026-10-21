@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 404 testes
+## Cobertura atual — 414 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -54,6 +54,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_visual_fx.gd` | 17 | **efeitos visuais:** raio-X atrás de móvel alto (só onde cobre; nunca na frente, atrás de mesa ou sentado; some ao sair de trás); halo no móvel escolhido e dourado no fogão pronto, nunca no fantasma; vapor no fogão e nos pratos do balcão; pilha que cai no tampo; móvel novo surge (ao abrir o jogo, não); mureta abre perto de quem está junto da frente (também quem sai pela porta) e do piso escolhido; confete do pagamento some sozinho; esticar ao arrancar e achatar ao frear, sutil; loja acende, aviso surge, ouro quica só ao ganhar; botões de ícone com 48 px de toque; filtro de textura do projeto; âncoras da ordem de desenho (y-sort) |
 | `integration/test_depth_order.gd` | 7 | **ordem de desenho em faixas:** o garçom na frente da metade de trás do balcão (também passando a 0,3 piso da borda e com o balcão girado), sem raio-X; quem está atrás do balcão fica atrás de todas as faixas, com silhueta; vaso na frente do balcão aparece na frente; as faixas cobrem o desenho inteiro, encostadas, antes do vértice da frente; mover o móvel não recorta |
 | `integration/test_missions_scene.gd` | 5 | janela das missões: 10 diárias e 20 semanais com meta, recompensa, cadeado e contagem; progresso e aviso de concluída; uma janela por vez; aba do começo some no fim; texto do tempo |
+| `integration/test_city.gd` | 10 | **cidade em volta do café:** toda a arte existe (prédios, enfeites, semáforo e carros nas 4 direções); ruas nas duas frentes e o cruzamento; prédios atrás, fora do café, das ruas, das calçadas e uns dos outros, do fundo para a frente (8×8, 12×10 e 16×16); enfeites longe da porta, da fila e do caminho de quem desiste dela (conferido por conta própria); semáforo alterna, carro para no vermelho e atravessa no verde; quem já entrou no cruzamento não para; distância entre carros e volta pelo começo; rua por cima da mureta, carros andando e semáforos na tela; a cidade acompanha a expansão |
 | `integration/test_music.gd` | 3 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados |
 
 O executor também **reprova um arquivo de teste que nem compila**. Antes, ele sumia da contagem em silêncio (encontrado nesta etapa).
@@ -72,6 +73,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Cidade em volta do café (12 de 12 pegos (um depois de reforçar o teste)):** carro furando o vermelho, carro parando no meio do cruzamento, carro encostando no da frente, carro sem voltar pelo começo, semáforo parado, enfeite no caminho da fila, prédio em cima da calçada, rua por baixo da mureta, carros parados na tela, semáforo da tela sem mudar, cidade sem acompanhar a expansão, fila sem o caminho de quem desiste (escapou na primeira rodada: o teste usava os pontos da própria função; um teste novo calcula o caminho por conta própria).
 - **Missões diárias e semanais (14 de 14 pegos (um depois de reforçar o teste)):** quadro que não recomeça, compra ignorando a categoria, prato repetido contando como diferente, missão com cadeado contando, popularidade somando em vez de guardar o maior valor, missão sem pagar o ouro, diária sem contar para a semanal, todo cliente contando como satisfeito, pedido do cardápio nunca marcado (escapou na primeira rodada: o teste marcava à mão; um teste novo faz o pedido de verdade), semana começando na quinta, save esquecendo as missões, janela abrindo por cima de outra, missão concluída sem aviso, metas sem crescer com o nível.
 - **Nível 30 (5 de 5 pegos):** nível alto sem ouro, ouro do nível errado (um nível adiantado), aviso sem o ouro, tabela aceitando ouro de tamanho errado, garçons dos níveis altos sem a trava de nível.
 - **Sentar e ordem de desenho (9 de 9 pegos):** faixas sem altura própria, lados da pegada trocados, móvel sem y-sort próprio, faixa larga demais (128 px: quem passa perto da borda some atrás), raio-X pela altura do nó, frente só em x, halo na frente do móvel, contorno de seleção na frente do móvel, vapor atrás do fogão.
@@ -103,6 +105,15 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — A cidade em volta do café (21/10)
+
+1. [ ] Afaste o zoom: o café fica numa esquina, com duas ruas, calçadas, prédios atrás e um parque do outro lado.
+2. [ ] Os táxis e carros andam nas ruas e param no semáforo vermelho antes da faixa de pedestre.
+3. [ ] Os bueiros soltam vapor.
+4. [ ] Arraste a câmera: dá para passear pela rua em volta do café.
+5. [ ] Os clientes chegando, na fila e indo embora nunca ficam escondidos atrás de um poste ou árvore que está atrás deles.
+6. [ ] Expanda o café: as ruas, as calçadas e os prédios acompanham.
 
 ## Roteiro de teste manual — Missões diárias e semanais (21/10)
 

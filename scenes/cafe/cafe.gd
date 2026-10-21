@@ -20,7 +20,8 @@ const FEEDBACK_XP := Color("8fd3ff")
 const FEEDBACK_SPEND := Color("ff9b8a")
 
 ## Folga, em pixels de mundo, que a câmera pode passar da borda do grid.
-@export var camera_margin := 96.0
+## Folga da câmera em volta do café (pixels de mundo): dá para ver a rua e os prédios em volta.
+@export var camera_margin := 360.0
 ## Altura, em pixels de tela, ocupada pelo painel de cima (a câmera enquadra abaixo dele).
 @export var ui_top_inset := 140.0
 ## Altura, em pixels de tela, ocupada pela barra de baixo.
@@ -82,6 +83,7 @@ var grid: CafeGrid:
 @onready var floor_view: FloorView = $FloorView
 @onready var wall_view: WallView = $WallView
 @onready var front_view: FrontView = $FrontView
+@onready var street_view: StreetView = $StreetView
 @onready var world_layer: WorldLayer = $WorldLayer
 @onready var effects: Node2D = $Effects
 ## Partículas soltas (confete do pagamento), logo abaixo dos números que sobem.
@@ -472,10 +474,30 @@ func _fit_floor_and_camera() -> void:
 	exterior_view.entrance = layout.entrance
 	front_view.grid_size = layout.grid.size
 	front_view.entrance = layout.entrance
+	street_view.configure(layout.grid.size, layout.entrance, street_keep_clear())
 	var headroom := maxf(furniture_headroom, wall_view.wall_height)
 	var bounds := IsoProjection.grid_bounds(layout.grid.size).grow_individual(0.0, headroom, 0.0, 0.0)
 	camera.set_bounds(bounds.grow(camera_margin))
 	camera.frame(bounds, ui_top_inset, ui_bottom_inset)
+
+
+## Pontos da calçada (vértices do grid) onde a rua não põe enfeite: o caminho da porta até a calçada,
+## os lugares da fila e o caminho de quem desiste dela, a cada meio piso.
+func street_keep_clear() -> Array[Vector2]:
+	var center := Vector2(0.5, 0.5)  # o personagem usa o centro da célula; a cidade, os vértices
+	var points: Array[Vector2] = []
+	var door := Vector2(layout.entrance)
+	_sample_path(points, door + center, door + WorldLayer.SIDEWALK_OFFSET + center)
+	for i in simulation.config.queue_capacity:
+		var spot := simulation.queue_spot(i) + center
+		_sample_path(points, spot, spot + WorldLayer.QUEUE_WALK)
+	return points
+
+
+func _sample_path(points: Array[Vector2], from: Vector2, to: Vector2) -> void:
+	var steps := maxi(ceili(from.distance_to(to) / 0.5), 1)
+	for i in steps + 1:
+		points.append(from.lerp(to, float(i) / steps))
 
 
 ## Piso e parede com os revestimentos aplicados (a base e o que foi pintado por cima).

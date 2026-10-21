@@ -161,6 +161,29 @@ static func exterior() -> Dictionary:
 	return _load_manifest().get("exterior", {})
 
 
+## Cidade em volta do café: "buildings" (nome -> pegada), "props", "cars" (carro -> direção -> nome),
+## "concrete" e "concrete_world" (período do concreto em pixels de mundo).
+static func city() -> Dictionary:
+	return _load_manifest().get("city", {})
+
+
+## Pegada (Vector2i) de cada prédio da cidade, pelo nome do desenho.
+static func city_footprints() -> Dictionary:
+	var footprints := {}
+	var buildings: Dictionary = city().get("buildings", {})
+	for building_name: String in buildings:
+		var size: Array = buildings[building_name]
+		footprints[building_name] = Vector2i(int(size[0]), int(size[1]))
+	return footprints
+
+
+## Carro andando na direção [param heading] ("+x", "-x", "+y" ou "-y"), ou null sem a arte.
+static func city_car(car_id: String, heading: String) -> Sprite:
+	var cars: Dictionary = city().get("cars", {})
+	var sprite_name: String = cars.get(car_id, {}).get(heading, "")
+	return null if sprite_name.is_empty() else get_sprite(sprite_name)
+
+
 static func _load_manifest() -> Dictionary:
 	if _manifest.is_empty() and ResourceLoader.exists(MANIFEST_PATH):
 		var json: JSON = load(MANIFEST_PATH)

@@ -3391,6 +3391,223 @@
     205.33
    ]
   },
+  "predio_brownstone": {
+   "anchor": [
+    436.67,
+    871.0
+   ]
+  },
+  "predio_tijolo": {
+   "anchor": [
+    400.67,
+    1203.67
+   ]
+  },
+  "predio_deli": {
+   "anchor": [
+    283.67,
+    807.0
+   ]
+  },
+  "predio_pizza": {
+   "anchor": [
+    308.67,
+    993.67
+   ]
+  },
+  "predio_azul": {
+   "anchor": [
+    436.67,
+    1039.0
+   ]
+  },
+  "predio_vidro": {
+   "anchor": [
+    385.67,
+    1185.67
+   ]
+  },
+  "predio_deco": {
+   "anchor": [
+    385.67,
+    1852.33
+   ]
+  },
+  "rua_poste": {
+   "anchor": [
+    27.0,
+    356.67
+   ]
+  },
+  "rua_hidrante": {
+   "anchor": [
+    31.33,
+    60.33
+   ]
+  },
+  "rua_arvore": {
+   "anchor": [
+    81.67,
+    239.0
+   ]
+  },
+  "rua_banco": {
+   "anchor": [
+    70.0,
+    106.33
+   ]
+  },
+  "rua_carrinho": {
+   "anchor": [
+    92.33,
+    193.0
+   ]
+  },
+  "rua_lixeira": {
+   "anchor": [
+    24.33,
+    76.0
+   ]
+  },
+  "rua_correio": {
+   "anchor": [
+    32.0,
+    96.67
+   ]
+  },
+  "rua_vaso": {
+   "anchor": [
+    66.0,
+    80.0
+   ]
+  },
+  "rua_bueiro": {
+   "anchor": [
+    38.0,
+    19.33
+   ]
+  },
+  "rua_semaforo_verde": {
+   "anchor": [
+    26.67,
+    364.0
+   ]
+  },
+  "rua_semaforo_amarelo": {
+   "anchor": [
+    26.67,
+    364.0
+   ]
+  },
+  "rua_semaforo_vermelho": {
+   "anchor": [
+    26.67,
+    368.0
+   ]
+  },
+  "taxi_xp": {
+   "anchor": [
+    102.0,
+    103.0
+   ]
+  },
+  "taxi_xn": {
+   "anchor": [
+    102.0,
+    98.0
+   ]
+  },
+  "taxi_yp": {
+   "anchor": [
+    102.0,
+    103.0
+   ]
+  },
+  "taxi_yn": {
+   "anchor": [
+    102.0,
+    98.0
+   ]
+  },
+  "carro_vermelho_xp": {
+   "anchor": [
+    102.0,
+    103.0
+   ]
+  },
+  "carro_vermelho_xn": {
+   "anchor": [
+    102.0,
+    98.0
+   ]
+  },
+  "carro_vermelho_yp": {
+   "anchor": [
+    102.0,
+    103.0
+   ]
+  },
+  "carro_vermelho_yn": {
+   "anchor": [
+    102.0,
+    98.0
+   ]
+  },
+  "carro_branco_xp": {
+   "anchor": [
+    102.0,
+    103.0
+   ]
+  },
+  "carro_branco_xn": {
+   "anchor": [
+    102.0,
+    98.0
+   ]
+  },
+  "carro_branco_yp": {
+   "anchor": [
+    102.0,
+    103.0
+   ]
+  },
+  "carro_branco_yn": {
+   "anchor": [
+    102.0,
+    98.0
+   ]
+  },
+  "carro_azul_xp": {
+   "anchor": [
+    102.0,
+    103.0
+   ]
+  },
+  "carro_azul_xn": {
+   "anchor": [
+    102.0,
+    98.0
+   ]
+  },
+  "carro_azul_yp": {
+   "anchor": [
+    102.0,
+    103.0
+   ]
+  },
+  "carro_azul_yn": {
+   "anchor": [
+    102.0,
+    98.0
+   ]
+  },
+  "concreto": {
+   "anchor": [
+    0.0,
+    0.0
+   ],
+   "tile": true
+  },
   "prato_coffee": {
    "anchor": [
     46.8,
@@ -4996,6 +5213,80 @@
    -70.4,
    27.43
   ]
+ },
+ "city": {
+  "buildings": {
+   "predio_brownstone": [
+    3.0,
+    2.0
+   ],
+   "predio_tijolo": [
+    3.0,
+    3.0
+   ],
+   "predio_deli": [
+    2.0,
+    2.0
+   ],
+   "predio_pizza": [
+    2.0,
+    3.0
+   ],
+   "predio_azul": [
+    3.0,
+    2.0
+   ],
+   "predio_vidro": [
+    3.0,
+    3.0
+   ],
+   "predio_deco": [
+    3.0,
+    3.0
+   ]
+  },
+  "props": [
+   "rua_poste",
+   "rua_hidrante",
+   "rua_arvore",
+   "rua_banco",
+   "rua_carrinho",
+   "rua_lixeira",
+   "rua_correio",
+   "rua_vaso",
+   "rua_bueiro",
+   "rua_semaforo_verde",
+   "rua_semaforo_amarelo",
+   "rua_semaforo_vermelho"
+  ],
+  "cars": {
+   "taxi": {
+    "+x": "taxi_xp",
+    "-x": "taxi_xn",
+    "+y": "taxi_yp",
+    "-y": "taxi_yn"
+   },
+   "carro_vermelho": {
+    "+x": "carro_vermelho_xp",
+    "-x": "carro_vermelho_xn",
+    "+y": "carro_vermelho_yp",
+    "-y": "carro_vermelho_yn"
+   },
+   "carro_branco": {
+    "+x": "carro_branco_xp",
+    "-x": "carro_branco_xn",
+    "+y": "carro_branco_yp",
+    "-y": "carro_branco_yn"
+   },
+   "carro_azul": {
+    "+x": "carro_azul_xp",
+    "-x": "carro_azul_xn",
+    "+y": "carro_azul_yp",
+    "-y": "carro_azul_yn"
+   }
+  },
+  "concrete": "concreto",
+  "concrete_world": 64.0
  },
  "food": {
   "coffee": "prato_coffee",

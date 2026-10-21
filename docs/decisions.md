@@ -4,6 +4,35 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-048 — A cidade em volta do café (Nova York)
+
+**Problema:** o PO achou o café "escondido, só com mato dos lados" e pediu um exterior bonito e moderno, como se fosse uma cidade (Nova York).
+
+**Decisão:** o café fica num lote de esquina de um quarteirão de Nova York, tudo só na tela (as regras do jogo não sabem da cidade).
+- **Onde fica cada coisa** (`CityPlan`, a partir do tamanho do café e da entrada, acompanhando as expansões):
+  - a rua A passa na frente da entrada e a rua B no outro lado da frente, com calçadas dos dois lados e um cruzamento na esquina;
+  - atrás (lados −x e −y), fileiras de prédios depois de um beco de um piso, que param antes da calçada;
+  - do outro lado das ruas, um parque com árvores e bancos;
+  - bem ao longe, o contorno dos arranha-céus, claro como se tivesse névoa.
+- **Arte nova** (`tools/art_direction/v3/city3.py`, mesmo traço dos móveis, folha `cidade`):
+  - 7 prédios: casa de pedra com escadinha (brownstone), prédio de tijolo com escada de incêndio e caixa-d'água, prédios com loja embaixo (DELI e PIZZA, com toldo), prédio azul, torre de vidro e torre art déco;
+  - poste de ferro com lanterna, hidrante, árvore no canteiro com grade, banco, carrinho de cachorro-quente, lixeira, caixa de correio, vaso, bueiro com vapor e semáforo nas 3 cores;
+  - táxis e carros (vermelho, branco e azul) nas 4 direções;
+  - o chão de concreto.
+  - Nenhuma marca de verdade: as placas são genéricas.
+- **Na tela:**
+  - o `ExteriorView` desenha o chão, as ruas com a linha amarela dupla, as faixas de pedestre e as de parada, as calçadas, o parque, os arranha-céus e os prédios, tudo atrás do café;
+  - o `StreetView` (z 2, por cima da mureta, com y-sort próprio) põe os enfeites, os semáforos, os bueiros e os carros;
+  - os enfeites ficam a pelo menos 1,2 piso do caminho da porta, dos lugares da fila e do caminho de quem desiste dela, para nunca tampar alguém que está na frente deles.
+- **Trânsito** (`TrafficModel`):
+  - dois sentidos em cada rua; o semáforo alterna qual rua passa (9 s de verde, 2 s de amarelo, 1,2 s com os dois fechados);
+  - o carro para antes da faixa de pedestre quando o sinal da rua dele não está verde, termina de atravessar se já entrou e não encosta no da frente;
+  - no fim da rua, volta pelo começo.
+- **Câmera:** a folga em volta do café passou de 96 para 360 px, para dar para passear pela rua.
+- **Saíram:** o gramado, a cerca de flores e os postes antigos da frente.
+
+---
+
 ## DT-047 — Missões diárias (10) e semanais (20)
 
 **Problema:** o PO pediu um roteiro de missões, com 10 diárias e 20 semanais criadas a partir do conteúdo do jogo.

@@ -1,30 +1,52 @@
 class_name ExteriorView
 extends Node2D
-## Fora da cafeteria, atrás de tudo (arte v3): gramado, a calçada e a rua do lado
-## da entrada e o caminho de pedras até a porta. O que fica na frente do salão
-## (cerca, canteiros, postes) é o FrontView. Sem a arte, não desenha nada.
+## A cidade em volta do café (DT-048), atrás de tudo: o chão de concreto, as duas ruas da esquina com as
+## faixas pintadas e o cruzamento, as calçadas, o parque do outro lado das ruas, os arranha-céus ao longe
+## e os prédios atrás do café. O que fica na frente da mureta (enfeites da calçada, semáforos e carros)
+## é o StreetView. Sem a arte da cidade, não desenha nada.
 ##
-## As faixas são medidas em pisos a partir da borda da entrada (x = largura do grid).
+## Medidas em vértices do grid, as mesmas do CityPlan.
 
-## Até onde o gramado vai em volta da cafeteria, em pixels de mundo.
-const LAWN_REACH := 4000.0
-## Comprimento da calçada e da rua para cada lado, em pisos.
-const ROAD_REACH := 40.0
-const PATH_END := 1.4
-const SIDEWALK_END := 3.2
-const STREET_END := 7.6
+## Até onde o chão vai em volta do café, em pisos.
+const GROUND_REACH := 60.0
 const CURB_WIDTH := 0.14
 const CURB_HEIGHT := 6.0
+const PATH_END := 1.4
 const PATH_WIDTH := 0.7
+## Faixas pintadas: a linha amarela dupla (meia distância entre as duas e a grossura de cada uma, em
+## pisos e em pixels), a faixa de pedestre (largura, listras) e a faixa de parada.
+const YELLOW_GAP := 0.06
+const YELLOW_WIDTH := 2.6
+const CROSSWALK_WIDTH := 0.8
+const CROSSWALK_GAP := 0.1
+const ZEBRA_STRIPE := 0.22
+const ZEBRA_STEP := 0.44
+const STOP_LINE := 0.12
 
 const SIDEWALK := Color("efe9df")
 const SIDEWALK_LINE := Color("d3cabd")
+const FAR_SIDEWALK := Color("e6e0d6")
 const CURB_TOP := Color("e6ebf0")
 const CURB_SIDE := Color("c9d0d8")
-const ROAD_MARK := Color("ffffff")
+const ROAD_YELLOW := Color("ffcf3f")
+const ROAD_WHITE := Color(1, 1, 1, 0.92)
 const PATH_STONE := Color("f4efe6")
 const PATH_LINE := Color("cfc4b4")
 const ART_INK := Color("33283a")
+## Arranha-céus ao longe, claros como se tivesse névoa: faces e janelas.
+const SKYLINE_LEFT := Color("c3cfe0")
+const SKYLINE_RIGHT := Color("a9b8cf")
+const SKYLINE_TOP := Color("dbe3ee")
+const SKYLINE_WINDOW := Color(1, 1, 1, 0.4)
+const SKYLINE_WINDOW_STEP := 22.0
+## [canto (vértice, a partir do café), pegada em pisos, altura em pixels de mundo]: atrás das fileiras de prédios.
+const SKYLINE: Array = [
+	[Vector2(-15, -24), Vector2(4, 4), 720.0], [Vector2(-9, -22), Vector2(3, 3), 520.0], [Vector2(-4, -25), Vector2(5, 3), 860.0],
+	[Vector2(3, -23), Vector2(3, 4), 600.0], [Vector2(8, -24), Vector2(4, 4), 980.0], [Vector2(14, -22), Vector2(3, 3), 560.0],
+	[Vector2(19, -25), Vector2(4, 5), 760.0], [Vector2(-24, -14), Vector2(4, 4), 640.0], [Vector2(-22, -8), Vector2(3, 3), 880.0],
+	[Vector2(-25, -2), Vector2(4, 4), 540.0], [Vector2(-23, 5), Vector2(3, 3), 700.0], [Vector2(-24, 11), Vector2(4, 4), 600.0],
+	[Vector2(-22, 17), Vector2(3, 3), 820.0], [Vector2(-21, -21), Vector2(5, 5), 1100.0],
+]
 
 var grid_size := Vector2i.ZERO:
 	set(value):
@@ -36,44 +58,47 @@ var entrance := CafeGrid.NO_CELL:
 		entrance = value
 		queue_redraw()
 
+var plan: CityPlan
+
 
 func _init() -> void:
 	texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 
-## Há arte do exterior?
+## Há arte da cidade?
 func has_art() -> bool:
-	return ArtSprites.get_sprite(ArtSprites.exterior().get("lawn", "")) != null
+	return ArtSprites.get_sprite(ArtSprites.city().get("concrete", "")) != null
 
 
 func _draw() -> void:
 	if grid_size == Vector2i.ZERO or not has_art():
 		return
-	var info := ArtSprites.exterior()
-	var center := IsoProjection.vertex_to_world(Vector2(grid_size) / 2.0)
-	var reach := Vector2(LAWN_REACH, LAWN_REACH)
-	var lawn := PackedVector2Array([center - reach, center + Vector2(reach.x, -reach.y), center + reach,
-		center + Vector2(-reach.x, reach.y)])
-	_draw_tiled(lawn, ArtSprites.get_sprite(info["lawn"]).texture, float(info.get("lawn_world", 128.0)))
-	var n := float(grid_size.x)
-	var asphalt := ArtSprites.get_sprite(info.get("asphalt", ""))
-	if asphalt != null:
-		_draw_tiled(_band(n + SIDEWALK_END, n + STREET_END), asphalt.texture, float(info.get("asphalt_world", 64.0)))
-		_draw_road_marks(n + (SIDEWALK_END + STREET_END) / 2.0)
-	_draw_sidewalk(n)
-	_draw_path(n)
-
-
-## Faixa ao longo do grid, de x0 a x1 (em pisos), com ROAD_REACH para cada lado.
-func _band(x0: float, x1: float) -> PackedVector2Array:
-	var y0 := -ROAD_REACH
-	var y1 := float(grid_size.y) + ROAD_REACH
-	return PackedVector2Array([_at(Vector2(x0, y0)), _at(Vector2(x1, y0)), _at(Vector2(x1, y1)), _at(Vector2(x0, y1))])
+	plan = CityPlan.new(grid_size, entrance, ArtSprites.city_footprints())
+	var city := ArtSprites.city()
+	var center := Vector2(grid_size) / 2.0
+	var reach := Vector2.ONE * GROUND_REACH
+	_draw_tiled(_quad(center - reach, center + reach), ArtSprites.get_sprite(city["concrete"]).texture,
+		float(city.get("concrete_world", 64.0)))
+	_draw_park()
+	_draw_sidewalks()
+	_draw_streets()
+	_draw_path()
+	_draw_skyline()
+	_draw_buildings()
 
 
 func _at(point: Vector2, height := 0.0) -> Vector2:
 	return IsoProjection.vertex_to_world(point) - Vector2(0.0, height)
+
+
+## Polígono do retângulo de vértices [a, b] no chão.
+func _quad(a: Vector2, b: Vector2) -> PackedVector2Array:
+	return PackedVector2Array([_at(a), _at(Vector2(b.x, a.y)), _at(b), _at(Vector2(a.x, b.y))])
+
+
+func _rect(rect: Rect2) -> PackedVector2Array:
+	return _quad(rect.position, rect.end)
 
 
 ## Polígono com uma textura de repetir (período em pixels de mundo).
@@ -84,47 +109,149 @@ func _draw_tiled(points: PackedVector2Array, texture: Texture2D, period: float) 
 	draw_polygon(points, PackedColorArray([Color.WHITE]), uvs, texture)
 
 
-## Faixa branca tracejada no meio da rua.
-func _draw_road_marks(x: float) -> void:
-	var y := -ROAD_REACH
-	while y < grid_size.y + ROAD_REACH:
-		draw_line(_at(Vector2(x, y + 0.1)), _at(Vector2(x, y + 0.6)), ROAD_MARK, 4.9, true)
-		y += 1.0
+## Grama do outro lado das duas ruas (um parque), com as árvores que são do StreetView.
+func _draw_park() -> void:
+	var exterior := ArtSprites.exterior()
+	var lawn := ArtSprites.get_sprite(exterior.get("lawn", ""))
+	if lawn == null:
+		return
+	for rect in plan.park_rects():
+		_draw_tiled(_rect(rect), lawn.texture, float(exterior.get("lawn_world", 128.0)))
 
 
-## Calçada de placas claras e o meio-fio do lado da rua.
-func _draw_sidewalk(n: float) -> void:
-	draw_colored_polygon(_band(n + PATH_END, n + SIDEWALK_END), SIDEWALK)
-	var y := -ROAD_REACH
-	while y <= grid_size.y + ROAD_REACH:
-		draw_line(_at(Vector2(n + PATH_END, y)), _at(Vector2(n + SIDEWALK_END, y)), SIDEWALK_LINE, 1.5, true)
-		y += 1.0
-	var middle := n + (PATH_END + SIDEWALK_END) / 2.0
-	draw_line(_at(Vector2(middle, -ROAD_REACH)), _at(Vector2(middle, grid_size.y + ROAD_REACH)), SIDEWALK_LINE, 1.5, true)
-	var curb_x := n + SIDEWALK_END
-	var y0 := -ROAD_REACH
-	var y1 := float(grid_size.y) + ROAD_REACH
-	var side := PackedVector2Array([_at(Vector2(curb_x, y0)), _at(Vector2(curb_x, y1)), _at(Vector2(curb_x, y1), -CURB_HEIGHT),
-		_at(Vector2(curb_x, y0), -CURB_HEIGHT)])
-	draw_colored_polygon(side, CURB_SIDE)
-	var top := PackedVector2Array([_at(Vector2(curb_x - CURB_WIDTH, y0)), _at(Vector2(curb_x, y0)), _at(Vector2(curb_x, y1)),
-		_at(Vector2(curb_x - CURB_WIDTH, y1))])
+## Calçadas de placas claras: as do lado do café (com as juntas) e as do outro lado das ruas.
+func _draw_sidewalks() -> void:
+	for rect in plan.near_sidewalks():
+		draw_colored_polygon(_rect(rect), SIDEWALK)
+		var y := ceilf(rect.position.y)
+		while y <= rect.end.y:
+			draw_line(_at(Vector2(rect.position.x, y)), _at(Vector2(rect.end.x, y)), SIDEWALK_LINE, 1.5, true)
+			y += 1.0
+		var x := ceilf(rect.position.x)
+		while x <= rect.end.x:
+			draw_line(_at(Vector2(x, rect.position.y)), _at(Vector2(x, rect.end.y)), SIDEWALK_LINE, 1.5, true)
+			x += 1.0
+	for rect in plan.far_sidewalks():
+		draw_colored_polygon(_rect(rect), FAR_SIDEWALK)
+
+
+## As duas ruas: asfalto, meio-fio, a linha amarela dupla, as faixas de pedestre e as de parada.
+func _draw_streets() -> void:
+	var exterior := ArtSprites.exterior()
+	var asphalt := ArtSprites.get_sprite(exterior.get("asphalt", ""))
+	for street in 2:
+		var rect := plan.street_rect(street)
+		if asphalt != null:
+			_draw_tiled(_rect(rect), asphalt.texture, float(exterior.get("asphalt_world", 64.0)))
+		else:
+			draw_colored_polygon(_rect(rect), Color("7a818e"))
+	var cross := plan.crossing()
+	for street in 2:
+		var rect := plan.street_rect(street)
+		var along_y := street == 0
+		var middle := rect.get_center().x if along_y else rect.get_center().y
+		var edges := [rect.position.x, rect.end.x] if along_y else [rect.position.y, rect.end.y]
+		var before := cross.position.y if along_y else cross.position.x
+		var after := cross.end.y if along_y else cross.end.x
+		var start := rect.position.y if along_y else rect.position.x
+		var finish := rect.end.y if along_y else rect.end.x
+		var gap := CROSSWALK_WIDTH + CROSSWALK_GAP + STOP_LINE
+		for span in [[start, before - gap], [after + gap, finish]]:
+			for side in [-1.0, 1.0]:
+				_line_along(along_y, middle + side * YELLOW_GAP, span[0], span[1], ROAD_YELLOW, YELLOW_WIDTH)
+			for edge: float in edges:
+				_curb(along_y, edge, span[0], span[1], edge == edges[0])
+		# faixa de pedestre dos dois lados do cruzamento e a faixa de parada de quem chega
+		_zebra(along_y, edges[0], edges[1], before - CROSSWALK_GAP - CROSSWALK_WIDTH, before - CROSSWALK_GAP)
+		_zebra(along_y, edges[0], edges[1], after + CROSSWALK_GAP, after + CROSSWALK_GAP + CROSSWALK_WIDTH)
+		var stop_a := before - gap
+		var stop_b := after + gap
+		_band(along_y, edges[0], middle, stop_a - STOP_LINE, stop_a, ROAD_WHITE)
+		_band(along_y, middle, edges[1], stop_b, stop_b + STOP_LINE, ROAD_WHITE)
+
+
+## Linha ao longo da rua: na rua A (ao longo de y), em x = [param fixed], de [param a] a [param b].
+func _line_along(along_y: bool, fixed: float, a: float, b: float, color: Color, width: float) -> void:
+	var p0 := Vector2(fixed, a) if along_y else Vector2(a, fixed)
+	var p1 := Vector2(fixed, b) if along_y else Vector2(b, fixed)
+	draw_line(_at(p0), _at(p1), color, width, true)
+
+
+## Faixa pintada: na rua A vai de x0 a x1 na largura e de a a b ao longo dela.
+func _band(along_y: bool, x0: float, x1: float, a: float, b: float, color: Color) -> void:
+	var rect := Rect2(x0, a, x1 - x0, b - a) if along_y else Rect2(a, x0, b - a, x1 - x0)
+	draw_colored_polygon(_rect(rect), color)
+
+
+## Faixa de pedestre (zebra): listras paralelas à rua, uma ao lado da outra de uma calçada à outra.
+func _zebra(along_y: bool, from_edge: float, to_edge: float, a: float, b: float) -> void:
+	var x := from_edge + (ZEBRA_STEP - ZEBRA_STRIPE)
+	while x + ZEBRA_STRIPE <= to_edge:
+		_band(along_y, x, x + ZEBRA_STRIPE, a, b, ROAD_WHITE)
+		x += ZEBRA_STEP
+
+
+## Meio-fio ao longo da borda [param edge] da rua; [param near_side] diz de que lado fica a calçada.
+func _curb(along_y: bool, edge: float, a: float, b: float, near_side: bool) -> void:
+	var inward := -CURB_WIDTH if near_side else CURB_WIDTH
+	var p0 := Vector2(edge, a) if along_y else Vector2(a, edge)
+	var p1 := Vector2(edge, b) if along_y else Vector2(b, edge)
+	var shift := Vector2(inward, 0.0) if along_y else Vector2(0.0, inward)
+	var top := PackedVector2Array([_at(p0 + shift), _at(p0), _at(p1), _at(p1 + shift)])
 	draw_colored_polygon(top, CURB_TOP)
-	draw_line(_at(Vector2(curb_x, y0)), _at(Vector2(curb_x, y1)), ART_INK, 1.0, true)
+	var side := PackedVector2Array([_at(p0), _at(p1), _at(p1, -CURB_HEIGHT), _at(p0, -CURB_HEIGHT)])
+	if near_side:  # só a face voltada para a rua aparece
+		draw_colored_polygon(side, CURB_SIDE)
+	draw_line(_at(p0), _at(p1), ART_INK, 1.0, true)
 
 
-## Caminho de pedras da calçada até a entrada.
-func _draw_path(n: float) -> void:
+## Caminho de pedras da calçada até a porta.
+func _draw_path() -> void:
 	if entrance == CafeGrid.NO_CELL:
 		return
+	var n := float(grid_size.x)
 	var y0 := entrance.y + (1.0 - PATH_WIDTH) / 2.0
 	var y1 := y0 + PATH_WIDTH
 	var stones := 3
 	for i in stones:
 		var x0 := n + PATH_END * float(i) / stones + 0.04
 		var x1 := n + PATH_END * float(i + 1) / stones - 0.04
-		var stone := PackedVector2Array([_at(Vector2(x0, y0)), _at(Vector2(x1, y0)), _at(Vector2(x1, y1)), _at(Vector2(x0, y1))])
+		var stone := _quad(Vector2(x0, y0), Vector2(x1, y1))
 		draw_colored_polygon(stone, PATH_STONE)
 		var closed := stone.duplicate()
 		closed.append(stone[0])
 		draw_polyline(closed, PATH_LINE, 1.5, true)
+
+
+## Arranha-céus ao longe: caixas claras com janelinhas, do fundo para a frente.
+func _draw_skyline() -> void:
+	var towers := SKYLINE.duplicate()
+	towers.sort_custom(func(a: Array, b: Array) -> bool:
+		return (a[0] + a[1]).x + (a[0] + a[1]).y < (b[0] + b[1]).x + (b[0] + b[1]).y)
+	for tower: Array in towers:
+		var origin: Vector2 = tower[0]
+		var size: Vector2 = tower[1]
+		var height: float = tower[2]
+		var left := PackedVector2Array([_at(origin + Vector2(0, size.y)), _at(origin + size), _at(origin + size, height),
+			_at(origin + Vector2(0, size.y), height)])
+		var right := PackedVector2Array([_at(origin + size), _at(origin + Vector2(size.x, 0)),
+			_at(origin + Vector2(size.x, 0), height), _at(origin + size, height)])
+		var top := PackedVector2Array([_at(origin, height), _at(origin + Vector2(size.x, 0), height), _at(origin + size, height),
+			_at(origin + Vector2(0, size.y), height)])
+		draw_colored_polygon(left, SKYLINE_LEFT)
+		draw_colored_polygon(right, SKYLINE_RIGHT)
+		draw_colored_polygon(top, SKYLINE_TOP)
+		var z := SKYLINE_WINDOW_STEP
+		while z < height - SKYLINE_WINDOW_STEP:
+			draw_line(_at(origin + Vector2(0.15, size.y), z), _at(origin + Vector2(size.x - 0.15, size.y), z), SKYLINE_WINDOW, 2.0)
+			draw_line(_at(origin + Vector2(size.x, size.y - 0.15), z), _at(origin + Vector2(size.x, 0.15), z), SKYLINE_WINDOW, 2.0)
+			z += SKYLINE_WINDOW_STEP
+
+
+## Prédios atrás do café, do fundo para a frente (o plano já vem nessa ordem).
+func _draw_buildings() -> void:
+	for building: Array in plan.buildings:
+		var sprite := ArtSprites.get_sprite(building[0])
+		if sprite != null:
+			var anchor := _at(building[1] + Vector2(building[2]))
+			draw_texture_rect(sprite.texture, Rect2(anchor + sprite.draw_rect().position, sprite.draw_rect().size), false)

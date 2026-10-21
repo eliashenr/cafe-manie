@@ -52,7 +52,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **3. Missões diárias e semanais** (DT-047, roteiro em [missoes.md](missoes.md)):
   - 10 diárias e 20 semanais, criadas a partir do conteúdo do jogo;
   - metas que acompanham o nível.
-- [ ] **4. Cidade em volta do café:**
+- [x] **4. Cidade em volta do café** (DT-048):
   - ruas, calçadas, prédios e táxis no estilo de Nova York, no lugar do gramado.
 
 ## Passe visual (18/10/2026)
