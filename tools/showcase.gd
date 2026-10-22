@@ -8,7 +8,7 @@ extends SceneTree
 ## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir, reforma,
 ## reforma:<revestimento>, moedas (a vitrine de Café Ouro), missoes (a janela das missões), pausa (o jogo pausado) ou
 ## fechado (a placa FECHADO na porta), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
-## livro:<aba> (o livro de receitas aberto no fogão, no nível 13, com estrelas de domínio).
+## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -147,7 +147,9 @@ func _set_panel() -> void:
 		"fechado":
 			_cafe.set_closed(true)
 		"livro":
-			_cafe.simulation.progression.add_xp(3880)  # nível 13
+			var level := int(_panel.get_slice(":", 3)) if _panel.get_slice_count(":") > 3 else 13
+			var table: LevelTable = load("res://data/progression/levels.tres")
+			_cafe.simulation.progression.add_xp(table.xp_to_reach[level - 1])
 			for i in 25:
 				_cafe.simulation.mastery.record(&"coxinha")
 			for i in 6:
@@ -157,6 +159,8 @@ func _set_panel() -> void:
 			var tab := _panel.get_slice(":", 1)
 			if not tab.is_empty():
 				_cafe.build_bar.show_recipe_book(StringName(tab))
+			if _panel.get_slice_count(":") > 2:
+				_cafe.build_bar.show_recipe_page(int(_panel.get_slice(":", 2)) - 1)
 		"missoes":
 			_keep_window = "MissionsDialog"
 			for window: Window in _cafe.find_children("*", "Window", true, false):

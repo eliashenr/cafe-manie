@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"eggs_benedict"
+display_name = "Ovos Benedict"
+cook_time = 2700.0
+servings = 26
+ingredient_cost = 300
+sell_price = 24
+xp_reward = 150
+book = &"basico"
+unlock_level = 26
+placeholder_color = Color(1, 0.85, 0.29, 1)

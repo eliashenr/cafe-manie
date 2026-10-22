@@ -35,7 +35,7 @@ func test_idle_stove_opens_the_book_on_the_first_tab() -> void:
 	var basics: Array[StringName] = []
 	for recipe in cafe.simulation.recipes.in_book(&"basico"):
 		basics.append(recipe.id)
-	assert_eq(_book_ids(cafe), basics, "só as receitas da aba")
+	assert_eq(_book_ids(cafe), basics.slice(0, BuildBar.RECIPES_PER_PAGE), "só as receitas da aba, na primeira página")
 	cafe.build_bar.find_button("Book_mundo").pressed.emit()
 	await settle()
 	assert_true(_book_ids(cafe).has(&"lasagna") and _book_ids(cafe).has(&"pizza"), "a aba Mundo")
@@ -143,3 +143,18 @@ func test_a_big_tab_turns_pages() -> void:
 	await settle()
 	assert_eq(_book_ids(cafe).size(), recipes.in_book(&"doces").size() - BuildBar.RECIPES_PER_PAGE, "o resto na outra página")
 	assert_true(cafe.build_bar.find_button("RecipeNextButton").disabled)
+
+
+func test_the_late_recipes_fill_a_second_page() -> void:
+	var setup := await _stove_cafe()
+	var cafe: Cafe = setup[0]
+	var brasil := cafe.simulation.recipes.in_book(&"brasil")
+	assert_true(brasil.size() > BuildBar.RECIPES_PER_PAGE, "a aba Brasil já passa de uma página (DT-054)")
+	await _open_stove(cafe)
+	cafe.build_bar.find_button("Book_brasil").pressed.emit()
+	await settle()
+	assert_false(_book_ids(cafe).has(&"barbecue"), "o churrasco fica na segunda página")
+	cafe.build_bar.find_button("RecipeNextButton").pressed.emit()
+	await settle()
+	assert_true(_book_ids(cafe).has(&"barbecue"), "e aparece ao virar a página")
+	assert_true(cafe.build_bar.find_button("Cook_barbecue").disabled, "travado até o nível 29")

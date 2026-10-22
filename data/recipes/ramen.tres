@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"ramen"
+display_name = "Lámen"
+cook_time = 1200.0
+servings = 22
+ingredient_cost = 190
+sell_price = 18
+xp_reward = 85
+book = &"mundo"
+unlock_level = 19
+placeholder_color = Color(0.91, 0.7, 0.42, 1)

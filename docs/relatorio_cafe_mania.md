@@ -54,7 +54,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 | Recurso do Café Mania | Café Manie hoje | Distância |
 |---|---|---|
 | Cozinhar no fogão, balcão com porções e garçons servindo | Tem | — |
-| Pratos | **18** (DT-053), um novo a cada nível até o 17, de 15 s a 3 h, em um livro com abas e domínio | Média: lá eram ~90; faltam os níveis 18 a 30 |
+| Pratos | **31** (DT-053 e DT-054), um novo a cada nível até o 30, de 15 s a 12 h, em um livro com abas e domínio | Pequena: lá eram ~90, em muito mais níveis |
 | Comida que estraga no fogão | Não | Média |
 | Temperos | Não | Média |
 | Máquina de sucos ou café (bebidas) | **Tem** (DT-052): máquinas de café e de sucos, 6 bebidas, com energia | — |
@@ -242,7 +242,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 2. **Feito em 22/10:**
    - placa ABERTO/FECHADO (3.1, DT-051);
    - máquinas de café e de sucos com energia (3.2, DT-052).
-3. **Feito em parte (DT-053):** livro com abas e domínio (3.13) e 12 receitas novas até o nível 17 (3.3). Faltam as receitas do nível 18 ao 30.
+3. **Feito em 22/10:** livro com abas e domínio (3.13, DT-053) e 25 receitas novas, uma a cada nível até o 30 (3.3, DT-053 e DT-054).
 4. **Depois:** temperos e comida que estraga (3.4), com os troféus que aceleram os fogões em volta (3.11).
 5. **Depois:** fogões com perfil, de evento e em partes (3.10), no lugar dos "rápido e turbo" da 3.6.
 6. **Depois:** crítico com cupons e loja de troca (3.5 e 3.15) e o primeiro evento com prazo (3.17).

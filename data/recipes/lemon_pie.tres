@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"lemon_pie"
+display_name = "Torta de Limão"
+cook_time = 1800.0
+servings = 24
+ingredient_cost = 230
+sell_price = 21
+xp_reward = 120
+book = &"doces"
+unlock_level = 24
+placeholder_color = Color(0.85, 0.91, 0.42, 1)

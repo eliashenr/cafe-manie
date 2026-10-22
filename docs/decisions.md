@@ -4,6 +4,29 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-054 — Receitas do nível 18 ao 30
+
+**Problema:**
+- Depois do DT-053, o jogo tinha receitas novas só até o nível 17, mas a tabela de níveis vai até o 30.
+- Do 18 em diante, subir de nível não liberava nenhum prato novo.
+
+**Decisão:**
+- **13 receitas novas**, uma a cada nível do 18 ao 30, de 6 minutos a 12 horas:
+  - Básico: Waffles com Morango e Ovos Benedict;
+  - Brasil: Açaí na Tigela, Bobó de Camarão, Picanha na Tábua e Churrasco Misto;
+  - Doces: Pudim de Leite, Torta de Limão e Floresta Negra;
+  - Mundo: Lámen, Paella, Curry com Arroz e Lagosta Grelhada.
+  - Cada uma tem desenho de prato e de panela no fogão (`tools/art_direction/v3/dishes3.py`, segunda leva).
+- **Tempos longos** (4, 6, 8 e 12 horas) para quem fecha o jogo e volta depois, como no Café Mania.
+- **Equilíbrio:** as 31 receitas passam no mesmo teste do DT-053.
+  - Entre dois pratos em que um demora pelo menos 4 vezes mais, o demorado rende mais ouro e XP por fornada.
+  - O rápido rende mais ouro por minuto.
+  - Nenhum prato passa de 40 porções, que é o que cabe num balcão.
+- **Livro com páginas:** as abas Básico (7), Brasil (9) e Mundo (9) passaram de 6 receitas e usam as setas de página do DT-053.
+- **A foto de vitrine** do livro aceita página e nível (`livro:<aba>:<página>:<nível>`).
+
+---
+
 ## DT-053 — Livro de receitas, domínio e 12 receitas novas
 
 **Problema:**

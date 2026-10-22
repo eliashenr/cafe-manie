@@ -4,6 +4,18 @@
 
 🟢 **CONCLUÍDO**
 
+**Próximo pacote do relatório, etapa 4: receitas do nível 18 ao 30** (DT-054). **Com ela, o pacote está completo.**
+
+- **13 receitas novas**, uma a cada nível do 18 ao 30, de 6 minutos a 12 horas, todas com desenho de prato e de panela:
+  - Básico: Waffles com Morango e Ovos Benedict;
+  - Brasil: Açaí na Tigela, Bobó de Camarão, Picanha na Tábua e Churrasco Misto;
+  - Doces: Pudim de Leite, Torta de Limão e Floresta Negra;
+  - Mundo: Lámen, Paella, Curry com Arroz e Lagosta Grelhada.
+- Agora são **31 receitas**: todo nível, do 1 ao 30, libera um prato novo.
+- **Pratos de 4 a 12 horas**, para deixar cozinhando enquanto o jogo está fechado.
+- **Livro com páginas:** as abas Básico, Brasil e Mundo passaram de 6 receitas e ganharam as setas de página.
+- **Equilíbrio:** as 31 receitas seguem a regra do DT-053 (demorado rende mais por fornada, rápido rende mais por minuto).
+
 **Próximo pacote do relatório, etapa 3: livro de receitas, domínio e 12 receitas novas** (DT-053)
 
 - **12 receitas novas**, uma a cada nível do 5 ao 17, de 2 minutos a 3 horas, todas com desenho de prato e de panela:
@@ -244,6 +256,13 @@
 
 🧪 **TESTADO**
 
+- **Receitas do nível 18 ao 30: 499 testes automatizados PASSARAM.**
+  - Uma receita nova em cada nível da tabela, do 1 ao 30; as 31 válidas, com nome, aba, desenho de prato e de panela, cabendo num balcão e no equilíbrio.
+  - Na tela: a aba Brasil tem segunda página, e o Churrasco aparece nela, travado até o nível 29.
+  - Os testes que olhavam todas as receitas de uma aba de uma vez passaram a virar a página.
+  - **Defeitos inseridos de propósito: 8 de 8 pegos.**
+  - **Fotos conferidas:** o livro no nível 26, na aba Doces (Pudim e Torta de Limão liberados, Floresta Negra travada) e na segunda página da aba Brasil (Bobó, Picanha e o Churrasco travado).
+  - **Cena principal: PASSOU**, zero erros.
 - **Livro de receitas e domínio: 498 testes automatizados PASSARAM.**
   - **Receitas:** as 4 abas (válidas, na ordem, cada receita com a sua), uma receita nova a cada nível até o 17, as receitas de cada aba por nível, receita sem aba recusada, todas com desenho de prato e de panela, todas cabendo num balcão e o equilíbrio (demorado rende mais por fornada e dá mais XP; rápido rende mais por minuto).
   - **Domínio:** as metas válidas e crescentes, a estrela em cada meta, o prêmio que cresce com a estrela, o prêmio pago na hora ao tirar o prato e o save (saves antigos começam sem estrelas).

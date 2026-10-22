@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"pudding"
+display_name = "Pudim de Leite"
+cook_time = 2400.0
+servings = 24
+ingredient_cost = 240
+sell_price = 22
+xp_reward = 130
+book = &"doces"
+unlock_level = 20
+placeholder_color = Color(0.95, 0.7, 0.29, 1)

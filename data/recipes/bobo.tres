@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"bobo"
+display_name = "Bobó de Camarão"
+cook_time = 14400.0
+servings = 36
+ingredient_cost = 600
+sell_price = 38
+xp_reward = 450
+book = &"brasil"
+unlock_level = 21
+placeholder_color = Color(0.96, 0.75, 0.29, 1)

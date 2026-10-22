@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"lobster"
+display_name = "Lagosta Grelhada"
+cook_time = 43200.0
+servings = 40
+ingredient_cost = 1200
+sell_price = 58
+xp_reward = 1000
+book = &"mundo"
+unlock_level = 30
+placeholder_color = Color(0.88, 0.19, 0.23, 1)

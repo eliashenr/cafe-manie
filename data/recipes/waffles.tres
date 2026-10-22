@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"waffles"
+display_name = "Waffles com Morango"
+cook_time = 600.0
+servings = 18
+ingredient_cost = 140
+sell_price = 16
+xp_reward = 60
+book = &"basico"
+unlock_level = 22
+placeholder_color = Color(0.94, 0.72, 0.35, 1)

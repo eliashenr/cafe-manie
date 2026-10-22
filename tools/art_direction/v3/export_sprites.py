@@ -403,7 +403,12 @@ FOODS = {"coffee": "cafe", "cheese_bread": "pao", "toasted_sandwich": "misto", "
          # livro de receitas (DT-053)
          "brigadeiro": "brigadeiro", "pastel": "pastel", "pizza": "pizza", "pancakes": "panqueca",
          "feijoada": "feijoada", "sushi": "sushi", "cheesecake": "cheesecake", "moqueca": "moqueca",
-         "burger": "hamburguer", "croissant": "croissant", "escondidinho": "escondidinho", "tacos": "tacos"}
+         "burger": "hamburguer", "croissant": "croissant", "escondidinho": "escondidinho", "tacos": "tacos",
+         # receitas do nível 18 ao 30 (DT-054)
+         "acai": "acai", "ramen": "ramen", "pudding": "pudim", "bobo": "bobo",
+         "waffles": "waffle", "paella": "paella", "lemon_pie": "torta_limao", "picanha": "picanha",
+         "eggs_benedict": "benedict", "curry": "curry", "black_forest": "floresta", "barbecue": "churrasco",
+         "lobster": "lagosta"}
 FOOD_SIZE = 48.0
 # id da bebida no jogo -> desenho em drinks3
 DRINKS = {"espresso": "expresso", "cappuccino": "cappuccino", "hot_chocolate": "chocolate",

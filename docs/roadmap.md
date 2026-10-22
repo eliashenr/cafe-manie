@@ -68,7 +68,8 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **1. Placa ABERTO/FECHADO** (DT-051): fechado, ninguém novo entra; quem está dentro termina sem tirar popularidade.
 - [x] **2. Máquinas de café e de sucos, com energia** (DT-052): 6 bebidas, servidas tocando no cliente.
 - [x] **3. Livro de receitas, domínio e 12 receitas novas** (DT-053): 18 receitas até o nível 17, em 4 abas, com estrelas.
-- [ ] **4. Mais 12 receitas, do nível 18 ao 30** (proposta 3.3).
+- [x] **4. Mais receitas, do nível 18 ao 30** (DT-054): 13 receitas, de 6 minutos a 12 horas. Agora são 31, uma a cada nível.
+- [ ] **Próximo pacote sugerido** (seção 4, item 4 do relatório): temperos e comida que estraga (3.4), com troféus que aceleram os fogões em volta (3.11).
 
 ## Passe visual (18/10/2026)
 

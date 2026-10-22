@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"barbecue"
+display_name = "Churrasco Misto"
+cook_time = 28800.0
+servings = 40
+ingredient_cost = 950
+sell_price = 48
+xp_reward = 750
+book = &"brasil"
+unlock_level = 29
+placeholder_color = Color(0.72, 0.26, 0.18, 1)

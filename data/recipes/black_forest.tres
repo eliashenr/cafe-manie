@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"black_forest"
+display_name = "Floresta Negra"
+cook_time = 10800.0
+servings = 36
+ingredient_cost = 560
+sell_price = 36
+xp_reward = 400
+book = &"doces"
+unlock_level = 28
+placeholder_color = Color(0.23, 0.1, 0.05, 1)
