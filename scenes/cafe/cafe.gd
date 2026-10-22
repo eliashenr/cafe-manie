@@ -19,6 +19,9 @@ const FEEDBACK_GOOD := Color("9be08f")
 const FEEDBACK_XP := Color("8fd3ff")
 const FEEDBACK_SPEND := Color("ff9b8a")
 
+const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
+const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+
 ## Folga, em pixels de mundo, que a câmera pode passar da borda do grid.
 ## Folga da câmera em volta do café (pixels de mundo): dá para ver a rua e os prédios em volta.
 @export var camera_margin := 360.0
@@ -110,6 +113,7 @@ func _ready() -> void:
 	simulation.waiter_hired.connect(_on_waiter_hired)
 	hud.coin_pack_chosen.connect(_on_coin_pack_chosen)
 	hud.pause_toggled.connect(toggle_pause)
+	hud.closed_toggled.connect(toggle_closed)
 	simulation.mission_completed.connect(_on_mission_completed)
 	simulation.board_mission_completed.connect(_on_board_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
@@ -130,6 +134,7 @@ func _ready() -> void:
 	hud.zoom_requested.connect(func(factor: float) -> void:
 		camera.zoom_at(get_viewport().get_visible_rect().size / 2.0, camera.zoom.x * factor))
 	build_bar.bind(self)
+	_show_closed_state()
 	world_layer.refresh(simulation)
 	_watch_for_changes()
 	if not welcome.is_empty():
@@ -170,6 +175,34 @@ func toggle_pause() -> void:
 
 func is_paused() -> bool:
 	return simulation.paused
+
+
+# --- Abrir e fechar --------------------------------------------------------
+
+## Vira a placa da porta (DT-051). Fechado, ninguém novo chega e a fila da calçada vai embora; quem já está
+## lá dentro é atendido e sai sem tirar popularidade. O jogo continua rodando (é diferente da pausa).
+func set_closed(value: bool) -> void:
+	if simulation.closed == value:
+		return
+	simulation.set_closed(value)
+	_show_closed_state()
+	_mark_dirty()
+	EventBus.message_posted.emit(CLOSED_MESSAGE if value else OPEN_MESSAGE)
+	state_changed.emit()
+
+
+func toggle_closed() -> void:
+	set_closed(not simulation.closed)
+
+
+func is_closed() -> bool:
+	return simulation.closed
+
+
+## A placa da porta e o botão mostram o estado atual (também ao abrir um save com o café fechado).
+func _show_closed_state() -> void:
+	front_view.closed = simulation.closed
+	hud.show_closed_state(simulation.closed)
 
 
 # --- Save ------------------------------------------------------------------
@@ -986,6 +1019,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	match key.keycode:
 		KEY_P:
 			toggle_pause()
+			get_viewport().set_input_as_handled()
+		KEY_F:
+			toggle_closed()
 			get_viewport().set_input_as_handled()
 		KEY_R:
 			if mode == Mode.BUILD:

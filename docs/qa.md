@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 433 testes
+## Cobertura atual — 447 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -35,6 +35,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_style_and_beauty.gd` | 24 | revestimentos (um inicial por tipo, bloqueios); **pintura por célula** (cobra só o que muda, recusa sem mudar nada, pintar com a base apaga); beleza pela média das células e dos itens de parede; **itens de parede** (dados, enfeites de sempre no jogo novo, pendurar cobra por trecho, tirar é grátis, bloqueio); mureta pintável sem a porta; save da pintura e dos itens, migração das versões 5 e 6 |
 | `unit/test_coin_shop.gd` | 4 | pacotes de Café Ouro válidos e em ordem, taxa melhor nos maiores; este build nunca entrega ouro; ouro só com o pagamento confirmado (cancelado ou recusado não muda nada) |
 | `unit/test_mission_boards.gd` | 14 | **missões diárias e semanais:** 10 e 20 válidas; metas e recompensas pelo nível, em número redondo, limitadas às receitas liberadas; o quadro congela a meta e recomeça no período seguinte; concluir avisa uma vez; cadeado; pratos diferentes, categoria da compra e popularidade; save; cada evento do jogo que conta; recompensa e diária contando para a semanal; pedido do cardápio só quando o prato não estava no balcão; dia novo e segunda-feira |
+| `unit/test_open_close.gd` | 9 | **placa ABERTO/FECHADO:** fechado, ninguém chega; ao abrir, o próximo cliente chega logo; a fila da calçada vai embora sem tirar popularidade; quem está dentro é atendido e paga; quem desiste fechado não tira popularidade (aberto, tira); fechar duas vezes não muda nada; o save guarda a placa e o save antigo abre aberto |
 | `unit/test_pause.gd` | 12 | **pausa:** pausado, mexe em tudo (cadeira com cliente, mesa ocupada, móvel em cima de quem está em pé, balcão com porção reservada, fogão aceso), com as consequências acertadas; ninguém chega; clientes e garçons parados, sem perder paciência; o fogão para e segue de onde parou; preparo começado na pausa espera; save durante a pausa guarda o tempo que falta; dá para comprar, cozinhar e levar prato pausado |
 | `unit/test_achievements.gd` | 10 | conquista Mestre até o nível 30; dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
@@ -56,6 +57,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_depth_order.gd` | 7 | **ordem de desenho em faixas:** o garçom na frente da metade de trás do balcão (também passando a 0,3 piso da borda e com o balcão girado), sem raio-X; quem está atrás do balcão fica atrás de todas as faixas, com silhueta; vaso na frente do balcão aparece na frente; as faixas cobrem o desenho inteiro, encostadas, antes do vértice da frente; mover o móvel não recorta |
 | `integration/test_missions_scene.gd` | 5 | janela das missões: 10 diárias e 20 semanais com meta, recompensa, cadeado e contagem; progresso e aviso de concluída; uma janela por vez; aba do começo some no fim; texto do tempo |
 | `integration/test_city.gd` | 10 | **cidade em volta do café:** toda a arte existe (prédios, enfeites, semáforo e carros nas 4 direções); ruas nas duas frentes e o cruzamento; prédios atrás, fora do café, das ruas, das calçadas e uns dos outros, do fundo para a frente (8×8, 12×10 e 16×16); enfeites longe da porta, da fila e do caminho de quem desiste dela (conferido por conta própria); semáforo alterna, carro para no vermelho e atravessa no verde; quem já entrou no cruzamento não para; distância entre carros e volta pelo começo; rua por cima da mureta, carros andando e semáforos na tela; a cidade acompanha a expansão |
+| `integration/test_open_close_scene.gd` | 5 | botão da porta (fechar e abrir), faixa, aviso e plaquinha FECHADO; tecla F; save fechado abre mostrando; fechar marca para salvar; faixas de fechado e de pausa sem se tampar |
 | `integration/test_pause_scene.gd` | 6 | mover pela barra a cadeira de quem está sentado, pausado; botão de pausa e de continuar, com a faixa; tecla P; ninguém fica invisível ao pausar (quem estava aparecendo aparece inteiro); personagens, vapor e trânsito parados (também num fogão posto durante a pausa); construir pausado |
 | `integration/test_music.gd` | 3 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados |
 
@@ -75,6 +77,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Placa ABERTO/FECHADO (19 de 19 pegos):** fechado ainda chegando gente, abrir sem trazer cliente logo, fila que não vai embora, fila saindo e tirando popularidade, fila sem andar pela calçada, fila ficando na lista, quem desiste fechado tirando popularidade, quem desiste aberto sem tirar popularidade, save sem gravar a placa, save sem ler a placa, migração sem a placa, faixa que não aparece, botão que não troca, faixas uma em cima da outra, plaquinha que não muda, save fechado abrindo sem mostrar, fechar sem aviso, tecla F sem efeito, fechar sem marcar para salvar.
 - **Pausa sem bloqueio e balcão de 1 piso (10 de 10 pegos):** pausa ainda protegendo o que está em uso, pausa ainda protegendo quem está em pé, cliente sem acompanhar a cadeira, cliente ficando em cadeira sem mesa, cliente saindo reclamando (tirando popularidade), pedido preso no balcão que saiu, garçom sem refazer a tarefa, ninguém saindo de cima do móvel novo, piso livre sendo o mesmo piso ocupado, balcão voltando a ter 2 pisos.
 - **Pausa e loja aberta (14 de 14 pegos (um depois de reforçar o teste)):** pausa sem parar a simulação, pausa sem parar os fogões, fogão cozinhando pausado, fogão perdendo o tempo da pausa, save contando a pausa como cozinhado, preparo da pausa começando no relógio (escapou na primeira rodada: o teste cozinhava logo depois de pausar; agora deixa o tempo passar antes), personagens andando pausados, trânsito andando pausado, pausa sem aviso, tecla P sem pausar, fogão novo sem congelar, loja fechando ao escolher, personagem invisível na pausa, personagem criado na pausa sem congelar.
 - **Cidade em volta do café (12 de 12 pegos (um depois de reforçar o teste)):** carro furando o vermelho, carro parando no meio do cruzamento, carro encostando no da frente, carro sem voltar pelo começo, semáforo parado, enfeite no caminho da fila, prédio em cima da calçada, rua por baixo da mureta, carros parados na tela, semáforo da tela sem mudar, cidade sem acompanhar a expansão, fila sem o caminho de quem desiste (escapou na primeira rodada: o teste usava os pontos da própria função; um teste novo calcula o caminho por conta própria).
@@ -109,6 +112,13 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Placa ABERTO/FECHADO (22/10)
+
+1. [ ] Com clientes na fila da calçada, toque no botão vermelho da porta (abaixo da pausa) ou aperte F: a fila vai embora, a faixa "CAFÉ FECHADO" aparece e a plaquinha da porta diz FECHADO.
+2. [ ] Fechado, espere: ninguém novo entra, e quem estava dentro come, paga e sai. A popularidade não cai.
+3. [ ] Feche o jogo com o café fechado e abra de novo: ele continua fechado.
+4. [ ] Toque no botão verde: em poucos segundos chega um cliente.
 
 ## Roteiro de teste manual — Pausa sem bloqueio e balcão de 1 piso (22/10)
 

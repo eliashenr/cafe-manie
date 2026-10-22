@@ -63,6 +63,11 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **Balcão de 1 piso e mais fogões e balcões** (DT-050): 8 de cada.
 - [x] **Relatório do Café Mania original** ([relatorio_cafe_mania.md](relatorio_cafe_mania.md)): o que aprender e a ordem sugerida.
 
+## Próximo pacote do relatório (seção 4, item 2)
+
+- [x] **1. Placa ABERTO/FECHADO** (DT-051): fechado, ninguém novo entra; quem está dentro termina sem tirar popularidade.
+- [ ] **2. Máquina de café e sucos com bebidas** (proposta 3.2).
+
 ## Passe visual (18/10/2026)
 
 - [x] **Efeitos visuais só na tela** (DT-044):

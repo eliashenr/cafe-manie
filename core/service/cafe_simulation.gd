@@ -73,6 +73,9 @@ var popularity := 50.0
 ## O jogador continua podendo comprar, mover, cozinhar e reformar, sem bloqueio nenhum: dá para mexer
 ## até no que está em uso e pôr móvel onde há gente em pé (as consequências são acertadas na hora).
 var paused := false
+## Café fechado (placa FECHADO na porta, DT-051): ninguém novo chega e a fila da calçada vai embora; quem
+## já está lá dentro continua sendo atendido e sai sem tirar popularidade, mesmo se cansar de esperar.
+var closed := false
 ## Móveis guardados, que podem ser recolocados de graça.
 var inventory := Inventory.new()
 var missions: MissionTracker
@@ -856,6 +859,23 @@ func set_paused(value: bool) -> void:
 	kitchen.set_paused(value)
 
 
+## Fecha (ou abre) o café. Ao fechar, a fila da calçada vai embora sem tirar popularidade. Ao abrir,
+## o próximo cliente chega logo, como na abertura do jogo.
+func set_closed(value: bool) -> void:
+	if closed == value:
+		return
+	closed = value
+	if not closed:
+		_spawn_timer = minf(_spawn_timer, FIRST_ARRIVAL_DELAY)
+		return
+	for customer in queued():
+		customer.happy = true
+		customer.gave_up_in_line = true  # sai da fila andando pela calçada, como quem desiste
+		customer.state = Customer.State.GONE
+		customer_left.emit(customer)
+	customers = customers.filter(func(c: Customer) -> bool: return c.state != Customer.State.GONE)
+
+
 func tick(delta: float) -> void:
 	if paused:
 		return
@@ -873,6 +893,8 @@ func tick(delta: float) -> void:
 ## Chega um cliente de tempos em tempos. Com cadeira livre (e ninguém na frente dele na fila),
 ## ele entra; senão espera na fila da calçada, se houver lugar nela.
 func _update_arrivals(delta: float) -> void:
+	if closed:
+		return
 	_spawn_timer -= delta
 	if _spawn_timer > 0.0:
 		return
@@ -1040,11 +1062,12 @@ func _pay(customer: Customer) -> void:
 	stats.add(PlayerStats.GOLD_EARNED, amount)
 
 
-## Tira o cliente da mesa e manda para a saída. Pedido não entregue é cancelado.
+## Tira o cliente da mesa e manda para a saída. Pedido não entregue é cancelado. Com o café fechado,
+## quem sai bravo não tira popularidade (o café avisou que estava fechando).
 func _send_away(customer: Customer, happy: bool) -> void:
 	customer.happy = happy
 	_cancel_order_of(customer)
-	if not happy:
+	if not happy and not closed:
 		_change_popularity(-config.popularity_loss)
 	var stand_at := navigation.access_cells(customer.seat_id)
 	customer.seat_id = &""

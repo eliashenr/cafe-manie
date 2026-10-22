@@ -4,6 +4,34 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-051 — Placa ABERTO/FECHADO na porta
+
+**Problema:**
+- No Café Mania original, os jogadores "fechavam o café" tirando ou tampando a porta, para arrumar e cozinhar sem perder popularidade. Foi essa mesma necessidade que levou o PO a pedir a pausa.
+- O relatório do Café Mania (proposta 3.1) recomendou a versão "oficial" desse truque como o próximo pacote, junto com as bebidas.
+
+**Opções:**
+- (A) fechar = pausar (já existe);
+- (B) fechar mantém o jogo rodando, mas ninguém novo entra, e quem está dentro termina;
+- (C) fechar manda todo mundo embora na hora.
+
+**Decisão:** B.
+- **A pausa para o tempo** e serve para mexer à vontade. **Fechar** é outra coisa: o café continua funcionando (fogões cozinham, garçons servem, clientes comem), só não entra ninguém novo.
+- **Ao fechar:**
+  - ninguém novo chega;
+  - a fila da calçada vai embora na hora, andando pela calçada, sem tirar popularidade;
+  - quem já está lá dentro é atendido normalmente e paga;
+  - quem cansar de esperar com o café fechado sai sem tirar popularidade (o café avisou que estava fechando).
+- **Ao abrir:** o próximo cliente chega em poucos segundos, como na abertura do jogo (`FIRST_ARRIVAL_DELAY`).
+- **Onde fica:**
+  - botão da porta na coluna da direita, logo abaixo da pausa (vermelho para fechar, verde para abrir), e a tecla F;
+  - uma faixa vermelha "CAFÉ FECHADO" acima da barra de baixo (acima da faixa da pausa, quando as duas aparecem);
+  - a plaquinha da porta passa a dizer "FECHADO", em vermelho.
+- **O save guarda a placa** (versão 9). Fechou e saiu? O jogo abre com o café fechado e a faixa avisando. Saves antigos abrem com o café aberto.
+- **Por que não C:** jogaria fora clientes que já estão comendo e pagando.
+
+---
+
 ## DT-050 — Pausa sem bloqueio, balcão de 1 piso e mais fogões e balcões
 
 **Problema:**

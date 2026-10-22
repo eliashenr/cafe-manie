@@ -4442,6 +4442,18 @@
     327.33
    ]
   },
+  "enfeite_porta_fechada_R": {
+   "anchor": [
+    11.48,
+    263.24
+   ]
+  },
+  "enfeite_porta_fechada_L": {
+   "anchor": [
+    11.48,
+    327.33
+   ]
+  },
   "gramado": {
    "anchor": [
     0.0,
@@ -4619,6 +4631,18 @@
    ]
   },
   "botao_play": {
+   "anchor": [
+    60.0,
+    60.0
+   ]
+  },
+  "botao_door_close": {
+   "anchor": [
+    60.0,
+    60.0
+   ]
+  },
+  "botao_door_open": {
    "anchor": [
     60.0,
     60.0

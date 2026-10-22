@@ -4,8 +4,9 @@ extends RefCounted
 ##
 ## O que é salvo: layout (móveis com os ids originais e tamanho da cafeteria),
 ## cozinha (receita e horário de início de cada fogão; porções de cada balcão),
-## carteira, XP, popularidade, inventário, missões e quantos garçons foram contratados. Os personagens em si não
-## são salvos: ao voltar, a cafeteria reabre vazia, e as porções que estavam reservadas para pedidos voltam ao balcão.
+## carteira, XP, popularidade, inventário, missões, quantos garçons foram contratados e se o café está fechado.
+## Os personagens em si não são salvos: ao voltar, a cafeteria reabre vazia, e as porções que estavam
+## reservadas para pedidos voltam ao balcão.
 ##
 ## Todo save tem save_version (seção 64). Mudou o formato? Aumente
 ## CURRENT_VERSION e acrescente um passo em migrations().
@@ -15,8 +16,9 @@ extends RefCounted
 ## recompensa diária e nome da cafeteria; 4 = as cadeiras dos saves antigos
 ## viram para a mesa uma vez (com a arte, para onde a cadeira olha aparece);
 ## 5 = acrescenta quantos garçons a cafeteria contratou; 6 = revestimento pintado piso a piso e
-## trecho a trecho de parede; 7 = itens de parede escolhidos pelo jogador (antes, enfeites fixos).
-const CURRENT_VERSION := 8
+## trecho a trecho de parede; 7 = itens de parede escolhidos pelo jogador (antes, enfeites fixos);
+## 8 = missões diárias e semanais; 9 = placa ABERTO/FECHADO da porta.
+const CURRENT_VERSION := 9
 
 ## Marca posta pela migração para a versão 7: o decode pendura os enfeites de sempre, para o save antigo
 ## continuar com a mesma cara. A marca não volta a ser gravada.
@@ -72,6 +74,7 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"daily": simulation.daily.to_data(),
 		"cafe_name": simulation.cafe_name,
 		"waiters": simulation.waiters.size(),
+		"closed": simulation.closed,
 	}
 
 
@@ -150,6 +153,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.weekly_missions.restore(_dict(boards.get("weekly")), simulation.progression.level, unlocked)
 	simulation.refresh_mission_periods()  # salvo num dia (ou semana) que já passou: começa de novo
 	simulation.restore_waiter_count(int(data.get("waiters", 1)))
+	simulation.set_closed(bool(data.get("closed", false)))
 	if data.get(LEGACY_WALL_ITEMS_KEY, false):
 		simulation.hang_legacy_wall_items()
 	var saved_name := str(data.get("cafe_name", ""))
@@ -203,7 +207,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -247,6 +251,12 @@ static func _v6_to_v7(data: Dictionary) -> Dictionary:
 ## Versão 8 acrescentou as missões diárias e semanais: saves antigos começam o dia e a semana do zero.
 static func _v7_to_v8(data: Dictionary) -> Dictionary:
 	data["mission_boards"] = {}
+	return data
+
+
+## Versão 9 acrescentou a placa ABERTO/FECHADO: saves antigos abrem com o café aberto.
+static func _v8_to_v9(data: Dictionary) -> Dictionary:
+	data["closed"] = false
 	return data
 
 

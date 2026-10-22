@@ -26,6 +26,12 @@ var entrance := CafeGrid.NO_CELL:
 		entrance = value
 		queue_redraw()
 
+## Café fechado: a plaquinha da porta diz FECHADO em vez de ABERTO (DT-051).
+var closed := false:
+	set(value):
+		closed = value
+		queue_redraw()
+
 ## Revestimento de base da parede e os trechos pintados por cima ({"borda:índice": SurfaceDefinition}).
 var wall_style: SurfaceDefinition:
 	set(value):
@@ -122,13 +128,18 @@ func _draw() -> void:
 func _draw_front_walls() -> void:
 	for wall_segment in front_segments():
 		_draw_low_wall(wall_segment)
-	var door := ArtSprites.get_sprite("enfeite_porta_L")
+	var door := ArtSprites.get_sprite(door_sprite_name())
 	if door != null and entrance.x == grid_size.x - 1:
 		draw_texture_rect(door.texture, door.rect_at(_at(Vector2(grid_size.x, entrance.y + 1))), false)
 	for wall_segment in paint_segments:
 		var outline := segment_polygon(wall_segment)
 		outline.append(outline[0])
 		draw_polyline(outline, PAINT_LINE, 2.5, true)
+
+
+## Desenho da porta: com a plaquinha ABERTO ou FECHADO.
+func door_sprite_name() -> String:
+	return "enfeite_porta_fechada_L" if closed else "enfeite_porta_L"
 
 
 func _draw_low_wall(wall_segment: String) -> void:

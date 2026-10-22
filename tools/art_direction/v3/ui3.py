@@ -34,6 +34,12 @@ def glyph(kind):
                 '<rect x="36" y="13" width="12" height="38" rx="3.5" fill="#ffffff"/>')
     if kind == "play":
         return '<path d="M21,12 L51,32 L21,52 Z" fill="#ffffff" stroke="#ffffff" stroke-width="5" stroke-linejoin="round"/>'
+    if kind == "door_close":  # porta fechada, com a maçaneta: fechar o café
+        return (f'<path d="M8,56 H56 M20,56 V9 H44 V56" {GLYPH_STROKE}/>'
+                '<circle cx="37" cy="34" r="3.6" fill="#ffffff"/>')
+    if kind == "door_open":  # porta aberta para fora, com o vão livre: abrir o café
+        return (f'<path d="M8,56 H56 M20,56 V9 H44 V56" {GLYPH_STROKE}/>'
+                '<path d="M20,9 L8,15 L8,59 L20,56 Z" fill="#ffffff" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>')
     if kind == "serve":
         return ('<path d="M10,40 h44 a22,22 0 0,0 -44,0 Z" fill="#ffffff"/>'
                 f'<path d="M6,46 h52 M32,14 v4" {GLYPH_STROKE}/>')
@@ -110,6 +116,7 @@ ICONS = {
 
 BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("music", "blue"),
            ("music_off", "blue"), ("gear", "blue"), ("pause", "orange"), ("play", "green"),
+           ("door_close", "red"), ("door_open", "green"),
            ("rotate", "blue"), ("move", "blue"), ("store", "blue"), ("sell", "orange"), ("serve", "green"),
            ("check", "green"), ("close", "red"), ("left", "blue"), ("right", "blue")]
 

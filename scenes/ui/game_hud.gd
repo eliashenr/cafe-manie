@@ -29,9 +29,11 @@ signal music_toggled(muted: bool)
 signal daily_requested
 ## O jogador tocou num botão de zoom: multiplica o zoom por [param factor].
 signal zoom_requested(factor: float)
-## O jogador escolheu um pacote de Café Ouro na vitrine.
 ## O jogador tocou no botão de pausar (ou de continuar).
 signal pause_toggled
+## O jogador tocou no botão da porta: fechar (ou abrir) o café.
+signal closed_toggled
+## O jogador escolheu um pacote de Café Ouro na vitrine.
 signal coin_pack_chosen(pack_id: StringName)
 
 const SOFT_CURRENCY_NAME := "Café Ouro"
@@ -47,6 +49,7 @@ const DAILY_TITLE := "PRESENTE DIÁRIO EM"
 const DAILY_READY_TITLE := "PRESENTE DIÁRIO"
 const DAILY_READY := "Receber!"
 const PAUSE_TEXT := "JOGO PAUSADO: mexa à vontade. Toque em ▶ para continuar."
+const CLOSED_TEXT := "CAFÉ FECHADO: ninguém novo entra. Toque na porta verde para abrir."
 
 var simulation: CafeSimulation
 
@@ -58,6 +61,8 @@ var _music_button: Button
 var _music_muted := false
 var _pause_button: Button
 var _pause_banner: PanelContainer
+var _closed_button: Button
+var _closed_banner: PanelContainer
 var _name_dialog: ConfirmationDialog
 var _name_edit: LineEdit
 var _gold_label: Label
@@ -240,41 +245,52 @@ func _build_side_buttons() -> void:
 	_pause_button.pressed.connect(func() -> void: pause_toggled.emit())
 	_anchored(_pause_button, Vector2(1.0, 0.0), Vector2(-52, 80), Vector2(48, 46))
 	_build_pause_banner()
+	_closed_button = UiTheme.icon_button("ClosedButton", "door_close", "", 42)
+	_closed_button.pressed.connect(func() -> void: closed_toggled.emit())
+	_anchored(_closed_button, Vector2(1.0, 0.0), Vector2(-52, 132), Vector2(48, 46))
+	_closed_banner = _banner("ClosedBanner", "ClosedText", CLOSED_TEXT, UiTheme.RED, -248)  # acima da faixa da pausa
 	var zoom_in := UiTheme.icon_button("ZoomInButton", "zoom_in", "", 42)
 	zoom_in.tooltip_text = "Aproximar"
 	zoom_in.pressed.connect(func() -> void: zoom_requested.emit(ZOOM_STEP))
-	_anchored(zoom_in, Vector2(1.0, 0.0), Vector2(-52, 132), Vector2(48, 46))
+	_anchored(zoom_in, Vector2(1.0, 0.0), Vector2(-52, 180), Vector2(48, 46))
 	var zoom_out := UiTheme.icon_button("ZoomOutButton", "zoom_out", "", 42)
 	zoom_out.tooltip_text = "Afastar"
 	zoom_out.pressed.connect(func() -> void: zoom_requested.emit(1.0 / ZOOM_STEP))
-	_anchored(zoom_out, Vector2(1.0, 0.0), Vector2(-52, 180), Vector2(48, 46))
+	_anchored(zoom_out, Vector2(1.0, 0.0), Vector2(-52, 228), Vector2(48, 46))
 	_sound_button = UiTheme.icon_button("SoundButton", "sound", "", 42)
 	_sound_button.pressed.connect(func() -> void: mute_toggled.emit(not _muted))
-	_anchored(_sound_button, Vector2(1.0, 0.0), Vector2(-52, 228), Vector2(48, 46))
+	_anchored(_sound_button, Vector2(1.0, 0.0), Vector2(-52, 276), Vector2(48, 46))
 	_music_button = UiTheme.icon_button("MusicButton", "music", "", 42)
 	_music_button.pressed.connect(func() -> void: music_toggled.emit(not _music_muted))
-	_anchored(_music_button, Vector2(1.0, 0.0), Vector2(-52, 276), Vector2(48, 46))
+	_anchored(_music_button, Vector2(1.0, 0.0), Vector2(-52, 324), Vector2(48, 46))
 	var settings := UiTheme.icon_button("RestartButton", "gear", "", 42)
 	settings.tooltip_text = "Recomeçar o jogo"
 	settings.pressed.connect(ask_restart)
-	_anchored(settings, Vector2(1.0, 0.0), Vector2(-52, 324), Vector2(48, 46))
+	_anchored(settings, Vector2(1.0, 0.0), Vector2(-52, 372), Vector2(48, 46))
 	show_sound_state(false)
 	show_music_state(false)
 	show_pause_state(false)
+	show_closed_state(false)
 
 
 ## Faixa no alto do salão enquanto o jogo está pausado.
 func _build_pause_banner() -> void:
-	_pause_banner = PanelContainer.new()
-	_pause_banner.name = "PauseBanner"
-	_pause_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_pause_banner.add_theme_stylebox_override("panel", UiTheme.card_box(14, 8))
-	_pause_banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_anchored(_pause_banner, Vector2(0.5, 1.0), Vector2(-250, -196), Vector2(500, 0))  # acima da barra de baixo, longe dos avisos
-	var label := UiTheme.outlined(PAUSE_TEXT, 17, UiTheme.ORANGE, Color(0, 0, 0, 0), 0)
-	label.name = "PauseText"
+	_pause_banner = _banner("PauseBanner", "PauseText", PAUSE_TEXT, UiTheme.ORANGE, -196)  # acima da barra de baixo, longe dos avisos
+
+
+## Faixa de aviso centrada, [param bottom_offset] pixels acima da borda de baixo da tela.
+func _banner(banner_name: String, label_name: String, text: String, color: Color, bottom_offset: float) -> PanelContainer:
+	var banner := PanelContainer.new()
+	banner.name = banner_name
+	banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	banner.add_theme_stylebox_override("panel", UiTheme.card_box(14, 8))
+	banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_anchored(banner, Vector2(0.5, 1.0), Vector2(-250, bottom_offset), Vector2(500, 0))
+	var label := UiTheme.outlined(text, 17, color, Color(0, 0, 0, 0), 0)
+	label.name = label_name
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_pause_banner.add_child(label)
+	banner.add_child(label)
+	return banner
 
 
 ## Botão de pausa vira "continuar" (e a faixa aparece) enquanto o jogo está pausado.
@@ -288,6 +304,19 @@ func show_pause_state(paused: bool) -> void:
 
 func is_pause_banner_visible() -> bool:
 	return _pause_banner.visible
+
+
+## Botão da porta: vermelho (fechar) com o café aberto, verde (abrir) com ele fechado; a faixa avisa (DT-051).
+func show_closed_state(closed: bool) -> void:
+	var sprite := ArtSprites.get_sprite("botao_door_open" if closed else "botao_door_close")
+	if sprite != null:
+		_closed_button.icon = sprite.texture
+	_closed_button.tooltip_text = "Abrir o café (F)" if closed else "Fechar o café (F)"
+	_closed_banner.visible = closed
+
+
+func is_closed_banner_visible() -> bool:
+	return _closed_banner.visible
 
 
 func _medallion(button_name: String, art_name: String, label: String, center: Vector2, action: Callable) -> Button:

@@ -4,6 +4,20 @@
 
 🟢 **CONCLUÍDO**
 
+**Próximo pacote do relatório, etapa 1: placa ABERTO/FECHADO** (DT-051)
+
+- **Botão da porta** na coluna da direita, logo abaixo da pausa (ou a tecla F):
+  - vermelho com a porta fechada: fecha o café;
+  - verde com a porta aberta: abre de novo.
+- **Café fechado:**
+  - ninguém novo entra, e a fila da calçada vai embora sem tirar popularidade;
+  - quem já está lá dentro é atendido, paga e sai;
+  - quem cansar de esperar sai sem tirar popularidade;
+  - o jogo continua rodando (é diferente da pausa: fogões cozinham e garçons servem).
+- **Avisos:** a plaquinha da porta passa a dizer "FECHADO" em vermelho, e uma faixa "CAFÉ FECHADO" aparece embaixo.
+- **Ao abrir**, o próximo cliente chega em poucos segundos.
+- **O save guarda a placa** (versão 9): o jogo abre fechado, se você saiu com ele fechado.
+
 **Pedidos de 22/10 (2ª parte): pausa sem bloqueio, balcão de 1 piso e o relatório** (DT-050)
 
 - **Pausado, dá para mexer em tudo**, mesmo com clientes:
@@ -197,6 +211,11 @@
 
 🧪 **TESTADO**
 
+- **Placa ABERTO/FECHADO: 447 testes automatizados PASSARAM.**
+  - Os novos conferem que, fechado, ninguém chega; ao abrir, o próximo cliente chega logo; a fila da calçada vai embora sem tirar popularidade; quem está comendo termina e paga; quem desiste com o café fechado não tira popularidade (e com ele aberto, tira); e o save guarda a placa (saves antigos abrem com o café aberto).
+  - Na tela: o botão e a tecla F, a faixa, o aviso, a plaquinha da porta, o jogo que continua rodando, o save fechado que já abre mostrando, e as faixas de fechado e de pausa sem uma tampar a outra.
+  - **Defeitos inseridos de propósito: 19 de 19 pegos.**
+  - **Cena principal: PASSOU**, zero erros.
 - **Pedidos de 22/10 (2ª parte): 433 testes automatizados PASSARAM.**
   - Os novos conferem, com o jogo pausado: mover a cadeira com cliente sentado (ele vai junto), cadeira sem mesa (o cliente sai sem tirar popularidade), vender mesa ocupada e pôr móvel em cima do garçom (ele vai para o piso livre mais perto).
   - Conferem também guardar o balcão com porção reservada (o garçom fica livre e o pedido continua), mover o fogão aceso e mover pela barra a cadeira de quem está sentado.

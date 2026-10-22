@@ -890,8 +890,9 @@ DECORATIONS.update({
 })
 
 
-def wall_doorway(D):
-    """Entrada na parede da frente: batente branco com toldo listrado e a plaquinha "ABERTO" (o vão fica livre)."""
+def wall_doorway(D, closed=False):
+    """Entrada na parede da frente: batente branco com toldo listrado e a plaquinha "ABERTO" (o vão fica livre).
+    Com o café fechado, a plaquinha diz "FECHADO", em vermelho."""
     top = 78
     o = []
     for x0 in (0.5, L - 5.5):
@@ -903,16 +904,18 @@ def wall_doorway(D):
                     '<rect width="8" height="8" fill="#ffffff"/><rect width="4" height="8" fill="#ff4d5e"/></pattern>')
     o.append(f'<path d="M-3,{-top - 6} L{f(L + 3)},{-top - 6} L{f(L + 1)},{-top + 6} Q{f(L * 0.75)},{-top + 10} {f(L / 2)},{-top + 6} '
              f'Q{f(L * 0.25)},{-top + 10} -1,{-top + 6} Z" fill="{stripes}" stroke="{INK3}" stroke-width="1"/>')
-    # plaquinha "ABERTO"
+    # plaquinha "ABERTO" (ou "FECHADO")
     cx = L / 2
     o.append(f'<path d="M{f(cx - 6)},{-top + 9} L{f(cx)},{-top + 4} L{f(cx + 6)},{-top + 9}" stroke="#6a4a2a" stroke-width="0.8" fill="none"/>')
     o.append(f'<rect x="{f(cx - 10)}" y="{-top + 9}" width="20" height="9" rx="2" fill="#ffffff" stroke="{INK3}" stroke-width="0.8"/>')
+    text, size, color = ("FECHADO", 5.3, "#e0303a") if closed else ("ABERTO", 6.2, "#2fae3a")
     o.append(f'<text x="{f(cx)}" y="{-top + 16}" text-anchor="middle" font-family="Fredoka, Nunito, sans-serif" font-weight="700" '
-             f'font-size="6.2" fill="#2fae3a">ABERTO</text>')
+             f'font-size="{size}" fill="{color}">{text}</text>')
     return "".join(o)
 
 
 DECORATIONS["porta"] = lambda D, side: wall_doorway(D)
+DECORATIONS["porta_fechada"] = lambda D, side: wall_doorway(D, closed=True)
 
 
 def wall_piece(side, flat):
