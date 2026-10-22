@@ -23,9 +23,12 @@ func _stove(id: StringName, cell := Vector2i(2, 2)) -> StringName:
 
 func test_every_special_stove_has_a_profile() -> void:
 	var catalog := FurnitureCatalog.load_from()
+	var sets := StoveSets.new(CafeLayout.new(Vector2i(4, 4), Vector2i(3, 2)))
 	for definition in catalog.all():
 		if definition.category != FurnitureDefinition.Category.COOKING or definition.id in [&"stove_basic", &"stove_blue"]:
 			continue
+		if sets.set_of_part(definition.id) != null:
+			continue  # a função das peças do multifogão é o conjunto (DT-060)
 		assert_true(definition.has_stove_profile(), "%s tem uma função" % definition.id)
 		assert_true(definition.is_valid(), String(definition.id))
 		if definition.stove_max_time > 0.0:

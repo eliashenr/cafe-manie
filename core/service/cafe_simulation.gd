@@ -32,6 +32,8 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## Um multifogão ficou completo pela primeira vez; o prêmio dele já está no inventário (DT-060).
+signal stove_set_completed(stove_set: StoveSetDefinition)
 ## O troféu gastou a última carga e parou de acelerar os fogões (DT-057).
 signal trophy_worn_out(trophy_id: StringName)
 ## Um tempero da prateleira foi usado num fogão (DT-056).
@@ -81,6 +83,8 @@ var spices: SpiceCatalog
 var spice_shelf := Inventory.new()
 ## Cargas dos troféus que aceleram os fogões (DT-057).
 var trophies: StoveTrophies
+## Multifogões em partes (DT-060).
+var stove_sets: StoveSets
 ## Energia gasta pelas bebidas; recarrega sozinha com o tempo.
 var energy: Energy
 ## Domínio das receitas: estrelas por cozinhar muitas vezes a mesma (DT-053).
@@ -151,6 +155,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	kitchen = Kitchen.new(clock, layout, config.counter_capacity)
 	kitchen.spoil_factor = config.spoil_factor
 	trophies = StoveTrophies.new(layout)
+	stove_sets = StoveSets.new(layout)
 	kitchen.min_spoil_time = config.min_spoil_time
 	# A navegação precisa ser reconstruída antes de os personagens recalcularem caminho,
 	# então ela se conecta ao layout antes da simulação.
@@ -363,10 +368,14 @@ func order_menu() -> Array[RecipeDefinition]:
 
 ## Porções a mais que o perfil do fogão dá a esta receita (DT-058).
 func bonus_servings_on(stove_id: StringName, recipe: RecipeDefinition) -> int:
+	var bonus := 0
 	var stove := _stove_definition(stove_id)
-	if stove == null or stove.stove_servings_bonus <= 0.0:
-		return 0
-	return maxi(1, roundi(recipe.servings * stove.stove_servings_bonus))
+	if stove != null and stove.stove_servings_bonus > 0.0:
+		bonus += maxi(1, roundi(recipe.servings * stove.stove_servings_bonus))
+	var stove_set := stove_sets.complete_set_of(stove_id)
+	if stove_set != null:
+		bonus += roundi(recipe.servings * (stove_set.servings_multiplier - 1.0))
+	return bonus
 
 
 ## XP de tirar esta receita deste fogão (com o bônus do perfil, DT-058).
@@ -492,6 +501,14 @@ func _gift_spice(spice_id: StringName, amount: int) -> bool:
 	return true
 
 
+## Multifogão completo pela primeira vez: o enfeite de prêmio vai para o inventário (DT-060).
+func _reward_stove_sets() -> void:
+	for stove_set in stove_sets.claim_new_rewards():
+		if furniture.get_definition(stove_set.reward) != null:
+			inventory.add(stove_set.reward)
+		stove_set_completed.emit(stove_set)
+
+
 ## Joga fora o prato estragado do fogão, que fica livre para cozinhar de novo.
 func discard_spoiled(stove_id: StringName) -> int:
 	var result := kitchen.discard(stove_id)
@@ -583,6 +600,8 @@ func can_acquire(definition: FurnitureDefinition) -> int:
 		return ServiceResult.FURNITURE_LIMIT
 	if inventory.count(definition.id) > 0:
 		return ServiceResult.OK
+	if not definition.sold_for_gold:
+		return ServiceResult.NOT_FOR_SALE
 	if definition.min_level > progression.level:
 		return ServiceResult.FURNITURE_LOCKED
 	if not wallet.can_afford(Wallet.SOFT, definition.price):
@@ -1565,6 +1584,7 @@ func _record_beauty() -> void:
 
 
 func _on_layout_changed() -> void:
+	_reward_stove_sets()
 	_record_beauty()
 	_settle_after_layout_change()
 	var agents: Array[Agent] = []

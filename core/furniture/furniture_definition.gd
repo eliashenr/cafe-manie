@@ -31,6 +31,8 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 @export_range(0, 100) var comfort := 0
 ## Quantos desse móvel cabem na cafeteria (0 = sem limite).
 @export var max_per_cafe := 0
+## false = não se compra com ouro: só se ganha (prêmio de conjunto, de evento ou da loja de cupons).
+@export var sold_for_gold := true
 
 @export_group("Perfil do fogão (DT-058)")
 ## Corte no tempo de preparo (0.25 = 25% menos tempo).

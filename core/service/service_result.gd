@@ -35,4 +35,5 @@ enum {
 	TROPHY_FULL,        ## o troféu ainda está com as cargas cheias
 	FURNITURE_LIMIT,    ## a cafeteria já tem o máximo desse móvel
 	WRONG_STOVE,        ## a receita só sai num fogão temático (DT-059)
+	NOT_FOR_SALE,       ## o móvel não se compra com ouro: só se ganha (DT-060)
 }

@@ -1393,6 +1393,84 @@
     306.67
    ]
   },
+  "train_locomotive_r0": {
+   "anchor": [
+    116.67,
+    381.67
+   ]
+  },
+  "train_locomotive_r1": {
+   "anchor": [
+    116.67,
+    381.67
+   ]
+  },
+  "train_locomotive_r2": {
+   "anchor": [
+    116.67,
+    381.67
+   ]
+  },
+  "train_locomotive_r3": {
+   "anchor": [
+    116.67,
+    381.67
+   ]
+  },
+  "train_wagon_r0": {
+   "anchor": [
+    116.67,
+    256.67
+   ]
+  },
+  "train_wagon_r1": {
+   "anchor": [
+    116.67,
+    256.67
+   ]
+  },
+  "train_wagon_r2": {
+   "anchor": [
+    116.67,
+    256.67
+   ]
+  },
+  "train_wagon_r3": {
+   "anchor": [
+    116.67,
+    256.67
+   ]
+  },
+  "train_dining_r0": {
+   "anchor": [
+    116.67,
+    282.67
+   ]
+  },
+  "train_dining_r1": {
+   "anchor": [
+    116.67,
+    282.67
+   ]
+  },
+  "train_dining_r2": {
+   "anchor": [
+    116.67,
+    282.67
+   ]
+  },
+  "train_dining_r3": {
+   "anchor": [
+    116.67,
+    282.67
+   ]
+  },
+  "station_clock_r0": {
+   "anchor": [
+    45.67,
+    342.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -5839,6 +5917,30 @@
    "1": "trophy_gold_r0",
    "2": "trophy_gold_r0",
    "3": "trophy_gold_r0"
+  },
+  "train_locomotive": {
+   "0": "train_locomotive_r0",
+   "1": "train_locomotive_r1",
+   "2": "train_locomotive_r2",
+   "3": "train_locomotive_r3"
+  },
+  "train_wagon": {
+   "0": "train_wagon_r0",
+   "1": "train_wagon_r1",
+   "2": "train_wagon_r2",
+   "3": "train_wagon_r3"
+  },
+  "train_dining": {
+   "0": "train_dining_r0",
+   "1": "train_dining_r1",
+   "2": "train_dining_r2",
+   "3": "train_dining_r3"
+  },
+  "station_clock": {
+   "0": "station_clock_r0",
+   "1": "station_clock_r0",
+   "2": "station_clock_r0",
+   "3": "station_clock_r0"
   },
   "dj_booth": {
    "0": "dj_booth_r0",

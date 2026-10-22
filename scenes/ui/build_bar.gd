@@ -58,6 +58,7 @@ const SERVICE_MESSAGES := {
 	ServiceResult.TROPHY_FULL: "O troféu ainda está novinho",
 	ServiceResult.FURNITURE_LIMIT: "A cafeteria já tem o máximo desse móvel",
 	ServiceResult.WRONG_STOVE: "Essa receita só sai no fogão dela",
+	ServiceResult.NOT_FOR_SALE: "Esse item não se compra com ouro: só se ganha",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -95,6 +96,8 @@ const SHOP_TAB_COLORS := {
 	ShopTab.WALL: Color("2ec4b6"),
 }
 ## Categorias de móvel em cada aba de móveis.
+## Dica da peça do multifogão na loja (DT-060).
+const SET_TOOLTIP := "Peça %d de %d do %s: com as peças lado a lado, na ordem, cada uma rende %d%% das porções."
 ## Dica do troféu na loja (DT-057).
 const TROPHY_TOOLTIP := "Deixa os fogões nas 8 casas em volta %d%% mais rápidos, por %d pratos. Depois, renove com ouro."
 const SHOP_TAB_CATEGORIES := {
@@ -366,6 +369,12 @@ static func shows_in_tab(definition: FurnitureDefinition, tab: ShopTab) -> bool:
 	return SHOP_TAB_CATEGORIES.has(tab) and SHOP_TAB_CATEGORIES[tab].has(definition.category)
 
 
+## A aba da loja mostra este móvel agora? O que só se ganha aparece quando há um guardado para pôr na cafeteria (DT-060).
+func in_shop(definition: FurnitureDefinition, tab: ShopTab) -> bool:
+	var in_hand := definition.sold_for_gold or cafe.simulation.inventory.count(definition.id) > 0
+	return in_hand and BuildBar.shows_in_tab(definition, tab)
+
+
 func _shop_items() -> Array:
 	var items: Array = []
 	match shop_tab:
@@ -377,7 +386,7 @@ func _shop_items() -> Array:
 				items.append(_remove_item_card())
 		_:
 			for definition in cafe.catalog.all():
-				if BuildBar.shows_in_tab(definition, shop_tab):
+				if in_shop(definition, shop_tab):
 					items.append(definition)
 	if shop_collection != &"":
 		items = items.filter(func(item: Resource) -> bool: return item.collection == shop_collection)
@@ -649,6 +658,10 @@ func _add_furniture_item(furniture: FurnitureDefinition) -> void:
 		ArtSprites.furniture(furniture.id, 3), func() -> void: _pick_furniture(furniture.id))
 	if furniture.is_trophy():
 		item.tooltip_text = TROPHY_TOOLTIP % [roundi(furniture.stove_speed_bonus * 100.0), furniture.trophy_dishes]
+	elif cafe.simulation.stove_sets.set_of_part(furniture.id) != null:
+		var stove_set := cafe.simulation.stove_sets.set_of_part(furniture.id)
+		item.tooltip_text = SET_TOOLTIP % [stove_set.parts.find(furniture.id) + 1, stove_set.parts.size(), stove_set.display_name,
+			roundi(stove_set.servings_multiplier * 100.0)]
 	elif furniture.has_stove_profile() or furniture.max_per_cafe > 0:
 		item.tooltip_text = "Perfil: %s" % BuildBar.profile_text(furniture)
 	_updaters.append(func() -> void:
@@ -1224,6 +1237,14 @@ func _stove_message(id: StringName) -> String:
 	var stove := cafe.layout.get_placement(id).definition
 	if stove.has_stove_profile():
 		text += "  —  %s: %s" % [stove.display_name, BuildBar.profile_text(stove)]
+	var stove_sets := cafe.simulation.stove_sets
+	var stove_set := stove_sets.set_of_part(stove.id)
+	if stove_set != null:
+		if stove_sets.complete_set_of(id) != null:
+			text += "  —  %s completo: o dobro de porções" % stove_set.display_name
+		else:
+			text += "  —  %s: %d de %d peças; ponha as 3 lado a lado, na ordem" % [stove_set.display_name,
+				stove_sets.parts_placed(stove_set), stove_set.parts.size()]
 	return text + ("  —  Clientes esperando: " + waiting if not waiting.is_empty() else "")
 
 

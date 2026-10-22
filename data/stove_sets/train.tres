@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StoveSetDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/stove_set_definition.gd" id="1_set"]
+
+[resource]
+script = ExtResource("1_set")
+id = &"train"
+display_name = "Multifogão Trem"
+parts = Array[StringName]([&"train_locomotive", &"train_wagon", &"train_dining"])
+servings_multiplier = 2.0
+reward = &"station_clock"

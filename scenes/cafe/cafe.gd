@@ -21,6 +21,7 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const SET_COMPLETE_MESSAGE := "%s completo! Cada peça rende o dobro de porções. Prêmio: %s, guardado na Loja."
 const TROPHY_WORN_MESSAGE := "O %s se gastou e parou de acelerar os fogões. Toque nele para renovar."
 ## Onde o brilho do tempero estoura, em relação ao centro do piso do fogão (em cima da panela).
 const SPICE_BURST_OFFSET := Vector2(0, -90)
@@ -125,6 +126,7 @@ func _ready() -> void:
 	simulation.dish_spoiled.connect(_on_dish_spoiled)
 	simulation.spice_used.connect(_on_spice_used)
 	simulation.trophy_worn_out.connect(_on_trophy_worn_out)
+	simulation.stove_set_completed.connect(_on_stove_set_completed)
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
@@ -340,6 +342,7 @@ func _connect_sounds() -> void:
 	simulation.recipe_mastered.connect(play.bind(&"achievement").unbind(3))
 	simulation.dish_spoiled.connect(play.bind(&"error").unbind(2))
 	simulation.spice_used.connect(play.bind(&"achievement").unbind(2))
+	simulation.stove_set_completed.connect(play.bind(&"achievement").unbind(1))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
@@ -464,6 +467,13 @@ func renew_trophy(trophy_id: StringName) -> int:
 		_float_over(trophy_id, "-%s" % UiTheme.thousands(price), FEEDBACK_SPEND, Vector2(0, 22))
 	state_changed.emit()
 	return last_service_result
+
+
+## Multifogão completo pela primeira vez (DT-060): o prêmio já está no inventário.
+func _on_stove_set_completed(stove_set: StoveSetDefinition) -> void:
+	var reward := catalog.get_definition(stove_set.reward)
+	EventBus.message_posted.emit(SET_COMPLETE_MESSAGE % [stove_set.display_name,
+		reward.display_name if reward != null else "um enfeite"])
 
 
 ## O troféu gastou a última carga.

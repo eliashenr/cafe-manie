@@ -4,6 +4,13 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 5 do relatório, etapa 3: Multifogão Trem** (DT-060). **Com ela, o item 5 está completo.**
+
+- **3 fogões novos** na aba Cozinha (nível 14): Locomotiva, Vagão e Vagão-Restaurante.
+- **Lado a lado, em linha reta e na ordem,** formam o trem completo: cada peça rende o **dobro de porções**.
+- **Prêmio:** a primeira vez que o trem fica completo, você ganha o **Relógio da Estação**, guardado na Loja.
+- O fogão diz quantas peças você já tem ou, completo, que rende o dobro.
+
 **Item 5 do relatório, etapa 2: Fogão Japonês** (DT-059)
 
 - **O Fogão Azul e Dourado virou o Fogão Japonês** (nível 11).
@@ -314,6 +321,13 @@
 
 🧪 **TESTADO**
 
+- **Multifogão Trem: 566 testes automatizados PASSARAM.**
+  - **Regra:** o conjunto válido, com 3 fogões e o prêmio que não se compra com ouro; completa só com as 3 peças lado a lado, em linha reta e na ordem (fila ou coluna; separado, em L ou fora de ordem não vale); completo, o dobro de porções; o prêmio uma vez só, e o relógio guardado entra no café; o save guarda o prêmio, e a migração acrescenta o campo.
+  - **Na tela:** a dica da peça na loja, o relógio fora da loja até ser ganho, o fogão com quantas peças faltam, o aviso de completo e o relógio guardado na Loja.
+  - O teste antigo das abas da loja passou a usar a mesma regra da loja (`in_shop`), e o dos perfis deixa de lado as peças do trem.
+  - **Defeitos inseridos de propósito: 18 de 18 pegos.**
+  - **Foto conferida:** o trem completo na cozinha, com a barra dizendo "o dobro de porções".
+  - **Cena principal: PASSOU**, zero erros.
 - **Fogão Japonês: 559 testes automatizados PASSARAM.**
   - **Regra:** as 4 receitas, válidas, na aba Japão, presas ao Fogão Japonês e liberadas no nível dele; só saem nesse fogão (e nada é cobrado no fogão errado); as receitas comuns saem nele; os clientes só pedem os pratos japoneses com o fogão no café.
   - **Na tela:** no fogão comum, os pratos apagados com "Só no Fogão Japonês"; no Fogão Japonês, eles saem.

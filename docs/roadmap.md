@@ -80,7 +80,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 
 - [x] **1. Fogões com perfil** (DT-058): cada modelo com uma função (mais rápido, tempo máximo, mais porções ou mais XP), os mais fortes só 1 por café.
 - [x] **2. Fogão Japonês** (DT-059): 4 receitas que só saem nele, na aba Japão; os clientes só pedem com o fogão no café.
-- [ ] **3. Multifogão Trem** em 3 partes, com prêmio por completar.
+- [x] **3. Multifogão Trem** (DT-060): 3 peças lado a lado, na ordem; completo, cada uma rende o dobro; a primeira vez dá o Relógio da Estação.
 - O fogão de evento com níveis entra no evento de Halloween (item 6).
 
 ## Passe visual (18/10/2026)

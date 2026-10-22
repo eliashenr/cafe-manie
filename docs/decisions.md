@@ -4,6 +4,33 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-060 — Multifogão Trem em 3 partes
+
+**Problema:**
+- No Café Mania, multifogões em 3 partes formavam um conjunto: completo, cozinhava mais e dava um enfeite bônus (proposta 3.10 do relatório).
+
+**Decisão:**
+- **3 fogões de 1 piso**, vendidos na aba Cozinha (nível 14, 2.500 de Café Ouro cada):
+  - Trem: Locomotiva;
+  - Trem: Vagão;
+  - Trem: Vagão-Restaurante.
+  - Cada um funciona sozinho como um fogão comum.
+- **O conjunto** (`data/stove_sets/train.tres`, `StoveSetDefinition`): as peças lado a lado, em linha reta e na ordem.
+  - Pode ser em fila ou em coluna, para qualquer lado.
+  - Em L, separadas ou fora de ordem não vale.
+- **Completo:** cada peça rende o dobro de porções (`servings_multiplier`). Soma com o perfil e com o sal.
+- **Prêmio:** a primeira vez que o trem fica completo, o **Relógio da Estação** vai para o inventário, com um aviso.
+  - É uma vez só, mesmo desmontando e montando de novo.
+  - O relógio não se compra com ouro (campo novo `sold_for_gold` em `FurnitureDefinition`) e aparece na Loja como guardado.
+- **Na tela:**
+  - a dica da peça na loja explica o conjunto;
+  - o fogão diz quantas peças já estão no café ou, completo, que rende o dobro.
+- **O save guarda** os conjuntos que já deram prêmio (versão 14).
+- **O fogão de evento com níveis** fica para o evento de Halloween (item 6).
+- **Com isso, o item 5 do relatório está completo.**
+
+---
+
 ## DT-059 — Fogão Japonês com receitas próprias
 
 **Problema:**
