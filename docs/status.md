@@ -15,7 +15,9 @@
 - Cliente que fica sem cadeira ou sem mesa vai embora satisfeito, sem tirar popularidade.
 - **Balcão ocupa 1 piso**, com as mesmas porções.
 - **Mais 4 fogões e 4 balcões:** Retrô Creme, de Cobre, Azul e Dourado e Amarelo Canário; de Mármore, de Azulejos, Neon e de Lanchonete.
-- **Relatório do Café Mania original** em [relatorio_cafe_mania.md](relatorio_cafe_mania.md): fontes lidas, o que temos e o que falta, e propostas na ordem sugerida. As fotos do Facebook ficaram pendentes (pedem login).
+- **Relatório do Café Mania original** em [relatorio_cafe_mania.md](relatorio_cafe_mania.md): fontes lidas, o que temos e o que falta, e propostas na ordem sugerida.
+  - **Fotos do Facebook revistas** (seção 6): cerca de 1.200 fotos e 28 álbuns, com legenda de todas e imagem de cerca de 420.
+  - Elas trouxeram 9 propostas novas (3.10 a 3.18): fogões com perfil e em partes, troféus que aceleram os fogões em volta, noite no café, livro de receitas com abas, plantação, crítico com cupons, atrações e palco, eventos com prazo, e os grandes (delivery, filial na praia, 2º andar).
 
 **Pedidos de 22/10: pausa e loja aberta** (DT-049)
 
