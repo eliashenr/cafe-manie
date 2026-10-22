@@ -89,6 +89,8 @@ extends Resource
 @export var spoil_factor := 2.0
 ## Segundos que qualquer prato pronto aguenta, por mais rápido que seja.
 @export var min_spoil_time := 600.0
+## Maior corte no tempo de preparo somando o perfil do fogão e o troféu (0.8 = no máximo 80% menos tempo, DT-058).
+@export_range(0.0, 0.95) var max_speedup := 0.8
 
 
 func is_valid() -> bool:
@@ -96,7 +98,7 @@ func is_valid() -> bool:
 		and customer_walk_speed > 0.0 and waiter_walk_speed > 0.0 and eat_time >= 0.0 \
 		and handling_time >= 0.0 and counter_capacity > 0 and beauty_for_max_bonus > 0.0 \
 		and order_think_time >= 0.0 and queue_capacity >= 0 and queue_patience > 0.0 and waiter_idle_pause >= 0.0 \
-		and drink_time >= 0.0 and spoil_factor >= 0.0 and min_spoil_time >= 0.0
+		and drink_time >= 0.0 and spoil_factor >= 0.0 and min_spoil_time >= 0.0 and max_speedup >= 0.0 and max_speedup < 1.0
 
 
 ## Intervalo médio entre chegadas para uma popularidade (0 a 100).

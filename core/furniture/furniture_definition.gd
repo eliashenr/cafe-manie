@@ -29,6 +29,18 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 @export_range(0, 100) var beauty := 0
 @export_range(0, 100) var efficiency := 0
 @export_range(0, 100) var comfort := 0
+## Quantos desse móvel cabem na cafeteria (0 = sem limite).
+@export var max_per_cafe := 0
+
+@export_group("Perfil do fogão (DT-058)")
+## Corte no tempo de preparo (0.25 = 25% menos tempo).
+@export_range(0.0, 0.9) var stove_time_cut := 0.0
+## Nenhum prato demora mais que isso neste fogão, em segundos (0 = sem limite).
+@export var stove_max_time := 0.0
+## Porções a mais em cada prato (0.15 = +15%, pelo menos 1 a mais).
+@export_range(0.0, 2.0) var stove_servings_bonus := 0.0
+## XP a mais ao tirar cada prato (0.25 = +25%).
+@export_range(0.0, 2.0) var stove_xp_bonus := 0.0
 
 @export_group("Troféu acelerador (DT-057)")
 ## Quanto mais rápidos ficam os fogões nas 8 casas em volta (0.25 = 25% menos tempo). 0 = não é troféu.
@@ -48,7 +60,14 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 func is_valid() -> bool:
 	return id != &"" and footprint.x > 0 and footprint.y > 0 and price >= 0 and min_level >= 1 \
 		and (category == Category.MACHINE) == (machine != &"") \
-		and (not is_trophy() or (trophy_dishes > 0 and renew_price >= 0))
+		and (not is_trophy() or (trophy_dishes > 0 and renew_price >= 0)) \
+		and max_per_cafe >= 0 and stove_max_time >= 0.0 \
+		and (category == Category.COOKING or not has_stove_profile())
+
+
+## Fogão com perfil (DT-058): mais rápido, com tempo máximo, mais porções ou mais XP?
+func has_stove_profile() -> bool:
+	return stove_time_cut > 0.0 or stove_max_time > 0.0 or stove_servings_bonus > 0.0 or stove_xp_bonus > 0.0
 
 
 ## Troféu que acelera os fogões em volta (DT-057)?

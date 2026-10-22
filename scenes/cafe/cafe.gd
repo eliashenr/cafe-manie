@@ -430,10 +430,12 @@ func cook_on_selected(recipe_id: StringName) -> int:
 ## para a barra explicar o motivo.
 func collect_stove(stove_id: StringName) -> int:
 	var recipe := simulation.kitchen.stove_recipe(stove_id)
+	var servings := simulation.kitchen.stove_servings(stove_id)
+	var xp := simulation.xp_on(stove_id, recipe) if recipe != null else 0
 	var result := simulation.collect(stove_id)
 	if result == ServiceResult.OK:
-		_float_over(stove_id, "+%d %s" % [recipe.servings, recipe.display_name], FEEDBACK_GOOD)
-		_float_over(stove_id, "+%d XP" % recipe.xp_reward, FEEDBACK_XP, Vector2(0, 22))
+		_float_over(stove_id, "+%d %s" % [servings, recipe.display_name], FEEDBACK_GOOD)
+		_float_over(stove_id, "+%d XP" % xp, FEEDBACK_XP, Vector2(0, 22))
 	else:
 		_set_selected_cell(layout.get_placement(stove_id).origin)
 		_set_selected_id(stove_id)

@@ -325,7 +325,7 @@ func start_cooking(stove_id: StringName, recipe_id: StringName) -> int:
 	if not wallet.can_afford(Wallet.SOFT, recipe.ingredient_cost):
 		return ServiceResult.NOT_ENOUGH_GOLD
 	var booster := trophies.booster_for(stove_id)
-	var result := kitchen.start_cooking(stove_id, recipe, cook_time_on(stove_id, recipe))
+	var result := kitchen.start_cooking(stove_id, recipe, cook_time_on(stove_id, recipe), bonus_servings_on(stove_id, recipe))
 	if result == ServiceResult.OK and booster != &"" and trophies.use(booster):
 		trophy_worn_out.emit(booster)
 	if result == ServiceResult.OK and recipe.ingredient_cost > 0:
@@ -334,9 +334,45 @@ func start_cooking(stove_id: StringName, recipe_id: StringName) -> int:
 	return result
 
 
-## Segundos que a receita leva neste fogão agora (menos com um troféu por perto, DT-057).
+## Segundos que a receita leva neste fogão agora: o perfil do fogão (tempo máximo e corte, DT-058) e o troféu por perto
+## (DT-057). Os cortes se somam, até config.max_speedup.
 func cook_time_on(stove_id: StringName, recipe: RecipeDefinition) -> float:
-	return recipe.cook_time * (1.0 - trophies.speed_bonus(stove_id))
+	var base := recipe.cook_time
+	var cut := trophies.speed_bonus(stove_id)
+	var stove := _stove_definition(stove_id)
+	if stove != null:
+		if stove.stove_max_time > 0.0:
+			base = minf(base, stove.stove_max_time)
+		cut += stove.stove_time_cut
+	return base * maxf(1.0 - cut, 1.0 - config.max_speedup)
+
+
+## Porções a mais que o perfil do fogão dá a esta receita (DT-058).
+func bonus_servings_on(stove_id: StringName, recipe: RecipeDefinition) -> int:
+	var stove := _stove_definition(stove_id)
+	if stove == null or stove.stove_servings_bonus <= 0.0:
+		return 0
+	return maxi(1, roundi(recipe.servings * stove.stove_servings_bonus))
+
+
+## XP de tirar esta receita deste fogão (com o bônus do perfil, DT-058).
+func xp_on(stove_id: StringName, recipe: RecipeDefinition) -> int:
+	var stove := _stove_definition(stove_id)
+	return roundi(recipe.xp_reward * (1.0 + (stove.stove_xp_bonus if stove != null else 0.0)))
+
+
+## Quantos desse móvel estão na cafeteria.
+func placed_count(definition_id: StringName) -> int:
+	var count := 0
+	for placement in layout.placements():
+		if placement.definition.id == definition_id:
+			count += 1
+	return count
+
+
+func _stove_definition(stove_id: StringName) -> FurnitureDefinition:
+	var placement := layout.get_placement(stove_id)
+	return placement.definition if placement != null else null
 
 
 ## Renova o troféu com Café Ouro: ele volta a acelerar com as cargas cheias.
@@ -357,14 +393,15 @@ func renew_trophy(trophy_id: StringName) -> int:
 ## Leva o prato pronto do fogão para o balcão e dá o XP da receita.
 func collect(stove_id: StringName) -> int:
 	var recipe := kitchen.stove_recipe(stove_id)
+	var xp := xp_on(stove_id, recipe) if recipe != null else 0
 	var result := kitchen.collect(stove_id)
 	if result == ServiceResult.OK:
-		progression.add_xp(recipe.xp_reward)
+		progression.add_xp(xp)
 		dish_collected.emit(stove_id, recipe)
 		_record(MissionDefinition.Kind.COLLECT_DISHES, 1, recipe)
 		_record(MissionDefinition.Kind.COOK_DIFFERENT, 1, recipe)
 		_record(MissionDefinition.Kind.COOK_SLOW, 1, recipe)
-		_record(MissionDefinition.Kind.EARN_XP, recipe.xp_reward)
+		_record(MissionDefinition.Kind.EARN_XP, xp)
 		stats.add(PlayerStats.DISHES_COOKED)
 		_record_mastery(recipe)
 	return result
@@ -528,6 +565,8 @@ func restore_waiter_count(count: int) -> void:
 ## Se dá para conseguir um móvel novo agora: guardado no inventário (grátis)
 ## ou comprado (exige nível e ouro).
 func can_acquire(definition: FurnitureDefinition) -> int:
+	if definition.max_per_cafe > 0 and placed_count(definition.id) >= definition.max_per_cafe:
+		return ServiceResult.FURNITURE_LIMIT
 	if inventory.count(definition.id) > 0:
 		return ServiceResult.OK
 	if definition.min_level > progression.level:

@@ -17,3 +17,4 @@ efficiency = 20
 comfort = 0
 placeholder_color = Color(1.000, 0.812, 0.247, 1)
 placeholder_height = 38.0
+stove_xp_bonus = 0.25

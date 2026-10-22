@@ -56,6 +56,7 @@ const SERVICE_MESSAGES := {
 	ServiceResult.ALREADY_SEASONED: "Esse prato já levou tempero de porções",
 	ServiceResult.NOT_A_TROPHY: "Esse móvel não é um troféu",
 	ServiceResult.TROPHY_FULL: "O troféu ainda está novinho",
+	ServiceResult.FURNITURE_LIMIT: "A cafeteria já tem o máximo desse móvel",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -341,6 +342,22 @@ func shop_page_count() -> int:
 
 
 ## Definições da aba atual (móveis ou revestimentos), filtradas pela coleção.
+## "25% mais rápido, +25% de XP, só 1 por café": o perfil do fogão (DT-058) e o limite, para a loja e o fogão.
+static func profile_text(definition: FurnitureDefinition) -> String:
+	var parts: Array[String] = []
+	if definition.stove_time_cut > 0.0:
+		parts.append("%d%% mais rápido" % roundi(definition.stove_time_cut * 100.0))
+	if definition.stove_max_time > 0.0:
+		parts.append("qualquer prato pronto em até %s" % MissionsPanel.time_text(definition.stove_max_time))
+	if definition.stove_servings_bonus > 0.0:
+		parts.append("+%d%% de porções" % roundi(definition.stove_servings_bonus * 100.0))
+	if definition.stove_xp_bonus > 0.0:
+		parts.append("+%d%% de XP" % roundi(definition.stove_xp_bonus * 100.0))
+	if definition.max_per_cafe > 0:
+		parts.append("só %d por café" % definition.max_per_cafe)
+	return ", ".join(parts)
+
+
 ## A aba da loja mostra este móvel? Troféus aceleram fogões (DT-057): ficam na Cozinha, não na Decoração.
 static func shows_in_tab(definition: FurnitureDefinition, tab: ShopTab) -> bool:
 	if definition.is_trophy():
@@ -631,10 +648,15 @@ func _add_furniture_item(furniture: FurnitureDefinition) -> void:
 		ArtSprites.furniture(furniture.id, 3), func() -> void: _pick_furniture(furniture.id))
 	if furniture.is_trophy():
 		item.tooltip_text = TROPHY_TOOLTIP % [roundi(furniture.stove_speed_bonus * 100.0), furniture.trophy_dishes]
+	elif furniture.has_stove_profile() or furniture.max_per_cafe > 0:
+		item.tooltip_text = "Perfil: %s" % BuildBar.profile_text(furniture)
 	_updaters.append(func() -> void:
 		var stored := simulation.inventory.count(furniture.id)
 		var locked := furniture.min_level > simulation.progression.level
-		if stored > 0:
+		if simulation.can_acquire(furniture) == ServiceResult.FURNITURE_LIMIT:
+			item.text = "%s\nSó %d por café" % [furniture.display_name, furniture.max_per_cafe]
+			item.show_state(furniture.price, 0, "Só %d por café" % furniture.max_per_cafe, false)
+		elif stored > 0:
 			item.text = "%s\n%d guardado%s" % [furniture.display_name, stored, "" if stored == 1 else "s"]
 			item.show_state(furniture.price, 0, "%d guardado%s" % [stored, "" if stored == 1 else "s"], true)
 		elif locked:
@@ -1195,6 +1217,9 @@ func _stove_message(id: StringName) -> String:
 	var waiting := _demand_text()
 	var bonus := cafe.simulation.trophies.speed_bonus(id)
 	var text := "Fogão livre: escolha o que cozinhar" + (" (troféu: %d%% mais rápido)" % roundi(bonus * 100.0) if bonus > 0.0 else "")
+	var stove := cafe.layout.get_placement(id).definition
+	if stove.has_stove_profile():
+		text += "  —  %s: %s" % [stove.display_name, BuildBar.profile_text(stove)]
 	return text + ("  —  Clientes esperando: " + waiting if not waiting.is_empty() else "")
 
 

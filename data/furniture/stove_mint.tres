@@ -17,3 +17,4 @@ efficiency = 20
 comfort = 0
 placeholder_color = Color(0.498, 0.863, 0.753, 1)
 placeholder_height = 38.0
+stove_time_cut = 0.1

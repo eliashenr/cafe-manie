@@ -136,7 +136,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 		var stove: Dictionary = _dict(entry)
 		var recipe := simulation.recipes.get_definition(StringName(str(stove.get("recipe", ""))))
 		if not simulation.kitchen.restore_stove(StringName(str(stove.get("id", ""))), recipe, float(stove.get("started_at", 0.0)),
-				int(stove.get("extra", 0)), float(stove.get("duration", -1.0))):
+				int(stove.get("extra", 0)), float(stove.get("duration", -1.0)), int(stove.get("bonus", 0))):
 			result.warnings.append("Preparo ignorado: %s" % stove)
 	for entry in _list(kitchen_data.get("counters")):
 		var counter: Dictionary = _dict(entry)

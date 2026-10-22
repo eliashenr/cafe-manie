@@ -75,7 +75,13 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **1. Comida que estraga no fogão** (DT-055): o prato pronto aguenta o dobro do preparo (no mínimo 10 minutos); estragado, só sai jogado fora.
 - [x] **2. Temperos** (DT-056): 5 temperos (porções, menos tempo, pronto na hora e salvar o estragado), ganhos no presente e nas missões ou comprados no fogão.
 - [x] **3. Troféus que aceleram os fogões em volta** (DT-057): bronze, prata e ouro (25%, 40% e 65%), que se gastam e se renovam com ouro.
-- [ ] **Próximo pacote sugerido** (seção 4, item 5 do relatório): fogões com perfil, de evento e em partes (3.10).
+
+## Pacote do relatório: fogões especiais (seção 4, item 5)
+
+- [x] **1. Fogões com perfil** (DT-058): cada modelo com uma função (mais rápido, tempo máximo, mais porções ou mais XP), os mais fortes só 1 por café.
+- [ ] **2. Fogão Japonês** com 4 receitas próprias.
+- [ ] **3. Multifogão Trem** em 3 partes, com prêmio por completar.
+- O fogão de evento com níveis entra no evento de Halloween (item 6).
 
 ## Passe visual (18/10/2026)
 

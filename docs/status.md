@@ -4,6 +4,19 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 5 do relatório, etapa 1: fogões com perfil** (DT-058)
+
+- **Cada modelo de fogão ganhou uma função:**
+  - Retrô Menta: 10% mais rápido;
+  - Retrô Creme: +15% de porções;
+  - Amarelo Canário: +25% de XP;
+  - Inox Industrial: 25% mais rápido;
+  - Cobre: qualquer prato pronto em até 1 hora (só 1 por café);
+  - Preto e Dourado: em até 30 minutos (só 1 por café).
+- O corte do fogão soma com o do troféu, até 80%.
+- A dica de cada fogão na loja diz a função dele, e o fogão livre também.
+- Ao tirar o prato, o número que sobe mostra as porções e o XP com os bônus.
+
 **Novo pacote do relatório, etapa 3: troféus que aceleram os fogões em volta** (DT-057). **Com ela, o pacote está completo.**
 
 - **3 troféus** na aba Cozinha da loja: Bronze (nível 6, fogões 25% mais rápidos), Prata (nível 12, 40%) e Ouro (nível 20, 65%).
@@ -294,6 +307,11 @@
 
 🧪 **TESTADO**
 
+- **Fogões com perfil: 554 testes automatizados PASSARAM.**
+  - **Regra:** todo fogão especial tem perfil, e os de tempo máximo são só 1 por café; perfil só em fogão; o corte de tempo; o tempo máximo (sem mudar o tempo de estragar); fogão e troféu somados até o limite; porções a mais (somando com o sal) chegando ao balcão; XP a mais; limite por café (guardar abre a vaga); o save guarda as porções a mais.
+  - **Na tela:** a dica da loja com o perfil e o aviso "Só 1 por café"; o fogão livre diz o perfil; o número que sobe com as porções de verdade.
+  - **Defeitos inseridos de propósito: 18 de 18 pegos.**
+  - **Cena principal: PASSOU**, zero erros.
 - **Troféus: 543 testes automatizados PASSARAM.**
   - **Regra:** os 3 troféus válidos e cada vez mais fortes, com renovar mais barato que comprar; só os fogões das 8 casas em volta aceleram (a diagonal conta, 2 casas longe não), e vale o mais forte; o prato acelerado fica pronto antes, gasta uma carga e aguenta o tempo de sempre para estragar; mover o troféu não muda o prato que já cozinha; o troféu se gasta (com um aviso), para de acelerar e se renova (cheio, sem ouro, não é troféu); guardado lembra as cargas, vendido perde; o save guarda as cargas, os guardados e o tempo acelerado, e save antigo vem com troféus cheios.
   - **Na tela:** o troféu escolhido e o fantasma da compra mostram as casas no chão; a barra mostra a aceleração e as cargas; o Renovar fica apagado com o troféu cheio; gasto, ele fica apagado, avisa e renova com confirmação (Cancelar escolhido); o livro e o fogão mostram o tempo acelerado; na loja, os troféus estão na Cozinha, com a dica, e não na Decoração.

@@ -33,4 +33,5 @@ enum {
 	ALREADY_SEASONED,   ## o prato já levou tempero de porções
 	NOT_A_TROPHY,       ## o móvel escolhido não é um troféu acelerador
 	TROPHY_FULL,        ## o troféu ainda está com as cargas cheias
+	FURNITURE_LIMIT,    ## a cafeteria já tem o máximo desse móvel
 }

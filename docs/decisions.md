@@ -4,6 +4,38 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-058 — Fogões com perfil
+
+**Problema:**
+- Os 8 modelos de fogão eram só cores diferentes (proposta 3.10 do relatório; no lugar dos "rápido e turbo" da 3.6).
+- No Café Mania, cada fogão especial tinha um perfil: mais rápido, tempo fixo, mais porções ou mais XP, e alguns eram só 1 por café.
+
+**Decisão:**
+- **Campos novos em `FurnitureDefinition`:** `stove_time_cut`, `stove_max_time`, `stove_servings_bonus`, `stove_xp_bonus` e `max_per_cafe`.
+  - Só fogões podem ter perfil (protegido pela validação).
+- **Perfis:**
+
+  | Fogão | Perfil | Nível e preço |
+  |---|---|---|
+  | Retrô Menta | 10% mais rápido | 3, 300 |
+  | Retrô Creme | +15% de porções (pelo menos 1 a mais) | 3, 320 |
+  | Amarelo Canário | +25% de XP | 4, 340 |
+  | Inox Industrial | 25% mais rápido | 5, 900 |
+  | Cobre | qualquer prato pronto em até 1 hora, só 1 por café | 10, 3.000 |
+  | Preto e Dourado | qualquer prato pronto em até 30 minutos, só 1 por café | 16, 7.000 |
+
+  - O Azul e Dourado vira o Fogão Japonês na próxima etapa.
+- **Somando com o troféu:** os cortes de tempo do fogão e do troféu se somam, até no máximo 80% (`max_speedup` em `service.tres`).
+  - O tempo máximo vale antes do corte.
+  - O tempo para estragar continua o da receita.
+- **Porções:** as do perfil somam com as do Sal da Fartura.
+  - O número que sobe ao tirar o prato passou a mostrar as porções e o XP de verdade, com os bônus.
+- **Limite por café:** com o máximo na cafeteria, o cartão da loja diz "Só 1 por café" e fica apagado. Guardado no inventário, abre a vaga.
+- **Na tela:** a dica de cada fogão na loja diz o perfil, e o fogão livre também.
+- **O save guarda** as porções a mais do perfil em cada prato no fogão. Não mudou de versão: o campo novo é opcional.
+
+---
+
 ## DT-057 — Troféus que aceleram os fogões em volta
 
 **Problema:**
