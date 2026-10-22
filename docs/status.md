@@ -4,6 +4,23 @@
 
 🟢 **CONCLUÍDO**
 
+**Próximo pacote do relatório, etapa 3: livro de receitas, domínio e 12 receitas novas** (DT-053)
+
+- **12 receitas novas**, uma a cada nível do 5 ao 17, de 2 minutos a 3 horas, todas com desenho de prato e de panela:
+  - Básico: Panquecas com Mel e Croissant;
+  - Brasil: Pastel, Feijoada, Moqueca e Escondidinho;
+  - Doces: Brigadeiro e Cheesecake;
+  - Mundo: Pizza, Sushi, Hambúrguer e Tacos.
+- **Livro de receitas:** tocar num fogão livre abre o livro em abas (Básico, Brasil, Doces e Mundo).
+  - Ele abre na aba de um prato que algum cliente está esperando.
+  - Cada aba mostra uma bolinha com quantos esperam pratos dela.
+  - Cada fogão lembra a última aba que você escolheu.
+- **Domínio:** cada vez que uma receita sai pronta do fogão, ela conta.
+  - Com 5, 20 e 60 pratos, a receita ganha uma estrela e paga um prêmio em ouro e XP na hora.
+  - As estrelas aparecem no canto de cada cartão do livro, e a dica do cartão diz quanto falta.
+- **Equilíbrio:** pratos demorados rendem mais por fornada; pratos rápidos rendem mais por minuto.
+- **O save guarda o domínio** (versão 11).
+
 **Próximo pacote do relatório, etapa 2: máquinas de bebida e energia** (DT-052)
 
 - **Duas máquinas novas** na aba Cozinha da Loja (1 piso cada):
@@ -227,6 +244,14 @@
 
 🧪 **TESTADO**
 
+- **Livro de receitas e domínio: 498 testes automatizados PASSARAM.**
+  - **Receitas:** as 4 abas (válidas, na ordem, cada receita com a sua), uma receita nova a cada nível até o 17, as receitas de cada aba por nível, receita sem aba recusada, todas com desenho de prato e de panela, todas cabendo num balcão e o equilíbrio (demorado rende mais por fornada e dá mais XP; rápido rende mais por minuto).
+  - **Domínio:** as metas válidas e crescentes, a estrela em cada meta, o prêmio que cresce com a estrela, o prêmio pago na hora ao tirar o prato e o save (saves antigos começam sem estrelas).
+  - **Na tela:** o livro abre na primeira aba e só com as receitas dela, abre na aba do prato esperado (com a bolinha certa), cada fogão lembra a aba, as estrelas acesas e a dica nos cartões, o aviso da estrela nova, o domínio marca para salvar e as páginas de uma aba grande.
+  - Os testes antigos do painel do fogão passaram a usar as abas.
+  - **Defeitos inseridos de propósito: 22 de 22 pegos.**
+  - **Foto conferida:** o livro aberto na aba Brasil, com as estrelas da Coxinha e do Pastel e o Escondidinho travado até o nível 16.
+  - **Cena principal: PASSOU**, zero erros.
 - **Máquinas de bebida e energia: 478 testes automatizados PASSARAM.**
   - **Energia:** começa cheia, gasta e recusa quando falta, recarrega 1 ponto por minuto sem passar do máximo, cheia não acumula tempo, conta o que falta, recarrega com o jogo fechado, relógio para trás não dá energia, e o nível aumenta o máximo e enche a barra.
   - **Bebidas:** os dados (cada bebida com máquina e desenho); sem máquina ninguém pede bebida; com máquina pedem só as liberadas; servir gasta energia, dá XP e o cliente paga o preço da bebida; sem energia não sai; não serve duas vezes nem sem a máquina certa; máquina vendida deixa o cliente ir sem tirar popularidade; quem desiste da bebida tira popularidade; e o save guarda a energia (saves antigos começam cheios).

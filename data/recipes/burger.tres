@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"burger"
+display_name = "Hambúrguer"
+cook_time = 600.0
+servings = 18
+ingredient_cost = 130
+sell_price = 15
+xp_reward = 55
+book = &"mundo"
+unlock_level = 14
+placeholder_color = Color(0.55, 0.3, 0.15, 1)

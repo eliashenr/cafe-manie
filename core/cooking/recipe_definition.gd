@@ -21,6 +21,8 @@ extends Resource
 @export var xp_reward := 5
 ## Nível do jogador a partir do qual a receita pode ser preparada.
 @export var unlock_level := 1
+## Aba do livro de receitas onde ela fica (res://data/recipe_books, DT-053).
+@export var book: StringName = &"basico"
 
 @export_group("Placeholder")
 ## PLACEHOLDER_FOOD: cor usada para o prato até existir arte.
@@ -29,7 +31,7 @@ extends Resource
 
 func is_valid() -> bool:
 	return id != &"" and cook_time > 0.0 and servings > 0 and ingredient_cost >= 0 \
-		and sell_price >= 0 and xp_reward >= 0 and unlock_level >= 1
+		and sell_price >= 0 and xp_reward >= 0 and unlock_level >= 1 and book != &""
 
 
 ## Lucro de uma fornada inteira vendida (sem gorjetas).

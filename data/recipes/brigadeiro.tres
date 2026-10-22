@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"brigadeiro"
+display_name = "Brigadeiro"
+cook_time = 120.0
+servings = 12
+ingredient_cost = 28
+sell_price = 5
+xp_reward = 9
+book = &"doces"
+unlock_level = 5
+placeholder_color = Color(0.32, 0.18, 0.1, 1)

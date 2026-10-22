@@ -1,6 +1,7 @@
 """Comidas v3: os pratos da v2 com balões, carinhas e selos de fogão no visual claro e colorido."""
 from core3 import *
 import food as _f2
+import dishes3
 from food import NAMES  # noqa: F401
 
 BLUE = "#1f7ae0"
@@ -8,6 +9,8 @@ BLUE_D = "#1456a8"
 
 
 def food(D, kind, cx, cy, size=48):
+    if kind in dishes3.DISHES:  # pratos novos do livro de receitas (DT-053)
+        return dishes3.dish(D, kind, cx, cy, size)
     return _f2.food(D, kind, cx, cy, size)
 
 

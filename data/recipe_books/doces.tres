@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RecipeBookDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_book_definition.gd" id="1_book"]
+
+[resource]
+script = ExtResource("1_book")
+id = &"doces"
+display_name = "Doces"
+order = 2
+color = Color(1, 0.373, 0.635, 1)

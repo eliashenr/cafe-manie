@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"cheesecake"
+display_name = "Cheesecake"
+cook_time = 2700.0
+servings = 24
+ingredient_cost = 260
+sell_price = 23
+xp_reward = 140
+book = &"doces"
+unlock_level = 12
+placeholder_color = Color(0.98, 0.9, 0.75, 1)

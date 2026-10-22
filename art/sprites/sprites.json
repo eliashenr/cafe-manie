@@ -1675,6 +1675,78 @@
     273.67
    ]
   },
+  "panela_brigadeiro": {
+   "anchor": [
+    67.67,
+    289.67
+   ]
+  },
+  "panela_pastel": {
+   "anchor": [
+    41.67,
+    262.67
+   ]
+  },
+  "panela_pizza": {
+   "anchor": [
+    39.67,
+    262.67
+   ]
+  },
+  "panela_pancakes": {
+   "anchor": [
+    41.67,
+    262.67
+   ]
+  },
+  "panela_feijoada": {
+   "anchor": [
+    67.67,
+    289.67
+   ]
+  },
+  "panela_sushi": {
+   "anchor": [
+    60.67,
+    194.67
+   ]
+  },
+  "panela_cheesecake": {
+   "anchor": [
+    39.67,
+    262.67
+   ]
+  },
+  "panela_moqueca": {
+   "anchor": [
+    67.67,
+    289.67
+   ]
+  },
+  "panela_burger": {
+   "anchor": [
+    41.67,
+    262.67
+   ]
+  },
+  "panela_croissant": {
+   "anchor": [
+    62.67,
+    268.67
+   ]
+  },
+  "panela_escondidinho": {
+   "anchor": [
+    62.67,
+    268.67
+   ]
+  },
+  "panela_tacos": {
+   "anchor": [
+    41.67,
+    262.67
+   ]
+  },
   "fogao_aceso_r0": {
    "anchor": [
     87.67,
@@ -3884,6 +3956,78 @@
     62.48
    ]
   },
+  "prato_brigadeiro": {
+   "anchor": [
+    52.8,
+    20.48
+   ]
+  },
+  "prato_pastel": {
+   "anchor": [
+    52.8,
+    3.48
+   ]
+  },
+  "prato_pizza": {
+   "anchor": [
+    52.8,
+    5.48
+   ]
+  },
+  "prato_pancakes": {
+   "anchor": [
+    52.8,
+    18.48
+   ]
+  },
+  "prato_feijoada": {
+   "anchor": [
+    52.8,
+    55.48
+   ]
+  },
+  "prato_sushi": {
+   "anchor": [
+    52.8,
+    5.48
+   ]
+  },
+  "prato_cheesecake": {
+   "anchor": [
+    52.8,
+    15.48
+   ]
+  },
+  "prato_moqueca": {
+   "anchor": [
+    57.8,
+    55.48
+   ]
+  },
+  "prato_burger": {
+   "anchor": [
+    52.8,
+    23.48
+   ]
+  },
+  "prato_croissant": {
+   "anchor": [
+    52.8,
+    25.48
+   ]
+  },
+  "prato_escondidinho": {
+   "anchor": [
+    52.8,
+    61.48
+   ]
+  },
+  "prato_tacos": {
+   "anchor": [
+    52.8,
+    16.48
+   ]
+  },
   "humor_feliz": {
    "anchor": [
     32.07,
@@ -5563,7 +5707,19 @@
   "toasted_sandwich": "panela_toasted_sandwich",
   "carrot_cake": "panela_carrot_cake",
   "coxinha": "panela_coxinha",
-  "lasagna": "panela_lasagna"
+  "lasagna": "panela_lasagna",
+  "brigadeiro": "panela_brigadeiro",
+  "pastel": "panela_pastel",
+  "pizza": "panela_pizza",
+  "pancakes": "panela_pancakes",
+  "feijoada": "panela_feijoada",
+  "sushi": "panela_sushi",
+  "cheesecake": "panela_cheesecake",
+  "moqueca": "panela_moqueca",
+  "burger": "panela_burger",
+  "croissant": "panela_croissant",
+  "escondidinho": "panela_escondidinho",
+  "tacos": "panela_tacos"
  },
  "stove_glow": {
   "0": "fogao_aceso_r0",
@@ -5672,7 +5828,19 @@
   "toasted_sandwich": "prato_toasted_sandwich",
   "carrot_cake": "prato_carrot_cake",
   "coxinha": "prato_coxinha",
-  "lasagna": "prato_lasagna"
+  "lasagna": "prato_lasagna",
+  "brigadeiro": "prato_brigadeiro",
+  "pastel": "prato_pastel",
+  "pizza": "prato_pizza",
+  "pancakes": "prato_pancakes",
+  "feijoada": "prato_feijoada",
+  "sushi": "prato_sushi",
+  "cheesecake": "prato_cheesecake",
+  "moqueca": "prato_moqueca",
+  "burger": "prato_burger",
+  "croissant": "prato_croissant",
+  "escondidinho": "prato_escondidinho",
+  "tacos": "prato_tacos"
  },
  "drinks": {
   "espresso": "bebida_espresso",

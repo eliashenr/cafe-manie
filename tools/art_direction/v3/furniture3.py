@@ -1,6 +1,7 @@
 """Móveis v3: cores vivas, cromado, vidro e verniz. Alturas em px para W=96 (escalam com iso.W)."""
 from core3 import *
 from food3 import food
+import dishes3
 
 CHROME = "#c9d3de"
 WOOD_L = "#f0b56a"
@@ -205,6 +206,8 @@ def cookware(D, iso, kind, cx, cy, z):
         o.append(cyl3(D, iso, cx, cy, 0.2, z, z + 10 * k, "#6e727c", metal=True))
         ex, ey, erx, ery = iso.ell(cx, cy, z + 10 * k, 0.17)
         o.append(E(ex, ey, erx, ery, D.rad([(0, "#ffc978"), (1, "#f08a22")]), None))
+    elif kind in dishes3.COOKWARE:
+        o.append(dishes3.cookware(D, iso, kind, cx, cy, z, k))
     elif kind == "lasanha":
         o.append(box3(D, iso, cx - 0.26, cy - 0.2, 0.52, 0.4, 9 * k, "#ffffff", z=z, sw=0.9))
         o.append(box3(D, iso, cx - 0.22, cy - 0.16, 0.44, 0.32, 1, "#f2b43f", z=z + 8 * k, sw=0, bevel=False))

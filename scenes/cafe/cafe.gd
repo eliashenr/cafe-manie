@@ -117,6 +117,7 @@ func _ready() -> void:
 	simulation.mission_completed.connect(_on_mission_completed)
 	simulation.board_mission_completed.connect(_on_board_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
+	simulation.recipe_mastered.connect(_on_recipe_mastered)
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
@@ -282,6 +283,7 @@ func _watch_for_changes() -> void:
 	simulation.stats.changed.connect(_mark_dirty.unbind(2))
 	simulation.daily.changed.connect(_mark_dirty)
 	simulation.energy.changed.connect(_mark_dirty)
+	simulation.mastery.changed.connect(_mark_dirty)
 
 
 func _mark_dirty() -> void:
@@ -319,6 +321,7 @@ func _connect_sounds() -> void:
 	simulation.leveled_up.connect(play.bind(&"level_up").unbind(1))
 	simulation.mission_completed.connect(play.bind(&"achievement").unbind(1))
 	simulation.achievement_unlocked.connect(play.bind(&"achievement").unbind(2))
+	simulation.recipe_mastered.connect(play.bind(&"achievement").unbind(3))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
@@ -460,6 +463,12 @@ func _on_leveled_up(level: int) -> void:
 		text += "  Nova máquina na Loja: %s" % ", ".join(machines)
 	EventBus.message_posted.emit(text)
 	state_changed.emit()
+
+
+## Estrela de domínio de uma receita (DT-053): aviso com o prêmio (já entregue).
+func _on_recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary) -> void:
+	EventBus.message_posted.emit("Domínio de %s: estrela %d de %d!  +%s de Café Ouro e +%d XP" % [recipe.display_name, stars,
+		simulation.mastery.config.max_stars(), UiTheme.thousands(reward["gold"]), reward["xp"]])
 
 
 ## Missão diária ou semanal concluída: aviso com a recompensa (já entregue).

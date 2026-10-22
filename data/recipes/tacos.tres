@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"tacos"
+display_name = "Tacos"
+cook_time = 900.0
+servings = 20
+ingredient_cost = 170
+sell_price = 18
+xp_reward = 80
+book = &"mundo"
+unlock_level = 17
+placeholder_color = Color(0.92, 0.7, 0.3, 1)

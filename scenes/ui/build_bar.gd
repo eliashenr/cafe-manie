@@ -6,7 +6,8 @@ extends CanvasLayer
 ## - nada selecionado: a faixa de ícones (Loja, Reformar, Expandir, Missões,
 ##   Presentes, Conquistas); a Loja abre o painel em abas (Salão, Cozinha,
 ##   Decoração, Pisos, Paredes) com os quadradinhos dos itens;
-## - fogão selecionado: receitas para cozinhar (ou o tempo que falta), e as ações do móvel;
+## - fogão selecionado: o livro de receitas, em abas (DT-053), com as estrelas de domínio de cada receita (ou o
+##   tempo que falta), e as ações do móvel;
 ## - balcão selecionado: o que tem nele, e as ações do móvel;
 ## - outro móvel selecionado: Mover, Girar, Guardar, Vender e Fechar;
 ## - construindo: instrução ou motivo da recusa, preço, Girar, Confirmar e Cancelar.
@@ -19,6 +20,10 @@ const ICON_BUTTON_SIZE := Vector2(92, 74)
 ## Quadradinhos por página da loja.
 const ITEMS_PER_PAGE := 6
 const RECIPE_BUTTON_SIZE := Vector2(132, 92)
+## Receitas por página de uma aba do livro.
+const RECIPES_PER_PAGE := 6
+## Lado das estrelas de domínio no cartão da receita.
+const MASTERY_STAR_SIZE := 16.0
 const TAB_SIZE := Vector2(128, 50)
 const MESSAGE_SIZE := 17
 
@@ -94,6 +99,10 @@ var shop_open := false
 ## Coleção escolhida na loja (&"" = todas) e a página dos quadradinhos.
 var shop_collection: StringName = &""
 var shop_page := 0
+## Aba do livro de receitas escolhida em cada fogão (id do fogão -> id da aba) e a página de cada aba. Sem escolha,
+## o livro abre na aba de um prato que algum cliente espera (ou na primeira).
+var _chosen_book := {}
+var _recipe_page := {}
 
 var _root: Control
 var _stack: VBoxContainer
@@ -262,7 +271,7 @@ func message_text() -> String:
 
 func find_button(button_name: String) -> Button:
 	for row: Node in [_primary, _buttons, _tabs, _chips, _items]:
-		var button := row.get_node_or_null(button_name) as Button
+		var button := row.find_child(button_name, true, false) as Button
 		if button != null:
 			return button
 	return null
@@ -394,9 +403,10 @@ func _signature() -> Array:
 	var stove_status := -1
 	if _has_selection() and cafe.simulation.kitchen.is_stove(cafe.selected_id):
 		stove_status = cafe.simulation.kitchen.stove_status(cafe.selected_id)
+	var book: StringName = _chosen_book.get(cafe.selected_id, &"") if _has_selection() else &""
 	return [cafe.mode, cafe.selected_id if _has_selection() else &"", stove_status,
 		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty(), shop_tab, shop_open,
-		shop_collection, shop_page]
+		shop_collection, shop_page, book, _recipe_page.get(book, 0)]
 
 
 func _refresh_in_place() -> void:
@@ -764,9 +774,11 @@ func _show_stove_controls(stove_id: StringName) -> void:
 	var simulation := cafe.simulation
 	match simulation.kitchen.stove_status(stove_id):
 		Kitchen.StoveStatus.IDLE:
-			for recipe in simulation.recipes.all():
+			var cards := _show_recipe_book(stove_id)
+			for recipe in _book_page(current_book(stove_id)):
 				var dish := recipe
-				var button := _add_recipe(dish, func() -> void: cafe.cook_on_selected(dish.id))
+				var button := _add_recipe(dish, func() -> void: cafe.cook_on_selected(dish.id), cards)
+				_add_mastery_stars(button, dish)
 				var badge := _add_demand_badge(button)
 				_updaters.append(func() -> void:
 					var waiting := int(simulation.waiting_demand().get(dish.id, 0))
@@ -877,7 +889,159 @@ func _add_demand_badge(button: Button) -> Label:
 	return badge
 
 
-func _add_recipe(dish: RecipeDefinition, action: Callable) -> Button:
+## Aba do livro aberta no fogão: a escolhida pelo jogador, ou a de um prato que algum cliente espera, ou a primeira.
+func current_book(stove_id: StringName) -> StringName:
+	var recipes := cafe.simulation.recipes
+	var chosen: StringName = _chosen_book.get(stove_id, &"")
+	if recipes.get_book(chosen) != null:
+		return chosen
+	var demand := cafe.simulation.waiting_demand()
+	for recipe in recipes.all():
+		if demand.has(recipe.id) and recipes.get_book(recipe.book) != null:
+			return recipe.book
+	var books := recipes.books()
+	return books[0].id if not books.is_empty() else &""
+
+
+## Abre outra aba do livro de receitas no fogão escolhido.
+func show_recipe_book(book_id: StringName) -> void:
+	if _has_selection():
+		_chosen_book[cafe.selected_id] = book_id
+		_request_rebuild()
+
+
+## Troca a página da aba do livro aberta no fogão escolhido.
+func show_recipe_page(page: int) -> void:
+	if not _has_selection():
+		return
+	var book := current_book(cafe.selected_id)
+	_recipe_page[book] = clampi(page, 0, recipe_page_count(book) - 1)
+	_request_rebuild()
+
+
+func recipe_page_count(book_id: StringName) -> int:
+	return maxi(1, ceili(cafe.simulation.recipes.in_book(book_id).size() / float(RECIPES_PER_PAGE)))
+
+
+## Receitas da página atual da aba.
+func _book_page(book_id: StringName) -> Array[RecipeDefinition]:
+	var recipes := cafe.simulation.recipes.in_book(book_id)
+	var page := clampi(int(_recipe_page.get(book_id, 0)), 0, recipe_page_count(book_id) - 1)
+	return recipes.slice(page * RECIPES_PER_PAGE, (page + 1) * RECIPES_PER_PAGE)
+
+
+## O livro de receitas no cartão de cima: as abas (com uma bolinha onde há prato esperado) e a fileira dos cartões,
+## com as setas de página quando a aba não cabe numa fileira só. Retorna a fileira dos cartões.
+func _show_recipe_book(stove_id: StringName) -> HBoxContainer:
+	var simulation := cafe.simulation
+	var book := current_book(stove_id)
+	var column := VBoxContainer.new()
+	column.name = "RecipeBook"
+	column.add_theme_constant_override("separation", 8)
+	_primary.add_child(column)
+	var tabs := HBoxContainer.new()
+	tabs.name = "RecipeBooks"
+	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs.add_theme_constant_override("separation", 6)
+	column.add_child(tabs)
+	for entry in simulation.recipes.books():
+		var book_id := entry.id
+		var chip := _book_chip(entry, book_id == book)
+		chip.pressed.connect(func() -> void: show_recipe_book(book_id))
+		tabs.add_child(chip)
+		var dot := _add_demand_badge(chip)
+		dot.name = "BookDemand"
+		dot.position = Vector2(-8, -8)
+		dot.tooltip_text = "Clientes esperando um prato desta aba"
+		_updaters.append(func() -> void:
+			var waiting := 0
+			var demand := simulation.waiting_demand()
+			for recipe in simulation.recipes.in_book(book_id):
+				waiting += int(demand.get(recipe.id, 0))
+			dot.visible = waiting > 0
+			dot.text = str(waiting))
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 10)
+	column.add_child(row)
+	var pages := recipe_page_count(book)
+	var page := clampi(int(_recipe_page.get(book, 0)), 0, pages - 1)
+	if pages > 1:
+		var prev := UiTheme.icon_button("RecipePrevButton", "left", "", 32)
+		prev.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		prev.disabled = page == 0
+		prev.pressed.connect(func() -> void: show_recipe_page(page - 1))
+		row.add_child(prev)
+	var cards := HBoxContainer.new()
+	cards.name = "Recipes"
+	cards.add_theme_constant_override("separation", 10)
+	row.add_child(cards)
+	if pages > 1:
+		var next := UiTheme.icon_button("RecipeNextButton", "right", "", 32)
+		next.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		next.disabled = page >= pages - 1
+		next.pressed.connect(func() -> void: show_recipe_page(page + 1))
+		row.add_child(next)
+	return cards
+
+
+## Aba do livro: pílula na cor da aba, cheia quando é a aberta.
+func _book_chip(book: RecipeBookDefinition, active: bool) -> Button:
+	var chip := Button.new()
+	chip.name = "Book_" + String(book.id)
+	chip.text = book.display_name
+	chip.toggle_mode = true
+	chip.button_pressed = active
+	chip.focus_mode = Control.FOCUS_NONE
+	chip.custom_minimum_size = Vector2(92, 32)
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		var box := StyleBoxFlat.new()
+		box.bg_color = book.color if active else (Color.WHITE if state != "hover" else book.color.lightened(0.85))
+		box.border_color = book.color.darkened(0.2)
+		box.set_border_width_all(2)
+		box.set_corner_radius_all(16)
+		box.content_margin_left = 14
+		box.content_margin_right = 14
+		box.anti_aliasing = true
+		chip.add_theme_stylebox_override(state, box)
+	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
+		chip.add_theme_color_override(color_name, Color.WHITE if active else book.color.darkened(0.35))
+	chip.add_theme_constant_override("outline_size", 3 if active else 0)
+	chip.add_theme_color_override("font_outline_color", book.color.darkened(0.45))
+	chip.add_theme_font_size_override("font_size", 15)
+	return chip
+
+
+## Estrelas de domínio no canto do cartão da receita (acesas as ganhas) e quanto falta, na dica.
+func _add_mastery_stars(button: Button, dish: RecipeDefinition) -> void:
+	var mastery := cafe.simulation.mastery
+	var stars := HBoxContainer.new()
+	stars.name = "Stars"
+	stars.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stars.add_theme_constant_override("separation", 0)
+	stars.position = Vector2(4, 3)
+	button.add_child(stars)
+	for i in mastery.config.max_stars():
+		var star := TextureRect.new()
+		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		star.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		star.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		star.custom_minimum_size = Vector2(MASTERY_STAR_SIZE, MASTERY_STAR_SIZE)
+		stars.add_child(star)
+	_updaters.append(func() -> void:
+		var earned := mastery.stars(dish.id)
+		for i in stars.get_child_count():
+			var sprite := ArtSprites.get_sprite("icone_estrela" if i < earned else "icone_estrela_vazia")
+			if sprite != null:
+				(stars.get_child(i) as TextureRect).texture = sprite.texture
+		var goal := mastery.next_goal(dish.id)
+		if goal < 0:
+			button.tooltip_text = "Domínio completo: %d estrelas" % earned
+		else:
+			button.tooltip_text = "Domínio: %d de %d pratos para a próxima estrela" % [mastery.count(dish.id), goal])
+
+
+func _add_recipe(dish: RecipeDefinition, action: Callable, parent: Control = null) -> Button:
 	var button := Button.new()
 	button.name = "Cook_" + String(dish.id)
 	var food := ArtSprites.food(dish.id)
@@ -908,7 +1072,7 @@ func _add_recipe(dish: RecipeDefinition, action: Callable) -> Button:
 	button.add_theme_constant_override("outline_size", 0)
 	button.add_theme_font_size_override("font_size", 14)
 	button.pressed.connect(func() -> void: action.call())
-	_primary.add_child(button)
+	(parent if parent != null else _primary).add_child(button)
 	return button
 
 

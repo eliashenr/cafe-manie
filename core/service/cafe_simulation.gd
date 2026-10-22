@@ -30,6 +30,8 @@ signal waiter_hired(count: int)
 signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 ## O jogador serviu uma bebida (a energia já foi gasta; o cliente paga quando terminar de beber).
 signal drink_served(customer: Customer, drink: DrinkDefinition)
+## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
+signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção
@@ -53,6 +55,7 @@ const EXPANSIONS_PATH := "res://data/config/expansions.tres"
 const ECONOMY_PATH := "res://data/config/economy.tres"
 const DAILY_REWARDS_PATH := "res://data/config/daily_rewards.tres"
 const ENERGY_PATH := "res://data/config/energy.tres"
+const MASTERY_PATH := "res://data/config/mastery.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -69,6 +72,8 @@ var recipes: RecipeCatalog
 var drinks: DrinkCatalog
 ## Energia gasta pelas bebidas; recarrega sozinha com o tempo.
 var energy: Energy
+## Domínio das receitas: estrelas por cozinhar muitas vezes a mesma (DT-053).
+var mastery: RecipeMastery
 var customer_types: Array[CustomerType] = []
 
 var wallet := Wallet.new()
@@ -129,6 +134,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	progression = PlayerProgression.new(level_table)
 	progression.leveled_up.connect(_on_leveled_up)
 	energy = Energy.new(load(ENERGY_PATH), clock.now(), progression.level)
+	mastery = RecipeMastery.new(load(MASTERY_PATH))
 	kitchen = Kitchen.new(clock, layout, config.counter_capacity)
 	# A navegação precisa ser reconstruída antes de os personagens recalcularem caminho,
 	# então ela se conecta ao layout antes da simulação.
@@ -320,7 +326,21 @@ func collect(stove_id: StringName) -> int:
 		_record(MissionDefinition.Kind.COOK_SLOW, 1, recipe)
 		_record(MissionDefinition.Kind.EARN_XP, recipe.xp_reward)
 		stats.add(PlayerStats.DISHES_COOKED)
+		_record_mastery(recipe)
 	return result
+
+
+## Mais um prato pronto conta para o domínio da receita; uma estrela nova paga o prêmio dela na hora.
+func _record_mastery(recipe: RecipeDefinition) -> void:
+	if mastery.record(recipe.id) <= 0:
+		return
+	var star := mastery.stars(recipe.id)
+	var prize := mastery.reward(recipe, star)
+	wallet.earn(Wallet.SOFT, prize["gold"], "Domínio: %s" % recipe.display_name)
+	progression.add_xp(prize["xp"])
+	_record(MissionDefinition.Kind.EARN_GOLD, prize["gold"])
+	_record(MissionDefinition.Kind.EARN_XP, prize["xp"])
+	recipe_mastered.emit(recipe, star, prize)
 
 
 # --- Garçons ----------------------------------------------------------------

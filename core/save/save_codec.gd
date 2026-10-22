@@ -5,7 +5,7 @@ extends RefCounted
 ## O que é salvo: layout (móveis com os ids originais e tamanho da cafeteria),
 ## cozinha (receita e horário de início de cada fogão; porções de cada balcão),
 ## carteira, XP, popularidade, inventário, missões, quantos garçons foram contratados, se o café está fechado e a
-## energia das máquinas de bebida.
+## energia das máquinas de bebida e o domínio das receitas.
 ## Os personagens em si não são salvos: ao voltar, a cafeteria reabre vazia, e as porções que estavam
 ## reservadas para pedidos voltam ao balcão.
 ##
@@ -18,8 +18,9 @@ extends RefCounted
 ## viram para a mesa uma vez (com a arte, para onde a cadeira olha aparece);
 ## 5 = acrescenta quantos garçons a cafeteria contratou; 6 = revestimento pintado piso a piso e
 ## trecho a trecho de parede; 7 = itens de parede escolhidos pelo jogador (antes, enfeites fixos);
-## 8 = missões diárias e semanais; 9 = placa ABERTO/FECHADO da porta; 10 = energia das máquinas de bebida.
-const CURRENT_VERSION := 10
+## 8 = missões diárias e semanais; 9 = placa ABERTO/FECHADO da porta; 10 = energia das máquinas de bebida;
+## 11 = domínio das receitas.
+const CURRENT_VERSION := 11
 
 ## Marca posta pela migração para a versão 7: o decode pendura os enfeites de sempre, para o save antigo
 ## continuar com a mesma cara. A marca não volta a ser gravada.
@@ -77,6 +78,7 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"waiters": simulation.waiters.size(),
 		"closed": simulation.closed,
 		"energy": simulation.energy.to_data(),
+		"mastery": simulation.mastery.to_data(),
 	}
 
 
@@ -143,6 +145,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.progression.restore_xp(int(data.get("xp", 0)))
 	simulation.energy.set_level(simulation.progression.level, clock.now())
 	simulation.energy.restore(_dict(data.get("energy")), clock.now())
+	simulation.mastery.restore(_dict(data.get("mastery")))
 	simulation.restore_popularity(float(data.get("popularity", simulation.config.popularity_start)))
 	simulation.inventory.restore(_dict(data.get("inventory")))
 	simulation.missions.restore(_dict(data.get("missions")))
@@ -211,7 +214,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9, _v9_to_v10]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9, _v9_to_v10, _v10_to_v11]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -267,6 +270,12 @@ static func _v8_to_v9(data: Dictionary) -> Dictionary:
 ## Versão 10 acrescentou a energia das máquinas de bebida: saves antigos começam com ela cheia.
 static func _v9_to_v10(data: Dictionary) -> Dictionary:
 	data["energy"] = {}
+	return data
+
+
+## Versão 11 acrescentou o domínio das receitas: saves antigos começam sem estrelas.
+static func _v10_to_v11(data: Dictionary) -> Dictionary:
+	data["mastery"] = {}
 	return data
 
 

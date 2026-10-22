@@ -54,7 +54,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 | Recurso do Café Mania | Café Manie hoje | Distância |
 |---|---|---|
 | Cozinhar no fogão, balcão com porções e garçons servindo | Tem | — |
-| Pratos | **6** (do café à lasanha, de 15 s a 15 min) | **Grande:** lá eram ~90, um novo quase a cada nível, de minutos a dias |
+| Pratos | **18** (DT-053), um novo a cada nível até o 17, de 15 s a 3 h, em um livro com abas e domínio | Média: lá eram ~90; faltam os níveis 18 a 30 |
 | Comida que estraga no fogão | Não | Média |
 | Temperos | Não | Média |
 | Máquina de sucos ou café (bebidas) | **Tem** (DT-052): máquinas de café e de sucos, 6 bebidas, com energia | — |
@@ -75,7 +75,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 | Fogões com perfis diferentes, de evento (com níveis) e em partes | Todos os fogões iguais por dentro (só muda o visual) | Média (ver 3.10) |
 | Troféus que aceleram os fogões em volta | Não | **Pequena**, e combina com o quadriculado (ver 3.11) |
 | Noite no café, com cardápio noturno | Não | Média (ver 3.12) |
-| Livro de receitas com abas e domínio | Não | Média (ver 3.13) |
+| Livro de receitas com abas e domínio | **Tem** (DT-053): 4 abas e 3 estrelas de domínio por receita | — |
 | Plantação de frutas para uma máquina | Não | Média (ver 3.14) |
 | Crítico que dá cupons e loja de troca | Não | Média (ver 3.15) |
 | Atrações em que o cliente brinca, e palco | Não | Média (ver 3.16) |
@@ -242,7 +242,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 2. **Feito em 22/10:**
    - placa ABERTO/FECHADO (3.1, DT-051);
    - máquinas de café e de sucos com energia (3.2, DT-052).
-3. **Depois:** receitas novas até o nível 30, com tempos longos (3.3), já dentro do livro com abas e domínio (3.13).
+3. **Feito em parte (DT-053):** livro com abas e domínio (3.13) e 12 receitas novas até o nível 17 (3.3). Faltam as receitas do nível 18 ao 30.
 4. **Depois:** temperos e comida que estraga (3.4), com os troféus que aceleram os fogões em volta (3.11).
 5. **Depois:** fogões com perfil, de evento e em partes (3.10), no lugar dos "rápido e turbo" da 3.6.
 6. **Depois:** crítico com cupons e loja de troca (3.5 e 3.15) e o primeiro evento com prazo (3.17).

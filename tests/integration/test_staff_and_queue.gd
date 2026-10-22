@@ -73,7 +73,10 @@ func test_stove_panel_shows_how_many_customers_wait_for_each_dish() -> void:
 	assert_eq(customer.state, Customer.State.WAITING_FOR_FOOD, "pediu com o balcão vazio")
 	cafe.select_at_world(IsoProjection.cell_center(Vector2i(0, 0)))
 	await settle()
+	assert_eq(cafe.build_bar.current_book(cafe.selected_id), customer.order.book, "o livro abre na aba do prato esperado")
 	for recipe in simulation.recipes.all():
+		cafe.build_bar.show_recipe_book(recipe.book)
+		await settle()
 		var button := cafe.build_bar.find_button("Cook_" + String(recipe.id))
 		var badge := button.get_node("DemandBadge") as Label
 		if recipe == customer.order:

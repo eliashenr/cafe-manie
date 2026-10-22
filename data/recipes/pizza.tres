@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"pizza"
+display_name = "Pizza"
+cook_time = 1200.0
+servings = 20
+ingredient_cost = 150
+sell_price = 17
+xp_reward = 70
+book = &"mundo"
+unlock_level = 8
+placeholder_color = Color(0.86, 0.3, 0.2, 1)

@@ -4,6 +4,39 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-053 — Livro de receitas, domínio e 12 receitas novas
+
+**Problema:**
+- O jogo tinha 6 pratos, contra uns 90 no Café Mania. Era a maior distância que sobrava no relatório (propostas 3.3 e 3.13).
+- Com muitas receitas, o painel do fogão (uma fileira de cartões) não cabe mais.
+- As fotos do Facebook mostraram o livro de receitas do original dividido em abas e o "domínio" de receitas com prêmios.
+
+**Decisão:**
+- **12 receitas novas**, uma a cada nível do 5 ao 17, de 2 minutos a 3 horas:
+  - Básico: Panquecas com Mel e Croissant;
+  - Brasil: Pastel, Feijoada, Moqueca e Escondidinho;
+  - Doces: Brigadeiro e Cheesecake;
+  - Mundo: Pizza, Sushi, Hambúrguer e Tacos.
+  - Cada uma tem desenho de prato e de panela no fogão, no mesmo estilo das outras (`tools/art_direction/v3/dishes3.py`).
+- **Equilíbrio**, protegido por teste: entre dois pratos em que um demora pelo menos 4 vezes mais,
+  - o demorado rende mais ouro e mais XP por fornada (para quem fecha o jogo e volta depois);
+  - o rápido rende mais ouro por minuto (para quem joga ativo).
+- **Livro de receitas em abas** (`data/recipe_books`: Básico, Brasil, Doces e Mundo; cada receita diz a aba no campo `book`):
+  - o fogão livre abre o livro na aba de um prato que algum cliente espera (ou na primeira);
+  - cada aba mostra uma bolinha com quantos esperam pratos dela;
+  - cada fogão lembra a aba escolhida;
+  - abas com mais de 6 receitas ganham setas de página (pronto para as próximas receitas).
+- **Domínio** (`RecipeMastery`, metas em `data/config/mastery.tres`):
+  - cada prato tirado pronto do fogão (pelo jogador ou pelo garçom) conta para a receita;
+  - com 5, 20 e 60 pratos, a receita ganha uma estrela;
+  - cada estrela paga na hora um prêmio: 2, 4 e 8 vezes o custo dos ingredientes em ouro, e 1, 2 e 4 vezes o XP da receita;
+  - as estrelas aparecem no canto de cada cartão do livro, e a dica do cartão diz quanto falta;
+  - a estrela nova avisa: "Domínio de Café: estrela 1 de 3! +12 de Café Ouro e +2 XP".
+- **O save guarda o domínio** (versão 11). Saves antigos começam sem estrelas.
+- **Próxima etapa:** mais 12 receitas, do nível 18 ao 30.
+
+---
+
 ## DT-052 — Máquinas de bebida e energia
 
 **Problema:**

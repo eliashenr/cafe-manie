@@ -11,5 +11,6 @@ servings = 20
 ingredient_cost = 120
 sell_price = 14
 xp_reward = 50
+book = &"mundo"
 unlock_level = 6
 placeholder_color = Color(0.8, 0.25, 0.15, 1)

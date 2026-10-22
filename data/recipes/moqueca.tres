@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"moqueca"
+display_name = "Moqueca"
+cook_time = 7200.0
+servings = 32
+ingredient_cost = 420
+sell_price = 30
+xp_reward = 260
+book = &"brasil"
+unlock_level = 13
+placeholder_color = Color(0.91, 0.45, 0.16, 1)

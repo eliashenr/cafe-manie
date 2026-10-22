@@ -399,7 +399,11 @@ def export_people(sheet, manifest):
 
 # id da receita no jogo -> prato do gerador
 FOODS = {"coffee": "cafe", "cheese_bread": "pao", "toasted_sandwich": "misto", "carrot_cake": "bolo",
-         "coxinha": "coxinha", "lasagna": "lasanha"}
+         "coxinha": "coxinha", "lasagna": "lasanha",
+         # livro de receitas (DT-053)
+         "brigadeiro": "brigadeiro", "pastel": "pastel", "pizza": "pizza", "pancakes": "panqueca",
+         "feijoada": "feijoada", "sushi": "sushi", "cheesecake": "cheesecake", "moqueca": "moqueca",
+         "burger": "hamburguer", "croissant": "croissant", "escondidinho": "escondidinho", "tacos": "tacos"}
 FOOD_SIZE = 48.0
 # id da bebida no jogo -> desenho em drinks3
 DRINKS = {"espresso": "expresso", "cappuccino": "cappuccino", "hot_chocolate": "chocolate",

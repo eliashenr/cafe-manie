@@ -11,5 +11,6 @@ servings = 8
 ingredient_cost = 25
 sell_price = 6
 xp_reward = 8
+book = &"basico"
 unlock_level = 2
 placeholder_color = Color(0.93, 0.7, 0.35, 1)

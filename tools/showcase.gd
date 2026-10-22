@@ -7,7 +7,8 @@ extends SceneTree
 ## O foco é a célula que fica no meio da foto (ex.: 1,1 para a cozinha).
 ## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir, reforma,
 ## reforma:<revestimento>, moedas (a vitrine de Café Ouro), missoes (a janela das missões), pausa (o jogo pausado) ou
-## fechado (a placa FECHADO na porta) ou bebidas (as duas máquinas, um cliente pedindo bebida e a energia).
+## fechado (a placa FECHADO na porta), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
+## livro:<aba> (o livro de receitas aberto no fogão, no nível 13, com estrelas de domínio).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -145,6 +146,17 @@ func _set_panel() -> void:
 			_cafe.set_paused(true)
 		"fechado":
 			_cafe.set_closed(true)
+		"livro":
+			_cafe.simulation.progression.add_xp(3880)  # nível 13
+			for i in 25:
+				_cafe.simulation.mastery.record(&"coxinha")
+			for i in 6:
+				_cafe.simulation.mastery.record(&"pastel")
+			var stove = _cafe.layout.get_placement(_stoves[0])
+			_cafe.select_at_world(IsoProjection.cell_center(stove.origin))
+			var tab := _panel.get_slice(":", 1)
+			if not tab.is_empty():
+				_cafe.build_bar.show_recipe_book(StringName(tab))
 		"missoes":
 			_keep_window = "MissionsDialog"
 			for window: Window in _cafe.find_children("*", "Window", true, false):
