@@ -34,4 +34,5 @@ enum {
 	NOT_A_TROPHY,       ## o móvel escolhido não é um troféu acelerador
 	TROPHY_FULL,        ## o troféu ainda está com as cargas cheias
 	FURNITURE_LIMIT,    ## a cafeteria já tem o máximo desse móvel
+	WRONG_STOVE,        ## a receita só sai num fogão temático (DT-059)
 }

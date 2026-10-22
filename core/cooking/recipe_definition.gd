@@ -23,6 +23,8 @@ extends Resource
 @export var unlock_level := 1
 ## Aba do livro de receitas onde ela fica (res://data/recipe_books, DT-053).
 @export var book: StringName = &"basico"
+## Só sai neste modelo de fogão (id do móvel, DT-059); vazio = qualquer fogão.
+@export var stove: StringName = &""
 
 @export_group("Placeholder")
 ## PLACEHOLDER_FOOD: cor usada para o prato até existir arte.

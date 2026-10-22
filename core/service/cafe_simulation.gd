@@ -287,7 +287,7 @@ func seconds_until_new_week() -> float:
 ## Começa as diárias de hoje e as semanais desta semana, se ainda não começaram (com as metas do
 ## nível atual). Chamado a cada tick e ao carregar.
 func refresh_mission_periods() -> void:
-	var unlocked := recipes.unlocked_at(progression.level).size()
+	var unlocked := order_menu().size()
 	var new_day := daily_missions.start_period(clock.local_day(), progression.level, unlocked)
 	var new_week := weekly_missions.start_period(mission_week(), progression.level, unlocked)
 	if new_day or new_week:
@@ -322,6 +322,8 @@ func start_cooking(stove_id: StringName, recipe_id: StringName) -> int:
 		return ServiceResult.STOVE_BUSY
 	if recipe.unlock_level > progression.level:
 		return ServiceResult.RECIPE_LOCKED
+	if not fits_stove(stove_id, recipe):
+		return ServiceResult.WRONG_STOVE
 	if not wallet.can_afford(Wallet.SOFT, recipe.ingredient_cost):
 		return ServiceResult.NOT_ENOUGH_GOLD
 	var booster := trophies.booster_for(stove_id)
@@ -345,6 +347,18 @@ func cook_time_on(stove_id: StringName, recipe: RecipeDefinition) -> float:
 			base = minf(base, stove.stove_max_time)
 		cut += stove.stove_time_cut
 	return base * maxf(1.0 - cut, 1.0 - config.max_speedup)
+
+
+## A receita sai neste fogão? As do fogão temático só saem nele (DT-059).
+func fits_stove(stove_id: StringName, recipe: RecipeDefinition) -> bool:
+	var stove := _stove_definition(stove_id)
+	return recipe.stove == &"" or (stove != null and stove.id == recipe.stove)
+
+
+## Receitas que os clientes podem pedir: liberadas no nível e que algum fogão do café sabe fazer.
+func order_menu() -> Array[RecipeDefinition]:
+	return recipes.unlocked_at(progression.level).filter(
+		func(r: RecipeDefinition) -> bool: return r.stove == &"" or placed_count(r.stove) > 0)
 
 
 ## Porções a mais que o perfil do fogão dá a esta receita (DT-058).
@@ -1292,7 +1306,7 @@ func _choose_order() -> RecipeDefinition:
 
 ## Uma receita liberada, sorteada com mais chance para as rápidas (café sai mais que lasanha).
 func _pick_from_menu() -> RecipeDefinition:
-	var menu := recipes.unlocked_at(progression.level)
+	var menu := order_menu()
 	var weights: Array[float] = []
 	var total := 0.0
 	for recipe in menu:

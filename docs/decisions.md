@@ -4,6 +4,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-059 — Fogão Japonês com receitas próprias
+
+**Problema:**
+- No Café Mania, fogões temáticos liberavam receitas próprias (proposta 3.10 do relatório).
+- O Fogão Azul e Dourado, da coleção japonesa, não tinha função.
+
+**Decisão:**
+- **O Fogão Azul e Dourado virou o Fogão Japonês** (nível 11, 3.000 de Café Ouro).
+- **4 receitas que só saem nele**, numa aba nova do livro, **Japão**:
+  - Dango: 4 minutos;
+  - Sopa de Missô: 10 minutos;
+  - Yakissoba: 25 minutos;
+  - Tempurá: 50 minutos.
+  - Elas passam no mesmo teste de equilíbrio das outras.
+  - Desenhos de prato e de panela em `dishes3.py`.
+- **Campo novo `stove` em `RecipeDefinition`:** o id do fogão em que a receita sai (vazio = qualquer fogão).
+- **No fogão comum,** a aba Japão mostra os pratos apagados, com "Só no Fogão Japonês".
+- **No Fogão Japonês,** as receitas comuns também saem.
+- **Os clientes só pedem** esses pratos quando o café tem o Fogão Japonês (`CafeSimulation.order_menu`).
+  - As metas de "pratos diferentes" também só contam os pratos que o café sabe fazer.
+- **A foto de vitrine** ganhou a opção `japones`: o livro na aba Japão, aberto no Fogão Japonês.
+
+---
+
 ## DT-058 — Fogões com perfil
 
 **Problema:**

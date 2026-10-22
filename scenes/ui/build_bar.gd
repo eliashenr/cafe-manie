@@ -57,6 +57,7 @@ const SERVICE_MESSAGES := {
 	ServiceResult.NOT_A_TROPHY: "Esse móvel não é um troféu",
 	ServiceResult.TROPHY_FULL: "O troféu ainda está novinho",
 	ServiceResult.FURNITURE_LIMIT: "A cafeteria já tem o máximo desse móvel",
+	ServiceResult.WRONG_STOVE: "Essa receita só sai no fogão dela",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -860,12 +861,15 @@ func _show_stove_controls(stove_id: StringName) -> void:
 					badge.visible = waiting > 0
 					badge.text = str(waiting)
 					var locked := dish.unlock_level > simulation.progression.level
+					var other_stove := not simulation.fits_stove(stove_id, dish)
 					if locked:
 						button.text = "%s\nNível %d" % [dish.display_name, dish.unlock_level]
+					elif other_stove:
+						button.text = "%s\nSó no %s" % [dish.display_name, simulation.furniture.get_definition(dish.stove).display_name]
 					else:
 						button.text = "%s\n%s · %d ouro" % [dish.display_name, WorldLayer.format_time(simulation.cook_time_on(stove_id, dish)),
 							dish.ingredient_cost]
-					button.disabled = locked or not simulation.wallet.can_afford(Wallet.SOFT, dish.ingredient_cost))
+					button.disabled = locked or other_stove or not simulation.wallet.can_afford(Wallet.SOFT, dish.ingredient_cost))
 		Kitchen.StoveStatus.READY:
 			var serve := Button.new()
 			serve.name = "ServeButton"

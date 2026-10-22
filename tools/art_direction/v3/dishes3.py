@@ -528,3 +528,68 @@ COOKWARE.update({
     "floresta": ("redonda", "#3a1a0c", "#b8102a"), "churrasco": ("frigideira", "#b8432f", "#d98a3a"),
     "lagosta": ("panela", "#e0303a", "#ffffff"),
 })
+
+
+# --- Pratos do Fogão Japonês (DT-059): só saem no fogão temático ---------------------------------
+
+def misso(D):
+    """Tigela de sopa de missô: caldo dourado, cubinhos de tofu, alga e cebolinha."""
+    o = [_bowl(D, top=25, bottom=39, rx=14, color="#2a2a2a", inner=D.rad([(0, "#f7d9a0"), (0.7, "#e0a850"), (1, "#b8782a")]))]
+    for (x, y) in [(19, 24.6), (25, 23.4), (28.6, 25.8), (22.4, 26.4)]:
+        o.append(P([(x - 1.6, y - 0.8), (x + 1.4, y - 1.4), (x + 1.8, y + 0.8), (x - 1.2, y + 1.4)], "#fffaf0", INK3, 0.5))
+    o.append(path("M15.5,25 q3,-2 6,0 q3,2 6,0", "none", "#1f3b22", 1.4, 'opacity="0.9"'))
+    for (x, y) in [(31, 24.2), (17.4, 26.6), (26.6, 27)]:
+        o.append(C(x, y, 0.8, "#5cc23a", None))
+    o.append(_steam((18, 26), 7, 18))
+    return "".join(o)
+
+
+def yakisoba(D):
+    """Prato de yakissoba: macarrão dourado com cenoura, repolho, brócolis e pimentão."""
+    o = [_plate(D)]
+    o.append(E(24, 33, 14, 5, "#c98a3a", None, extra='opacity="0.35"'))
+    for i in range(7):  # macarrão em ondas
+        y = 30 + i * 0.9
+        o.append(path(f"M{12 + i % 2},{y} q3,-2.4 6,0 t6,0 t6,0", "none", "#e8b04a", 1.6))
+        o.append(path(f"M{12 + i % 2},{y} q3,-2.4 6,0 t6,0 t6,0", "none", "#a8701a", 0.4))
+    for (x, y, c) in [(17, 29, "#ff8a2a"), (28, 31, "#ff8a2a"), (22, 33, "#e0303a"), (31, 28.6, "#7ccf3a")]:
+        o.append(f'<rect x="{x - 2}" y="{y - 0.8}" width="4" height="1.6" rx="0.6" fill="{c}" stroke="{INK3}" stroke-width="0.4" '
+                 f'transform="rotate({(x * 7) % 50 - 25} {x} {y})"/>')
+    for (x, y) in [(20, 30.4), (30, 33)]:  # brócolis
+        o.append(C(x, y, 2, "#3fae3a", INK3, 0.5) + C(x - 1, y - 0.8, 1.1, "#5cc23a", None))
+    o.append(line(30, 18, 40, 30, "#c98a4b", 1.6) + line(33, 17, 42, 28, "#c98a4b", 1.6))
+    o.append(_steam((20, 27), 12, 24))
+    return "".join(o)
+
+
+def tempura(D):
+    """Tempurá: camarões empanados crocantes num prato, com molho e limão."""
+    o = [_plate(D)]
+    for (x, y, a) in [(17, 31, -25), (24, 29.4, -10), (31, 31.2, 8)]:
+        o.append(f'<g transform="rotate({a} {x} {y})">'
+                 + E(x, y, 4, 7.4, D.lin([(0, "#ffe9a8"), (0.6, "#f2c25a"), (1, "#d9922a")]), INK3, 0.9)
+                 + path(f"M{x - 2.4},{y - 6} l1.4,-0.8 l1,0.9 l1.2,-0.9 l1.2,0.8", "none", "#c47a1a", 0.6)
+                 + path(f"M{x - 1.6},{y + 6.6} l1.6,3 l1.6,-3 Z", "#ff6b4a", INK3, 0.6)
+                 + "</g>")
+    o.append(E(37, 36, 4.2, 1.8, "#5a2e18", INK3, 0.7))
+    o.append(path("M8,35 L13,32 A4.6,4.6 0 0,1 11,37.6 Z", "#f2ec7a", INK3, 0.7))
+    return "".join(o)
+
+
+def mochi(D):
+    """Dango: três bolinhas de mochi (rosa, branca e verde) no palito, com calda."""
+    o = [_plate(D)]
+    o.append(line(10, 37, 38, 21, "#d9a066", 1.8))
+    for (x, y, c) in [(16, 33.6, "#ffb3c7"), (23, 29.6, "#fffaf0"), (30, 25.6, "#a8e07a")]:
+        o.append(C(x, y + 0.6, 5.2, shade(c, 0.12), INK3, 1.0) + C(x, y, 5.2, c, INK3, 1.0)
+                 + E(x - 1.6, y - 2, 1.8, 1, "#ffffff", None, extra='opacity="0.7"'))
+    o.append(path("M14,30 C17,28 25,24 32,21 C33,22 32,23 31,23.4 C25,26 18,30 15,31.6 Z", "#b8701a", None, 'opacity="0.55"'))
+    return "".join(o)
+
+
+DISHES.update({"misso": misso, "yakisoba": yakisoba, "tempura": tempura, "mochi": mochi})
+
+COOKWARE.update({
+    "misso": ("panela", "#e0a850", "#fffaf0"), "yakisoba": ("frigideira", "#e8b04a", "#ff8a2a"),
+    "tempura": ("panela", "#f2c25a", "#ffe9a8"), "mochi": ("tabua", "#ffb3c7", "#a8e07a"),
+})

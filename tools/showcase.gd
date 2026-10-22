@@ -9,7 +9,8 @@ extends SceneTree
 ## reforma:<revestimento>, moedas (a vitrine de Café Ouro), missoes (a janela das missões), pausa (o jogo pausado) ou
 ## fechado (a placa FECHADO na porta), estragado (o café esquecido no fogão estragou, com o Jogar fora),
 ## temperos (a lasanha cozinhando com os temperos no painel), trofeu (um troféu de ouro entre os fogões, escolhido), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
-## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio).
+## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio)
+## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -35,6 +36,9 @@ func _initialize() -> void:
 		_focus = Vector2(float(args[4].get_slice(",", 0)), float(args[4].get_slice(",", 1)))
 	if args.size() > 5:
 		_panel = args[5]
+	var japanese := _panel == "japones"
+	if japanese:
+		_panel = "livro:japao:1:30"
 	var clock = load("res://core/time/manual_clock.gd").new()
 	var catalog = load("res://core/furniture/furniture_catalog.gd").load_from()
 	var layout = load("res://core/cafe/cafe_layout.gd").new(Vector2i(8, 8), Vector2i(7, 4))
@@ -51,7 +55,7 @@ func _initialize() -> void:
 	var cooking_stove: StringName = place.call(&"stove_basic", Vector2i(0, 0), 3)
 	var ready_stove: StringName = place.call(&"stove_basic", Vector2i(1, 0), 0)
 	var counter: StringName = place.call(&"counter_basic", Vector2i(0, 2), 3)
-	var free_stove: StringName = place.call(&"stove_basic", Vector2i(2, 0), 0)
+	var free_stove: StringName = place.call(&"stove_blue" if japanese else &"stove_basic", Vector2i(2, 0), 0)
 	_stoves = [free_stove]
 	place.call(&"plant_pot", Vector2i(0, 6))
 	place.call(&"table_round", Vector2i(3, 2))

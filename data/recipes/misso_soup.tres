@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"misso_soup"
+display_name = "Sopa de Missô"
+cook_time = 600.0
+servings = 18
+ingredient_cost = 120
+sell_price = 12
+xp_reward = 45
+book = &"japao"
+stove = &"stove_blue"
+unlock_level = 11
+placeholder_color = Color(0.88, 0.66, 0.31, 1)

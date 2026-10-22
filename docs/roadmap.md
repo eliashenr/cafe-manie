@@ -79,7 +79,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Pacote do relatório: fogões especiais (seção 4, item 5)
 
 - [x] **1. Fogões com perfil** (DT-058): cada modelo com uma função (mais rápido, tempo máximo, mais porções ou mais XP), os mais fortes só 1 por café.
-- [ ] **2. Fogão Japonês** com 4 receitas próprias.
+- [x] **2. Fogão Japonês** (DT-059): 4 receitas que só saem nele, na aba Japão; os clientes só pedem com o fogão no café.
 - [ ] **3. Multifogão Trem** em 3 partes, com prêmio por completar.
 - O fogão de evento com níveis entra no evento de Halloween (item 6).
 

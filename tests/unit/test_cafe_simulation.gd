@@ -302,7 +302,7 @@ func test_quick_dishes_are_ordered_more_often_than_slow_ones() -> void:
 	for i in 3000:
 		var recipe := sim._pick_from_menu()
 		counts[recipe.id] = int(counts.get(recipe.id, 0)) + 1
-	assert_eq(counts.size(), sim.recipes.size(), "todo o cardápio aparece")
+	assert_eq(counts.size(), sim.order_menu().size(), "todo o cardápio aparece (sem as do fogão temático, que o café não tem)")
 	assert_true(counts[&"coffee"] > counts[&"lasagna"] * 3, "café sai bem mais que lasanha: %s" % counts)
 	sim.config.menu_cook_time_weight = 0.0
 	counts.clear()

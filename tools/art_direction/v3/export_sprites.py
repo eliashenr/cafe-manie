@@ -414,7 +414,9 @@ FOODS = {"coffee": "cafe", "cheese_bread": "pao", "toasted_sandwich": "misto", "
          "acai": "acai", "ramen": "ramen", "pudding": "pudim", "bobo": "bobo",
          "waffles": "waffle", "paella": "paella", "lemon_pie": "torta_limao", "picanha": "picanha",
          "eggs_benedict": "benedict", "curry": "curry", "black_forest": "floresta", "barbecue": "churrasco",
-         "lobster": "lagosta"}
+         "lobster": "lagosta",
+         # Fogão Japonês (DT-059)
+         "mochi": "mochi", "misso_soup": "misso", "yakisoba": "yakisoba", "tempura": "tempura"}
 FOOD_SIZE = 48.0
 # id da bebida no jogo -> desenho em drinks3
 DRINKS = {"espresso": "expresso", "cappuccino": "cappuccino", "hot_chocolate": "chocolate",

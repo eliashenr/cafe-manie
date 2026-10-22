@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"tempura"
+display_name = "Tempurá"
+cook_time = 3000.0
+servings = 26
+ingredient_cost = 300
+sell_price = 23
+xp_reward = 150
+book = &"japao"
+stove = &"stove_blue"
+unlock_level = 11
+placeholder_color = Color(0.95, 0.76, 0.35, 1)

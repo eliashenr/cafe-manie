@@ -1,12 +1,13 @@
 extends TestCase
-## Livro de receitas (DT-053 e DT-054): as abas, as 31 receitas (uma nova a cada nível até o 30) e o equilíbrio entre pratos
+## Livro de receitas (DT-053, DT-054 e DT-059): as abas, as 35 receitas (uma nova a cada nível até o 30, mais as 4 do Fogão
+## Japonês) e o equilíbrio entre pratos
 ## rápidos (mais lucro por minuto, para quem joga ativo) e demorados (mais lucro e XP por fornada, para quem volta depois).
 
 
 func test_books_are_valid_ordered_and_every_recipe_has_its_book() -> void:
 	var catalog := RecipeCatalog.load_from()
 	var books := catalog.books()
-	assert_eq(books.size(), 4, "Básico, Brasil, Doces e Mundo")
+	assert_eq(books.size(), 5, "Básico, Brasil, Doces, Mundo e Japão")
 	for i in books.size():
 		assert_true(books[i].is_valid(), String(books[i].id))
 		if i > 0:
@@ -20,7 +21,7 @@ func test_books_are_valid_ordered_and_every_recipe_has_its_book() -> void:
 func test_a_new_recipe_at_every_level() -> void:
 	var catalog := RecipeCatalog.load_from()
 	var table: LevelTable = load("res://data/progression/levels.tres")
-	assert_eq(catalog.size(), 31)
+	assert_eq(catalog.size(), 35)
 	for level in range(1, table.max_level() + 1):
 		var found := catalog.all().filter(func(r: RecipeDefinition) -> bool: return r.unlock_level == level)
 		assert_true(not found.is_empty(), "o nível %d libera receita" % level)

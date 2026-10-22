@@ -4,6 +4,13 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 5 do relatório, etapa 2: Fogão Japonês** (DT-059)
+
+- **O Fogão Azul e Dourado virou o Fogão Japonês** (nível 11).
+- **4 pratos que só saem nele**, na aba nova **Japão** do livro: Dango, Sopa de Missô, Yakissoba e Tempurá.
+- Num fogão comum, eles aparecem apagados, com "Só no Fogão Japonês".
+- Os clientes só pedem esses pratos quando o café tem o Fogão Japonês.
+
 **Item 5 do relatório, etapa 1: fogões com perfil** (DT-058)
 
 - **Cada modelo de fogão ganhou uma função:**
@@ -307,6 +314,13 @@
 
 🧪 **TESTADO**
 
+- **Fogão Japonês: 559 testes automatizados PASSARAM.**
+  - **Regra:** as 4 receitas, válidas, na aba Japão, presas ao Fogão Japonês e liberadas no nível dele; só saem nesse fogão (e nada é cobrado no fogão errado); as receitas comuns saem nele; os clientes só pedem os pratos japoneses com o fogão no café.
+  - **Na tela:** no fogão comum, os pratos apagados com "Só no Fogão Japonês"; no Fogão Japonês, eles saem.
+  - Os testes antigos passaram a contar 35 receitas e 5 abas; o do cardápio passou a contar só o que o café sabe fazer.
+  - **Defeitos inseridos de propósito: 10 de 10 pegos.**
+  - **Foto conferida:** o Fogão Japonês com a aba Japão aberta e os 4 pratos.
+  - **Cena principal: PASSOU**, zero erros.
 - **Fogões com perfil: 554 testes automatizados PASSARAM.**
   - **Regra:** todo fogão especial tem perfil, e os de tempo máximo são só 1 por café; perfil só em fogão; o corte de tempo; o tempo máximo (sem mudar o tempo de estragar); fogão e troféu somados até o limite; porções a mais (somando com o sal) chegando ao balcão; XP a mais; limite por café (guardar abre a vaga); o save guarda as porções a mais.
   - **Na tela:** a dica da loja com o perfil e o aviso "Só 1 por café"; o fogão livre diz o perfil; o número que sobe com as porções de verdade.
