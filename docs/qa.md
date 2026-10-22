@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 531 testes
+## Cobertura atual — 543 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -25,6 +25,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
 | `unit/test_progression.gd` | 9 | curva de níveis até o **30**, cada nível pedindo mais XP; ouro só do 11 em diante; subir vários níveis de uma vez, nível máximo |
+| `unit/test_trophies.gd` | 7 | **troféus:** os 3 válidos e cada vez mais fortes; só as 8 casas em volta (diagonal sim, 2 casas não) e vale o mais forte; prato acelerado, carga gasta e tempo de estragar de sempre; mover não muda o prato que cozinha; gastar, avisar e renovar; guardado lembra as cargas, vendido perde; save das cargas, dos guardados e do tempo acelerado |
 | `unit/test_spices.gd` | 10 | **temperos:** catálogo válido, em ordem e com ícone; sal uma vez por prato, porções no balcão; prato grande com sal em dois balcões; pimenta e páprica sem passar do ponto; instantâneo; ervas salvam o estragado; cada tempero na hora certa; comprar; presente diário e missões; save da prateleira e do tempero no fogão |
 | `unit/test_spoilage.gd` | 10 | **comida que estraga:** configuração válida; prato rápido aguenta o mínimo, longo aguenta mais; estraga no segundo certo; estragado não vai para o balcão nem é buscado e ocupa o fogão; jogar fora só o estragado; pausa segura; fator 0 nunca estraga; aviso uma vez por prato; estragado com o jogo fechado contado nas boas-vindas; pratos de 4 h aguentam uma noite |
 | `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
@@ -46,6 +47,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_achievements.gd` | 10 | conquista Mestre até o nível 30; dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
+| `integration/test_trophies_scene.gd` | 5 | troféu escolhido com as casas no chão, a aceleração e as cargas, Renovar apagado se cheio; fantasma da compra com as casas; gasto apagado, aviso e renovar com confirmação; livro e fogão com o tempo acelerado; troféus na aba Cozinha da loja, com a dica |
 | `integration/test_spices_scene.gd` | 5 | fogão cozinhando com os 4 temperos, quantidade e preço; usar na hora, com o efeito e "Já temperado"; comprar pede confirmação; ervas no fogão estragado; presente diário e aviso da missão com o tempero |
 | `integration/test_spoilage_scene.gd` | 5 | fogão estragado com selo e fumaça verde, sem vapor nem brilho; tocar mostra o Jogar fora, que libera o fogão; mensagem quando estraga; fogão pronto diz quando estraga; boas-vindas contam o estragado |
 | `integration/test_save_scene.gd` | 8 | fechar e reabrir com tudo no lugar, pratos prontos com o jogo fechado, salvamento automático, minimizar salva, Recomeçar com confirmação |
@@ -89,6 +91,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Troféus (42 de 42 pegos):** a diagonal não conta, troféu longe acelera, vale o troféu mais fraco, troféu gasto acelera, prato acelerado não gasta carga, nunca avisa que se gastou, renovar não enche, guardar perde as cargas, recolocar ignora o guardado, save sem as cargas, save sem os guardados, save não lê as cargas, troféu sem cargas aceito, prato acelerado com o tempo da receita, save sem o tempo acelerado, save não lê o tempo acelerado, estragar pelo tempo acelerado, troféu não acelera, cozinhar não gasta o troféu, sem sinal de gasto, renovar sem cobrar, renovar troféu cheio, renovar sem ouro, guardar sem as cargas, recolocar sem as cargas, save sem os troféus, save não lê os troféus, migração sem os troféus, troféu sem área no chão, fantasma sem área, gasto não fica apagado, camada não marca o gasto, mensagem sem a aceleração, mensagem de gasto sem explicar, renovar sempre aceso, renovar sem confirmação, livro sem o tempo acelerado, fogão cozinhando sem dizer do troféu, fogão livre sem dizer do troféu, troféu na aba de decoração, loja sem a dica do troféu, sem aviso de troféu gasto.
 - **Temperos (36 de 36 pegos (2 só depois de testes novos)):** porções do tempero sem chegar ao balcão, tempero de porções duas vezes no prato (pego depois de um teste novo na cozinha), pressa passando do ponto, ervas sem salvar o prato, prato grande sem se repartir, repartir em balcão de outra receita, save sem o tempero do fogão, save sem ler o tempero do fogão, sal sem a porção mínima, ervas servindo no prato cozinhando, tempero sem efeito aceito, prateleira fora de ordem, usar sem gastar o tempero, sal de novo no mesmo prato, instantâneo sem efeito, pimenta sem efeito, ervas salvando sem avisar de novo depois, comprar sem cobrar, comprar antes do nível, comprar e usar cobrando mesmo sem servir, presente diário sem tempero, missão sem tempero, save sem a prateleira, save sem ler a prateleira, migração sem a prateleira (pego depois de um teste novo), fogão cozinhando sem temperos, estragado sem as ervas, comprar virando usar, cartão sem a quantidade, cartão sem o preço, temperado continuando aceso, fogão sem dizer que tem tempero, sem efeito na tela, presente diário sem mostrar o tempero, aviso da missão sem o tempero, janela das missões sem o tempero.
 - **Comida que estraga (25 de 25 pegos):** prato rápido estragando antes do mínimo, prato longo sem aguentar mais, nada estragando, pausa sem segurar o prato, estragado indo para o balcão, jogar fora prato bom, jogar fora sem liberar o fogão, estragado contando como prato a caminho, tempo para estragar errado, configuração aceitando fator negativo, simulação sem a regra, aviso repetido, prato estragado sem aviso, boas-vindas avisando de novo, jogo sem vigiar o fogão, fogão estragado parecendo normal, fogão estragado brilhando, sem fumaça verde, estragado com vapor, sem botão Jogar fora, Jogar fora sem fazer nada, pronto sem dizer quando estraga, estragado sem explicar, boas-vindas sem contar o estragado, efeito sonoro preso ao sair da cena.
 - **Receitas do nível 18 ao 30 (8 de 8 pegos):** lagosta rendendo menos que a floresta negra, nível 20 sem receita nova, waffle rápido demais, churrasco com pouco XP, picanha numa aba que não existe, lagosta sem caber no balcão, lagosta além do nível 30, curry sem nome.
@@ -129,6 +132,16 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Troféus (22/10)
+
+1. [ ] No nível 6 ou mais, abra a Loja na aba Cozinha: o Troféu de Bronze está lá; pare o mouse em cima e leia a dica.
+2. [ ] Compre e posicione o troféu: antes de confirmar, as 8 casas em volta aparecem em dourado no chão.
+3. [ ] Ponha o troféu encostado num fogão (de lado ou na diagonal) e toque no fogão: o livro mostra os tempos 25% menores, e a barra diz "troféu: 25% mais rápido".
+4. [ ] Toque no troféu: a barra diz quantos pratos ele ainda acelera; o Renovar está apagado.
+5. [ ] Cozinhe até ele se gastar: aparece o aviso, e o troféu fica apagado.
+6. [ ] Toque no troféu e em Renovar: aparece a pergunta com o preço, com Cancelar já escolhido; confirme e ele volta a brilhar.
+7. [ ] Guarde um troféu meio gasto e ponha de volta: ele continua com as mesmas cargas.
 
 ## Roteiro de teste manual — Temperos (22/10)
 

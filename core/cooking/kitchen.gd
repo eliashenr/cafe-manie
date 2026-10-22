@@ -23,6 +23,8 @@ class StoveState:
 	var started_at: float
 	## Porções a mais do tempero (DT-056).
 	var extra_servings := 0
+	## Segundos de preparo neste fogão: o da receita, ou menos com troféu por perto (DT-057).
+	var duration := 0.0
 
 
 class CounterStack:
@@ -109,7 +111,7 @@ func time_to_spoil(id: StringName) -> float:
 	var state: StoveState = _stoves.get(id)
 	if state == null or _status_of(state) != StoveStatus.READY:
 		return 0.0
-	return state.started_at + state.recipe.cook_time + spoil_time(state.recipe) - now()
+	return state.started_at + state.duration + spoil_time(state.recipe) - now()
 
 
 ## Receita no fogão (cozinhando ou pronta), ou null se estiver livre.
@@ -123,7 +125,7 @@ func time_left(id: StringName) -> float:
 	var state: StoveState = _stoves.get(id)
 	if state == null:
 		return 0.0
-	return maxf(state.started_at + state.recipe.cook_time - now(), 0.0)
+	return maxf(state.started_at + state.duration - now(), 0.0)
 
 
 ## Fração do preparo concluída (0 a 1). Livre = 0.
@@ -131,10 +133,11 @@ func progress(id: StringName) -> float:
 	var state: StoveState = _stoves.get(id)
 	if state == null:
 		return 0.0
-	return clampf((now() - state.started_at) / state.recipe.cook_time, 0.0, 1.0)
+	return clampf((now() - state.started_at) / state.duration, 0.0, 1.0)
 
 
-func start_cooking(stove_id: StringName, recipe: RecipeDefinition) -> int:
+## Começa o preparo. [param duration] é o tempo neste fogão (negativo = o da receita).
+func start_cooking(stove_id: StringName, recipe: RecipeDefinition, duration := -1.0) -> int:
 	if not is_stove(stove_id):
 		return ServiceResult.NOT_A_STOVE
 	if _stoves.has(stove_id):
@@ -142,6 +145,7 @@ func start_cooking(stove_id: StringName, recipe: RecipeDefinition) -> int:
 	var state := StoveState.new()
 	state.recipe = recipe
 	state.started_at = now()
+	state.duration = duration if duration > 0.0 else recipe.cook_time
 	_stoves[stove_id] = state
 	changed.emit()
 	return ServiceResult.OK
@@ -186,6 +190,12 @@ func discard(stove_id: StringName) -> int:
 
 # --- Temperos (DT-056) -----------------------------------------------------
 
+## Segundos de preparo do prato neste fogão (menos que a receita se um troféu acelerou; 0 se livre).
+func stove_duration(id: StringName) -> float:
+	var state: StoveState = _stoves.get(id)
+	return state.duration if state != null else 0.0
+
+
 ## Porções que o prato do fogão vai render, com as do tempero (0 se livre).
 func stove_servings(id: StringName) -> int:
 	var state: StoveState = _stoves.get(id)
@@ -215,7 +225,7 @@ func rush(stove_id: StringName, seconds: float) -> int:
 	if stove_status(stove_id) != StoveStatus.COOKING:
 		return ServiceResult.NOT_COOKING
 	var state: StoveState = _stoves[stove_id]
-	state.started_at = maxf(state.started_at - seconds, now() - state.recipe.cook_time)
+	state.started_at = maxf(state.started_at - seconds, now() - state.duration)
 	changed.emit()
 	return ServiceResult.OK
 
@@ -225,7 +235,7 @@ func recover(stove_id: StringName) -> int:
 	if stove_status(stove_id) != StoveStatus.SPOILED:
 		return ServiceResult.NOT_SPOILED
 	var state: StoveState = _stoves[stove_id]
-	state.started_at = now() - state.recipe.cook_time
+	state.started_at = now() - state.duration
 	changed.emit()
 	return ServiceResult.OK
 
@@ -317,7 +327,7 @@ func return_serving(counter_id: StringName, recipe: RecipeDefinition) -> bool:
 ## Horário (do relógio do jogo) em que o prato do fogão fica pronto; -1 se livre. Pausado, conta a pausa até agora.
 func stove_ready_at(id: StringName) -> float:
 	var state: StoveState = _stoves.get(id)
-	return state.started_at + state.recipe.cook_time + _pause_shift() if state != null else -1.0
+	return state.started_at + state.duration + _pause_shift() if state != null else -1.0
 
 
 # --- Save ------------------------------------------------------------------
@@ -329,7 +339,7 @@ func to_data() -> Dictionary:
 		var state: StoveState = _stoves[id]
 		# salvo durante a pausa: o tempo dela não conta como cozinhado
 		stoves.append({"id": String(id), "recipe": String(state.recipe.id), "started_at": state.started_at + _pause_shift(),
-			"extra": state.extra_servings})
+			"extra": state.extra_servings, "duration": state.duration})
 	var counters: Array[Dictionary] = []
 	for id: StringName in _counters:
 		var stack: CounterStack = _counters[id]
@@ -337,14 +347,16 @@ func to_data() -> Dictionary:
 	return {"stoves": stoves, "counters": counters}
 
 
-## Restaura um preparo salvo, com o horário original de início (e as porções a mais do tempero).
-func restore_stove(id: StringName, recipe: RecipeDefinition, started_at: float, extra_servings := 0) -> bool:
+## Restaura um preparo salvo, com o horário original de início, as porções a mais do tempero e o tempo neste
+## fogão (negativo = o da receita).
+func restore_stove(id: StringName, recipe: RecipeDefinition, started_at: float, extra_servings := 0, duration := -1.0) -> bool:
 	if recipe == null or not is_stove(id) or _stoves.has(id):
 		return false
 	var state := StoveState.new()
 	state.recipe = recipe
 	state.started_at = started_at
 	state.extra_servings = maxi(extra_servings, 0)
+	state.duration = duration if duration > 0.0 else recipe.cook_time
 	_stoves[id] = state
 	changed.emit()
 	return true
@@ -367,7 +379,7 @@ func is_in_use(id: StringName) -> bool:
 # --- Interno ---------------------------------------------------------------
 
 func _status_of(state: StoveState) -> StoveStatus:
-	var ready_at := state.started_at + state.recipe.cook_time
+	var ready_at := state.started_at + state.duration
 	if now() < ready_at:
 		return StoveStatus.COOKING
 	return StoveStatus.SPOILED if now() >= ready_at + spoil_time(state.recipe) else StoveStatus.READY

@@ -30,6 +30,14 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 @export_range(0, 100) var efficiency := 0
 @export_range(0, 100) var comfort := 0
 
+@export_group("Troféu acelerador (DT-057)")
+## Quanto mais rápidos ficam os fogões nas 8 casas em volta (0.25 = 25% menos tempo). 0 = não é troféu.
+@export_range(0.0, 0.9) var stove_speed_bonus := 0.0
+## Pratos que o troféu acelera antes de se gastar.
+@export var trophy_dishes := 0
+## Café Ouro para renovar o troféu (voltar às cargas cheias).
+@export var renew_price := 0
+
 @export_group("Placeholder")
 ## PLACEHOLDER_FURNITURE: cor da caixa desenhada até existir arte final.
 @export var placeholder_color := Color.WHITE
@@ -39,4 +47,10 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 
 func is_valid() -> bool:
 	return id != &"" and footprint.x > 0 and footprint.y > 0 and price >= 0 and min_level >= 1 \
-		and (category == Category.MACHINE) == (machine != &"")
+		and (category == Category.MACHINE) == (machine != &"") \
+		and (not is_trophy() or (trophy_dishes > 0 and renew_price >= 0))
+
+
+## Troféu que acelera os fogões em volta (DT-057)?
+func is_trophy() -> bool:
+	return stove_speed_bonus > 0.0

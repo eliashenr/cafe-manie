@@ -266,6 +266,11 @@ def _machine(draw):
 
 for _id, _draw in drinks3.MACHINES.items():
     FURNITURE[_id] = ((1, 1), _machine(_draw), 4)
+# Troféus aceleradores (DT-057): o mesmo desenho nas 4 rotações.
+import trophies3  # noqa: E402
+
+for _id, _draw in trophies3.TROPHIES.items():
+    FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 

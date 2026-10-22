@@ -54,6 +54,8 @@ const SERVICE_MESSAGES := {
 	ServiceResult.SPICE_LOCKED: "Esse tempero ainda não está à venda no seu nível",
 	ServiceResult.NOT_COOKING: "Esse tempero é para o prato que está cozinhando",
 	ServiceResult.ALREADY_SEASONED: "Esse prato já levou tempero de porções",
+	ServiceResult.NOT_A_TROPHY: "Esse móvel não é um troféu",
+	ServiceResult.TROPHY_FULL: "O troféu ainda está novinho",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -91,6 +93,8 @@ const SHOP_TAB_COLORS := {
 	ShopTab.WALL: Color("2ec4b6"),
 }
 ## Categorias de móvel em cada aba de móveis.
+## Dica do troféu na loja (DT-057).
+const TROPHY_TOOLTIP := "Deixa os fogões nas 8 casas em volta %d%% mais rápidos, por %d pratos. Depois, renove com ouro."
 const SHOP_TAB_CATEGORIES := {
 	ShopTab.SALON: [FurnitureDefinition.Category.TABLE, FurnitureDefinition.Category.SEATING],
 	ShopTab.KITCHEN: [FurnitureDefinition.Category.COOKING, FurnitureDefinition.Category.COUNTER,
@@ -337,6 +341,13 @@ func shop_page_count() -> int:
 
 
 ## Definições da aba atual (móveis ou revestimentos), filtradas pela coleção.
+## A aba da loja mostra este móvel? Troféus aceleram fogões (DT-057): ficam na Cozinha, não na Decoração.
+static func shows_in_tab(definition: FurnitureDefinition, tab: ShopTab) -> bool:
+	if definition.is_trophy():
+		return tab == ShopTab.KITCHEN
+	return SHOP_TAB_CATEGORIES.has(tab) and SHOP_TAB_CATEGORIES[tab].has(definition.category)
+
+
 func _shop_items() -> Array:
 	var items: Array = []
 	match shop_tab:
@@ -348,7 +359,7 @@ func _shop_items() -> Array:
 				items.append(_remove_item_card())
 		_:
 			for definition in cafe.catalog.all():
-				if SHOP_TAB_CATEGORIES[shop_tab].has(definition.category):
+				if BuildBar.shows_in_tab(definition, shop_tab):
 					items.append(definition)
 	if shop_collection != &"":
 		items = items.filter(func(item: Resource) -> bool: return item.collection == shop_collection)
@@ -618,6 +629,8 @@ func _add_furniture_item(furniture: FurnitureDefinition) -> void:
 	var simulation := cafe.simulation
 	var item := _add_item("Build_" + String(furniture.id), furniture.display_name,
 		ArtSprites.furniture(furniture.id, 3), func() -> void: _pick_furniture(furniture.id))
+	if furniture.is_trophy():
+		item.tooltip_text = TROPHY_TOOLTIP % [roundi(furniture.stove_speed_bonus * 100.0), furniture.trophy_dishes]
 	_updaters.append(func() -> void:
 		var stored := simulation.inventory.count(furniture.id)
 		var locked := furniture.min_level > simulation.progression.level
@@ -757,6 +770,9 @@ func _show_selection_controls() -> void:
 		_message_source = func() -> String:
 			var stack := kitchen.counter_stack(id)
 			return _with_problem("Balcão vazio" if stack == null else "Balcão: %s ×%d" % [stack.recipe.display_name, stack.servings])
+	elif placement.definition.is_trophy():
+		_message_source = func() -> String: return _with_problem(_trophy_message(id))
+		_show_trophy_controls(id)
 	else:
 		var name := placement.definition.display_name
 		_message_source = func() -> String: return _with_problem(name)
@@ -765,6 +781,35 @@ func _show_selection_controls() -> void:
 	_add_square(_buttons, "RemoveButton", "store", "Guardar", cafe.remove_selected)
 	_add_square(_buttons, "SellButton", "sell", "Vender", ask_sell_selected)
 	_add_square(_buttons, "CloseButton", "close", "Fechar", cafe.clear_selection)
+
+
+## Troféu escolhido (DT-057): o botão de renovar, com o preço; apagado enquanto ele está cheio.
+func _show_trophy_controls(trophy_id: StringName) -> void:
+	var simulation := cafe.simulation
+	var definition := cafe.layout.get_placement(trophy_id).definition
+	var renew := _add_text_button("RenewButton", "Renovar · %s ouro" % UiTheme.thousands(definition.renew_price),
+		func() -> void: ask_renew_trophy(trophy_id))
+	_updaters.append(func() -> void:
+		renew.disabled = simulation.trophies.charges_left(trophy_id) >= definition.trophy_dishes \
+			or not simulation.wallet.can_afford(Wallet.SOFT, definition.renew_price))
+
+
+func _trophy_message(trophy_id: StringName) -> String:
+	var definition := cafe.layout.get_placement(trophy_id).definition
+	var left := cafe.simulation.trophies.charges_left(trophy_id)
+	var bonus := roundi(definition.stove_speed_bonus * 100.0)
+	if left <= 0:
+		return "%s: gasto. Renove para os fogões em volta voltarem a ficar %d%% mais rápidos" % [definition.display_name, bonus]
+	return "%s: fogões nas 8 casas em volta %d%% mais rápidos  —  acelera mais %d de %d pratos" % [definition.display_name,
+		bonus, left, definition.trophy_dishes]
+
+
+## Renovar custa ouro: pede confirmação (Cancelar já escolhido).
+func ask_renew_trophy(trophy_id: StringName) -> void:
+	var definition := cafe.layout.get_placement(trophy_id).definition
+	_ask("Renovar troféu?", "Renovar o %s por %s Café Ouro? Ele volta a acelerar os fogões em volta por %d pratos." % [
+		definition.display_name, UiTheme.thousands(definition.renew_price), definition.trophy_dishes], "Renovar",
+		func() -> void: cafe.renew_trophy(trophy_id))
 
 
 ## Botão quadrado da arte com o nome embaixo.
@@ -796,7 +841,8 @@ func _show_stove_controls(stove_id: StringName) -> void:
 					if locked:
 						button.text = "%s\nNível %d" % [dish.display_name, dish.unlock_level]
 					else:
-						button.text = "%s\n%s · %d ouro" % [dish.display_name, WorldLayer.format_time(dish.cook_time), dish.ingredient_cost]
+						button.text = "%s\n%s · %d ouro" % [dish.display_name, WorldLayer.format_time(simulation.cook_time_on(stove_id, dish)),
+							dish.ingredient_cost]
 					button.disabled = locked or not simulation.wallet.can_afford(Wallet.SOFT, dish.ingredient_cost))
 		Kitchen.StoveStatus.READY:
 			var serve := Button.new()
@@ -1135,6 +1181,9 @@ func _stove_message(id: StringName) -> String:
 			var text := "Fogão: %s fica pronto em %s" % [kitchen.stove_recipe(id).display_name, WorldLayer.format_time(kitchen.time_left(id))]
 			if kitchen.is_seasoned(id):
 				text += " (%d porções, com tempero)" % kitchen.stove_servings(id)
+			var recipe := kitchen.stove_recipe(id)
+			if kitchen.stove_duration(id) < recipe.cook_time:
+				text += " (troféu: %d%% mais rápido)" % roundi((1.0 - kitchen.stove_duration(id) / recipe.cook_time) * 100.0)
 			return text + "  —  temperos aceleram ou rendem mais"
 		Kitchen.StoveStatus.READY:
 			var text := "Fogão: %s pronto! O garçom leva ao balcão (ou toque no fogão)" % kitchen.stove_recipe(id).display_name
@@ -1144,7 +1193,9 @@ func _stove_message(id: StringName) -> String:
 			return "Fogão: o prato de %s estragou de tanto esperar. Jogue fora para cozinhar de novo" \
 				% kitchen.stove_recipe(id).display_name
 	var waiting := _demand_text()
-	return "Fogão livre: escolha o que cozinhar" + ("  —  Clientes esperando: " + waiting if not waiting.is_empty() else "")
+	var bonus := cafe.simulation.trophies.speed_bonus(id)
+	var text := "Fogão livre: escolha o que cozinhar" + (" (troféu: %d%% mais rápido)" % roundi(bonus * 100.0) if bonus > 0.0 else "")
+	return text + ("  —  Clientes esperando: " + waiting if not waiting.is_empty() else "")
 
 
 ## "Café ×2, Pão de Queijo ×1": pratos pedidos que não estão em nenhum balcão.

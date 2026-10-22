@@ -1375,6 +1375,24 @@
     251.67
    ]
   },
+  "trophy_bronze_r0": {
+   "anchor": [
+    87.67,
+    306.67
+   ]
+  },
+  "trophy_silver_r0": {
+   "anchor": [
+    87.67,
+    306.67
+   ]
+  },
+  "trophy_gold_r0": {
+   "anchor": [
+    87.67,
+    306.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -1438,13 +1456,13 @@
   "encosto_chair_mexican_r1": {
    "anchor": [
     1.67,
-    218.67
+    217.67
    ]
   },
   "encosto_chair_mexican_r2": {
    "anchor": [
     63.67,
-    218.67
+    217.67
    ]
   },
   "encosto_chair_80s_r1": {
@@ -5755,6 +5773,24 @@
    "1": "machine_juice_r1",
    "2": "machine_juice_r2",
    "3": "machine_juice_r3"
+  },
+  "trophy_bronze": {
+   "0": "trophy_bronze_r0",
+   "1": "trophy_bronze_r0",
+   "2": "trophy_bronze_r0",
+   "3": "trophy_bronze_r0"
+  },
+  "trophy_silver": {
+   "0": "trophy_silver_r0",
+   "1": "trophy_silver_r0",
+   "2": "trophy_silver_r0",
+   "3": "trophy_silver_r0"
+  },
+  "trophy_gold": {
+   "0": "trophy_gold_r0",
+   "1": "trophy_gold_r0",
+   "2": "trophy_gold_r0",
+   "3": "trophy_gold_r0"
   },
   "dj_booth": {
    "0": "dj_booth_r0",

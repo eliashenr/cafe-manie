@@ -21,6 +21,7 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const TROPHY_WORN_MESSAGE := "O %s se gastou e parou de acelerar os fogões. Toque nele para renovar."
 ## Onde o brilho do tempero estoura, em relação ao centro do piso do fogão (em cima da panela).
 const SPICE_BURST_OFFSET := Vector2(0, -90)
 const SPOILED_MESSAGE := "O prato de %s estragou de tanto esperar no fogão. Toque no fogão para jogar fora."
@@ -123,6 +124,7 @@ func _ready() -> void:
 	simulation.recipe_mastered.connect(_on_recipe_mastered)
 	simulation.dish_spoiled.connect(_on_dish_spoiled)
 	simulation.spice_used.connect(_on_spice_used)
+	simulation.trophy_worn_out.connect(_on_trophy_worn_out)
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
@@ -449,6 +451,24 @@ func discard_stove(stove_id: StringName) -> int:
 		_float_over(stove_id, "%s foi para o lixo" % recipe.display_name, FEEDBACK_SPEND)
 	state_changed.emit()
 	return result
+
+
+## Renova o troféu (DT-057; a confirmação já foi pedida pela barra).
+func renew_trophy(trophy_id: StringName) -> int:
+	var price := layout.get_placement(trophy_id).definition.renew_price
+	last_service_result = simulation.renew_trophy(trophy_id)
+	if last_service_result == ServiceResult.OK:
+		_float_over(trophy_id, "Renovado!", FEEDBACK_GOOD)
+		_float_over(trophy_id, "-%s" % UiTheme.thousands(price), FEEDBACK_SPEND, Vector2(0, 22))
+	state_changed.emit()
+	return last_service_result
+
+
+## O troféu gastou a última carga.
+func _on_trophy_worn_out(trophy_id: StringName) -> void:
+	var placement := layout.get_placement(trophy_id)
+	if placement != null:
+		EventBus.message_posted.emit(TROPHY_WORN_MESSAGE % placement.definition.display_name)
 
 
 ## Usa no fogão um tempero da prateleira (DT-056). Recusa deixa a barra explicar o motivo.

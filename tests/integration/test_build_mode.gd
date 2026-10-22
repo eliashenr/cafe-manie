@@ -170,7 +170,7 @@ func test_catalog_buttons_start_placement() -> void:
 		await settle()
 		var ids := cafe.build_bar.shop_item_ids()
 		for definition in cafe.catalog.all():
-			var in_tab: bool = BuildBar.SHOP_TAB_CATEGORIES[tab].has(definition.category)
+			var in_tab := BuildBar.shows_in_tab(definition, tab)
 			assert_eq(ids.has(definition.id), in_tab, "%s na aba certa" % definition.display_name)
 	cafe.build_bar.find_button("Build_chair_wood").pressed.emit()
 	assert_eq(cafe.mode, Cafe.Mode.BUILD)

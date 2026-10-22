@@ -32,6 +32,8 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## O troféu gastou a última carga e parou de acelerar os fogões (DT-057).
+signal trophy_worn_out(trophy_id: StringName)
 ## Um tempero da prateleira foi usado num fogão (DT-056).
 signal spice_used(stove_id: StringName, spice: SpiceDefinition)
 ## Um prato pronto ficou tempo demais no fogão e estragou (DT-055). Avisa uma vez por prato.
@@ -77,6 +79,8 @@ var drinks: DrinkCatalog
 ## Temperos que existem (DT-056) e os que o jogador tem na prateleira.
 var spices: SpiceCatalog
 var spice_shelf := Inventory.new()
+## Cargas dos troféus que aceleram os fogões (DT-057).
+var trophies: StoveTrophies
 ## Energia gasta pelas bebidas; recarrega sozinha com o tempo.
 var energy: Energy
 ## Domínio das receitas: estrelas por cozinhar muitas vezes a mesma (DT-053).
@@ -146,6 +150,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	mastery = RecipeMastery.new(load(MASTERY_PATH))
 	kitchen = Kitchen.new(clock, layout, config.counter_capacity)
 	kitchen.spoil_factor = config.spoil_factor
+	trophies = StoveTrophies.new(layout)
 	kitchen.min_spoil_time = config.min_spoil_time
 	# A navegação precisa ser reconstruída antes de os personagens recalcularem caminho,
 	# então ela se conecta ao layout antes da simulação.
@@ -319,11 +324,34 @@ func start_cooking(stove_id: StringName, recipe_id: StringName) -> int:
 		return ServiceResult.RECIPE_LOCKED
 	if not wallet.can_afford(Wallet.SOFT, recipe.ingredient_cost):
 		return ServiceResult.NOT_ENOUGH_GOLD
-	var result := kitchen.start_cooking(stove_id, recipe)
+	var booster := trophies.booster_for(stove_id)
+	var result := kitchen.start_cooking(stove_id, recipe, cook_time_on(stove_id, recipe))
+	if result == ServiceResult.OK and booster != &"" and trophies.use(booster):
+		trophy_worn_out.emit(booster)
 	if result == ServiceResult.OK and recipe.ingredient_cost > 0:
 		wallet.spend(Wallet.SOFT, recipe.ingredient_cost, "Ingredientes: %s" % recipe.display_name)
 		_record(MissionDefinition.Kind.SPEND_INGREDIENTS, recipe.ingredient_cost)
 	return result
+
+
+## Segundos que a receita leva neste fogão agora (menos com um troféu por perto, DT-057).
+func cook_time_on(stove_id: StringName, recipe: RecipeDefinition) -> float:
+	return recipe.cook_time * (1.0 - trophies.speed_bonus(stove_id))
+
+
+## Renova o troféu com Café Ouro: ele volta a acelerar com as cargas cheias.
+func renew_trophy(trophy_id: StringName) -> int:
+	if not trophies.is_trophy(trophy_id):
+		return ServiceResult.NOT_A_TROPHY
+	var definition := layout.get_placement(trophy_id).definition
+	if trophies.charges_left(trophy_id) >= definition.trophy_dishes:
+		return ServiceResult.TROPHY_FULL
+	if not wallet.can_afford(Wallet.SOFT, definition.renew_price):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	if definition.renew_price > 0:
+		wallet.spend(Wallet.SOFT, definition.renew_price, "Renovar: %s" % definition.display_name)
+	trophies.renew(trophy_id)
+	return ServiceResult.OK
 
 
 ## Leva o prato pronto do fogão para o balcão e dá o XP da receita.
@@ -521,6 +549,7 @@ func acquire_and_place(definition: FurnitureDefinition, origin: Vector2i, rotati
 	last_placed_id = layout.place(definition, origin, rotation)
 	if from_inventory:
 		inventory.take(definition.id)
+		trophies.place_stored(last_placed_id)
 		return ServiceResult.OK
 	if definition.price > 0:
 		wallet.spend(Wallet.SOFT, definition.price, "Compra: %s" % definition.display_name)
@@ -536,6 +565,7 @@ func store_furniture(id: StringName) -> CafeLayout.Check:
 	if check != CafeLayout.Check.OK:
 		return check
 	var definition := layout.get_placement(id).definition
+	trophies.store(id)
 	layout.remove(id)
 	inventory.add(definition.id)
 	return CafeLayout.Check.OK

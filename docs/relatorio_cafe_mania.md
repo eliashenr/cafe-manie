@@ -73,7 +73,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 | Vizinhos, visitas, presentes e garçons amigos | Não | **Grande:** precisa de servidor (Fase 5 e 6) |
 | Moeda paga | Café Ouro com pacotes (pagamento real só na Play Store) | — |
 | Fogões com perfis diferentes, de evento (com níveis) e em partes | Todos os fogões iguais por dentro (só muda o visual) | Média (ver 3.10) |
-| Troféus que aceleram os fogões em volta | Não | **Pequena**, e combina com o quadriculado (ver 3.11) |
+| Troféus que aceleram os fogões em volta | **Tem** (DT-057): bronze, prata e ouro (25%, 40% e 65%), que se gastam e se renovam | — |
 | Noite no café, com cardápio noturno | Não | Média (ver 3.12) |
 | Livro de receitas com abas e domínio | **Tem** (DT-053): 4 abas e 3 estrelas de domínio por receita | — |
 | Plantação de frutas para uma máquina | Não | Média (ver 3.14) |
@@ -243,7 +243,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
    - placa ABERTO/FECHADO (3.1, DT-051);
    - máquinas de café e de sucos com energia (3.2, DT-052).
 3. **Feito em 22/10:** livro com abas e domínio (3.13, DT-053) e 25 receitas novas, uma a cada nível até o 30 (3.3, DT-053 e DT-054).
-4. **Em andamento:** comida que estraga e temperos (3.4, feitos no DT-055 e no DT-056) e troféus que aceleram os fogões em volta (3.11).
+4. **Feito em 22/10:** comida que estraga e temperos (3.4, DT-055 e DT-056) e troféus que aceleram os fogões em volta (3.11, DT-057).
 5. **Depois:** fogões com perfil, de evento e em partes (3.10), no lugar dos "rápido e turbo" da 3.6.
 6. **Depois:** crítico com cupons e loja de troca (3.5 e 3.15) e o primeiro evento com prazo (3.17).
 7. **Depois:** noite no café (3.12).

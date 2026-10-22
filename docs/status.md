@@ -4,6 +4,19 @@
 
 🟢 **CONCLUÍDO**
 
+**Novo pacote do relatório, etapa 3: troféus que aceleram os fogões em volta** (DT-057). **Com ela, o pacote está completo.**
+
+- **3 troféus** na aba Cozinha da loja: Bronze (nível 6, fogões 25% mais rápidos), Prata (nível 12, 40%) e Ouro (nível 20, 65%).
+- **Como funciona:** o troféu acelera os fogões nas 8 casas em volta dele, inclusive na diagonal. Com dois troféus perto, vale o mais forte.
+- **Ele se gasta:** cada prato acelerado gasta uma carga (30, 40 ou 50 pratos).
+  - Gasto, o troféu fica apagado e avisa.
+  - Toque nele e escolha **Renovar** para voltar às cargas cheias (custa ouro e pede confirmação).
+- **Guardar não renova:** o troféu guardado volta com as cargas que tinha.
+- **Na tela:**
+  - ao escolher ou posicionar um troféu, as casas que ele acelera ficam marcadas em dourado no chão;
+  - o livro de receitas já mostra o tempo acelerado.
+- **O save guarda** as cargas e o tempo de cada prato no fogão (versão 13).
+
 **Novo pacote do relatório, etapa 2: temperos** (DT-056)
 
 - **5 temperos**, usados no fogão:
@@ -281,6 +294,13 @@
 
 🧪 **TESTADO**
 
+- **Troféus: 543 testes automatizados PASSARAM.**
+  - **Regra:** os 3 troféus válidos e cada vez mais fortes, com renovar mais barato que comprar; só os fogões das 8 casas em volta aceleram (a diagonal conta, 2 casas longe não), e vale o mais forte; o prato acelerado fica pronto antes, gasta uma carga e aguenta o tempo de sempre para estragar; mover o troféu não muda o prato que já cozinha; o troféu se gasta (com um aviso), para de acelerar e se renova (cheio, sem ouro, não é troféu); guardado lembra as cargas, vendido perde; o save guarda as cargas, os guardados e o tempo acelerado, e save antigo vem com troféus cheios.
+  - **Na tela:** o troféu escolhido e o fantasma da compra mostram as casas no chão; a barra mostra a aceleração e as cargas; o Renovar fica apagado com o troféu cheio; gasto, ele fica apagado, avisa e renova com confirmação (Cancelar escolhido); o livro e o fogão mostram o tempo acelerado; na loja, os troféus estão na Cozinha, com a dica, e não na Decoração.
+  - O teste antigo das abas da loja passou a usar a mesma regra da loja (`BuildBar.shows_in_tab`).
+  - **Defeitos inseridos de propósito: 42 de 42 pegos.**
+  - **Foto conferida:** o Troféu de Ouro entre dois fogões, escolhido, com as 8 casas marcadas em dourado e o Renovar apagado.
+  - **Cena principal: PASSOU**, zero erros.
 - **Temperos: 531 testes automatizados PASSARAM.**
   - **Regra:** os 5 temperos válidos, na ordem e com ícone; o sal dá porções uma vez por prato e elas chegam ao balcão; o prato grande com sal se reparte em dois balcões; pimenta e páprica adiantam sem passar do ponto; o instantâneo deixa pronto; as ervas salvam o estragado (e, se estragar de novo, avisa de novo); cada tempero só na hora certa; comprar (nível, preço, sem ouro, e não cobra se não servir); presente diário e missões dão temperos; o save guarda a prateleira e o tempero no fogão, e save antigo começa sem nenhum.
   - **Na tela:** o fogão que cozinha mostra os 4 temperos com quantos você tem e o preço; usar é na hora, com o efeito subindo do fogão, e o cartão vira "Já temperado"; comprar pede confirmação com Cancelar escolhido; o fogão estragado mostra as ervas; o presente diário e o aviso da missão mostram o tempero; a janela das missões mostra o tempero do prêmio.

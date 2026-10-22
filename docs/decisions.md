@@ -4,6 +4,40 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-057 — Troféus que aceleram os fogões em volta
+
+**Problema:**
+- As fotos do Café Mania mostraram troféus que aceleram os fogões em volta deles e se gastam com o uso (proposta 3.11 do relatório).
+- É a mecânica que mais combina com o nosso quadriculado: o jogador passa a planejar a cozinha em volta dos troféus.
+
+**Decisão:**
+- **3 troféus**, móveis de 1 piso vendidos na aba **Cozinha** da loja:
+
+  | Troféu | Nível | Preço | Fogões em volta | Pratos até se gastar | Renovar |
+  |---|---|---|---|---|---|
+  | Bronze | 6 | 1.200 | 25% mais rápidos | 30 | 400 |
+  | Prata | 12 | 3.500 | 40% mais rápidos | 40 | 1.000 |
+  | Ouro | 20 | 8.000 | 65% mais rápidos | 50 | 2.200 |
+
+  - Os números ficam nos .tres dos móveis (`stove_speed_bonus`, `trophy_dishes` e `renew_price` em `FurnitureDefinition`).
+- **Alcance:** as 8 casas em volta, inclusive as diagonais. Com dois troféus perto, vale o mais forte (eles não somam).
+- **Tempo de cada prato:** decidido ao começar e guardado no fogão.
+  - Mover ou gastar o troféu depois não muda o prato que já cozinha.
+  - O tempo para estragar continua o da receita.
+- **Gastar e renovar** (`StoveTrophies`):
+  - cada prato acelerado gasta uma carga;
+  - sem cargas, o troféu fica apagado, avisa e para de acelerar;
+  - renovar devolve as cargas cheias por Café Ouro, com confirmação.
+- **Guardar não renova:** o troféu guardado lembra as cargas que tinha e volta com elas. Vendido, as cargas somem.
+- **Na tela:**
+  - escolhido ou sendo posicionado, o troféu mostra no chão, em dourado, as casas que acelera;
+  - a barra diz quanto ele acelera e quantos pratos ainda acelera;
+  - o livro de receitas mostra o tempo já acelerado, e o fogão diz "troféu: 25% mais rápido".
+- **O save guarda** as cargas, os troféus guardados e o tempo de cada prato no fogão (versão 13).
+- **Com isso, o pacote do relatório (seção 4, item 4) está completo.** O próximo seria o item 5: fogões com perfil, de evento e em partes (3.10).
+
+---
+
 ## DT-056 — Temperos
 
 **Problema:**

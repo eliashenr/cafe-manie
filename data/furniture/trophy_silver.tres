@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"trophy_silver"
+display_name = "Troféu de Prata"
+category = 4
+footprint = Vector2i(1, 1)
+needs_access = false
+price = 3500
+min_level = 12
+beauty = 12
+efficiency = 0
+comfort = 0
+stove_speed_bonus = 0.4
+trophy_dishes = 40
+renew_price = 1000
+placeholder_color = Color(0.79, 0.83, 0.88, 1)
+placeholder_height = 56.0

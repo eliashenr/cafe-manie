@@ -39,6 +39,11 @@ const EDGE_COLOR := Color(0.1, 0.06, 0.04, 0.45)
 const LABEL_COLOR := Color(0.1, 0.06, 0.04)
 const LABEL_SIZE := 13
 const SELECTED_FILL := Color(0.95, 0.62, 0.12, 0.28)
+## Troféu escolhido ou sendo posicionado (DT-057): as casas em volta que ele acelera, e o troféu gasto, apagado.
+const TROPHY_AREA_FILL := Color(1.0, 0.85, 0.2, 0.22)
+const TROPHY_AREA_EDGE := Color(1.0, 0.72, 0.1, 0.9)
+const TROPHY_REACH := 1
+const WORN_MODULATE := Color(0.62, 0.62, 0.66)
 
 const STATUS_BG := Color(0.1, 0.07, 0.05, 0.85)
 const STATUS_READY_BG := Color(0.2, 0.62, 0.3, 0.95)
@@ -116,6 +121,8 @@ var status_progress := -1.0
 var status_ready := false
 ## O prato do fogão estragou: panela esverdeada, selo oliva e fumaça verde em vez de vapor.
 var status_spoiled := false
+## Troféu sem cargas (DT-057): desenhado apagado.
+var worn := false
 ## Receita no fogão ou no balcão (null = nada), o texto curto do selo do fogão
 ## ("0:12", "Pronto!") e quantas porções há no balcão.
 var kitchen_recipe: RecipeDefinition
@@ -204,13 +211,7 @@ func configure(new_definition: FurnitureDefinition, new_origin: Vector2i, new_ro
 	position = IsoProjection.cell_top_vertex(origin + _footprint())
 	_slice_sprite()
 	_refresh_fx()
-	match look:
-		Look.GHOST_VALID:
-			modulate = GHOST_VALID_MODULATE
-		Look.GHOST_INVALID:
-			modulate = GHOST_INVALID_MODULATE
-		_:
-			modulate = Color.WHITE
+	_apply_modulate()
 	queue_redraw()
 	_overlay.queue_redraw()
 	_floor_mark.queue_redraw()
@@ -443,8 +444,50 @@ func _draw_halo() -> void:
 		_halo.draw_texture_rect(sprite.texture, Rect2(center - rect.size * grow / 2.0, rect.size * grow), false)
 
 
-## Selecionado: contorno laranja no chão, embaixo do móvel.
+## Troféu gasto: apagado (o fantasma da compra nunca fica gasto).
+func set_worn(value: bool) -> void:
+	if value == worn:
+		return
+	worn = value
+	_apply_modulate()
+
+
+func _apply_modulate() -> void:
+	match look:
+		Look.GHOST_VALID:
+			modulate = GHOST_VALID_MODULATE
+		Look.GHOST_INVALID:
+			modulate = GHOST_INVALID_MODULATE
+		_:
+			modulate = WORN_MODULATE if worn else Color.WHITE
+
+
+## Mostra no chão as casas que o troféu acelera? (escolhido ou sendo posicionado)
+func shows_trophy_area() -> bool:
+	return definition != null and definition.is_trophy() and look in [Look.SELECTED, Look.GHOST_VALID, Look.GHOST_INVALID]
+
+
+## As casas em volta do troféu (as 8 de um troféu de 1 piso), em dourado clarinho.
+func _draw_trophy_area() -> void:
+	var fp := _footprint()
+	var reach := Vector2i.ONE * TROPHY_REACH
+	var corners := PackedVector2Array([
+		IsoProjection.cell_top_vertex(origin - reach),
+		IsoProjection.cell_top_vertex(origin + Vector2i(fp.x + TROPHY_REACH, -TROPHY_REACH)),
+		IsoProjection.cell_top_vertex(origin + fp + reach),
+		IsoProjection.cell_top_vertex(origin + Vector2i(-TROPHY_REACH, fp.y + TROPHY_REACH)),
+	])
+	for i in corners.size():
+		corners[i] -= position + _floor_mark.position
+	_floor_mark.draw_colored_polygon(corners, TROPHY_AREA_FILL)
+	_floor_mark.draw_polyline(PackedVector2Array([corners[0], corners[1], corners[2], corners[3], corners[0]]), TROPHY_AREA_EDGE,
+		2.0, true)
+
+
+## Selecionado: contorno laranja no chão, embaixo do móvel (e, no troféu, as casas que ele acelera).
 func _draw_floor_mark() -> void:
+	if sprite != null and shows_trophy_area():
+		_draw_trophy_area()
 	if sprite == null or look != Look.SELECTED:
 		return
 	var b := _base()

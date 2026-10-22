@@ -108,6 +108,7 @@ const FRONT_FOCUS_LIFT := 30.0
 ## Atualiza o que muda a cada frame: etiquetas de fogões e balcões, pratos nas mesas e os personagens.
 func refresh(simulation: CafeSimulation) -> void:
 	_refresh_furniture_status(simulation.kitchen)
+	_refresh_trophies(simulation.trophies)
 	_refresh_table_dishes(simulation)
 	_refresh_agents(simulation)
 	_refresh_xray()
@@ -176,6 +177,14 @@ func _refresh_furniture_status(kitchen: Kitchen) -> void:
 			else:
 				view.set_status("%s ×%d" % [stack.recipe.display_name, stack.servings], -1.0, false, stack.recipe, "",
 					stack.servings)
+
+
+## Troféu gasto fica apagado (DT-057).
+func _refresh_trophies(trophies: StoveTrophies) -> void:
+	for id: StringName in _views:
+		var view: FurnitureView = _views[id]
+		if view.definition != null and view.definition.is_trophy():
+			view.set_worn(trophies.is_worn_out(id))
 
 
 ## Põe na mesa o prato de cada cliente que está comendo, do lado da cadeira dele.

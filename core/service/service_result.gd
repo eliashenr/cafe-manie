@@ -31,4 +31,6 @@ enum {
 	SPICE_LOCKED,       ## nível insuficiente para comprar o tempero
 	NOT_COOKING,        ## o tempero só serve para o prato que está cozinhando
 	ALREADY_SEASONED,   ## o prato já levou tempero de porções
+	NOT_A_TROPHY,       ## o móvel escolhido não é um troféu acelerador
+	TROPHY_FULL,        ## o troféu ainda está com as cargas cheias
 }

@@ -8,7 +8,7 @@ extends SceneTree
 ## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir, reforma,
 ## reforma:<revestimento>, moedas (a vitrine de Café Ouro), missoes (a janela das missões), pausa (o jogo pausado) ou
 ## fechado (a placa FECHADO na porta), estragado (o café esquecido no fogão estragou, com o Jogar fora),
-## temperos (a lasanha cozinhando com os temperos no painel), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
+## temperos (a lasanha cozinhando com os temperos no painel), trofeu (um troféu de ouro entre os fogões, escolhido), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
@@ -70,6 +70,9 @@ func _initialize() -> void:
 	simulation.kitchen.restore_stove(ready_stove, coffee, clock.now() - coffee.cook_time - forgotten - 1.0)
 	if _panel == "estragado":
 		_stoves = [ready_stove]
+	if _panel == "trofeu":
+		simulation.progression.add_xp(20000)  # nível 22: o troféu de ouro está liberado
+		_stoves = [place.call(&"trophy_gold", Vector2i(2, 1))]
 	if _panel == "temperos":
 		_stoves = [cooking_stove]
 		simulation.progression.add_xp(7100)  # nível 16: todos os temperos à venda
@@ -143,7 +146,7 @@ func _set_panel() -> void:
 		"loja":
 			var tab := _panel.get_slice(":", 1)
 			_cafe.build_bar.open_shop(_cafe.build_bar.ShopTab.get(tab, 0) if not tab.is_empty() else 0)
-		"fogao", "estragado", "temperos":
+		"fogao", "estragado", "temperos", "trofeu":
 			var stove = _cafe.layout.get_placement(_stoves[0])
 			_cafe.select_at_world(IsoProjection.cell_center(stove.origin))
 		"construir":
