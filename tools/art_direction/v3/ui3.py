@@ -78,6 +78,15 @@ def padlock(D):
     return "".join(o)
 
 
+def energy_bolt(D):
+    """Raio amarelo numa moeda azul: a energia que as máquinas de bebida gastam (DT-052)."""
+    o = [C(32, 33, 25, shade("#1f6fd1", 0.25), None)]
+    o.append(C(32, 31, 25, D.lin([(0, "#5bb8ff"), (1, "#1f6fd1")]), OL, 2.2))
+    o.append(path("M36,9 L18,35 H30 L26,55 L46,27 H34 Z", D.lin([(0, "#fff36b"), (1, "#ffb400")]), OL, 2.2))
+    o.append(_gloss("M14,22 Q20,11 32,9 Q22,15 18,26 Z", 0.35))
+    return "".join(o)
+
+
 def medallion_missions(D):
     bia = f'<g transform="translate(32,41)">{portrait(D, CHEF_BIA, hat="chef", scale=0.6)}</g>'
     return medallion(D, 32, 32, bia, "#ffb400")
@@ -111,7 +120,7 @@ ICONS = {
     "moeda": coin, "estrela_chef": chef_star, "flor": flower, "sorriso": smiley, "estrela": star,
     "estrela_vazia": lambda D: star(D, "#d9e3f0", "#aab8cc"), "presente": gift, "trofeu": trophy,
     "prancheta": clipboard, "loja": shop_house, "rolo": roller, "expandir": expand, "livro": book,
-    "bolo": cake, "martelo": hammer, "cadeado": padlock, "garcom": waiter_icon,
+    "bolo": cake, "martelo": hammer, "cadeado": padlock, "garcom": waiter_icon, "energia": energy_bolt,
 }
 
 BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("music", "blue"),

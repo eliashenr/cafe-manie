@@ -74,6 +74,7 @@ func _finish() -> void:
 	var counts := {
 		"moveis": sim.furniture.all().size(),
 		"receitas": sim.recipes.all().size(),
+		"bebidas": sim.drinks.size(),
 		"clientes": sim.customer_types.size(),
 		"missoes": sim.missions.missions.size(),
 		"expansoes": sim.expansions.steps.size(),

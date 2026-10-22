@@ -1327,6 +1327,54 @@
     253.67
    ]
   },
+  "machine_coffee_r0": {
+   "anchor": [
+    109.67,
+    247.67
+   ]
+  },
+  "machine_coffee_r1": {
+   "anchor": [
+    109.67,
+    247.67
+   ]
+  },
+  "machine_coffee_r2": {
+   "anchor": [
+    109.67,
+    247.67
+   ]
+  },
+  "machine_coffee_r3": {
+   "anchor": [
+    109.67,
+    247.67
+   ]
+  },
+  "machine_juice_r0": {
+   "anchor": [
+    109.67,
+    251.67
+   ]
+  },
+  "machine_juice_r1": {
+   "anchor": [
+    109.67,
+    251.67
+   ]
+  },
+  "machine_juice_r2": {
+   "anchor": [
+    109.67,
+    251.67
+   ]
+  },
+  "machine_juice_r3": {
+   "anchor": [
+    109.67,
+    251.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -1390,13 +1438,13 @@
   "encosto_chair_mexican_r1": {
    "anchor": [
     1.67,
-    217.67
+    218.67
    ]
   },
   "encosto_chair_mexican_r2": {
    "anchor": [
     63.67,
-    217.67
+    218.67
    ]
   },
   "encosto_chair_80s_r1": {
@@ -3854,6 +3902,42 @@
     32.07
    ]
   },
+  "bebida_espresso": {
+   "anchor": [
+    41.8,
+    48.48
+   ]
+  },
+  "bebida_cappuccino": {
+   "anchor": [
+    41.8,
+    61.48
+   ]
+  },
+  "bebida_hot_chocolate": {
+   "anchor": [
+    36.8,
+    47.48
+   ]
+  },
+  "bebida_orange_juice": {
+   "anchor": [
+    43.8,
+    67.48
+   ]
+  },
+  "bebida_lemonade": {
+   "anchor": [
+    43.8,
+    67.48
+   ]
+  },
+  "bebida_strawberry_smoothie": {
+   "anchor": [
+    40.8,
+    67.48
+   ]
+  },
   "piso_floor_beige_a": {
    "anchor": [
     134.19,
@@ -4580,6 +4664,12 @@
    "anchor": [
     41.0,
     45.0
+   ]
+  },
+  "icone_energia": {
+   "anchor": [
+    53.0,
+    55.0
    ]
   },
   "botao_zoom_in": {
@@ -5318,6 +5408,18 @@
    "2": "counter_red_r2",
    "3": "counter_red_r3"
   },
+  "machine_coffee": {
+   "0": "machine_coffee_r0",
+   "1": "machine_coffee_r1",
+   "2": "machine_coffee_r2",
+   "3": "machine_coffee_r3"
+  },
+  "machine_juice": {
+   "0": "machine_juice_r0",
+   "1": "machine_juice_r1",
+   "2": "machine_juice_r2",
+   "3": "machine_juice_r3"
+  },
   "dj_booth": {
    "0": "dj_booth_r0",
    "1": "dj_booth_r1",
@@ -5571,6 +5673,14 @@
   "carrot_cake": "prato_carrot_cake",
   "coxinha": "prato_coxinha",
   "lasagna": "prato_lasagna"
+ },
+ "drinks": {
+  "espresso": "bebida_espresso",
+  "cappuccino": "bebida_cappuccino",
+  "hot_chocolate": "bebida_hot_chocolate",
+  "orange_juice": "bebida_orange_juice",
+  "lemonade": "bebida_lemonade",
+  "strawberry_smoothie": "bebida_strawberry_smoothie"
  },
  "food_width": 64.0,
  "floors": {

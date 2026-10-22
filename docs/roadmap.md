@@ -66,7 +66,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Próximo pacote do relatório (seção 4, item 2)
 
 - [x] **1. Placa ABERTO/FECHADO** (DT-051): fechado, ninguém novo entra; quem está dentro termina sem tirar popularidade.
-- [ ] **2. Máquina de café e sucos com bebidas** (proposta 3.2).
+- [x] **2. Máquinas de café e de sucos, com energia** (DT-052): 6 bebidas, servidas tocando no cliente.
 
 ## Passe visual (18/10/2026)
 

@@ -4,6 +4,51 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-052 — Máquinas de bebida e energia
+
+**Problema:**
+- O PO lembrou que o Café Mania servia café e tinha várias máquinas.
+- O relatório (proposta 3.2) e as fotos do Facebook confirmaram:
+  - as máquinas de bebida gastavam energia, uma barra que recarrega sozinha;
+  - o jogador servia a bebida tocando no cliente;
+  - era a ação rápida entre os pratos demorados.
+
+**Opções:**
+- (A) bebida feita no fogão, como um prato rápido;
+- (B) máquina que serve na hora, sem energia;
+- (C) máquina que serve na hora, gastando energia, e o jogador toca no cliente para servir.
+
+**Decisão:** C, como no original.
+- **Energia** (`core/economy/energy.gd`, parâmetros em `data/config/energy.tres`):
+  - começa cheia, com 10 pontos no nível 1, e ganha 1 ponto a mais a cada 2 níveis;
+  - recarrega 1 ponto por minuto pelo relógio do jogo, também com o jogo fechado, e não passa do máximo (cheia, o tempo não vira crédito);
+  - subir de nível enche a energia;
+  - relógio do aparelho voltando não dá energia.
+- **Máquinas** são móveis da categoria nova `MACHINE`, com o campo `machine` (que bebidas preparam):
+  - Máquina de Café (nível 2): Café Expresso, Cappuccino e Chocolate Quente;
+  - Máquina de Sucos (nível 4): Suco de Laranja, Limonada e Vitamina de Morango;
+  - ficam na aba Cozinha da loja e ocupam 1 piso, sem precisar de passagem (ninguém vai até elas).
+- **Bebidas** são dados (`data/drinks`, `DrinkDefinition`): máquina, energia, preço, XP e nível.
+- **Pedido:**
+  - com uma máquina no café, cada cliente tem 30% de chance de pedir uma bebida liberada em vez de um prato;
+  - o balão dele aparece com borda verde, porque quem serve é o jogador;
+  - sem máquina, o sorteio nem acontece, e o atendimento continua exatamente como antes.
+- **Servir:**
+  - o jogador toca no cliente (no corpo ou no balão), e a bebida sai na hora, gastando energia e dando o XP dela;
+  - o cliente bebe por 3 segundos, paga o preço da bebida e sai satisfeito, ganhando popularidade como num prato;
+  - sem energia, a barra de baixo explica que ela volta sozinha;
+  - se a máquina sair do café (guardada ou vendida), quem esperava bebida vai embora sem tirar popularidade.
+- **Na tela:**
+  - o contador de energia ("7/10" e "+1 0:42") fica logo abaixo do ouro e só aparece com uma máquina no café;
+  - tocar nele explica a energia.
+- **O save guarda a energia** (versão 10). Saves antigos começam com ela cheia.
+- **Para depois:**
+  - "dominar" os sabores de cada máquina com prêmios (como nas fotos);
+  - missões de bebidas;
+  - a bebida aparecer na mesa de quem está bebendo.
+
+---
+
 ## DT-051 — Placa ABERTO/FECHADO na porta
 
 **Problema:**

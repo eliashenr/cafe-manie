@@ -56,6 +56,9 @@ const SERVICE_MESSAGES := {
 	ServiceResult.LAST_ESSENTIAL: "É o último: sem ele não dá para cozinhar ou servir",
 	ServiceResult.NO_MORE_WAITERS: "A equipe de garçons já está completa",
 	ServiceResult.WAITER_LOCKED: "O próximo garçom ainda está bloqueado",
+	ServiceResult.NOT_WAITING_FOR_DRINK: "Esse cliente não pediu bebida",
+	ServiceResult.NO_MACHINE: "Falta a máquina dessa bebida: compre na Loja, aba Cozinha",
+	ServiceResult.NOT_ENOUGH_ENERGY: "Sem energia: ela volta sozinha, 1 ponto por minuto",
 }
 
 ## Abas da loja.
@@ -79,7 +82,8 @@ const SHOP_TAB_COLORS := {
 ## Categorias de móvel em cada aba de móveis.
 const SHOP_TAB_CATEGORIES := {
 	ShopTab.SALON: [FurnitureDefinition.Category.TABLE, FurnitureDefinition.Category.SEATING],
-	ShopTab.KITCHEN: [FurnitureDefinition.Category.COOKING, FurnitureDefinition.Category.COUNTER],
+	ShopTab.KITCHEN: [FurnitureDefinition.Category.COOKING, FurnitureDefinition.Category.COUNTER,
+		FurnitureDefinition.Category.MACHINE],
 	ShopTab.DECOR: [FurnitureDefinition.Category.DECOR],
 }
 

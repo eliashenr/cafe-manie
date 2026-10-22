@@ -57,7 +57,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 | Pratos | **6** (do café à lasanha, de 15 s a 15 min) | **Grande:** lá eram ~90, um novo quase a cada nível, de minutos a dias |
 | Comida que estraga no fogão | Não | Média |
 | Temperos | Não | Média |
-| Máquina de sucos ou café (bebidas) | Não | **Grande, e o PO lembrou dela** |
+| Máquina de sucos ou café (bebidas) | **Tem** (DT-052): máquinas de café e de sucos, 6 bebidas, com energia | — |
 | Máquinas que juntam ouro (jukebox, fliperama, snacks) | Jukebox e fliperama existem só como enfeite | Média: dá para dar função a eles |
 | Crítico gastronômico | Não | Média |
 | Garçons por nível | Tem (6, até o nível 18) | — |
@@ -239,9 +239,9 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
    - pausa que libera mexer em tudo, mesmo com clientes;
    - balcão de 1 quadrado;
    - mais modelos de fogões e balcões.
-2. **Próximo pacote:**
-   - placa ABERTO/FECHADO (3.1);
-   - máquina de café e sucos com bebidas (3.2).
+2. **Feito em 22/10:**
+   - placa ABERTO/FECHADO (3.1, DT-051);
+   - máquinas de café e de sucos com energia (3.2, DT-052).
 3. **Depois:** receitas novas até o nível 30, com tempos longos (3.3), já dentro do livro com abas e domínio (3.13).
 4. **Depois:** temperos e comida que estraga (3.4), com os troféus que aceleram os fogões em volta (3.11).
 5. **Depois:** fogões com perfil, de evento e em partes (3.10), no lugar dos "rápido e turbo" da 3.6.

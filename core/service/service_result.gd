@@ -22,4 +22,7 @@ enum {
 	LAST_ESSENTIAL,     ## é o último fogão ou balcão: sem ele o jogo trava
 	NO_MORE_WAITERS,    ## a cafeteria já tem todos os garçons possíveis
 	WAITER_LOCKED,      ## nível insuficiente para contratar o próximo garçom
+	NOT_WAITING_FOR_DRINK, ## o cliente não está esperando uma bebida
+	NO_MACHINE,         ## falta a máquina dessa bebida
+	NOT_ENOUGH_ENERGY,  ## energia insuficiente para a bebida
 }

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DrinkDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/drink_definition.gd" id="1_drink"]
+
+[resource]
+script = ExtResource("1_drink")
+id = &"hot_chocolate"
+display_name = "Chocolate Quente"
+machine = &"coffee"
+energy_cost = 2
+sell_price = 11
+xp_reward = 5
+unlock_level = 5

@@ -281,6 +281,7 @@ func _watch_for_changes() -> void:
 	simulation.missions.progress_changed.connect(_mark_dirty)
 	simulation.stats.changed.connect(_mark_dirty.unbind(2))
 	simulation.daily.changed.connect(_mark_dirty)
+	simulation.energy.changed.connect(_mark_dirty)
 
 
 func _mark_dirty() -> void:
@@ -314,6 +315,7 @@ func _connect_sounds() -> void:
 	simulation.payment_received.connect(play.bind(&"coin").unbind(2))
 	simulation.furniture_sold.connect(play.bind(&"coin").unbind(2))
 	simulation.dish_collected.connect(play.bind(&"dish_ready").unbind(2))
+	simulation.drink_served.connect(play.bind(&"dish_ready").unbind(2))
 	simulation.leveled_up.connect(play.bind(&"level_up").unbind(1))
 	simulation.mission_completed.connect(play.bind(&"achievement").unbind(1))
 	simulation.achievement_unlocked.connect(play.bind(&"achievement").unbind(2))
@@ -419,6 +421,20 @@ func collect_stove(stove_id: StringName) -> int:
 	return result
 
 
+## Serve a bebida ao cliente que tocou (DT-052): sai na hora, gastando energia. Recusa explica o motivo.
+func serve_drink(customer: Customer) -> int:
+	var drink := customer.drink
+	var result := simulation.serve_drink(customer)
+	if result == ServiceResult.OK:
+		var at := IsoProjection.grid_point_to_world(Vector2(customer.seat_cell)) + Vector2(0, -70)
+		FloatingText.spawn(effects, at, "-%d energia" % drink.energy_cost, FEEDBACK_XP)
+		FloatingText.spawn(effects, at + Vector2(0, 22), "+%d XP" % drink.xp_reward, FEEDBACK_XP)
+	else:
+		last_service_result = result
+	state_changed.emit()
+	return result
+
+
 func _on_payment_received(customer: Customer, amount: int) -> void:
 	var at := IsoProjection.grid_point_to_world(Vector2(customer.seat_cell)) + Vector2(0, -70)
 	FloatingText.spawn(effects, at, "+%d" % amount, FEEDBACK_GOLD)
@@ -436,6 +452,12 @@ func _on_leveled_up(level: int) -> void:
 		text += "  +%s de Café Ouro" % UiTheme.thousands(gold)
 	if not unlocked.is_empty():
 		text += "  Nova receita: %s" % ", ".join(unlocked)
+	var machines: Array[String] = []
+	for definition in simulation.furniture.all():
+		if definition.category == FurnitureDefinition.Category.MACHINE and definition.min_level == level:
+			machines.append(definition.display_name)
+	if not machines.is_empty():
+		text += "  Nova máquina na Loja: %s" % ", ".join(machines)
 	EventBus.message_posted.emit(text)
 	state_changed.emit()
 
@@ -832,6 +854,10 @@ func clear_selection() -> void:
 
 ## Toque no modo VIEW: fogão com prato pronto serve direto; o resto seleciona.
 func tap_at_world(world_position: Vector2) -> void:
+	var thirsty := world_layer.drink_customer_at(world_position)
+	if thirsty != null:
+		serve_drink(thirsty)
+		return
 	var placement := layout.placement_at(IsoProjection.world_to_cell(world_position))
 	if placement != null and simulation.kitchen.is_stove(placement.id) \
 			and simulation.kitchen.stove_status(placement.id) == Kitchen.StoveStatus.READY:

@@ -6,7 +6,8 @@ extends Resource
 ## níveis e atributos são parâmetros de balanceamento: ajuste-os no inspetor
 ## da Godot, sem mexer em código.
 
-enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR }
+## MACHINE (DT-052): máquina de bebida (fica no fim, para os .tres antigos manterem o número da categoria).
+enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 
 ## Identificador único e estável. Nunca mude depois que houver saves usando.
 @export var id: StringName
@@ -19,6 +20,8 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR }
 @export var needs_access := true
 ## Coleção da loja (estilo ou cultura) a que o móvel pertence (res://data/collections).
 @export var collection: StringName = &"classico"
+## Máquina de bebida: que bebidas ela prepara (o campo machine das DrinkDefinition). Vazio nos outros móveis.
+@export var machine: StringName = &""
 
 @export_group("Balanceamento")
 @export var price := 0
@@ -35,4 +38,5 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR }
 
 
 func is_valid() -> bool:
-	return id != &"" and footprint.x > 0 and footprint.y > 0 and price >= 0 and min_level >= 1
+	return id != &"" and footprint.x > 0 and footprint.y > 0 and price >= 0 and min_level >= 1 \
+		and (category == Category.MACHINE) == (machine != &"")

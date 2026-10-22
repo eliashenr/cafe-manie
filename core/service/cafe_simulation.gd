@@ -28,6 +28,8 @@ signal cafe_name_changed(cafe_name: String)
 signal waiter_hired(count: int)
 ## Missão diária ou semanal concluída (a recompensa já foi entregue).
 signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
+## O jogador serviu uma bebida (a energia já foi gasta; o cliente paga quando terminar de beber).
+signal drink_served(customer: Customer, drink: DrinkDefinition)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção
@@ -50,6 +52,7 @@ const ACHIEVEMENTS_DIR := "res://data/achievements"
 const EXPANSIONS_PATH := "res://data/config/expansions.tres"
 const ECONOMY_PATH := "res://data/config/economy.tres"
 const DAILY_REWARDS_PATH := "res://data/config/daily_rewards.tres"
+const ENERGY_PATH := "res://data/config/energy.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -62,6 +65,10 @@ var layout: CafeLayout
 var config: ServiceConfig
 var furniture: FurnitureCatalog
 var recipes: RecipeCatalog
+## Bebidas das máquinas (DT-052), de res://data/drinks.
+var drinks: DrinkCatalog
+## Energia gasta pelas bebidas; recarrega sozinha com o tempo.
+var energy: Energy
 var customer_types: Array[CustomerType] = []
 
 var wallet := Wallet.new()
@@ -121,6 +128,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	customer_types = types
 	progression = PlayerProgression.new(level_table)
 	progression.leveled_up.connect(_on_leveled_up)
+	energy = Energy.new(load(ENERGY_PATH), clock.now(), progression.level)
 	kitchen = Kitchen.new(clock, layout, config.counter_capacity)
 	# A navegação precisa ser reconstruída antes de os personagens recalcularem caminho,
 	# então ela se conecta ao layout antes da simulação.
@@ -131,6 +139,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	popularity = config.popularity_start
 	set_surfaces(SurfaceCatalog.load_from())
 	collections = CollectionCatalog.load_from()
+	drinks = DrinkCatalog.load_from()
 	wall_items = WallItemCatalog.load_from()
 	coin_shop = CoinShop.load_from(wallet)
 	var no_missions: Array[MissionDefinition] = []
@@ -980,7 +989,7 @@ func _update_customer(customer: Customer, delta: float) -> void:
 			if customer.think_left <= 0.0:
 				_place_order(customer)
 			_lose_patience(customer, delta)
-		Customer.State.WAITING_FOR_FOOD:
+		Customer.State.WAITING_FOR_FOOD, Customer.State.WAITING_FOR_DRINK:
 			_lose_patience(customer, delta)
 		Customer.State.EATING:
 			customer.eat_left -= delta
@@ -996,6 +1005,11 @@ func _update_customer(customer: Customer, delta: float) -> void:
 ## O cliente pede: às vezes o que está no balcão, às vezes qualquer prato do cardápio.
 ## O que não está no balcão espera o jogador cozinhar.
 func _place_order(customer: Customer) -> void:
+	var drink := _choose_drink()
+	if drink != null:
+		customer.drink = drink
+		customer.state = Customer.State.WAITING_FOR_DRINK
+		return
 	var recipe := _choose_order()
 	if recipe == null:
 		return
@@ -1007,6 +1021,61 @@ func _place_order(customer: Customer) -> void:
 	customer.order = recipe
 	customer.ordered_from_menu = order.counter_id == &""
 	customer.state = Customer.State.WAITING_FOR_FOOD
+
+
+## Às vezes o cliente pede uma bebida: só se o café tiver máquina para alguma bebida já liberada (sem máquina,
+## nem sorteia, e o resto do atendimento continua igual).
+func _choose_drink() -> DrinkDefinition:
+	var menu := drink_menu()
+	if menu.is_empty() or rng.randf() >= config.drink_order_chance:
+		return null
+	return menu[rng.randi_range(0, menu.size() - 1)]
+
+
+## Bebidas que os clientes podem pedir agora: liberadas no nível e com a máquina delas no café.
+func drink_menu() -> Array[DrinkDefinition]:
+	var menu: Array[DrinkDefinition] = []
+	var seen := {}
+	for placement in layout.placements():
+		var machine := placement.definition.machine
+		if machine != &"" and not seen.has(machine):
+			seen[machine] = true
+			menu.append_array(drinks.for_machine(machine, progression.level))
+	return menu
+
+
+## O café tem alguma máquina de bebida?
+func has_drink_machine() -> bool:
+	for placement in layout.placements():
+		if placement.definition.machine != &"":
+			return true
+	return false
+
+
+## O café tem uma máquina que prepara a bebida?
+func has_machine_for(drink: DrinkDefinition) -> bool:
+	for placement in layout.placements():
+		if placement.definition.machine == drink.machine:
+			return true
+	return false
+
+
+## O jogador tocou no cliente que pediu uma bebida: ela sai na hora da máquina, gastando energia, e o cliente
+## bebe e paga (DT-052). Recusa sem máquina, sem energia ou se o cliente não está esperando bebida.
+func serve_drink(customer: Customer) -> int:
+	if customer == null or customer.state != Customer.State.WAITING_FOR_DRINK or customer.drink == null:
+		return ServiceResult.NOT_WAITING_FOR_DRINK
+	if not has_machine_for(customer.drink):
+		return ServiceResult.NO_MACHINE
+	if not energy.spend(customer.drink.energy_cost, clock.now()):
+		return ServiceResult.NOT_ENOUGH_ENERGY
+	customer.patience_when_served = customer.patience_fraction()
+	customer.state = Customer.State.EATING
+	customer.eat_left = config.drink_time
+	progression.add_xp(customer.drink.xp_reward)
+	_record(MissionDefinition.Kind.EARN_XP, customer.drink.xp_reward)
+	drink_served.emit(customer, customer.drink)
+	return ServiceResult.OK
 
 
 func _choose_order() -> RecipeDefinition:
@@ -1045,9 +1114,11 @@ func _lose_patience(customer: Customer, delta: float) -> void:
 
 
 func _pay(customer: Customer) -> void:
-	var amount := maxi(1, roundi(customer.order.sell_price * customer.type.pay_multiplier))
+	var price := customer.drink.sell_price if customer.drink != null else customer.order.sell_price
+	var item_name := customer.drink.display_name if customer.drink != null else customer.order.display_name
+	var amount := maxi(1, roundi(price * customer.type.pay_multiplier))
 	customer.paid = amount
-	wallet.earn(Wallet.SOFT, amount, "Venda: %s" % customer.order.display_name)
+	wallet.earn(Wallet.SOFT, amount, "Venda: %s" % item_name)
 	progression.add_xp(config.customer_xp)
 	_change_popularity(config.popularity_gain * lerpf(0.5, 1.0, customer.patience_when_served))
 	payment_received.emit(customer, amount)
@@ -1300,7 +1371,8 @@ func _settle_after_layout_change() -> void:
 		if customer.seat_id == &"" or customer.state in [Customer.State.LEAVING, Customer.State.GONE, Customer.State.QUEUED]:
 			continue
 		var seat := layout.get_placement(customer.seat_id)
-		if seat == null or _tables_next_to(customer.seat_id).is_empty():
+		var no_machine: bool = customer.state == Customer.State.WAITING_FOR_DRINK and not has_machine_for(customer.drink)
+		if seat == null or _tables_next_to(customer.seat_id).is_empty() or no_machine:
 			_send_away(customer, true)  # sai sem reclamar: não tira popularidade
 			continue
 		if seat.origin != customer.seat_cell:
@@ -1423,6 +1495,8 @@ func _on_leveled_up(level: int) -> void:
 	var gold := progression.table.gold_for(level)
 	if gold > 0:
 		wallet.earn(Wallet.SOFT, gold, "Nível %d" % level)
+	energy.set_level(level, clock.now())
+	energy.refill(clock.now())  # nível novo enche a energia
 	leveled_up.emit(level)
 	missions.record(MissionDefinition.Kind.REACH_LEVEL, level)
 	stats.record_max(PlayerStats.LEVEL, level)

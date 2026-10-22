@@ -75,6 +75,12 @@ extends Resource
 ## Redução do intervalo entre chegadas com o bônus máximo (0.25 = 25% mais rápido).
 @export_range(0.0, 0.9) var beauty_spawn_bonus := 0.25
 
+@export_group("Bebidas")
+## Chance de um cliente pedir uma bebida em vez de um prato, quando o café tem máquina para alguma bebida liberada.
+@export_range(0.0, 1.0) var drink_order_chance := 0.3
+## Segundos bebendo antes de pagar.
+@export var drink_time := 3.0
+
 @export_group("Cozinha")
 ## Porções que cabem em um balcão.
 @export var counter_capacity := 40
@@ -84,7 +90,8 @@ func is_valid() -> bool:
 	return spawn_interval > 0.0 and max_customers > 0 and customer_patience > 0.0 \
 		and customer_walk_speed > 0.0 and waiter_walk_speed > 0.0 and eat_time >= 0.0 \
 		and handling_time >= 0.0 and counter_capacity > 0 and beauty_for_max_bonus > 0.0 \
-		and order_think_time >= 0.0 and queue_capacity >= 0 and queue_patience > 0.0 and waiter_idle_pause >= 0.0
+		and order_think_time >= 0.0 and queue_capacity >= 0 and queue_patience > 0.0 and waiter_idle_pause >= 0.0 \
+		and drink_time >= 0.0
 
 
 ## Intervalo médio entre chegadas para uma popularidade (0 a 100).

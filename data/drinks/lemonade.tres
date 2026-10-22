@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DrinkDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/drink_definition.gd" id="1_drink"]
+
+[resource]
+script = ExtResource("1_drink")
+id = &"lemonade"
+display_name = "Limonada"
+machine = &"juice"
+energy_cost = 1
+sell_price = 9
+xp_reward = 4
+unlock_level = 5

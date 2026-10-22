@@ -7,7 +7,7 @@ extends SceneTree
 ## O foco é a célula que fica no meio da foto (ex.: 1,1 para a cozinha).
 ## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir, reforma,
 ## reforma:<revestimento>, moedas (a vitrine de Café Ouro), missoes (a janela das missões), pausa (o jogo pausado) ou
-## fechado (a placa FECHADO na porta).
+## fechado (a placa FECHADO na porta) ou bebidas (as duas máquinas, um cliente pedindo bebida e a energia).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -85,9 +85,17 @@ func _initialize() -> void:
 		simulation.customers.append(customer)
 		return customer
 	seat.call(left_chair, 3, &"coxinha", 1.0)    # comendo, de frente
-	seat.call(right_chair, 2, &"lasagna", 0.4)   # esperando o prato, de costas, preocupada
+	var worried = seat.call(right_chair, 2, &"lasagna", 0.4)   # esperando o prato, de costas, preocupada
 	seat.call(back_chair, 1, &"", 0.9)           # esperando para pedir, de costas
 	seat.call(front_chair, 3, &"coffee", 1.0)    # comendo, de costas
+	if _panel == "bebidas":
+		simulation.progression.add_xp(280)  # nível 5
+		place.call(&"machine_coffee", Vector2i(0, 4), 3)
+		place.call(&"machine_juice", Vector2i(0, 5), 3)
+		worried.state = 7  # Customer.State.WAITING_FOR_DRINK
+		worried.order = null
+		worried.drink = simulation.drinks.get_definition(&"cappuccino")
+		simulation.energy.spend(3, clock.now())
 	var walker := func(cell: Vector2, facing: Vector2, state: int, happy := true):
 		var customer = load("res://core/service/customer.gd").new()
 		customer.serial = serial[0]

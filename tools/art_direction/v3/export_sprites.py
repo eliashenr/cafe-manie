@@ -255,6 +255,16 @@ for _id, _style in themes3.STOVES.items():
     FURNITURE[_id] = ((1, 1), _collection_stove(_style), 4)
 for _id, _style in themes3.COUNTERS.items():
     FURNITURE[_id] = ((1, 1), _collection_counter(_style), 4)
+# Máquinas de bebida (DT-052): 1 piso, a frente aparece como a dos fogões.
+import drinks3  # noqa: E402
+
+
+def _machine(draw):
+    return lambda D, iso, fp, rotation: draw(D, iso, 0, 0, FACE.get(rotation))
+
+
+for _id, _draw in drinks3.MACHINES.items():
+    FURNITURE[_id] = ((1, 1), _machine(_draw), 4)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 
@@ -391,6 +401,9 @@ def export_people(sheet, manifest):
 FOODS = {"coffee": "cafe", "cheese_bread": "pao", "toasted_sandwich": "misto", "carrot_cake": "bolo",
          "coxinha": "coxinha", "lasagna": "lasanha"}
 FOOD_SIZE = 48.0
+# id da bebida no jogo -> desenho em drinks3
+DRINKS = {"espresso": "expresso", "cappuccino": "cappuccino", "hot_chocolate": "chocolate",
+          "orange_juice": "laranja", "lemonade": "limonada", "strawberry_smoothie": "morango"}
 MOODS = ("feliz", "esperando", "bravo")
 MOOD_RADIUS = 11.0
 
@@ -402,7 +415,11 @@ def export_food(sheet, manifest):
     for mood in MOODS:
         r = MOOD_RADIUS * 1.4
         sheet.add(f"humor_{mood}", mood_face(sheet.D, 0, 0, mood, MOOD_RADIUS), (-r, -r, 2 * r, 2 * r))
+    for drink_id, kind in DRINKS.items():
+        bounds = (-FOOD_SIZE * 0.6, -FOOD_SIZE * 0.66, FOOD_SIZE * 1.2, FOOD_SIZE * 1.2)
+        sheet.add(f"bebida_{drink_id}", drinks3.drink(sheet.D, kind, 0, 0, FOOD_SIZE), bounds)
     manifest["food"] = {recipe_id: f"prato_{recipe_id}" for recipe_id in FOODS}
+    manifest["drinks"] = {drink_id: f"bebida_{drink_id}" for drink_id in DRINKS}
     # Largura de cada prato, em pixels de mundo, quando desenhado em tamanho natural.
     manifest["food_width"] = round(FOOD_SIZE * WORLD, 2)
 

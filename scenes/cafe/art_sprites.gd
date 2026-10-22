@@ -69,6 +69,12 @@ static func food(recipe_id: StringName) -> Sprite:
 	return null if sprite_name.is_empty() else get_sprite(sprite_name)
 
 
+## Ícone da bebida (DT-052), ou null se não há arte.
+static func drink(drink_id: StringName) -> Sprite:
+	var sprite_name: String = _load_manifest().get("drinks", {}).get(String(drink_id), "")
+	return null if sprite_name.is_empty() else get_sprite(sprite_name)
+
+
 ## Panela da receita no fogão (com a chama acesa), ou null se não há arte.
 static func cookware(recipe_id: StringName) -> Sprite:
 	var sprite_name: String = _load_manifest().get("cookware", {}).get(String(recipe_id), "")

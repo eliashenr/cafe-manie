@@ -4,6 +4,22 @@
 
 🟢 **CONCLUÍDO**
 
+**Próximo pacote do relatório, etapa 2: máquinas de bebida e energia** (DT-052)
+
+- **Duas máquinas novas** na aba Cozinha da Loja (1 piso cada):
+  - **Máquina de Café** (nível 2): Café Expresso, Cappuccino e Chocolate Quente;
+  - **Máquina de Sucos** (nível 4): Suco de Laranja, Limonada e Vitamina de Morango.
+- **Pedidos de bebida:** com uma máquina no café, às vezes o cliente pede uma bebida. O balão dele aparece com **borda verde**.
+- **Servir:** toque no cliente (ou no balão). A bebida sai na hora, gastando **energia**; ele bebe, paga e sai satisfeito.
+- **Energia:**
+  - fica embaixo do ouro, com o raio, "7/10" e quanto falta para o próximo ponto;
+  - volta sozinha, 1 ponto por minuto, também com o jogo fechado;
+  - enche quando você sobe de nível, e o máximo cresce com o nível;
+  - tocar no contador explica como funciona.
+- Sem máquina, nada muda: ninguém pede bebida e o contador não aparece.
+- Ao chegar no nível de uma máquina, o aviso de "Nível N!" conta que ela chegou na Loja.
+- **O save guarda a energia** (versão 10).
+
 **Próximo pacote do relatório, etapa 1: placa ABERTO/FECHADO** (DT-051)
 
 - **Botão da porta** na coluna da direita, logo abaixo da pausa (ou a tecla F):
@@ -211,6 +227,13 @@
 
 🧪 **TESTADO**
 
+- **Máquinas de bebida e energia: 478 testes automatizados PASSARAM.**
+  - **Energia:** começa cheia, gasta e recusa quando falta, recarrega 1 ponto por minuto sem passar do máximo, cheia não acumula tempo, conta o que falta, recarrega com o jogo fechado, relógio para trás não dá energia, e o nível aumenta o máximo e enche a barra.
+  - **Bebidas:** os dados (cada bebida com máquina e desenho); sem máquina ninguém pede bebida; com máquina pedem só as liberadas; servir gasta energia, dá XP e o cliente paga o preço da bebida; sem energia não sai; não serve duas vezes nem sem a máquina certa; máquina vendida deixa o cliente ir sem tirar popularidade; quem desiste da bebida tira popularidade; e o save guarda a energia (saves antigos começam cheios).
+  - **Na tela:** tocar no balão verde serve, a recusa sem energia, o contador (escondido sem máquina, "9/10" e "+1 1:00", e a explicação), gastar energia marca para salvar, as máquinas na aba Cozinha e com arte nas 4 rotações, e o aviso de nível que conta da máquina nova.
+  - **Defeitos inseridos de propósito: 26 de 26 pegos.**
+  - **Foto conferida:** as duas máquinas na cozinha, a cliente com o balão verde do cappuccino e o contador de energia.
+  - **Cena principal: PASSOU**, zero erros.
 - **Placa ABERTO/FECHADO: 447 testes automatizados PASSARAM.**
   - Os novos conferem que, fechado, ninguém chega; ao abrir, o próximo cliente chega logo; a fila da calçada vai embora sem tirar popularidade; quem está comendo termina e paga; quem desiste com o café fechado não tira popularidade (e com ele aberto, tira); e o save guarda a placa (saves antigos abrem com o café aberto).
   - Na tela: o botão e a tecla F, a faixa, o aviso, a plaquinha da porta, o jogo que continua rodando, o save fechado que já abre mostrando, e as faixas de fechado e de pausa sem uma tampar a outra.

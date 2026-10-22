@@ -50,6 +50,8 @@ const DAILY_READY_TITLE := "PRESENTE DIÁRIO"
 const DAILY_READY := "Receber!"
 const PAUSE_TEXT := "JOGO PAUSADO: mexa à vontade. Toque em ▶ para continuar."
 const CLOSED_TEXT := "CAFÉ FECHADO: ninguém novo entra. Toque na porta verde para abrir."
+const ENERGY_HELP := ("Energia: cada bebida gasta um pouco. Ela volta sozinha, 1 ponto por minuto, mesmo com o jogo "
+	+ "fechado, e enche quando você sobe de nível. Toque no cliente com o balão verde para servir a bebida.")
 
 var simulation: CafeSimulation
 
@@ -66,6 +68,10 @@ var _closed_banner: PanelContainer
 var _name_dialog: ConfirmationDialog
 var _name_edit: LineEdit
 var _gold_label: Label
+## Energia das máquinas de bebida (DT-052): aparece quando o café tem uma máquina.
+var _energy_button: Button
+var _energy_label: Label
+var _energy_next: Label
 var _xp_bar: StripedBar
 var _level_label: Label
 var _beauty_bar: StripedBar
@@ -110,6 +116,7 @@ func _ready() -> void:
 	_root.theme = UiTheme.theme()
 	add_child(_root)
 	_build_gold()
+	_build_energy()
 	_build_xp()
 	_build_daily_timer()
 	_build_side_buttons()
@@ -180,6 +187,28 @@ func _build_gold() -> void:
 	buy.add_theme_constant_override("outline_size", 4)
 	buy.pressed.connect(func() -> void: show_coin_shop())
 	_place(group, buy, Vector2(178, 2), Vector2(30, 30))
+
+
+## Contador de energia logo abaixo do ouro: o raio, "7/10" e quanto falta para o próximo ponto.
+func _build_energy() -> void:
+	_energy_button = Button.new()
+	_energy_button.name = "EnergyButton"
+	_energy_button.focus_mode = Control.FOCUS_NONE
+	_energy_button.tooltip_text = "Energia das máquinas de bebida"
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		_energy_button.add_theme_stylebox_override(state, UiTheme.pill_box())
+	_energy_button.pressed.connect(func() -> void: show_message(ENERGY_HELP))
+	_anchored(_energy_button, Vector2.ZERO, Vector2(28, 62), Vector2(150, 30))
+	_place(_energy_button, UiTheme.art("icone_energia", Vector2(40, 40)), Vector2(-18, -5))
+	_energy_label = UiTheme.outlined("0/0", 19)
+	_energy_label.name = "EnergyValue"
+	_energy_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_place(_energy_button, _energy_label, Vector2(26, 0), Vector2(64, 30))
+	_energy_next = UiTheme.outlined("", 13, Color("bfe3ff"), UiTheme.NAVY, 0)
+	_energy_next.name = "EnergyNext"
+	_energy_next.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_energy_next.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_place(_energy_button, _energy_next, Vector2(86, 0), Vector2(56, 30))
 
 
 func _build_xp() -> void:
@@ -828,6 +857,7 @@ func refresh() -> void:
 	var beauty := simulation.beauty()
 	_beauty_bar.text = str(beauty)
 	_beauty_bar.value = beauty / 100.0
+	_refresh_energy()
 	_refresh_daily()
 	_refresh_mission()
 
@@ -837,6 +867,26 @@ func _xp_text() -> String:
 	if progression.is_max_level():
 		return "%s XP (nível máximo)" % UiTheme.thousands(progression.xp)
 	return "%s / %s XP" % [UiTheme.thousands(progression.xp), UiTheme.thousands(progression.table.xp_for_next(progression.level))]
+
+
+func _refresh_energy() -> void:
+	_energy_button.visible = simulation.has_drink_machine()
+	if not _energy_button.visible:
+		return
+	var now := simulation.clock.now()
+	var energy := simulation.energy
+	_energy_label.text = "%d/%d" % [energy.amount(now), energy.maximum()]
+	var left := ceili(energy.seconds_to_next(now))
+	_energy_next.text = "" if left <= 0 else "+1 %d:%02d" % [left / 60, left % 60]
+
+
+## Texto do contador de energia ("7/10") e da recarga ("+1 0:42", vazio com ela cheia), para os testes.
+func energy_texts() -> Array[String]:
+	return [_energy_label.text, _energy_next.text] as Array[String]
+
+
+func is_energy_visible() -> bool:
+	return _energy_button.visible
 
 
 func _refresh_daily() -> void:

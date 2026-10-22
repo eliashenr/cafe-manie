@@ -258,6 +258,20 @@ func _sidewalk_point() -> Vector2:
 	return Vector2(layout.entrance) + SIDEWALK_OFFSET
 
 
+## Cliente esperando uma bebida sob este ponto do mundo (o da frente, se houver vários), ou null (DT-052).
+func drink_customer_at(world_point: Vector2) -> Customer:
+	var found: Customer = null
+	var front := -INF
+	for view: AgentView in _agents.values():
+		var customer := view.agent as Customer
+		if customer == null or customer.state != Customer.State.WAITING_FOR_DRINK:
+			continue
+		if view.tap_rect().has_point(world_point) and view.position.y > front:
+			front = view.position.y
+			found = customer
+	return found
+
+
 ## Clientes que já saíram e ainda terminam a caminhada na tela.
 func exiting_count() -> int:
 	_prune_exiting()

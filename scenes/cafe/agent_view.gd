@@ -59,6 +59,10 @@ const BALLOON_TAIL := 9.0
 const BALLOON_BAR := 5.0
 const BALLOON_FILL := Color.WHITE
 const BALLOON_EDGE := Color("2a5fa8")
+## Balão de bebida (DT-052): borda verde, porque quem serve é o jogador, tocando no cliente.
+const BALLOON_DRINK_EDGE := Color("26a93a")
+## Quanto acima do corpo o toque ainda pega o cliente (o balão do pedido fica ali), em pixels de mundo.
+const TAP_REACH_ABOVE := 70.0
 const BALLOON_SHADOW := Color(0.1, 0.16, 0.29, 0.18)
 const BALLOON_TEXT := Color("1f7ae0")
 const BALLOON_TEXT_SIZE := 13
@@ -95,6 +99,7 @@ var _started := false
 var _exit_target := Vector2.ZERO
 
 static var _balloon_style: StyleBoxFlat
+static var _drink_balloon_style: StyleBoxFlat
 static var _balloon_shadow_style: StyleBoxFlat
 
 var _overlay := Node2D.new()
@@ -315,6 +320,12 @@ func body_rect() -> Rect2:
 	return Rect2(position + rect.position - Vector2(0.0, SORT_NUDGE), rect.size)
 
 
+## Área de toque do personagem: o corpo e o espaço do balão acima da cabeça.
+func tap_rect() -> Rect2:
+	var body := body_rect()
+	return body.grow_side(SIDE_TOP, TAP_REACH_ABOVE) if body.size != Vector2.ZERO else body
+
+
 ## Móveis que tampam o personagem agora (a silhueta aparece no formato deles).
 func set_occluders(views: Array) -> void:
 	if views == _occluders:
@@ -412,6 +423,9 @@ func _draw_customer_overlay(head_top: Vector2) -> void:
 		Customer.State.WAITING_FOR_FOOD:
 			_draw_balloon(tip, ArtSprites.food(customer.order.id), customer.order.display_name,
 				customer.patience_fraction())
+		Customer.State.WAITING_FOR_DRINK:
+			_draw_balloon(tip, ArtSprites.drink(customer.drink.id), customer.drink.display_name,
+				customer.patience_fraction(), true)
 		Customer.State.QUEUED:
 			# Na fila, o balão só aparece quando a paciência começa a acabar (para a fila não virar um varal de balões).
 			if customer.patience_fraction() < PATIENCE_WORRIED:
@@ -423,7 +437,7 @@ func _draw_customer_overlay(head_top: Vector2) -> void:
 
 
 ## Balão branco de borda azul, com o prato (ou um texto) e a barra de paciência.
-func _draw_balloon(tip: Vector2, food: ArtSprites.Sprite, text: String, patience: float) -> void:
+func _draw_balloon(tip: Vector2, food: ArtSprites.Sprite, text: String, patience: float, drink := false) -> void:
 	var font := UiTheme.font(UiTheme.BOLD)
 	var text_size := 0 if food != null else (QUESTION_SIZE if text == "?" else BALLOON_TEXT_SIZE)
 	var inner := Vector2(BALLOON_FOOD, BALLOON_FOOD)
@@ -433,12 +447,12 @@ func _draw_balloon(tip: Vector2, food: ArtSprites.Sprite, text: String, patience
 	var box := Rect2(tip - Vector2(size.x / 2.0, size.y + BALLOON_TAIL), size)
 	_ensure_styles()
 	_overlay.draw_style_box(_balloon_shadow_style, Rect2(box.position + Vector2(1.5, 2.5), box.size))
-	_overlay.draw_style_box(_balloon_style, box)
+	_overlay.draw_style_box(_drink_balloon_style if drink else _balloon_style, box)
 	var base_y := box.end.y - 1.0
 	_overlay.draw_colored_polygon(PackedVector2Array([Vector2(tip.x - 5.0, base_y), Vector2(tip.x + 6.0, base_y), tip]),
 		BALLOON_FILL)
 	_overlay.draw_polyline(PackedVector2Array([Vector2(tip.x - 5.0, base_y + 0.5), tip, Vector2(tip.x + 6.0, base_y + 0.5)]),
-		BALLOON_EDGE, 2.0, true)
+		BALLOON_DRINK_EDGE if drink else BALLOON_EDGE, 2.0, true)
 	var center := box.position + Vector2(size.x / 2.0, BALLOON_PAD + inner.y / 2.0)
 	if food != null:
 		_overlay.draw_texture_rect(food.texture, food.rect_at(center, BALLOON_FOOD / ArtSprites.food_width()), false)
@@ -461,6 +475,9 @@ static func _ensure_styles() -> void:
 	_balloon_style.set_border_width_all(2)
 	_balloon_style.set_corner_radius_all(11)
 	_balloon_style.anti_aliasing = true
+	_drink_balloon_style = _balloon_style.duplicate()
+	_drink_balloon_style.border_color = BALLOON_DRINK_EDGE
+	_drink_balloon_style.set_border_width_all(3)
 	_balloon_shadow_style = StyleBoxFlat.new()
 	_balloon_shadow_style.bg_color = BALLOON_SHADOW
 	_balloon_shadow_style.set_corner_radius_all(11)
