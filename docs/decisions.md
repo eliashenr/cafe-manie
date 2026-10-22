@@ -4,6 +4,20 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-062 — Loja de troca de cupons
+
+**Problema:** os cupons do crítico (DT-061) precisavam de uso (proposta 3.15 do relatório).
+
+**Decisão:**
+- **Aba Cupons na loja**, com itens exclusivos que não se compram com ouro (`coupon_price` e `coupon_season` em `FurnitureDefinition`):
+  - temporada 1: Estátua do Crítico (12 cupons) e Fonte de Chocolate (20);
+  - temporada 2: Árvore de Cupcakes (15) e Carrinho de Pipoca (25).
+- **As temporadas giram a cada 2 semanas** (`shop_seasons` e `weeks_per_season` em `critic.tres`). A barra diz quantos cupons você tem e quando chegam itens novos.
+- **Trocar gasta cupons, e não ouro.** O item guardado volta de graça, mesmo fora da temporada.
+- **Testes:** 581 passaram, e a cena principal subiu sem erros. A rodada de defeitos de propósito desta etapa ficou para a próxima sessão.
+
+---
+
 ## DT-061 — Crítico gastronômico e cupons
 
 **Problema:**

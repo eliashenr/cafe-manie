@@ -4,6 +4,13 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 6 do relatório, etapa 2: loja de troca de cupons** (DT-062)
+
+- **Aba Cupons na loja**, com 4 itens exclusivos: Estátua do Crítico, Fonte de Chocolate, Árvore de Cupcakes e Carrinho de Pipoca.
+- Os itens mudam a cada 2 semanas. A barra diz quantos cupons você tem e quando chegam itens novos.
+- **Testes:** 581 passaram; a cena principal subiu sem erros.
+- **Falta:** a rodada de defeitos de propósito desta etapa e a etapa 3 do item 6 (o evento de Halloween, com a arte já desenhada).
+
 **Item 6 do relatório, etapa 1: crítico gastronômico** (DT-061)
 
 - **A partir do nível 5,** o crítico visita o café uma vez por dia, com um selo ao lado da cabeça.

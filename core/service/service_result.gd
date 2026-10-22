@@ -36,4 +36,6 @@ enum {
 	FURNITURE_LIMIT,    ## a cafeteria já tem o máximo desse móvel
 	WRONG_STOVE,        ## a receita só sai num fogão temático (DT-059)
 	NOT_FOR_SALE,       ## o móvel não se compra com ouro: só se ganha (DT-060)
+	NOT_IN_SEASON,      ## o item da loja de troca não está nesta temporada (DT-062)
+	NOT_ENOUGH_COUPONS, ## cupons insuficientes para a troca
 }

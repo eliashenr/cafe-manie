@@ -86,7 +86,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Pacote do relatório: crítico, cupons e evento (seção 4, item 6)
 
 - [x] **1. Crítico gastronômico** (DT-061): uma visita por dia com tema da semana; servido rápido, deixa a estrela com ouro, XP e cupons.
-- [ ] **2. Loja de troca de cupons**, com itens exclusivos por temporada.
+- [x] **2. Loja de troca de cupons** (DT-062): aba Cupons com 4 itens exclusivos em 2 temporadas.
 - [ ] **3. Evento de Halloween**, com historinha, missões com prazo e o Caldeirão da Bruxa que sobe de nível.
 
 ## Passe visual (18/10/2026)

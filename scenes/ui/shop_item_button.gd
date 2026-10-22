@@ -46,6 +46,11 @@ func _init() -> void:
 ## Atualiza o que aparece; só redesenha se algo mudou.
 ## Texto depois do preço (ex.: "/piso").
 var price_suffix := ""
+## Ícone ao lado do preço: a moeda, ou o cupom na loja de troca (DT-062).
+var price_icon := "icone_moeda":
+	set(value):
+		price_icon = value
+		queue_redraw()
 
 
 func show_state(new_price: int, new_locked_level: int, new_note: String, new_affordable: bool) -> void:
@@ -86,7 +91,7 @@ func _draw() -> void:
 	elif locked_level == 0:
 		var text := UiTheme.thousands(price) + price_suffix
 		var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PRICE_SIZE).x
-		var coin := ArtSprites.get_sprite("icone_moeda")
+		var coin := ArtSprites.get_sprite(price_icon)
 		var left := (size.x - width - 24.0) / 2.0
 		if coin != null:
 			draw_texture_rect(coin.texture, Rect2(Vector2(left, size.y - 30.0), Vector2(20, 20)), false)

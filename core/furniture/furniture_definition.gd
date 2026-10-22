@@ -33,6 +33,10 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 @export var max_per_cafe := 0
 ## false = não se compra com ouro: só se ganha (prêmio de conjunto, de evento ou da loja de cupons).
 @export var sold_for_gold := true
+## Cupons para trocar na aba Cupons da loja (DT-062); 0 = não está na loja de troca.
+@export var coupon_price := 0
+## Temporada da loja de troca em que o item aparece (-1 = em todas).
+@export var coupon_season := -1
 
 @export_group("Perfil do fogão (DT-058)")
 ## Corte no tempo de preparo (0.25 = 25% menos tempo).
@@ -63,7 +67,8 @@ func is_valid() -> bool:
 	return id != &"" and footprint.x > 0 and footprint.y > 0 and price >= 0 and min_level >= 1 \
 		and (category == Category.MACHINE) == (machine != &"") \
 		and (not is_trophy() or (trophy_dishes > 0 and renew_price >= 0)) \
-		and max_per_cafe >= 0 and stove_max_time >= 0.0 \
+		and max_per_cafe >= 0 and stove_max_time >= 0.0 and coupon_price >= 0 \
+		and (coupon_price == 0 or not sold_for_gold) \
 		and (category == Category.COOKING or not has_stove_profile())
 
 

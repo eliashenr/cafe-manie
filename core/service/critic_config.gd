@@ -21,11 +21,15 @@ extends Resource
 @export var coupons_at_max := 5
 ## Abas do livro que são o tema de cada semana, em rodízio.
 @export var themes: Array[StringName] = [&"basico", &"brasil", &"doces", &"mundo"]
+## Loja de troca (DT-062): quantas temporadas de itens exclusivos giram e quantas semanas dura cada uma.
+@export var shop_seasons := 2
+@export var weeks_per_season := 2
 
 
 func is_valid() -> bool:
 	return first_level >= 1 and arrival_delay >= 0.0 and patience_multiplier > 0.0 and reward_gold >= 0 and reward_xp >= 0 \
-		and coupons_at_zero >= 0 and coupons_at_max >= coupons_at_zero and not themes.is_empty()
+		and coupons_at_zero >= 0 and coupons_at_max >= coupons_at_zero and not themes.is_empty() \
+		and shop_seasons >= 1 and weeks_per_season >= 1
 
 
 func gold_at(level: int) -> int:
@@ -38,6 +42,11 @@ func xp_at(level: int) -> int:
 
 func coupons_at(popularity: float) -> int:
 	return roundi(lerpf(coupons_at_zero, coupons_at_max, clampf(popularity / 100.0, 0.0, 1.0)))
+
+
+## A temporada da loja de troca na semana [param week].
+func season_for_week(week: int) -> int:
+	return posmod(floori(float(week) / weeks_per_season), shop_seasons)
 
 
 ## A aba do tema na semana [param week].

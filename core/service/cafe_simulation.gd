@@ -527,6 +527,24 @@ func _reward_stove_sets() -> void:
 
 # --- Crítico gastronômico (DT-061) -----------------------------------------
 
+## Temporada atual da loja de troca (DT-062).
+func coupon_season() -> int:
+	return critic_config.season_for_week(mission_week())
+
+
+## Itens que a loja de troca oferece nesta temporada.
+func coupon_shop_items() -> Array[FurnitureDefinition]:
+	var season := coupon_season()
+	return furniture.all().filter(func(d: FurnitureDefinition) -> bool:
+		return d.coupon_price > 0 and (d.coupon_season < 0 or d.coupon_season == season))
+
+
+## Segundos até a loja de troca mudar de temporada (meia-noite da segunda em que ela muda).
+func seconds_until_new_season() -> float:
+	var weeks_left := critic_config.weeks_per_season - 1 - posmod(mission_week(), critic_config.weeks_per_season)
+	return seconds_until_new_week() + weeks_left * 7 * 86400.0
+
+
 ## A aba do livro que o crítico avalia nesta semana.
 func critic_theme() -> StringName:
 	return critic_config.theme_for_week(mission_week())
@@ -720,6 +738,12 @@ func can_acquire(definition: FurnitureDefinition) -> int:
 		return ServiceResult.FURNITURE_LIMIT
 	if inventory.count(definition.id) > 0:
 		return ServiceResult.OK
+	if definition.coupon_price > 0:
+		if not coupon_shop_items().has(definition):
+			return ServiceResult.NOT_IN_SEASON
+		if wallet.balance(Wallet.COUPONS) < definition.coupon_price:
+			return ServiceResult.NOT_ENOUGH_COUPONS
+		return ServiceResult.OK
 	if not definition.sold_for_gold:
 		return ServiceResult.NOT_FOR_SALE
 	if definition.min_level > progression.level:
@@ -743,7 +767,9 @@ func acquire_and_place(definition: FurnitureDefinition, origin: Vector2i, rotati
 		inventory.take(definition.id)
 		trophies.place_stored(last_placed_id)
 		return ServiceResult.OK
-	if definition.price > 0:
+	if definition.coupon_price > 0:
+		wallet.spend(Wallet.COUPONS, definition.coupon_price, "Troca: %s" % definition.display_name)
+	elif definition.price > 0:
 		wallet.spend(Wallet.SOFT, definition.price, "Compra: %s" % definition.display_name)
 	furniture_bought.emit(definition)
 	_record(MissionDefinition.Kind.BUY_FURNITURE, 1, null, definition.category)

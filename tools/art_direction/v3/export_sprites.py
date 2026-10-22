@@ -282,6 +282,11 @@ def _train(part):
 for _id, _part in trains3.TRAIN.items():
     FURNITURE[_id] = ((1, 1), _train(_part), 4)
 FURNITURE["station_clock"] = ((1, 1), _collection_decor(trains3.station_clock), 1)
+# Loja de troca de cupons (DT-062): enfeites exclusivos.
+import critic3  # noqa: E402
+
+for _id, _draw in critic3.DECOR.items():
+    FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 

@@ -15,3 +15,5 @@ reward_xp_per_level = 3.0
 coupons_at_zero = 1
 coupons_at_max = 5
 themes = Array[StringName]([&"basico", &"brasil", &"doces", &"mundo"])
+shop_seasons = 2
+weeks_per_season = 2

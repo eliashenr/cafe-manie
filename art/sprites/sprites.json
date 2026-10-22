@@ -1471,6 +1471,30 @@
     342.67
    ]
   },
+  "critic_statue_r0": {
+   "anchor": [
+    66.67,
+    255.67
+   ]
+  },
+  "chocolate_fountain_r0": {
+   "anchor": [
+    61.67,
+    261.67
+   ]
+  },
+  "cupcake_tree_r0": {
+   "anchor": [
+    61.67,
+    305.67
+   ]
+  },
+  "popcorn_cart_r0": {
+   "anchor": [
+    73.67,
+    298.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -5953,6 +5977,30 @@
    "1": "station_clock_r0",
    "2": "station_clock_r0",
    "3": "station_clock_r0"
+  },
+  "critic_statue": {
+   "0": "critic_statue_r0",
+   "1": "critic_statue_r0",
+   "2": "critic_statue_r0",
+   "3": "critic_statue_r0"
+  },
+  "chocolate_fountain": {
+   "0": "chocolate_fountain_r0",
+   "1": "chocolate_fountain_r0",
+   "2": "chocolate_fountain_r0",
+   "3": "chocolate_fountain_r0"
+  },
+  "cupcake_tree": {
+   "0": "cupcake_tree_r0",
+   "1": "cupcake_tree_r0",
+   "2": "cupcake_tree_r0",
+   "3": "cupcake_tree_r0"
+  },
+  "popcorn_cart": {
+   "0": "popcorn_cart_r0",
+   "1": "popcorn_cart_r0",
+   "2": "popcorn_cart_r0",
+   "3": "popcorn_cart_r0"
   },
   "dj_booth": {
    "0": "dj_booth_r0",

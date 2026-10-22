@@ -59,6 +59,8 @@ const SERVICE_MESSAGES := {
 	ServiceResult.FURNITURE_LIMIT: "A cafeteria já tem o máximo desse móvel",
 	ServiceResult.WRONG_STOVE: "Essa receita só sai no fogão dela",
 	ServiceResult.NOT_FOR_SALE: "Esse item não se compra com ouro: só se ganha",
+	ServiceResult.NOT_IN_SEASON: "Esse item não está na loja de troca desta temporada",
+	ServiceResult.NOT_ENOUGH_COUPONS: "Faltam cupons: sirva bem o crítico para ganhar mais",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -78,7 +80,7 @@ const SERVICE_MESSAGES := {
 }
 
 ## Abas da loja.
-enum ShopTab { SALON, KITCHEN, DECOR, FLOOR, WALL }
+enum ShopTab { SALON, KITCHEN, DECOR, FLOOR, WALL, COUPONS }
 
 const SHOP_TAB_NAMES := {
 	ShopTab.SALON: "Salão",
@@ -86,6 +88,7 @@ const SHOP_TAB_NAMES := {
 	ShopTab.DECOR: "Decoração",
 	ShopTab.FLOOR: "Pisos",
 	ShopTab.WALL: "Paredes",
+	ShopTab.COUPONS: "Cupons",
 }
 ## Cor de cada aba (como nas pranchas: uma cor por seção da loja).
 const SHOP_TAB_COLORS := {
@@ -94,8 +97,11 @@ const SHOP_TAB_COLORS := {
 	ShopTab.DECOR: Color("3cc04e"),
 	ShopTab.FLOOR: Color("9b5cff"),
 	ShopTab.WALL: Color("2ec4b6"),
+	ShopTab.COUPONS: Color("e0457f"),
 }
 ## Categorias de móvel em cada aba de móveis.
+## Barra da aba Cupons (DT-062).
+const COUPON_SHOP_TEXT := "Loja de troca: você tem %d cupons  —  itens novos em %s"
 ## Dica da peça do multifogão na loja (DT-060).
 const SET_TOOLTIP := "Peça %d de %d do %s: com as peças lado a lado, na ordem, cada uma rende %d%% das porções."
 ## Dica do troféu na loja (DT-057).
@@ -371,6 +377,8 @@ static func shows_in_tab(definition: FurnitureDefinition, tab: ShopTab) -> bool:
 
 ## A aba da loja mostra este móvel agora? O que só se ganha aparece quando há um guardado para pôr na cafeteria (DT-060).
 func in_shop(definition: FurnitureDefinition, tab: ShopTab) -> bool:
+	if tab == ShopTab.COUPONS:
+		return cafe.simulation.coupon_shop_items().has(definition)
 	var in_hand := definition.sold_for_gold or cafe.simulation.inventory.count(definition.id) > 0
 	return in_hand and BuildBar.shows_in_tab(definition, tab)
 
@@ -553,6 +561,8 @@ func ask_hire_waiter() -> void:
 
 func _show_shop() -> void:
 	_message_source = func() -> String: return _problem_text()
+	if shop_tab == ShopTab.COUPONS:
+		_message_source = func() -> String: return _with_problem(_coupon_shop_text())
 	for tab in SHOP_TAB_NAMES:
 		var this_tab: ShopTab = tab
 		var button := Button.new()
@@ -591,6 +601,13 @@ func _show_shop() -> void:
 	_prev_page.modulate.a = 0.35 if _prev_page.disabled else 1.0
 	_next_page.modulate.a = 0.35 if _next_page.disabled else 1.0
 	_page_label.text = "%d/%d" % [shop_page + 1, pages]
+
+
+## "Você tem 7 cupons — itens novos em 5 dias e 3h" (DT-062).
+func _coupon_shop_text() -> String:
+	var simulation := cafe.simulation
+	return COUPON_SHOP_TEXT % [simulation.wallet.balance(Wallet.COUPONS),
+		MissionsPanel.time_text(simulation.seconds_until_new_season())]
 
 
 ## Fileira de coleções: "Todas" e as que têm itens nesta aba, cada uma na sua cor.
@@ -667,7 +684,12 @@ func _add_furniture_item(furniture: FurnitureDefinition) -> void:
 	_updaters.append(func() -> void:
 		var stored := simulation.inventory.count(furniture.id)
 		var locked := furniture.min_level > simulation.progression.level
-		if simulation.can_acquire(furniture) == ServiceResult.FURNITURE_LIMIT:
+		var coupons := simulation.wallet.balance(Wallet.COUPONS)
+		if furniture.coupon_price > 0 and stored == 0:
+			item.text = "%s\n%d cupons" % [furniture.display_name, furniture.coupon_price]
+			item.price_icon = "icone_cupom"
+			item.show_state(furniture.coupon_price, 0, "", coupons >= furniture.coupon_price)
+		elif simulation.can_acquire(furniture) == ServiceResult.FURNITURE_LIMIT:
 			item.text = "%s\nSó %d por café" % [furniture.display_name, furniture.max_per_cafe]
 			item.show_state(furniture.price, 0, "Só %d por café" % furniture.max_per_cafe, false)
 		elif stored > 0:
