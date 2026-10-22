@@ -80,7 +80,7 @@ func test_food_keeps_cooking_while_the_game_is_closed() -> void:
 	var data := JSON.stringify(SaveCodec.encode(sim), "", true, true)
 
 	var later := ManualClock.new()
-	later.time = clock.time + 3600.0  # jogo reaberto 1 hora depois
+	later.time = clock.time + 300.0  # jogo reaberto 5 minutos depois (antes de estragar, DT-055)
 	var loaded := SaveCodec.decode(SaveCodec.migrate(JSON.parse_string(data)), later).simulation
 	assert_eq(loaded.kitchen.stove_status(stove), Kitchen.StoveStatus.READY, "ficou pronto enquanto estava fechado")
 	assert_eq(loaded.kitchen.stove_recipe(stove).id, &"cheese_bread")

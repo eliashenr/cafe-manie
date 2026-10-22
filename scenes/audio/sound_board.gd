@@ -61,14 +61,17 @@ func _ready() -> void:
 		_fade_music(true)
 
 
-## Ao sair da cena (inclusive ao fechar o jogo), a música para e solta o arquivo:
-## sem isso, a faixa que tocava fica presa na memória no fechamento.
+## Ao sair da cena (inclusive ao fechar o jogo), a música e os efeitos param e soltam o som:
+## sem isso, o que tocava (até um efeito do último quadro) fica preso na memória no fechamento.
 func _exit_tree() -> void:
 	if _music_tween != null:
 		_music_tween.kill()
 	if _music != null:
 		_music.stop()
 		_music.stream = null
+	for player in _players:
+		player.stop()
+		player.stream = null
 
 
 ## A música ambiente está tocando (ligada e com arquivo)?

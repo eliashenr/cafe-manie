@@ -32,6 +32,8 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## Um prato pronto ficou tempo demais no fogão e estragou (DT-055). Avisa uma vez por prato.
+signal dish_spoiled(stove_id: StringName, recipe: RecipeDefinition)
 
 
 ## Um pedido: qual cliente, qual receita e de qual balcão sai a porção
@@ -120,6 +122,8 @@ var rng := RandomNumberGenerator.new()
 var _orders: Array[Order] = []
 var _spawn_timer := FIRST_ARRIVAL_DELAY
 var _next_serial := 1
+## Fogões cujo prato estragado já foi avisado (id -> true).
+var _spoiled_seen := {}
 
 
 func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: ServiceConfig,
@@ -136,6 +140,8 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	energy = Energy.new(load(ENERGY_PATH), clock.now(), progression.level)
 	mastery = RecipeMastery.new(load(MASTERY_PATH))
 	kitchen = Kitchen.new(clock, layout, config.counter_capacity)
+	kitchen.spoil_factor = config.spoil_factor
+	kitchen.min_spoil_time = config.min_spoil_time
 	# A navegação precisa ser reconstruída antes de os personagens recalcularem caminho,
 	# então ela se conecta ao layout antes da simulação.
 	navigation = Navigation.new(layout)
@@ -328,6 +334,34 @@ func collect(stove_id: StringName) -> int:
 		stats.add(PlayerStats.DISHES_COOKED)
 		_record_mastery(recipe)
 	return result
+
+
+## Joga fora o prato estragado do fogão, que fica livre para cozinhar de novo.
+func discard_spoiled(stove_id: StringName) -> int:
+	var result := kitchen.discard(stove_id)
+	if result == ServiceResult.OK:
+		_spoiled_seen.erase(stove_id)
+	return result
+
+
+## Pratos que estragaram enquanto o jogo estava fechado: conta quantos e não avisa um por um.
+func forget_spoiled_while_away() -> int:
+	var spoiled := kitchen.spoiled_stoves()
+	for stove in spoiled:
+		_spoiled_seen[stove] = true
+	return spoiled.size()
+
+
+## Avisa (uma vez) cada prato que acabou de estragar no fogão.
+func _watch_spoilage() -> void:
+	var spoiled := kitchen.spoiled_stoves()
+	for stove: StringName in _spoiled_seen.keys():
+		if not spoiled.has(stove):
+			_spoiled_seen.erase(stove)
+	for stove in spoiled:
+		if not _spoiled_seen.has(stove):
+			_spoiled_seen[stove] = true
+			dish_spoiled.emit(stove, kitchen.stove_recipe(stove))
 
 
 ## Mais um prato pronto conta para o domínio da receita; uma estrela nova paga o prêmio dela na hora.
@@ -909,6 +943,7 @@ func tick(delta: float) -> void:
 	if paused:
 		return
 	refresh_mission_periods()
+	_watch_spoilage()
 	_update_arrivals(delta)
 	_update_queue(delta)
 	_assign_servings()

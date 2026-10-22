@@ -55,7 +55,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 |---|---|---|
 | Cozinhar no fogão, balcão com porções e garçons servindo | Tem | — |
 | Pratos | **31** (DT-053 e DT-054), um novo a cada nível até o 30, de 15 s a 12 h, em um livro com abas e domínio | Pequena: lá eram ~90, em muito mais níveis |
-| Comida que estraga no fogão | Não | Média |
+| Comida que estraga no fogão | **Tem** (DT-055): o dobro do preparo, no mínimo 10 minutos | — |
 | Temperos | Não | Média |
 | Máquina de sucos ou café (bebidas) | **Tem** (DT-052): máquinas de café e de sucos, 6 bebidas, com energia | — |
 | Máquinas que juntam ouro (jukebox, fliperama, snacks) | Jukebox e fliperama existem só como enfeite | Média: dá para dar função a eles |
@@ -243,7 +243,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
    - placa ABERTO/FECHADO (3.1, DT-051);
    - máquinas de café e de sucos com energia (3.2, DT-052).
 3. **Feito em 22/10:** livro com abas e domínio (3.13, DT-053) e 25 receitas novas, uma a cada nível até o 30 (3.3, DT-053 e DT-054).
-4. **Depois:** temperos e comida que estraga (3.4), com os troféus que aceleram os fogões em volta (3.11).
+4. **Em andamento:** comida que estraga (3.4, feita no DT-055), temperos (3.4) e troféus que aceleram os fogões em volta (3.11).
 5. **Depois:** fogões com perfil, de evento e em partes (3.10), no lugar dos "rápido e turbo" da 3.6.
 6. **Depois:** crítico com cupons e loja de troca (3.5 e 3.15) e o primeiro evento com prazo (3.17).
 7. **Depois:** noite no café (3.12).

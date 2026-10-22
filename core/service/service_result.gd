@@ -25,4 +25,6 @@ enum {
 	NOT_WAITING_FOR_DRINK, ## o cliente não está esperando uma bebida
 	NO_MACHINE,         ## falta a máquina dessa bebida
 	NOT_ENOUGH_ENERGY,  ## energia insuficiente para a bebida
+	SPOILED,            ## o prato pronto estragou no fogão: só dá para jogar fora
+	NOT_SPOILED,        ## não há prato estragado para jogar fora
 }

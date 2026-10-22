@@ -7,7 +7,7 @@ extends SceneTree
 ## O foco é a célula que fica no meio da foto (ex.: 1,1 para a cozinha).
 ## O painel de baixo pode começar em: loja, loja:FLOOR (ou outra aba), fogao, construir, reforma,
 ## reforma:<revestimento>, moedas (a vitrine de Café Ouro), missoes (a janela das missões), pausa (o jogo pausado) ou
-## fechado (a placa FECHADO na porta), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
+## fechado (a placa FECHADO na porta), estragado (o café esquecido no fogão estragou, com o Jogar fora), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
@@ -65,7 +65,10 @@ func _initialize() -> void:
 	var lasagna = recipes.get_definition(&"lasagna")
 	simulation.kitchen.restore_stove(cooking_stove, lasagna, clock.now() - lasagna.cook_time * 0.6)
 	var coffee = recipes.get_definition(&"coffee")
-	simulation.kitchen.restore_stove(ready_stove, coffee, clock.now() - coffee.cook_time - 1.0)
+	var forgotten: float = simulation.kitchen.spoil_time(coffee) if _panel == "estragado" else 0.0
+	simulation.kitchen.restore_stove(ready_stove, coffee, clock.now() - coffee.cook_time - forgotten - 1.0)
+	if _panel == "estragado":
+		_stoves = [ready_stove]
 	simulation.kitchen.restore_counter(counter, recipes.get_definition(&"coxinha"), 9)
 	var regular = load("res://data/customers/regular.tres")
 	var serial := [10]
@@ -133,7 +136,7 @@ func _set_panel() -> void:
 		"loja":
 			var tab := _panel.get_slice(":", 1)
 			_cafe.build_bar.open_shop(_cafe.build_bar.ShopTab.get(tab, 0) if not tab.is_empty() else 0)
-		"fogao":
+		"fogao", "estragado":
 			var stove = _cafe.layout.get_placement(_stoves[0])
 			_cafe.select_at_world(IsoProjection.cell_center(stove.origin))
 		"construir":

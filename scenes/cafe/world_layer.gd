@@ -82,6 +82,7 @@ const SIDEWALK_OFFSET := Vector2(2.8, 0.0)
 const QUEUE_WALK := Vector2(0.0, 3.0)
 ## Texto do selo do fogão quando o prato fica pronto.
 const READY_TEXT := "Pronto!"
+const SPOILED_TEXT := "Estragou"
 
 
 ## Para (pausa) ou solta os personagens e o vapor dos fogões.
@@ -164,6 +165,8 @@ func _refresh_furniture_status(kitchen: Kitchen) -> void:
 					view.set_status("%s %s" % [recipe.display_name, time], kitchen.progress(id), false, recipe, time)
 				Kitchen.StoveStatus.READY:
 					view.set_status("%s pronto!" % recipe.display_name, -1.0, true, recipe, READY_TEXT)
+				Kitchen.StoveStatus.SPOILED:
+					view.set_status("%s estragou" % recipe.display_name, -1.0, false, recipe, SPOILED_TEXT, 0, true)
 				_:
 					view.set_status("")
 		elif kitchen.is_counter(id):

@@ -7,6 +7,9 @@ extends RefCounted
 const STEAM_AMOUNT := 7
 const STEAM_LIFETIME := 1.7
 const STEAM_COLOR := Color(1.0, 1.0, 1.0, 0.55)
+## Comida estragada (DT-055): o mesmo vapor, verde e mais lento.
+const STINK_COLOR := Color(0.55, 0.72, 0.22, 0.6)
+const STINK_SPEED := 0.55
 ## Pagamento: confete dourado que estoura e cai, mais umas faíscas.
 const CONFETTI_AMOUNT := 18
 const SPARK_AMOUNT := 10
@@ -45,6 +48,22 @@ static func steam() -> CPUParticles2D:
 	var fade := Gradient.new()
 	fade.set_color(0, STEAM_COLOR)
 	fade.set_color(1, Color(STEAM_COLOR, 0.0))
+	particles.color_ramp = fade
+	return particles
+
+
+## Fumaça verde da comida estragada no fogão (ligue e desligue com emitting).
+static func stink() -> CPUParticles2D:
+	var particles := steam()
+	particles.name = "Stink"
+	particles.lifetime = STEAM_LIFETIME / STINK_SPEED
+	particles.preprocess = particles.lifetime
+	particles.initial_velocity_min *= STINK_SPEED
+	particles.initial_velocity_max *= STINK_SPEED
+	particles.spread = 30.0
+	var fade := Gradient.new()
+	fade.set_color(0, STINK_COLOR)
+	fade.set_color(1, Color(STINK_COLOR, 0.0))
 	particles.color_ramp = fade
 	return particles
 

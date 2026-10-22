@@ -5068,6 +5068,12 @@
     60.0
    ]
   },
+  "botao_trash": {
+   "anchor": [
+    60.0,
+    60.0
+   ]
+  },
   "botao_check": {
    "anchor": [
     60.0,

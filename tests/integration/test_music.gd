@@ -1,6 +1,6 @@
 extends CafeTestCase
 ## Música ambiente: a bossa do café toca em loop, baixinha, e tem botão próprio,
-## separado dos efeitos sonoros, que o aparelho lembra.
+## separado dos efeitos sonoros, que o aparelho lembra. Ao sair da cena, nenhum som fica preso.
 
 
 func _find(cafe: Cafe, node_name: String) -> Node:
@@ -48,3 +48,13 @@ func test_sound_and_music_are_separate() -> void:
 	(_find(cafe, "SoundButton") as Button).pressed.emit()
 	assert_false(cafe.sound_board.muted, "efeitos de volta")
 	assert_false(cafe.sound_board.music_playing(), "a música continua desligada")
+
+
+func test_leaving_the_scene_lets_go_of_every_sound() -> void:
+	var cafe := await spawn_cafe()
+	await settle()
+	cafe.sound_board.play(&"error")
+	var players := cafe.sound_board.find_children("*", "AudioStreamPlayer", false, false)
+	cafe.get_parent().remove_child(cafe)
+	for player: AudioStreamPlayer in players:
+		assert_true(player.stream == null and not player.playing, "%s soltou o som ao sair da cena" % player.name)

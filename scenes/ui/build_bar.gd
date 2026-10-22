@@ -48,6 +48,8 @@ const SERVICE_MESSAGES := {
 	ServiceResult.STOVE_BUSY: "O fogão já está ocupado",
 	ServiceResult.NOT_READY: "Ainda não está pronto",
 	ServiceResult.NO_COUNTER_SPACE: "Sem espaço no balcão: sirva ou coloque outro balcão",
+	ServiceResult.SPOILED: "O prato estragou: jogue fora para usar o fogão",
+	ServiceResult.NOT_SPOILED: "Não há prato estragado para jogar fora",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -807,6 +809,8 @@ func _show_stove_controls(stove_id: StringName) -> void:
 				serve.add_theme_constant_override("icon_max_width", 34)
 			serve.pressed.connect(func() -> void: cafe.collect_stove(stove_id))
 			_primary.add_child(serve)
+		Kitchen.StoveStatus.SPOILED:
+			_add_square(_primary, "DiscardButton", "trash", "Jogar fora", func() -> void: cafe.discard_stove(stove_id))
 
 
 ## Cartão da receita: o desenho do prato em cima, o nome e o tempo e o custo embaixo.
@@ -1082,7 +1086,12 @@ func _stove_message(id: StringName) -> String:
 		Kitchen.StoveStatus.COOKING:
 			return "Fogão: %s fica pronto em %s" % [kitchen.stove_recipe(id).display_name, WorldLayer.format_time(kitchen.time_left(id))]
 		Kitchen.StoveStatus.READY:
-			return "Fogão: %s pronto! O garçom leva ao balcão (ou toque no fogão)" % kitchen.stove_recipe(id).display_name
+			var text := "Fogão: %s pronto! O garçom leva ao balcão (ou toque no fogão)" % kitchen.stove_recipe(id).display_name
+			var left := kitchen.time_to_spoil(id)
+			return text + ("  —  estraga em %s" % WorldLayer.format_time(left) if is_finite(left) else "")
+		Kitchen.StoveStatus.SPOILED:
+			return "Fogão: o prato de %s estragou de tanto esperar. Jogue fora para cozinhar de novo" \
+				% kitchen.stove_recipe(id).display_name
 	var waiting := _demand_text()
 	return "Fogão livre: escolha o que cozinhar" + ("  —  Clientes esperando: " + waiting if not waiting.is_empty() else "")
 

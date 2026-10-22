@@ -4,6 +4,17 @@
 
 🟢 **CONCLUÍDO**
 
+**Novo pacote do relatório, etapa 1: comida que estraga no fogão** (DT-055)
+
+- **O prato pronto esquecido no fogão estraga** depois do dobro do tempo de preparo, e nunca antes de 10 minutos.
+  - O Café aguenta 10 minutos, a Feijoada 2 horas e a Lagosta 24 horas.
+  - Pratos de 4 horas ou mais aguentam uma noite inteira de sono.
+  - Estraga também com o jogo fechado; com o jogo pausado, não.
+- **O prato estragado** fica com a panela esverdeada, fumaça verde e o selo "Estragou".
+  - Ele não vai para o balcão e o garçom não busca.
+  - O fogão fica ocupado até você tocar nele e escolher **Jogar fora**.
+- **Avisos:** uma mensagem quando um prato estraga, as boas-vindas contam o que estragou com o jogo fechado, e o fogão com prato pronto diz quanto falta para estragar.
+
 **Próximo pacote do relatório, etapa 4: receitas do nível 18 ao 30** (DT-054). **Com ela, o pacote está completo.**
 
 - **13 receitas novas**, uma a cada nível do 18 ao 30, de 6 minutos a 12 horas, todas com desenho de prato e de panela:
@@ -256,6 +267,14 @@
 
 🧪 **TESTADO**
 
+- **Comida que estraga: 515 testes automatizados PASSARAM.**
+  - **Regra:** configuração válida; prato rápido aguenta o mínimo e prato longo aguenta mais; o prato estraga no segundo certo; estragado não vai para o balcão, não é buscado pelo garçom, não conta como prato a caminho e deixa o fogão ocupado; jogar fora só o estragado, e o fogão fica livre; a pausa segura; com fator 0 nada estraga; pratos de 4 horas ou mais aguentam uma noite.
+  - **Na simulação:** avisa uma vez por prato estragado; o que estragou com o jogo fechado é contado nas boas-vindas, sem aviso repetido.
+  - **Na tela:** o fogão estragado com o selo, a fumaça verde, sem vapor e sem brilho; tocar nele mostra o Jogar fora com a lixeira, e jogar fora libera o fogão e abre o livro; a mensagem quando estraga; o fogão pronto diz quando estraga; as boas-vindas contam o estragado; ao sair da cena, nenhum som fica preso.
+  - Três testes antigos que deixavam um prato pronto parado por horas passaram a reabrir o jogo 5 minutos depois.
+  - **Defeitos inseridos de propósito: 25 de 25 pegos.**
+  - **Foto conferida:** o Café estragado no fogão, com a panela verde, a fumaça, o aviso e o botão Jogar fora.
+  - **Cena principal: PASSOU**, zero erros.
 - **Receitas do nível 18 ao 30: 499 testes automatizados PASSARAM.**
   - Uma receita nova em cada nível da tabela, do 1 ao 30; as 31 válidas, com nome, aba, desenho de prato e de panela, cabendo num balcão e no equilíbrio.
   - Na tela: a aba Brasil tem segunda página, e o Churrasco aparece nela, travado até o nível 29.

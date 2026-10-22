@@ -21,6 +21,7 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const SPOILED_MESSAGE := "O prato de %s estragou de tanto esperar no fogão. Toque no fogão para jogar fora."
 
 ## Folga, em pixels de mundo, que a câmera pode passar da borda do grid.
 ## Folga da câmera em volta do café (pixels de mundo): dá para ver a rua e os prédios em volta.
@@ -118,6 +119,7 @@ func _ready() -> void:
 	simulation.board_mission_completed.connect(_on_board_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
 	simulation.recipe_mastered.connect(_on_recipe_mastered)
+	simulation.dish_spoiled.connect(_on_dish_spoiled)
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
@@ -242,12 +244,21 @@ func _welcome_back(saved_at: float) -> String:
 		var ready_at := kitchen.stove_ready_at(placement.id)
 		if ready_at > saved_at and kitchen.stove_status(placement.id) == Kitchen.StoveStatus.READY:
 			ready_while_away += 1
+	var spoiled := simulation.forget_spoiled_while_away()
+	var text := "Bem-vindo de volta!"
 	match ready_while_away:
 		0:
-			return "Bem-vindo de volta!"
+			pass
 		1:
-			return "Bem-vindo de volta! 1 prato ficou pronto enquanto você estava fora."
-	return "Bem-vindo de volta! %d pratos ficaram prontos enquanto você estava fora." % ready_while_away
+			text += " 1 prato ficou pronto enquanto você estava fora."
+		_:
+			text += " %d pratos ficaram prontos enquanto você estava fora." % ready_while_away
+	match spoiled:
+		0:
+			return text
+		1:
+			return text + " 1 prato estragou no fogão: toque nele para jogar fora."
+	return text + " %d pratos estragaram no fogão: toque neles para jogar fora." % spoiled
 
 
 ## Salva agora. Sem save_service (testes), não faz nada.
@@ -322,6 +333,7 @@ func _connect_sounds() -> void:
 	simulation.mission_completed.connect(play.bind(&"achievement").unbind(1))
 	simulation.achievement_unlocked.connect(play.bind(&"achievement").unbind(2))
 	simulation.recipe_mastered.connect(play.bind(&"achievement").unbind(3))
+	simulation.dish_spoiled.connect(play.bind(&"error").unbind(2))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
@@ -424,6 +436,17 @@ func collect_stove(stove_id: StringName) -> int:
 	return result
 
 
+## Joga fora o prato estragado do fogão (DT-055). Recusa deixa a barra explicar o motivo.
+func discard_stove(stove_id: StringName) -> int:
+	var recipe := simulation.kitchen.stove_recipe(stove_id)
+	var result := simulation.discard_spoiled(stove_id)
+	last_service_result = result
+	if result == ServiceResult.OK:
+		_float_over(stove_id, "%s foi para o lixo" % recipe.display_name, FEEDBACK_SPEND)
+	state_changed.emit()
+	return result
+
+
 ## Serve a bebida ao cliente que tocou (DT-052): sai na hora, gastando energia. Recusa explica o motivo.
 func serve_drink(customer: Customer) -> int:
 	var drink := customer.drink
@@ -469,6 +492,11 @@ func _on_leveled_up(level: int) -> void:
 func _on_recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary) -> void:
 	EventBus.message_posted.emit("Domínio de %s: estrela %d de %d!  +%s de Café Ouro e +%d XP" % [recipe.display_name, stars,
 		simulation.mastery.config.max_stars(), UiTheme.thousands(reward["gold"]), reward["xp"]])
+
+
+## Prato esquecido no fogão estragou (DT-055).
+func _on_dish_spoiled(_stove_id: StringName, recipe: RecipeDefinition) -> void:
+	EventBus.message_posted.emit(SPOILED_MESSAGE % recipe.display_name)
 
 
 ## Missão diária ou semanal concluída: aviso com a recompensa (já entregue).

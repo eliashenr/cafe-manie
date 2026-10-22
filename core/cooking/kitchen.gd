@@ -3,9 +3,10 @@ extends RefCounted
 ## Fogões e balcões: o que está cozinhando e quantas porções estão prontas.
 ##
 ## O preparo é guardado como "receita + horário de início". O estado
-## (cozinhando / pronto) é calculado a partir do relógio, então um prato
-## continua ficando pronto com o jogo fechado. Com o jogo pausado, o tempo
-## dos fogões para; ao continuar, cada preparo segue de onde parou.
+## (cozinhando / pronto / estragado) é calculado a partir do relógio, então um
+## prato continua ficando pronto (e estragando, se for esquecido) com o jogo
+## fechado. Com o jogo pausado, o tempo dos fogões para; ao continuar, cada
+## preparo segue de onde parou.
 ##
 ## A Kitchen não cobra nem paga nada: quem orquestra dinheiro e XP é a
 ## CafeSimulation.
@@ -13,7 +14,7 @@ extends RefCounted
 ## Emitido quando começa um preparo, um prato vai para o balcão ou uma porção sai.
 signal changed
 
-enum StoveStatus { IDLE, COOKING, READY }
+enum StoveStatus { IDLE, COOKING, READY, SPOILED }
 
 
 class StoveState:
@@ -32,6 +33,10 @@ var clock: GameClock
 var layout: CafeLayout
 ## Porções que cabem em um balcão.
 var counter_capacity: int
+## Quanto o prato pronto aguenta no fogão antes de estragar (DT-055): o tempo de preparo vezes
+## spoil_factor, e nunca menos que min_spoil_time. Com spoil_factor 0, nada estraga.
+var spoil_factor := 0.0
+var min_spoil_time := 0.0
 
 var _stoves: Dictionary = {}  # id do fogão -> StoveState
 var _counters: Dictionary = {}  # id do balcão -> CounterStack
@@ -87,9 +92,22 @@ func _pause_shift() -> float:
 
 func stove_status(id: StringName) -> StoveStatus:
 	var state: StoveState = _stoves.get(id)
-	if state == null:
-		return StoveStatus.IDLE
-	return StoveStatus.READY if now() >= state.started_at + state.recipe.cook_time else StoveStatus.COOKING
+	return _status_of(state) if state != null else StoveStatus.IDLE
+
+
+## Segundos que um prato pronto desta receita aguenta no fogão (INF se nada estraga).
+func spoil_time(recipe: RecipeDefinition) -> float:
+	if spoil_factor <= 0.0:
+		return INF
+	return maxf(recipe.cook_time * spoil_factor, min_spoil_time)
+
+
+## Segundos que faltam para o prato pronto estragar (0 se não está pronto).
+func time_to_spoil(id: StringName) -> float:
+	var state: StoveState = _stoves.get(id)
+	if state == null or _status_of(state) != StoveStatus.READY:
+		return 0.0
+	return state.started_at + state.recipe.cook_time + spoil_time(state.recipe) - now()
 
 
 ## Receita no fogão (cozinhando ou pronta), ou null se estiver livre.
@@ -132,8 +150,11 @@ func start_cooking(stove_id: StringName, recipe: RecipeDefinition) -> int:
 func collect(stove_id: StringName) -> int:
 	if not is_stove(stove_id):
 		return ServiceResult.NOT_A_STOVE
-	if stove_status(stove_id) != StoveStatus.READY:
-		return ServiceResult.NOT_READY
+	match stove_status(stove_id):
+		StoveStatus.SPOILED:
+			return ServiceResult.SPOILED
+		StoveStatus.IDLE, StoveStatus.COOKING:
+			return ServiceResult.NOT_READY
 	var recipe: RecipeDefinition = _stoves[stove_id].recipe
 	var counter_id := _find_counter_for(recipe, recipe.servings)
 	if counter_id == &"":
@@ -144,12 +165,23 @@ func collect(stove_id: StringName) -> int:
 	return ServiceResult.OK
 
 
+## Joga fora o prato estragado e deixa o fogão livre.
+func discard(stove_id: StringName) -> int:
+	if not is_stove(stove_id):
+		return ServiceResult.NOT_A_STOVE
+	if stove_status(stove_id) != StoveStatus.SPOILED:
+		return ServiceResult.NOT_SPOILED
+	_stoves.erase(stove_id)
+	changed.emit()
+	return ServiceResult.OK
+
+
 # --- Balcões ---------------------------------------------------------------
 
-## Algum fogão está preparando esta receita (ou já terminou e o prato espera ser levado)?
+## Algum fogão está preparando esta receita (ou já terminou e o prato espera ser levado)? Estragado não conta.
 func is_preparing(recipe: RecipeDefinition) -> bool:
 	for state: StoveState in _stoves.values():
-		if state.recipe == recipe:
+		if state.recipe == recipe and _status_of(state) != StoveStatus.SPOILED:
 			return true
 	return false
 
@@ -159,6 +191,16 @@ func ready_stoves() -> Array[StringName]:
 	var ids: Array[StringName] = []
 	for id: StringName in _stoves.keys():
 		if stove_status(id) == StoveStatus.READY:
+			ids.append(id)
+	ids.sort_custom(func(a: StringName, b: StringName) -> bool: return String(a) < String(b))
+	return ids
+
+
+## Fogões com prato estragado, em ordem estável (id).
+func spoiled_stoves() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for id: StringName in _stoves.keys():
+		if stove_status(id) == StoveStatus.SPOILED:
 			ids.append(id)
 	ids.sort_custom(func(a: StringName, b: StringName) -> bool: return String(a) < String(b))
 	return ids
@@ -267,6 +309,13 @@ func is_in_use(id: StringName) -> bool:
 
 
 # --- Interno ---------------------------------------------------------------
+
+func _status_of(state: StoveState) -> StoveStatus:
+	var ready_at := state.started_at + state.recipe.cook_time
+	if now() < ready_at:
+		return StoveStatus.COOKING
+	return StoveStatus.SPOILED if now() >= ready_at + spoil_time(state.recipe) else StoveStatus.READY
+
 
 func _category_of(id: StringName) -> int:
 	var placement := layout.get_placement(id)

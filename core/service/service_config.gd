@@ -84,6 +84,11 @@ extends Resource
 @export_group("Cozinha")
 ## Porções que cabem em um balcão.
 @export var counter_capacity := 40
+## Quanto o prato pronto aguenta no fogão antes de estragar, em vezes o tempo de preparo (DT-055).
+## Pratos longos aguentam mais. 0 = nada estraga.
+@export var spoil_factor := 2.0
+## Segundos que qualquer prato pronto aguenta, por mais rápido que seja.
+@export var min_spoil_time := 600.0
 
 
 func is_valid() -> bool:
@@ -91,7 +96,7 @@ func is_valid() -> bool:
 		and customer_walk_speed > 0.0 and waiter_walk_speed > 0.0 and eat_time >= 0.0 \
 		and handling_time >= 0.0 and counter_capacity > 0 and beauty_for_max_bonus > 0.0 \
 		and order_think_time >= 0.0 and queue_capacity >= 0 and queue_patience > 0.0 and waiter_idle_pause >= 0.0 \
-		and drink_time >= 0.0
+		and drink_time >= 0.0 and spoil_factor >= 0.0 and min_spoil_time >= 0.0
 
 
 ## Intervalo médio entre chegadas para uma popularidade (0 a 100).

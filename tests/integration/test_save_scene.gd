@@ -80,7 +80,7 @@ func test_dish_gets_ready_while_closed_and_the_player_is_told() -> void:
 	_close_game(first)
 
 	var clock_b := ManualClock.new()
-	clock_b.time = clock_a.time + 7200.0  # duas horas depois
+	clock_b.time = clock_a.time + 300.0  # cinco minutos depois (antes de estragar, DT-055)
 	var second := await _open_game(clock_b)
 	assert_eq(second.hud.toast_text(), "Bem-vindo de volta! 2 pratos ficaram prontos enquanto você estava fora.")
 	assert_eq(second.simulation.kitchen.stove_status(_find(second, Vector2i(0, 0))), Kitchen.StoveStatus.READY)

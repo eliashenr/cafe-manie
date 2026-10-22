@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 499 testes
+## Cobertura atual — 515 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -25,6 +25,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
 | `unit/test_progression.gd` | 9 | curva de níveis até o **30**, cada nível pedindo mais XP; ouro só do 11 em diante; subir vários níveis de uma vez, nível máximo |
+| `unit/test_spoilage.gd` | 10 | **comida que estraga:** configuração válida; prato rápido aguenta o mínimo, longo aguenta mais; estraga no segundo certo; estragado não vai para o balcão nem é buscado e ocupa o fogão; jogar fora só o estragado; pausa segura; fator 0 nunca estraga; aviso uma vez por prato; estragado com o jogo fechado contado nas boas-vindas; pratos de 4 h aguentam uma noite |
 | `unit/test_kitchen.gd` | 10 | preparo pelo relógio (inclusive com o jogo fechado), coleta, empilhamento, capacidade, reserva e devolução |
 | `unit/test_cafe_simulation.gd` | 30 | loop completo cliente → garçom → pagamento; paciência; porção devolvida; assentos; móvel em uso; personagem no caminho; recálculo de rota; desbloqueio por nível; determinismo; **pedido do cardápio fora do balcão** (com o que falta cozinhar), café sai mais que lasanha, paciência mais calma com o prato no fogão; **fila na calçada** (enche, anda, desiste); mais clientes por nível; **garçom busca no fogão, circula pela cozinha e nunca cozinha**; dois garçons não disputam o mesmo prato; contratação (nível, ouro, limite) |
 | `unit/test_long_shift.gd` | 2 | 30 min simulados com o "jogador robô" (que cozinha o que os clientes pedem): ninguém preso, lucro, níveis, menos de 25% irritados à mesa (desistências da fila contadas à parte); o robô conclui as 6 missões iniciais |
@@ -44,6 +45,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_achievements.gd` | 10 | conquista Mestre até o nível 30; dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
+| `integration/test_spoilage_scene.gd` | 5 | fogão estragado com selo e fumaça verde, sem vapor nem brilho; tocar mostra o Jogar fora, que libera o fogão; mensagem quando estraga; fogão pronto diz quando estraga; boas-vindas contam o estragado |
 | `integration/test_save_scene.gd` | 8 | fechar e reabrir com tudo no lugar, pratos prontos com o jogo fechado, salvamento automático, minimizar salva, Recomeçar com confirmação |
 | `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento (com as paredes) |
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
@@ -65,7 +67,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `integration/test_drinks_scene.gd` | 7 | tocar no balão verde serve a bebida; o nível novo avisa da máquina nova; recusa sem energia explicada; contador de energia (escondido sem máquina, valores e recarga, explicação ao tocar); gastar energia marca para salvar; máquinas na aba Cozinha; arte das máquinas nas 4 rotações |
 | `integration/test_open_close_scene.gd` | 5 | botão da porta (fechar e abrir), faixa, aviso e plaquinha FECHADO; tecla F; save fechado abre mostrando; fechar marca para salvar; faixas de fechado e de pausa sem se tampar |
 | `integration/test_pause_scene.gd` | 6 | mover pela barra a cadeira de quem está sentado, pausado; botão de pausa e de continuar, com a faixa; tecla P; ninguém fica invisível ao pausar (quem estava aparecendo aparece inteiro); personagens, vapor e trânsito parados (também num fogão posto durante a pausa); construir pausado |
-| `integration/test_music.gd` | 3 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados |
+| `integration/test_music.gd` | 4 | a música toca baixinho e em loop; o botão dela liga e desliga, e o aparelho lembra; som dos efeitos e música são separados; ao sair da cena, nenhum som fica preso |
 
 **Aviso intermitente:** às vezes, no fim da rodada, a Godot avisa "1 resources still in use at exit", sem nenhum teste falhar. Nas rodadas com `--verbose` ele não aparece, então ainda não deu para saber qual recurso é. Fica registrado para investigar.
 
@@ -85,6 +87,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Comida que estraga (25 de 25 pegos):** prato rápido estragando antes do mínimo, prato longo sem aguentar mais, nada estragando, pausa sem segurar o prato, estragado indo para o balcão, jogar fora prato bom, jogar fora sem liberar o fogão, estragado contando como prato a caminho, tempo para estragar errado, configuração aceitando fator negativo, simulação sem a regra, aviso repetido, prato estragado sem aviso, boas-vindas avisando de novo, jogo sem vigiar o fogão, fogão estragado parecendo normal, fogão estragado brilhando, sem fumaça verde, estragado com vapor, sem botão Jogar fora, Jogar fora sem fazer nada, pronto sem dizer quando estraga, estragado sem explicar, boas-vindas sem contar o estragado, efeito sonoro preso ao sair da cena.
 - **Receitas do nível 18 ao 30 (8 de 8 pegos):** lagosta rendendo menos que a floresta negra, nível 20 sem receita nova, waffle rápido demais, churrasco com pouco XP, picanha numa aba que não existe, lagosta sem caber no balcão, lagosta além do nível 30, curry sem nome.
 - **Livro de receitas e domínio (22 de 22 pegos):** domínio sem contar o prato, estrela sem o ouro, estrela sem o XP, estrela só depois da meta, estrela que não é avisada, meta seguinte errada, todas as estrelas valendo igual, metas fora de ordem aceitas, save sem o domínio, save que não lê o domínio, migração sem o domínio, receita sem aba aceita, aba mostrando todas as receitas, livro ignorando o prato esperado, fogão esquecendo a aba, aba sem a bolinha, estrelas apagadas, dica sem o progresso, aba sem páginas, voltar página sempre aceso, estrela sem aviso, domínio sem marcar para salvar.
 - **Máquinas de bebida e energia (26 de 26 pegos):** bebida sem gastar energia, energia sem recarregar, energia passando do máximo, relógio para trás dando energia, nível sem aumentar o máximo, máximo sem crescer com o nível, nível sem encher a energia, bebida bloqueada sendo pedida, ninguém pedindo bebida, bebida cobrando o preço errado, bebida sem XP, bebida demorando como prato, servir quem já está bebendo, servir sem a máquina certa, máquina vendida prendendo o cliente, quem espera bebida sem perder paciência, save sem energia, save sem o nível da energia, migração sem energia, máquina sem tipo de bebida aceita, contador que some, contador sem a recarga, toque que não serve, recusa sem explicar, energia sem marcar para salvar, máquinas fora da loja.
@@ -123,6 +126,15 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Comida que estraga (22/10)
+
+1. [ ] Com os balcões cheios (assim o garçom não tem onde pôr o prato), cozinhe um Café e não toque nele. Escolha o fogão: a barra diz "estraga em" e conta o tempo.
+2. [ ] Espere 10 minutos: aparece o aviso de que o Café estragou, e o fogão fica com a panela verde, a fumaça verde e o selo "Estragou".
+3. [ ] Toque no fogão: o prato não vai para o balcão; aparece o botão Jogar fora, com a lixeira.
+4. [ ] Toque em Jogar fora: o fogão fica livre e o livro de receitas abre.
+5. [ ] Comece um prato rápido, feche o jogo e abra uma hora depois: as boas-vindas dizem que 1 prato estragou.
+6. [ ] Com um prato pronto, pause o jogo por um tempo: ele não estraga enquanto está pausado.
 
 ## Roteiro de teste manual — Receitas do nível 18 ao 30 (22/10)
 

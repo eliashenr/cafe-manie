@@ -40,6 +40,10 @@ def glyph(kind):
     if kind == "door_open":  # porta aberta para fora, com o vão livre: abrir o café
         return (f'<path d="M8,56 H56 M20,56 V9 H44 V56" {GLYPH_STROKE}/>'
                 '<path d="M20,9 L8,15 L8,59 L20,56 Z" fill="#ffffff" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>')
+    if kind == "trash":  # lixeira: jogar fora o prato estragado (DT-055)
+        return (f'<path d="M10,17 H54 M25,17 V10 H39 V17" {GLYPH_STROKE}/>'
+                f'<path d="M15,23 L18,55 H46 L49,23 Z" {GLYPH_STROKE}/>'
+                f'<path d="M27,31 V47 M37,31 V47" {GLYPH_STROKE}/>')
     if kind == "serve":
         return ('<path d="M10,40 h44 a22,22 0 0,0 -44,0 Z" fill="#ffffff"/>'
                 f'<path d="M6,46 h52 M32,14 v4" {GLYPH_STROKE}/>')
@@ -126,7 +130,7 @@ ICONS = {
 BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("music", "blue"),
            ("music_off", "blue"), ("gear", "blue"), ("pause", "orange"), ("play", "green"),
            ("door_close", "red"), ("door_open", "green"),
-           ("rotate", "blue"), ("move", "blue"), ("store", "blue"), ("sell", "orange"), ("serve", "green"),
+           ("rotate", "blue"), ("move", "blue"), ("store", "blue"), ("sell", "orange"), ("serve", "green"), ("trash", "red"),
            ("check", "green"), ("close", "red"), ("left", "blue"), ("right", "blue")]
 
 MEDALLIONS = {"missoes": medallion_missions, "presente": medallion_gift, "conquistas": medallion_trophy}

@@ -78,7 +78,7 @@ func test_kitchen_shows_pot_badge_and_plate_stack() -> void:
 	assert_eq(stove_view.kitchen_recipe.id, &"coffee", "o fogão sabe o que cozinha")
 	assert_true(stove_view.kitchen_detail.contains(":"), "o selo mostra o tempo: " + stove_view.kitchen_detail)
 	assert_true(stove_view.shows_kitchen_art(), "panela e selo no lugar da etiqueta")
-	clock.advance(1000.0)
+	clock.advance(60.0)
 	cafe.world_layer.refresh(cafe.simulation)
 	assert_eq(stove_view.kitchen_detail, WorldLayer.READY_TEXT, "pronto")
 	assert_true(stove_view.status_ready)

@@ -71,6 +71,10 @@ const BADGE_PILL_FILL := Color("2b86e8")
 const BADGE_PILL_READY_FILL := Color("3cc04e")
 const BADGE_GLOW := Color(1.0, 0.965, 0.66, 0.45)
 const BADGE_SHADOW := Color(0.1, 0.16, 0.29, 0.2)
+## Prato estragado (DT-055): anel e etiqueta verde-oliva, e a comida e a panela esverdeadas.
+const BADGE_SPOILED := Color("8a9a2a")
+const BADGE_PILL_SPOILED_FILL := Color("7a6a3a")
+const SPOILED_TINT := Color(0.62, 0.78, 0.42)
 ## Pilha de pratos no balcão: prato, comida e o número (pixels de mundo).
 const PLATE_RADII := Vector2(20.0, 7.2)
 const PLATE_STEP := 2.9
@@ -110,6 +114,8 @@ var status_text := ""
 var status_progress := -1.0
 ## Destaca a etiqueta em verde (prato pronto para servir).
 var status_ready := false
+## O prato do fogão estragou: panela esverdeada, selo oliva e fumaça verde em vez de vapor.
+var status_spoiled := false
 ## Receita no fogão ou no balcão (null = nada), o texto curto do selo do fogão
 ## ("0:12", "Pronto!") e quantas porções há no balcão.
 var kitchen_recipe: RecipeDefinition
@@ -130,6 +136,7 @@ var _halo := Node2D.new()
 ## O vapor fica num nó no vértice da frente, para sair por cima do desenho do fogão.
 var _fx := Node2D.new()
 var _steam: CPUParticles2D
+var _stink: CPUParticles2D
 ## Quanto a pilha de pratos do balcão está acima do lugar (anima quando chega prato).
 var stack_pop := 0.0:
 	set(value):
@@ -167,10 +174,10 @@ func set_dishes(new_dishes: Array) -> void:
 ## Atualiza o estado da cozinha (texto, progresso, pronto, receita, texto curto e porções);
 ## só redesenha se algo mudou.
 func set_status(text: String, progress := -1.0, ready := false, recipe: RecipeDefinition = null, detail := "",
-		count := 0) -> void:
+		count := 0, spoiled := false) -> void:
 	var rounded := snappedf(progress, 0.01)
 	if text == status_text and rounded == status_progress and ready == status_ready and recipe == kitchen_recipe \
-			and detail == kitchen_detail and count == kitchen_count:
+			and detail == kitchen_detail and count == kitchen_count and spoiled == status_spoiled:
 		return
 	if definition != null and definition.category == FurnitureDefinition.Category.COUNTER and count > kitchen_count \
 			and is_inside_tree():
@@ -178,6 +185,7 @@ func set_status(text: String, progress := -1.0, ready := false, recipe: RecipeDe
 	status_text = text
 	status_progress = rounded
 	status_ready = ready
+	status_spoiled = spoiled
 	kitchen_recipe = recipe
 	kitchen_detail = detail
 	kitchen_count = count
@@ -357,10 +365,12 @@ func _draw_dishes() -> void:
 		draw_texture_rect(food.texture, food.rect_at(item[0], DISH_SCALE), false)
 
 
-## Panela com a chama acesa e, quando a frente aparece, o forno aceso.
+## Panela com a chama acesa e, quando a frente aparece, o forno aceso. Estragado: panela esverdeada, forno apagado.
 func _draw_cooking() -> void:
 	var pot := ArtSprites.cookware(kitchen_recipe.id)
-	draw_texture_rect(pot.texture, pot.draw_rect(), false)
+	draw_texture_rect(pot.texture, pot.draw_rect(), false, SPOILED_TINT if status_spoiled else Color.WHITE)
+	if status_spoiled:
+		return
 	var glow := ArtSprites.stove_glow(rotation_steps)
 	if glow != null:
 		draw_texture_rect(glow.texture, glow.draw_rect(), false)
@@ -381,6 +391,11 @@ func steaming() -> bool:
 	return _steam != null and _steam.emitting
 
 
+## Fumaça verde saindo? (prato estragado no fogão)
+func stinking() -> bool:
+	return _stink != null and _stink.emitting
+
+
 ## Liga e desliga o halo e o vapor conforme o estado (seleção e cozinha). O fantasma da compra nunca
 ## está selecionado nem recebe o estado da cozinha, então nunca brilha nem solta vapor.
 func _refresh_fx() -> void:
@@ -392,21 +407,30 @@ func _refresh_fx() -> void:
 		_halo.material.set_shader_parameter("glow_color", HALO_SELECTED if look == Look.SELECTED else HALO_READY)
 		_halo.visible = glow
 		_halo.queue_redraw()
-	var cooking := definition.category == FurnitureDefinition.Category.COOKING and kitchen_recipe != null
+	var on_stove := definition.category == FurnitureDefinition.Category.COOKING and kitchen_recipe != null
+	var cooking := on_stove and not status_spoiled
 	var hot_dishes := definition.category == FurnitureDefinition.Category.COUNTER and kitchen_count > 0
 	var hot := cooking or hot_dishes
+	var spoiled := on_stove and status_spoiled
 	if hot and _steam == null:
 		_steam = FxParticles.steam()
 		_fx.add_child(_steam)
+	if spoiled and _stink == null:
+		_stink = FxParticles.stink()
+		_fx.add_child(_stink)
+	var pot_top := Vector2.ZERO
+	if on_stove and ArtSprites.cookware(kitchen_recipe.id) != null:
+		var rect := ArtSprites.cookware(kitchen_recipe.id).draw_rect()
+		pot_top = rect.position + Vector2(rect.size.x / 2.0, rect.size.y * STEAM_HEIGHT)
 	if _steam != null:
 		if cooking:
-			var pot := ArtSprites.cookware(kitchen_recipe.id)
-			if pot != null:
-				var rect := pot.draw_rect()
-				_steam.position = rect.position + Vector2(rect.size.x / 2.0, rect.size.y * STEAM_HEIGHT)
+			_steam.position = pot_top
 		elif hot_dishes:
 			_steam.position = _footprint_center() - Vector2(0.0, ArtSprites.counter_top() + STACK_STEAM_HEIGHT)
 		_steam.emitting = hot
+	if _stink != null:
+		_stink.position = pot_top
+		_stink.emitting = spoiled
 
 
 ## Halo: o próprio desenho, maior, numa cor só e pulsando (o shader), atrás do móvel.
@@ -469,15 +493,17 @@ func _draw_stove_badge(center: Vector2) -> void:
 	canvas.draw_arc(center, BADGE_RADIUS, 0.0, TAU, 48, BADGE_EDGE, 2.4, true)
 	var ring := BADGE_RADIUS - 5.2
 	canvas.draw_arc(center, ring, 0.0, TAU, 48, BADGE_TRACK, BADGE_RING, true)
-	var progress := 1.0 if status_ready else clampf(status_progress, 0.0, 1.0)
+	var progress := 1.0 if status_ready or status_spoiled else clampf(status_progress, 0.0, 1.0)
+	var ring_color := BADGE_SPOILED if status_spoiled else (BADGE_READY if status_ready else BADGE_PROGRESS)
 	if progress > 0.0:
-		canvas.draw_arc(center, ring, -PI / 2.0, -PI / 2.0 + TAU * progress, 48,
-			BADGE_READY if status_ready else BADGE_PROGRESS, BADGE_RING, true)
+		canvas.draw_arc(center, ring, -PI / 2.0, -PI / 2.0 + TAU * progress, 48, ring_color, BADGE_RING, true)
 	var food := ArtSprites.food(kitchen_recipe.id)
-	canvas.draw_texture_rect(food.texture, food.rect_at(center + Vector2(0.0, 1.5), BADGE_FOOD / ArtSprites.food_width()), false)
-	var pill_size := BADGE_PILL_READY if status_ready else BADGE_PILL
+	canvas.draw_texture_rect(food.texture, food.rect_at(center + Vector2(0.0, 1.5), BADGE_FOOD / ArtSprites.food_width()), false,
+		SPOILED_TINT if status_spoiled else Color.WHITE)
+	var pill_size := BADGE_PILL_READY if status_ready or status_spoiled else BADGE_PILL
 	var pill := Rect2(center + Vector2(-pill_size.x / 2.0, BADGE_RADIUS - 7.6), pill_size)
-	canvas.draw_style_box(_pill_style(BADGE_PILL_READY_FILL if status_ready else BADGE_PILL_FILL, Color.WHITE), pill)
+	var pill_fill := BADGE_PILL_SPOILED_FILL if status_spoiled else (BADGE_PILL_READY_FILL if status_ready else BADGE_PILL_FILL)
+	canvas.draw_style_box(_pill_style(pill_fill, Color.WHITE), pill)
 	_draw_centered_text(kitchen_detail, pill, BADGE_TEXT_SIZE, Color.WHITE)
 
 

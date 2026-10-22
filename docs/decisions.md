@@ -4,6 +4,35 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-055 — Comida que estraga no fogão
+
+**Problema:**
+- Um prato pronto podia ficar no fogão para sempre, sem custo nenhum.
+- No Café Mania, a comida esquecida estragava. Isso dava um motivo para voltar ao jogo (proposta 3.4 do relatório).
+
+**Decisão:**
+- **Quanto aguenta:** o prato pronto aguenta no fogão o dobro do tempo de preparo, e nunca menos de 10 minutos.
+  - Os números ficam em `data/config/service.tres` (`spoil_factor` e `min_spoil_time`).
+  - Exemplos: o Café aguenta 10 minutos, a Feijoada 2 horas e a Lagosta 24 horas.
+  - Pratos de 4 horas ou mais aguentam uma noite de sono (protegido por teste): quem dorme não é punido.
+- **Pelo relógio**, como o preparo: estraga também com o jogo fechado, e a pausa segura.
+  - O save não muda, porque o estado sai do horário de início do preparo.
+- **O prato estragado:**
+  - aparece com a panela esverdeada, fumaça verde e o selo "Estragou";
+  - não vai para o balcão, o garçom não busca e não conta como prato a caminho;
+  - deixa o fogão ocupado até o jogador tocar nele e escolher **Jogar fora** (botão com a lixeira), sem devolver os ingredientes.
+- **Avisos:**
+  - quando estraga com o jogo aberto, toca o som de erro e aparece uma mensagem;
+  - as boas-vindas contam os pratos que estragaram com o jogo fechado, sem um aviso para cada;
+  - o fogão com prato pronto diz quanto falta para estragar.
+- **Correção junto:** os efeitos sonoros agora são soltos ao sair da cena, como já acontecia com a música.
+  - Um som tocado no último quadro ficava preso na memória e gerava aviso no fim dos testes.
+- **Próximas etapas:**
+  - temperos, inclusive um que recupera o prato estragado;
+  - troféus que aceleram os fogões em volta.
+
+---
+
 ## DT-054 — Receitas do nível 18 ao 30
 
 **Problema:**
