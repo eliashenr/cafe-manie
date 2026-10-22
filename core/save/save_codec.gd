@@ -20,7 +20,7 @@ extends RefCounted
 ## trecho a trecho de parede; 7 = itens de parede escolhidos pelo jogador (antes, enfeites fixos);
 ## 8 = missões diárias e semanais; 9 = placa ABERTO/FECHADO da porta; 10 = energia das máquinas de bebida;
 ## 11 = domínio das receitas.
-const CURRENT_VERSION := 14
+const CURRENT_VERSION := 15
 
 ## Marca posta pela migração para a versão 7: o decode pendura os enfeites de sempre, para o save antigo
 ## continuar com a mesma cara. A marca não volta a ser gravada.
@@ -82,6 +82,7 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"spices": simulation.spice_shelf.to_data(),
 		"trophies": simulation.trophies.to_data(),
 		"stove_sets": simulation.stove_sets.to_data(),
+		"critic": simulation.critic_to_data(),
 	}
 
 
@@ -153,6 +154,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.spice_shelf.restore(_dict(data.get("spices")))
 	simulation.trophies.restore(_dict(data.get("trophies")))
 	simulation.stove_sets.restore(_dict(data.get("stove_sets")))
+	simulation.restore_critic(_dict(data.get("critic")))
 	simulation.restore_popularity(float(data.get("popularity", simulation.config.popularity_start)))
 	simulation.inventory.restore(_dict(data.get("inventory")))
 	simulation.missions.restore(_dict(data.get("missions")))
@@ -221,7 +223,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9, _v9_to_v10, _v10_to_v11, _v11_to_v12, _v12_to_v13, _v13_to_v14]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9, _v9_to_v10, _v10_to_v11, _v11_to_v12, _v12_to_v13, _v13_to_v14, _v14_to_v15]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -301,6 +303,12 @@ static func _v12_to_v13(data: Dictionary) -> Dictionary:
 ## Versão 14 acrescentou os prêmios dos multifogões (DT-060). Saves antigos não tinham multifogão.
 static func _v13_to_v14(data: Dictionary) -> Dictionary:
 	data["stove_sets"] = {}
+	return data
+
+
+## Versão 15 acrescentou o crítico (DT-061): saves antigos começam sem visita e sem estrela.
+static func _v14_to_v15(data: Dictionary) -> Dictionary:
+	data["critic"] = {}
 	return data
 
 

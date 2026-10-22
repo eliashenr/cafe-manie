@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 566 testes
+## Cobertura atual — 576 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -25,6 +25,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
 | `unit/test_progression.gd` | 9 | curva de níveis até o **30**, cada nível pedindo mais XP; ouro só do 11 em diante; subir vários níveis de uma vez, nível máximo |
+| `unit/test_critic.gd` | 7 | **crítico:** configuração e prêmios; do nível 5, depois de um tempo, uma vez por dia; não vem com o café fechado; pede da aba da semana; estrela com ouro, XP e cupons uma vez só; devagar ou sem servir, sem estrela; save da visita e da estrela |
 | `unit/test_stove_sets.gd` | 5 | **multifogão:** conjunto válido e prêmio fora da venda; completa só em linha reta e na ordem; o dobro de porções; prêmio uma vez só; save do prêmio |
 | `unit/test_theme_stove.gd` | 3 | **Fogão Japonês:** 4 receitas próprias na aba Japão; só saem nele; clientes só pedem com o fogão |
 | `unit/test_stove_profiles.gd` | 8 | **fogões com perfil:** todo fogão especial com perfil; perfil só em fogão; corte; tempo máximo; corte somado com o troféu até o limite; porções a mais com o sal; XP a mais; 1 por café; save das porções a mais |
@@ -50,6 +51,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_achievements.gd` | 10 | conquista Mestre até o nível 30; dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
+| `integration/test_critic_scene.gd` | 3 | aviso da chegada com o tema; estrela na mesa paga ao ser tocada e o contador de cupons aparece; aviso de quem sai sem ser servido |
 | `integration/test_stove_sets_scene.gd` | 2 | dica da peça e prêmio fora da loja; progresso no fogão, aviso de completo e relógio guardado |
 | `integration/test_theme_stove_scene.gd` | 2 | aba Japão no fogão comum com "Só no Fogão Japonês"; no Fogão Japonês os pratos saem |
 | `integration/test_stove_profiles_scene.gd` | 3 | dica do perfil e "Só 1 por café" na loja; fogão livre diz o perfil; número que sobe com as porções de verdade |
@@ -97,6 +99,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Crítico (24 de 24 pegos (2 só depois de reforçar os testes)):** crítico antes do nível, crítico várias vezes no dia, crítico sem esperar, crítico com o café fechado, crítico pede fora do tema, crítico pede como cliente comum, estrela mesmo servido devagar, estrela sem cupons, estrela sem dar os cupons, estrela sem dar o ouro, estrela paga duas vezes, save sem a estrela, save sem o dia da visita, save sem ler a estrela, migração sem o crítico, mais cupons no café menos popular, temas não giram, configuração sem tema aceita, ouro do crítico não cresce, chegada sem aviso, saída sem aviso, estrela invisível, toque não pega a estrela, contador de cupons escondido.
 - **Multifogão Trem (18 de 18 pegos):** peça fora de ordem vale, conjunto incompleto vale, só vale em uma direção, conjunto completo não dobra, conjunto triplica, prêmio repetido, conjunto sem prêmio, conjunto sem aviso, mudar o café não confere o conjunto, prêmio à venda, save sem os prêmios, save sem ler os prêmios, migração sem os prêmios, loja sem a dica da peça, fogão sem o progresso do trem, fogão completo sem dizer o dobro, prêmio guardado some da loja, aviso do conjunto sem o texto.
 - **Fogão Japonês (10 de 10 pegos):** receita temática em qualquer fogão, começar sem conferir o fogão, cardápio com pratos sem o fogão, sorteio ignora o cardápio, livro sem o "Só no", livro deixa tocar no prato de outro fogão, dango sai em qualquer fogão, tempurá antes do fogão, fogão sem o nome novo, tempurá desequilibrado.
 - **Fogões com perfil (18 de 18 pegos):** corte do fogão ignorado, tempo máximo ignorado, cortes sem limite, porções do fogão ignoradas, porções do fogão sem chegar ao balcão, XP do fogão ignorado, tirar o prato com o XP da receita, sem limite por café, save sem as porções do fogão, save sem ler as porções do fogão, perfil de fogão aceito em outro móvel, configuração aceita corte de 100%, loja sem a dica do perfil, loja sem avisar o limite, fogão livre sem o perfil, perfil sem o tempo máximo, perfil sem o XP, número que sobe com as porções da receita.
@@ -141,6 +144,13 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Crítico (22/10)
+
+1. [ ] No nível 5 ou mais, deixe o café aberto por um minuto e meio: aparece o aviso de que o crítico chegou, com o tema da semana.
+2. [ ] O crítico tem um selo dourado ao lado da cabeça e pede um prato da aba do tema.
+3. [ ] Sirva o prato logo: quando ele vai embora, fica uma estrela pulsando na mesa. Toque nela: sobem o ouro, o XP e os cupons, e o contador de cupons aparece no alto.
+4. [ ] No dia seguinte, deixe o crítico esperando até ir embora: aparece o aviso de que ele volta outro dia, e não fica estrela.
 
 ## Roteiro de teste manual — Multifogão Trem (22/10)
 

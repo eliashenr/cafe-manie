@@ -83,6 +83,12 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **3. Multifogão Trem** (DT-060): 3 peças lado a lado, na ordem; completo, cada uma rende o dobro; a primeira vez dá o Relógio da Estação.
 - O fogão de evento com níveis entra no evento de Halloween (item 6).
 
+## Pacote do relatório: crítico, cupons e evento (seção 4, item 6)
+
+- [x] **1. Crítico gastronômico** (DT-061): uma visita por dia com tema da semana; servido rápido, deixa a estrela com ouro, XP e cupons.
+- [ ] **2. Loja de troca de cupons**, com itens exclusivos por temporada.
+- [ ] **3. Evento de Halloween**, com historinha, missões com prazo e o Caldeirão da Bruxa que sobe de nível.
+
 ## Passe visual (18/10/2026)
 
 - [x] **Efeitos visuais só na tela** (DT-044):

@@ -9,7 +9,8 @@ extends SceneTree
 ## reforma:<revestimento>, moedas (a vitrine de Café Ouro), missoes (a janela das missões), pausa (o jogo pausado) ou
 ## fechado (a placa FECHADO na porta), estragado (o café esquecido no fogão estragou, com o Jogar fora),
 ## temperos (a lasanha cozinhando com os temperos no painel), trofeu (um troféu de ouro entre os fogões, escolhido),
-## trem (o Multifogão Trem completo, com a locomotiva escolhida), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
+## trem (o Multifogão Trem completo, com a locomotiva escolhida), critico (o crítico sentado, a estrela numa mesa e os
+## cupons), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio)
 ## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30).
 ##
@@ -112,6 +113,11 @@ func _initialize() -> void:
 	var worried = seat.call(right_chair, 2, &"lasagna", 0.4)   # esperando o prato, de costas, preocupada
 	seat.call(back_chair, 1, &"", 0.9)           # esperando para pedir, de costas
 	seat.call(front_chair, 3, &"coffee", 1.0)    # comendo, de costas
+	if _panel == "critico":
+		simulation.progression.add_xp(680)  # nível 8
+		worried.critic = true
+		simulation.critic_star = {"cell": Vector2i(4, 6), "gold": 200, "xp": 50, "coupons": 3}
+		simulation.wallet.earn(&"coupons", 7, "vitrine")
 	if _panel == "bebidas":
 		simulation.progression.add_xp(280)  # nível 5
 		place.call(&"machine_coffee", Vector2i(0, 4), 3)

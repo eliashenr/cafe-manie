@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 6 do relatório, etapa 1: crítico gastronômico** (DT-061)
+
+- **A partir do nível 5,** o crítico visita o café uma vez por dia, com um selo ao lado da cabeça.
+- **Tema da semana:** ele pede um prato de uma aba do livro (o aviso diz qual).
+- **Servido rápido,** deixa uma estrela na mesa: toque nela para ganhar ouro, XP e **cupons** (mais cupons com o café mais popular).
+- **Mal servido,** vai embora e volta outro dia.
+- Os cupons aparecem num contador no alto da tela e servem para a loja de troca (próxima etapa).
+
 **Item 5 do relatório, etapa 3: Multifogão Trem** (DT-060). **Com ela, o item 5 está completo.**
 
 - **3 fogões novos** na aba Cozinha (nível 14): Locomotiva, Vagão e Vagão-Restaurante.
@@ -321,6 +329,12 @@
 
 🧪 **TESTADO**
 
+- **Crítico: 576 testes automatizados PASSARAM.**
+  - **Regra:** configuração válida, prêmio que cresce com o nível, cupons que crescem com a popularidade e temas que giram; vem só do nível 5, depois de um tempo de café aberto, uma vez por dia (e de novo no outro dia); com o café fechado, não vem; pede um prato da aba da semana e não pede bebida; servido rápido, estrela com ouro, XP e cupons, que entram na carteira uma vez só; servido devagar ou sem ser servido, sem estrela; o save guarda a visita e a estrela, e a migração acrescenta o campo.
+  - **Na tela:** o aviso da chegada com o tema; a estrela na mesa, que dá o prêmio ao ser tocada, com o contador de cupons aparecendo; o aviso quando ele vai embora sem ser servido.
+  - **Defeitos inseridos de propósito: 24 de 24 pegos (2 só depois de reforçar os testes).**
+  - **Foto conferida:** o crítico sentado com o selo, a estrela na mesa e o contador de cupons.
+  - **Cena principal: PASSOU**, zero erros.
 - **Multifogão Trem: 566 testes automatizados PASSARAM.**
   - **Regra:** o conjunto válido, com 3 fogões e o prêmio que não se compra com ouro; completa só com as 3 peças lado a lado, em linha reta e na ordem (fila ou coluna; separado, em L ou fora de ordem não vale); completo, o dobro de porções; o prêmio uma vez só, e o relógio guardado entra no café; o save guarda o prêmio, e a migração acrescenta o campo.
   - **Na tela:** a dica da peça na loja, o relógio fora da loja até ser ganho, o fogão com quantas peças faltam, o aviso de completo e o relógio guardado na Loja.

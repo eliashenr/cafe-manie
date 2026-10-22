@@ -83,6 +83,12 @@ const QUEUE_WALK := Vector2(0.0, 3.0)
 ## Texto do selo do fogão quando o prato fica pronto.
 const READY_TEXT := "Pronto!"
 const SPOILED_TEXT := "Estragou"
+## Estrela do crítico (DT-061): quanto ela fica acima do piso, o tamanho, o raio do toque e o pulsar.
+const CRITIC_STAR_LIFT := 70.0
+const CRITIC_STAR_SIZE := 46.0
+const CRITIC_STAR_TAP_RADIUS := 40.0
+const CRITIC_STAR_PULSE := 1.15
+const CRITIC_STAR_Z := 30
 
 
 ## Para (pausa) ou solta os personagens e o vapor dos fogões.
@@ -109,6 +115,7 @@ const FRONT_FOCUS_LIFT := 30.0
 func refresh(simulation: CafeSimulation) -> void:
 	_refresh_furniture_status(simulation.kitchen)
 	_refresh_trophies(simulation.trophies)
+	_refresh_critic_star(simulation.critic_star)
 	_refresh_table_dishes(simulation)
 	_refresh_agents(simulation)
 	_refresh_xray()
@@ -177,6 +184,37 @@ func _refresh_furniture_status(kitchen: Kitchen) -> void:
 			else:
 				view.set_status("%s ×%d" % [stack.recipe.display_name, stack.servings], -1.0, false, stack.recipe, "",
 					stack.servings)
+
+
+var _critic_star: Sprite2D
+
+
+## A estrela que o crítico deixou na mesa, pulsando até o jogador tocar (DT-061).
+func _refresh_critic_star(star: Dictionary) -> void:
+	if star.is_empty():
+		if _critic_star != null:
+			_critic_star.visible = false
+		return
+	if _critic_star == null:
+		_critic_star = Sprite2D.new()
+		_critic_star.name = "CriticStar"
+		_critic_star.z_index = CRITIC_STAR_Z
+		var art := ArtSprites.get_sprite("icone_estrela")
+		if art != null:
+			_critic_star.texture = art.texture
+			_critic_star.scale = Vector2.ONE * CRITIC_STAR_SIZE / maxf(art.texture.get_width(), 1.0)
+		add_child(_critic_star)
+		var pulse := _critic_star.create_tween().set_loops()
+		pulse.tween_property(_critic_star, "scale", _critic_star.scale * CRITIC_STAR_PULSE, 0.5).set_trans(Tween.TRANS_SINE)
+		pulse.tween_property(_critic_star, "scale", _critic_star.scale, 0.5).set_trans(Tween.TRANS_SINE)
+	_critic_star.visible = true
+	_critic_star.position = IsoProjection.cell_center(star["cell"]) - Vector2(0.0, CRITIC_STAR_LIFT)
+
+
+## A estrela do crítico está visível e o toque caiu nela?
+func critic_star_hit(world_position: Vector2) -> bool:
+	return _critic_star != null and _critic_star.visible \
+		and world_position.distance_to(_critic_star.position) <= CRITIC_STAR_TAP_RADIUS
 
 
 ## Troféu gasto fica apagado (DT-057).

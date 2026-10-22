@@ -21,6 +21,11 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const CRITIC_ARRIVED_MESSAGE := "O crítico gastronômico chegou! Esta semana ele avalia: %s. Sirva rápido para ganhar a estrela."
+const CRITIC_STAR_MESSAGE := "O crítico adorou! Toque na estrela que ele deixou na mesa para receber o prêmio."
+const CRITIC_UNHAPPY_MESSAGE := "O crítico foi embora sem ser servido a tempo. Ele volta outro dia."
+## Onde o prêmio do crítico começa a subir, em relação ao centro do piso da mesa.
+const CRITIC_FEEDBACK_OFFSET := Vector2(0, -80)
 const SET_COMPLETE_MESSAGE := "%s completo! Cada peça rende o dobro de porções. Prêmio: %s, guardado na Loja."
 const TROPHY_WORN_MESSAGE := "O %s se gastou e parou de acelerar os fogões. Toque nele para renovar."
 ## Onde o brilho do tempero estoura, em relação ao centro do piso do fogão (em cima da panela).
@@ -127,6 +132,8 @@ func _ready() -> void:
 	simulation.spice_used.connect(_on_spice_used)
 	simulation.trophy_worn_out.connect(_on_trophy_worn_out)
 	simulation.stove_set_completed.connect(_on_stove_set_completed)
+	simulation.critic_arrived.connect(_on_critic_arrived)
+	simulation.critic_left.connect(_on_critic_left)
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
@@ -343,6 +350,8 @@ func _connect_sounds() -> void:
 	simulation.dish_spoiled.connect(play.bind(&"error").unbind(2))
 	simulation.spice_used.connect(play.bind(&"achievement").unbind(2))
 	simulation.stove_set_completed.connect(play.bind(&"achievement").unbind(1))
+	simulation.critic_arrived.connect(play.bind(&"level_up").unbind(1))
+	simulation.critic_star_collected.connect(play.bind(&"achievement").unbind(1))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
@@ -467,6 +476,29 @@ func renew_trophy(trophy_id: StringName) -> int:
 		_float_over(trophy_id, "-%s" % UiTheme.thousands(price), FEEDBACK_SPEND, Vector2(0, 22))
 	state_changed.emit()
 	return last_service_result
+
+
+## Toque na estrela do crítico (DT-061): o prêmio sobe da mesa, com confete.
+func collect_critic_star() -> Dictionary:
+	var cell: Vector2i = simulation.critic_star.get("cell", Vector2i.ZERO)
+	var reward := simulation.collect_critic_star()
+	if not reward.is_empty():
+		var at := IsoProjection.cell_center(cell) + CRITIC_FEEDBACK_OFFSET
+		FloatingText.spawn(effects, at, "+%s ouro" % UiTheme.thousands(reward["gold"]), FEEDBACK_GOLD)
+		FloatingText.spawn(effects, at + Vector2(0, 22), "+%d XP" % reward["xp"], FEEDBACK_XP)
+		FloatingText.spawn(effects, at + Vector2(0, 44), "+%d cupons" % reward["coupons"], FEEDBACK_GOOD)
+		FxParticles.gold_burst(particles, at)
+	state_changed.emit()
+	return reward
+
+
+func _on_critic_arrived(_customer: Customer) -> void:
+	var book := simulation.recipes.get_book(simulation.critic_theme())
+	EventBus.message_posted.emit(CRITIC_ARRIVED_MESSAGE % (book.display_name if book != null else "o cardápio"))
+
+
+func _on_critic_left(_customer: Customer, star: bool) -> void:
+	EventBus.message_posted.emit(CRITIC_STAR_MESSAGE if star else CRITIC_UNHAPPY_MESSAGE)
 
 
 ## Multifogão completo pela primeira vez (DT-060): o prêmio já está no inventário.
@@ -970,6 +1002,9 @@ func clear_selection() -> void:
 
 ## Toque no modo VIEW: fogão com prato pronto serve direto; o resto seleciona.
 func tap_at_world(world_position: Vector2) -> void:
+	if world_layer.critic_star_hit(world_position):
+		collect_critic_star()
+		return
 	var thirsty := world_layer.drink_customer_at(world_position)
 	if thirsty != null:
 		serve_drink(thirsty)

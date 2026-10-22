@@ -11,6 +11,8 @@ signal balance_changed(currency: StringName, balance: int)
 
 const SOFT := &"soft_currency"
 const PREMIUM := &"premium_currency"
+## Cupons do crítico (DT-061), trocados na aba Cupons da loja.
+const COUPONS := &"coupons"
 ## Quantas transações recentes o registro guarda.
 const LOG_LIMIT := 200
 

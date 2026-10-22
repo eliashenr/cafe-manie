@@ -98,6 +98,10 @@ var _alpha := 0.0
 var _started := false
 var _exit_target := Vector2.ZERO
 
+## Selo do crítico ao lado da cabeça (DT-061): tamanho e onde fica, em relação ao alto da cabeça.
+const CRITIC_BADGE_SIZE := 30.0
+const CRITIC_BADGE_OFFSET := Vector2(24.0, 10.0)
+
 static var _balloon_style: StyleBoxFlat
 static var _drink_balloon_style: StyleBoxFlat
 static var _balloon_shadow_style: StyleBoxFlat
@@ -417,6 +421,8 @@ func _draw_tray_food() -> void:
 func _draw_customer_overlay(head_top: Vector2) -> void:
 	var customer := agent as Customer
 	var tip := head_top + Vector2(0.0, -4.0)
+	if customer.critic:
+		_draw_critic_badge(head_top)
 	match customer.state:
 		Customer.State.WAITING_TO_ORDER:
 			_draw_balloon(tip, null, "?", customer.patience_fraction())
@@ -434,6 +440,15 @@ func _draw_customer_overlay(head_top: Vector2) -> void:
 			var face := ArtSprites.get_sprite("humor_feliz" if customer.happy else "humor_bravo")
 			if face != null:
 				_overlay.draw_texture_rect(face.texture, face.rect_at(tip - Vector2(0.0, face.world_size().y / 2.0)), false)
+
+
+## O selo do crítico (DT-061), ao lado da cabeça, para ele se destacar dos outros clientes.
+func _draw_critic_badge(head_top: Vector2) -> void:
+	var badge := ArtSprites.get_sprite("icone_critico")
+	if badge == null:
+		return
+	var size := Vector2.ONE * CRITIC_BADGE_SIZE
+	_overlay.draw_texture_rect(badge.texture, Rect2(head_top + CRITIC_BADGE_OFFSET - size / 2.0, size), false)
 
 
 ## Balão branco de borda azul, com o prato (ou um texto) e a barra de paciência.

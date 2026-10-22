@@ -69,7 +69,12 @@ var _name_dialog: ConfirmationDialog
 var _name_edit: LineEdit
 var _gold_label: Label
 ## Energia das máquinas de bebida (DT-052): aparece quando o café tem uma máquina.
+## Onde fica o contador de cupons: embaixo do ouro, ou embaixo da energia quando ela aparece.
+const COUPON_PILL_BELOW_GOLD := Vector2(28, 62)
+const COUPON_PILL_BELOW_ENERGY := Vector2(28, 98)
 var _energy_button: Button
+var _coupon_pill: Control
+var _coupon_label: Label
 var _energy_label: Label
 var _energy_next: Label
 var _xp_bar: StripedBar
@@ -117,6 +122,7 @@ func _ready() -> void:
 	add_child(_root)
 	_build_gold()
 	_build_energy()
+	_build_coupons()
 	_build_xp()
 	_build_daily_timer()
 	_build_side_buttons()
@@ -209,6 +215,34 @@ func _build_energy() -> void:
 	_energy_next.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_energy_next.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_place(_energy_button, _energy_next, Vector2(86, 0), Vector2(56, 30))
+
+
+## Contador de cupons (DT-061): aparece quando o jogador tem algum, embaixo da energia (ou do ouro).
+func _build_coupons() -> void:
+	_coupon_pill = Panel.new()
+	_coupon_pill.name = "CouponPill"
+	_coupon_pill.add_theme_stylebox_override("panel", UiTheme.pill_box())
+	_coupon_pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_coupon_pill.tooltip_text = "Cupons do crítico: troque na Loja, aba Cupons"
+	_anchored(_coupon_pill, Vector2.ZERO, COUPON_PILL_BELOW_GOLD, Vector2(110, 30))
+	_place(_coupon_pill, UiTheme.art("icone_cupom", Vector2(40, 40)), Vector2(-18, -5))
+	_coupon_label = UiTheme.outlined("0", 19)
+	_coupon_label.name = "CouponValue"
+	_coupon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_place(_coupon_pill, _coupon_label, Vector2(26, 0), Vector2(80, 30))
+	_coupon_pill.visible = false
+
+
+func _refresh_coupons() -> void:
+	var coupons := simulation.wallet.balance(Wallet.COUPONS)
+	_coupon_pill.visible = coupons > 0
+	_coupon_pill.position = COUPON_PILL_BELOW_ENERGY if _energy_button.visible else COUPON_PILL_BELOW_GOLD
+	_coupon_label.text = UiTheme.thousands(coupons)
+
+
+## Cupons que o contador mostra, ou -1 se ele está escondido (para os testes).
+func shown_coupons() -> int:
+	return int(_coupon_label.text.replace(".", "")) if _coupon_pill.visible else -1
 
 
 func _build_xp() -> void:
@@ -861,6 +895,7 @@ func refresh() -> void:
 	_beauty_bar.text = str(beauty)
 	_beauty_bar.value = beauty / 100.0
 	_refresh_energy()
+	_refresh_coupons()
 	_refresh_daily()
 	_refresh_mission()
 

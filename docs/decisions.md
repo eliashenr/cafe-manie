@@ -4,6 +4,29 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-061 — Crítico gastronômico e cupons
+
+**Problema:**
+- O relatório propõe um crítico que aparece de vez em quando, com tema por semana, e dá cupons quando bem servido (propostas 3.5 e 3.15).
+- Os cupons são trocados na loja de troca (próxima etapa).
+
+**Decisão:**
+- **Quando vem** (`data/config/critic.tres`, `CriticConfig`):
+  - uma vez por dia, a partir do nível 5, depois de 90 segundos de café aberto (fechado, não vem);
+  - se não há cadeira, espera vagar uma.
+- **Como é:** um cliente com o selo do crítico ao lado da cabeça. Ele é exigente: tem 80% da paciência do cliente comum e não pede bebida.
+- **Tema da semana:** pede um prato da aba do livro da semana (Básico, Brasil, Doces e Mundo, em rodízio), entre os que o café sabe fazer. O aviso da chegada diz o tema.
+- **Servido rápido** (com pelo menos metade da paciência sobrando): deixa uma **estrela** pulsando na mesa.
+  - Tocar na estrela dá ouro e XP, que crescem com o nível, e **cupons**: de 1 a 5, mais com o café mais popular.
+- **Servido devagar:** paga, mas sem estrela. **Sem ser servido:** vai embora e só volta outro dia.
+- **Cupons:**
+  - moeda nova na carteira (`Wallet.COUPONS`);
+  - contador no HUD, embaixo do ouro ou da energia, que aparece quando o jogador tem algum.
+- **O save guarda** o dia da visita e a estrela que espera o toque (versão 15).
+- **Arte nova:** o ícone do cupom e o selo do crítico (`tools/art_direction/v3/critic3.py`).
+
+---
+
 ## DT-060 — Multifogão Trem em 3 partes
 
 **Problema:**

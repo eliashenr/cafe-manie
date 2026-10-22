@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CriticConfig" format=3]
+
+[ext_resource type="Script" path="res://core/service/critic_config.gd" id="1_critic"]
+
+[resource]
+script = ExtResource("1_critic")
+first_level = 5
+arrival_delay = 90.0
+patience_multiplier = 0.8
+quick_service = 0.5
+reward_gold = 120
+reward_gold_per_level = 12.0
+reward_xp = 30
+reward_xp_per_level = 3.0
+coupons_at_zero = 1
+coupons_at_max = 5
+themes = Array[StringName]([&"basico", &"brasil", &"doces", &"mundo"])

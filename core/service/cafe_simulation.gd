@@ -32,6 +32,12 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## O crítico gastronômico chegou e vai sentar (DT-061).
+signal critic_arrived(customer: Customer)
+## O crítico foi embora: [param star] = foi servido rápido e deixou a estrela na mesa.
+signal critic_left(customer: Customer, star: bool)
+## O jogador tocou na estrela do crítico: o prêmio (gold, xp, coupons) já foi entregue.
+signal critic_star_collected(reward: Dictionary)
 ## Um multifogão ficou completo pela primeira vez; o prêmio dele já está no inventário (DT-060).
 signal stove_set_completed(stove_set: StoveSetDefinition)
 ## O troféu gastou a última carga e parou de acelerar os fogões (DT-057).
@@ -64,6 +70,7 @@ const ECONOMY_PATH := "res://data/config/economy.tres"
 const DAILY_REWARDS_PATH := "res://data/config/daily_rewards.tres"
 const ENERGY_PATH := "res://data/config/energy.tres"
 const MASTERY_PATH := "res://data/config/mastery.tres"
+const CRITIC_PATH := "res://data/config/critic.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -85,6 +92,14 @@ var spice_shelf := Inventory.new()
 var trophies: StoveTrophies
 ## Multifogões em partes (DT-060).
 var stove_sets: StoveSets
+## Crítico gastronômico (DT-061).
+var critic_config: CriticConfig
+## Estrela que o crítico deixou na mesa, esperando o toque: {"cell", "gold", "xp", "coupons"}; vazio = nenhuma.
+var critic_star := {}
+## Dia (local) da última visita do crítico; -1 = nunca veio.
+var _critic_day := -1
+## Segundos de café aberto, hoje, esperando o crítico.
+var _critic_wait := 0.0
 ## Energia gasta pelas bebidas; recarrega sozinha com o tempo.
 var energy: Energy
 ## Domínio das receitas: estrelas por cozinhar muitas vezes a mesma (DT-053).
@@ -168,6 +183,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	collections = CollectionCatalog.load_from()
 	drinks = DrinkCatalog.load_from()
 	spices = SpiceCatalog.load_from()
+	critic_config = load(CRITIC_PATH)
 	wall_items = WallItemCatalog.load_from()
 	coin_shop = CoinShop.load_from(wallet)
 	var no_missions: Array[MissionDefinition] = []
@@ -507,6 +523,110 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Crítico gastronômico (DT-061) -----------------------------------------
+
+## A aba do livro que o crítico avalia nesta semana.
+func critic_theme() -> StringName:
+	return critic_config.theme_for_week(mission_week())
+
+
+## O crítico está no café agora (chegando ou sentado; quem já está saindo não conta)?
+func critic_present() -> bool:
+	return customers.any(func(c: Customer) -> bool:
+		return c.critic and c.state not in [Customer.State.LEAVING, Customer.State.GONE])
+
+
+## Ele ainda vem hoje? (café com clientes, no nível dele e sem visita hoje)
+func critic_due() -> bool:
+	return not customer_types.is_empty() and progression.level >= critic_config.first_level \
+		and _critic_day != clock.local_day()
+
+
+## Toque na estrela do crítico: entrega ouro, XP e cupons. Retorna o prêmio, ou {} se não há estrela.
+func collect_critic_star() -> Dictionary:
+	if critic_star.is_empty():
+		return {}
+	var reward := critic_star.duplicate()
+	critic_star = {}
+	wallet.earn(Wallet.SOFT, reward["gold"], "Estrela do crítico")
+	wallet.earn(Wallet.COUPONS, reward["coupons"], "Estrela do crítico")
+	progression.add_xp(reward["xp"])
+	_record(MissionDefinition.Kind.EARN_GOLD, reward["gold"])
+	_record(MissionDefinition.Kind.EARN_XP, reward["xp"])
+	critic_star_collected.emit(reward)
+	return reward
+
+
+## Visita, estrela pendente e dia, em tipos simples (para o save).
+func critic_to_data() -> Dictionary:
+	var data := {"day": _critic_day}
+	if not critic_star.is_empty():
+		var cell: Vector2i = critic_star["cell"]
+		data["star"] = {"cell": [cell.x, cell.y], "gold": critic_star["gold"], "xp": critic_star["xp"], "coupons": critic_star["coupons"]}
+	return data
+
+
+func restore_critic(data: Dictionary) -> void:
+	_critic_day = int(data.get("day", -1))
+	critic_star = {}
+	var star: Dictionary = data.get("star", {}) if data.get("star") is Dictionary else {}
+	var cell: Array = star.get("cell", []) if star.get("cell") is Array else []
+	if cell.size() == 2:
+		critic_star = {"cell": Vector2i(int(cell[0]), int(cell[1])), "gold": maxi(int(star.get("gold", 0)), 0),
+			"xp": maxi(int(star.get("xp", 0)), 0), "coupons": maxi(int(star.get("coupons", 0)), 0)}
+
+
+## Com o café aberto e o crítico ainda por vir hoje, conta o tempo; na hora, ele entra se houver cadeira.
+func _update_critic(delta: float) -> void:
+	if closed or not critic_due() or critic_present():
+		return
+	_critic_wait += delta
+	if _critic_wait < critic_config.arrival_delay:
+		return
+	var critic := Customer.new()
+	critic.critic = true
+	critic.type = CustomerType.new()
+	critic.type.id = &"critic"
+	critic.type.display_name = "Crítico"
+	critic.type.patience_multiplier = critic_config.patience_multiplier
+	critic.speed = config.customer_walk_speed
+	if not _walk_in(critic):
+		return  # sem cadeira agora: tenta de novo no próximo passo
+	critic.serial = _take_serial()
+	customers.append(critic)
+	_critic_day = clock.local_day()
+	_critic_wait = 0.0
+	customer_arrived.emit(critic)
+	critic_arrived.emit(critic)
+
+
+## O crítico pede um prato da aba da semana que o café sabe fazer (sem nenhum, qualquer um do cardápio).
+func _place_critic_order(customer: Customer) -> void:
+	var theme := critic_theme()
+	var candidates := order_menu().filter(func(r: RecipeDefinition) -> bool: return r.book == theme)
+	var recipe: RecipeDefinition = candidates[rng.randi_range(0, candidates.size() - 1)] if not candidates.is_empty() \
+		else _pick_from_menu()
+	if recipe == null:
+		return
+	var order := Order.new()
+	order.customer = customer
+	order.recipe = recipe
+	order.counter_id = kitchen.take_serving(recipe)
+	_orders.append(order)
+	customer.order = recipe
+	customer.ordered_from_menu = order.counter_id == &""
+	customer.state = Customer.State.WAITING_FOR_FOOD
+
+
+## Servido rápido, o crítico deixa a estrela na mesa; senão, só volta outro dia.
+func _critic_leaves(customer: Customer, happy: bool) -> void:
+	var star := happy and customer.patience_when_served >= critic_config.quick_service
+	if star:
+		critic_star = {"cell": customer.seat_cell, "gold": critic_config.gold_at(progression.level),
+			"xp": critic_config.xp_at(progression.level), "coupons": critic_config.coupons_at(popularity)}
+	critic_left.emit(customer, star)
 
 
 ## Joga fora o prato estragado do fogão, que fica livre para cozinhar de novo.
@@ -1128,6 +1248,7 @@ func tick(delta: float) -> void:
 	refresh_mission_periods()
 	_watch_spoilage()
 	_update_arrivals(delta)
+	_update_critic(delta)
 	_update_queue(delta)
 	_assign_servings()
 	for customer in customers.duplicate():
@@ -1243,6 +1364,9 @@ func _update_customer(customer: Customer, delta: float) -> void:
 ## O cliente pede: às vezes o que está no balcão, às vezes qualquer prato do cardápio.
 ## O que não está no balcão espera o jogador cozinhar.
 func _place_order(customer: Customer) -> void:
+	if customer.critic:
+		_place_critic_order(customer)
+		return
 	var drink := _choose_drink()
 	if drink != null:
 		customer.drink = drink
@@ -1374,6 +1498,8 @@ func _pay(customer: Customer) -> void:
 ## Tira o cliente da mesa e manda para a saída. Pedido não entregue é cancelado. Com o café fechado,
 ## quem sai bravo não tira popularidade (o café avisou que estava fechando).
 func _send_away(customer: Customer, happy: bool) -> void:
+	if customer.critic:
+		_critic_leaves(customer, happy)
 	customer.happy = happy
 	_cancel_order_of(customer)
 	if not happy and not closed:

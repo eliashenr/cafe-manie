@@ -5146,6 +5146,18 @@
     55.0
    ]
   },
+  "icone_cupom": {
+   "anchor": [
+    51.0,
+    43.0
+   ]
+  },
+  "icone_critico": {
+   "anchor": [
+    43.0,
+    58.0
+   ]
+  },
   "botao_zoom_in": {
    "anchor": [
     60.0,

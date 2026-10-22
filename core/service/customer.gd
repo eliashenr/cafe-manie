@@ -38,6 +38,8 @@ var gave_up_in_line := false
 var paid := 0
 ## O prato pedido não estava no balcão na hora do pedido (o jogador teve que cozinhar).
 var ordered_from_menu := false
+## É o crítico gastronômico (DT-061).
+var critic := false
 
 
 func patience_fraction() -> float:
