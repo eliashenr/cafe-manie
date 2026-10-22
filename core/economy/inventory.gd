@@ -1,11 +1,11 @@
 class_name Inventory
 extends RefCounted
-## Móveis guardados pelo jogador (tirados da cafeteria). Recolocar um móvel
-## guardado é grátis: ele já foi pago.
+## Itens guardados pelo jogador, contados pelo id: os móveis tirados da cafeteria
+## (recolocar é grátis, porque já foram pagos) e os temperos da prateleira (DT-056).
 
 signal changed
 
-var _counts: Dictionary = {}  # id da definição (StringName) -> quantidade
+var _counts: Dictionary = {}  # id do item (StringName) -> quantidade
 
 
 func count(furniture_id: StringName) -> int:

@@ -50,6 +50,10 @@ const SERVICE_MESSAGES := {
 	ServiceResult.NO_COUNTER_SPACE: "Sem espaço no balcão: sirva ou coloque outro balcão",
 	ServiceResult.SPOILED: "O prato estragou: jogue fora para usar o fogão",
 	ServiceResult.NOT_SPOILED: "Não há prato estragado para jogar fora",
+	ServiceResult.NO_SPICE: "Você não tem esse tempero",
+	ServiceResult.SPICE_LOCKED: "Esse tempero ainda não está à venda no seu nível",
+	ServiceResult.NOT_COOKING: "Esse tempero é para o prato que está cozinhando",
+	ServiceResult.ALREADY_SEASONED: "Esse prato já levou tempero de porções",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -775,6 +779,8 @@ func _add_square(row: HBoxContainer, button_name: String, kind: String, text: St
 func _show_stove_controls(stove_id: StringName) -> void:
 	var simulation := cafe.simulation
 	match simulation.kitchen.stove_status(stove_id):
+		Kitchen.StoveStatus.COOKING:
+			_add_spice_cards(stove_id)
 		Kitchen.StoveStatus.IDLE:
 			var cards := _show_recipe_book(stove_id)
 			for recipe in _book_page(current_book(stove_id)):
@@ -811,6 +817,44 @@ func _show_stove_controls(stove_id: StringName) -> void:
 			_primary.add_child(serve)
 		Kitchen.StoveStatus.SPOILED:
 			_add_square(_primary, "DiscardButton", "trash", "Jogar fora", func() -> void: cafe.discard_stove(stove_id))
+			_add_spice_cards(stove_id)
+
+
+## Temperos que servem para o fogão (DT-056). Com o tempero na prateleira, usa na hora; sem nenhum, oferece comprar
+## (com confirmação). O cartão diz quantos você tem, o preço ou o nível em que passa a ser vendido.
+func _add_spice_cards(stove_id: StringName) -> void:
+	var simulation := cafe.simulation
+	for spice in simulation.spices.for_status(simulation.kitchen.stove_status(stove_id)):
+		var this_spice := spice
+		var card := _card_button("Spice_" + String(spice.id), ArtSprites.spice(spice.id),
+			func() -> void: ask_spice(stove_id, this_spice.id))
+		card.tooltip_text = spice.description
+		_updaters.append(func() -> void:
+			var owned := simulation.spice_shelf.count(this_spice.id)
+			var fits := simulation.can_use_spice(stove_id, this_spice.id)
+			var locked := this_spice.unlock_level > simulation.progression.level
+			if fits == ServiceResult.ALREADY_SEASONED:
+				card.text = "%s\nJá temperado" % this_spice.display_name
+			elif owned > 0:
+				card.text = "%s\nVocê tem %d" % [this_spice.display_name, owned]
+			elif locked or this_spice.price <= 0:
+				card.text = "%s\nNível %d" % [this_spice.display_name, this_spice.unlock_level]
+			else:
+				card.text = "%s\n%s ouro" % [this_spice.display_name, UiTheme.thousands(this_spice.price)]
+			card.disabled = fits != ServiceResult.OK or (owned == 0 and (locked or this_spice.price <= 0
+				or not simulation.wallet.can_afford(Wallet.SOFT, this_spice.price))))
+
+
+## Tempero na prateleira: usa na hora. Sem nenhum: comprar é imediato, então pede confirmação.
+func ask_spice(stove_id: StringName, spice_id: StringName) -> void:
+	var spice := cafe.simulation.spices.get_definition(spice_id)
+	if spice == null:
+		return
+	if cafe.simulation.spice_shelf.count(spice_id) > 0:
+		cafe.use_spice(stove_id, spice_id)
+		return
+	_ask("Comprar tempero?", "Comprar %s por %s Café Ouro e usar agora? %s." % [spice.display_name,
+		UiTheme.thousands(spice.price), spice.description], "Comprar", func() -> void: cafe.buy_and_use_spice(stove_id, spice_id))
 
 
 ## Cartão da receita: o desenho do prato em cima, o nome e o tempo e o custo embaixo.
@@ -1046,11 +1090,15 @@ func _add_mastery_stars(button: Button, dish: RecipeDefinition) -> void:
 
 
 func _add_recipe(dish: RecipeDefinition, action: Callable, parent: Control = null) -> Button:
+	return _card_button("Cook_" + String(dish.id), ArtSprites.food(dish.id), action, parent)
+
+
+## Cartão com o desenho em cima e o texto embaixo (receitas do livro e temperos).
+func _card_button(button_name: String, art: ArtSprites.Sprite, action: Callable, parent: Control = null) -> Button:
 	var button := Button.new()
-	button.name = "Cook_" + String(dish.id)
-	var food := ArtSprites.food(dish.id)
-	if food != null:
-		button.icon = food.texture
+	button.name = button_name
+	if art != null:
+		button.icon = art.texture
 	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 	button.add_theme_constant_override("icon_max_width", 44)
@@ -1084,7 +1132,10 @@ func _stove_message(id: StringName) -> String:
 	var kitchen := cafe.simulation.kitchen
 	match kitchen.stove_status(id):
 		Kitchen.StoveStatus.COOKING:
-			return "Fogão: %s fica pronto em %s" % [kitchen.stove_recipe(id).display_name, WorldLayer.format_time(kitchen.time_left(id))]
+			var text := "Fogão: %s fica pronto em %s" % [kitchen.stove_recipe(id).display_name, WorldLayer.format_time(kitchen.time_left(id))]
+			if kitchen.is_seasoned(id):
+				text += " (%d porções, com tempero)" % kitchen.stove_servings(id)
+			return text + "  —  temperos aceleram ou rendem mais"
 		Kitchen.StoveStatus.READY:
 			var text := "Fogão: %s pronto! O garçom leva ao balcão (ou toque no fogão)" % kitchen.stove_recipe(id).display_name
 			var left := kitchen.time_to_spoil(id)

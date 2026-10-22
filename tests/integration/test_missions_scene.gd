@@ -83,3 +83,11 @@ func test_time_text() -> void:
 	assert_eq(MissionsPanel.time_text(86400 + 60), "1 dia e 0h")
 	assert_eq(MissionsPanel.time_text(59), "1min")
 	assert_eq(MissionsPanel.time_text(0), "menos de 1min")
+
+
+func test_weekly_missions_show_their_spice_reward() -> void:
+	var cafe := await _cafe_with_boards()
+	cafe.hud.show_missions()
+	await settle()
+	assert_true(_text(_row(cafe, "w01_cook"), "Reward").contains("+1 Sal da Fartura"), "o tempero do prêmio (DT-056)")
+	assert_false(_text(_row(cafe, "d02_serve"), "Reward").contains("Sal"), "quem não dá tempero não mostra")

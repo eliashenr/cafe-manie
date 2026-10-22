@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SpiceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/spice_definition.gd" id="1_spice"]
+
+[resource]
+script = ExtResource("1_spice")
+id = &"paprika"
+display_name = "Páprica-Foguete"
+description = "6 horas a menos de preparo"
+effect = 1
+amount = 21600.0
+price = 600
+unlock_level = 12
+order = 3

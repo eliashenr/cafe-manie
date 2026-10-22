@@ -4238,6 +4238,36 @@
     67.48
    ]
   },
+  "tempero_salt": {
+   "anchor": [
+    32.8,
+    51.48
+   ]
+  },
+  "tempero_pepper": {
+   "anchor": [
+    34.8,
+    55.48
+   ]
+  },
+  "tempero_paprika": {
+   "anchor": [
+    47.8,
+    54.48
+   ]
+  },
+  "tempero_instant": {
+   "anchor": [
+    51.8,
+    55.48
+   ]
+  },
+  "tempero_herbs": {
+   "anchor": [
+    41.8,
+    39.48
+   ]
+  },
   "piso_floor_beige_a": {
    "anchor": [
     134.19,
@@ -6037,6 +6067,13 @@
   "orange_juice": "bebida_orange_juice",
   "lemonade": "bebida_lemonade",
   "strawberry_smoothie": "bebida_strawberry_smoothie"
+ },
+ "spices": {
+  "salt": "tempero_salt",
+  "pepper": "tempero_pepper",
+  "paprika": "tempero_paprika",
+  "instant": "tempero_instant",
+  "herbs": "tempero_herbs"
  },
  "food_width": 64.0,
  "floors": {

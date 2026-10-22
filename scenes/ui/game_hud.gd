@@ -782,6 +782,9 @@ func reward_text(reward: Dictionary) -> String:
 	var surface := simulation.surfaces.get_definition(StringName(reward.get("surface", &"")))
 	if surface != null:
 		parts.append(surface.display_name)
+	var spice := simulation.spices.get_definition(StringName(reward.get("spice", &"")))
+	if spice != null:
+		parts.append("%d %s" % [int(reward.get("spice_amount", 1)), spice.display_name])
 	return "\n".join(parts)
 
 

@@ -26,5 +26,9 @@ enum {
 	NO_MACHINE,         ## falta a máquina dessa bebida
 	NOT_ENOUGH_ENERGY,  ## energia insuficiente para a bebida
 	SPOILED,            ## o prato pronto estragou no fogão: só dá para jogar fora
-	NOT_SPOILED,        ## não há prato estragado para jogar fora
+	NOT_SPOILED,        ## não há prato estragado para jogar fora (nem para salvar com tempero)
+	NO_SPICE,           ## não há esse tempero na prateleira
+	SPICE_LOCKED,       ## nível insuficiente para comprar o tempero
+	NOT_COOKING,        ## o tempero só serve para o prato que está cozinhando
+	ALREADY_SEASONED,   ## o prato já levou tempero de porções
 }

@@ -257,6 +257,7 @@ for _id, _style in themes3.COUNTERS.items():
     FURNITURE[_id] = ((1, 1), _collection_counter(_style), 4)
 # Máquinas de bebida (DT-052): 1 piso, a frente aparece como a dos fogões.
 import drinks3  # noqa: E402
+import spices3  # noqa: E402
 
 
 def _machine(draw):
@@ -413,6 +414,8 @@ FOOD_SIZE = 48.0
 # id da bebida no jogo -> desenho em drinks3
 DRINKS = {"espresso": "expresso", "cappuccino": "cappuccino", "hot_chocolate": "chocolate",
           "orange_juice": "laranja", "lemonade": "limonada", "strawberry_smoothie": "morango"}
+# id do tempero no jogo -> desenho em spices3 (DT-056)
+SPICES = {"salt": "sal", "pepper": "pimenta", "paprika": "paprica", "instant": "instantaneo", "herbs": "ervas"}
 MOODS = ("feliz", "esperando", "bravo")
 MOOD_RADIUS = 11.0
 
@@ -427,8 +430,12 @@ def export_food(sheet, manifest):
     for drink_id, kind in DRINKS.items():
         bounds = (-FOOD_SIZE * 0.6, -FOOD_SIZE * 0.66, FOOD_SIZE * 1.2, FOOD_SIZE * 1.2)
         sheet.add(f"bebida_{drink_id}", drinks3.drink(sheet.D, kind, 0, 0, FOOD_SIZE), bounds)
+    for spice_id, kind in SPICES.items():
+        bounds = (-FOOD_SIZE * 0.6, -FOOD_SIZE * 0.66, FOOD_SIZE * 1.2, FOOD_SIZE * 1.2)
+        sheet.add(f"tempero_{spice_id}", spices3.spice(sheet.D, kind, 0, 0, FOOD_SIZE), bounds)
     manifest["food"] = {recipe_id: f"prato_{recipe_id}" for recipe_id in FOODS}
     manifest["drinks"] = {drink_id: f"bebida_{drink_id}" for drink_id in DRINKS}
+    manifest["spices"] = {spice_id: f"tempero_{spice_id}" for spice_id in SPICES}
     # Largura de cada prato, em pixels de mundo, quando desenhado em tamanho natural.
     manifest["food_width"] = round(FOOD_SIZE * WORLD, 2)
 

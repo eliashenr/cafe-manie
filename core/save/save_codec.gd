@@ -20,7 +20,7 @@ extends RefCounted
 ## trecho a trecho de parede; 7 = itens de parede escolhidos pelo jogador (antes, enfeites fixos);
 ## 8 = missões diárias e semanais; 9 = placa ABERTO/FECHADO da porta; 10 = energia das máquinas de bebida;
 ## 11 = domínio das receitas.
-const CURRENT_VERSION := 11
+const CURRENT_VERSION := 12
 
 ## Marca posta pela migração para a versão 7: o decode pendura os enfeites de sempre, para o save antigo
 ## continuar com a mesma cara. A marca não volta a ser gravada.
@@ -79,6 +79,7 @@ static func encode(simulation: CafeSimulation) -> Dictionary:
 		"closed": simulation.closed,
 		"energy": simulation.energy.to_data(),
 		"mastery": simulation.mastery.to_data(),
+		"spices": simulation.spice_shelf.to_data(),
 	}
 
 
@@ -133,7 +134,8 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	for entry in _list(kitchen_data.get("stoves")):
 		var stove: Dictionary = _dict(entry)
 		var recipe := simulation.recipes.get_definition(StringName(str(stove.get("recipe", ""))))
-		if not simulation.kitchen.restore_stove(StringName(str(stove.get("id", ""))), recipe, float(stove.get("started_at", 0.0))):
+		if not simulation.kitchen.restore_stove(StringName(str(stove.get("id", ""))), recipe, float(stove.get("started_at", 0.0)),
+				int(stove.get("extra", 0))):
 			result.warnings.append("Preparo ignorado: %s" % stove)
 	for entry in _list(kitchen_data.get("counters")):
 		var counter: Dictionary = _dict(entry)
@@ -146,6 +148,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.energy.set_level(simulation.progression.level, clock.now())
 	simulation.energy.restore(_dict(data.get("energy")), clock.now())
 	simulation.mastery.restore(_dict(data.get("mastery")))
+	simulation.spice_shelf.restore(_dict(data.get("spices")))
 	simulation.restore_popularity(float(data.get("popularity", simulation.config.popularity_start)))
 	simulation.inventory.restore(_dict(data.get("inventory")))
 	simulation.missions.restore(_dict(data.get("missions")))
@@ -214,7 +217,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9, _v9_to_v10, _v10_to_v11]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9, _v9_to_v10, _v10_to_v11, _v11_to_v12]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -276,6 +279,12 @@ static func _v9_to_v10(data: Dictionary) -> Dictionary:
 ## Versão 11 acrescentou o domínio das receitas: saves antigos começam sem estrelas.
 static func _v10_to_v11(data: Dictionary) -> Dictionary:
 	data["mastery"] = {}
+	return data
+
+
+## Versão 12 acrescentou a prateleira de temperos (DT-056): saves antigos começam sem nenhum.
+static func _v11_to_v12(data: Dictionary) -> Dictionary:
+	data["spices"] = {}
 	return data
 
 

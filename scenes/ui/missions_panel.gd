@@ -86,7 +86,7 @@ func _fill_board(tab: int, board: MissionBoard, label: String, seconds_left: flo
 	for entry in board.entries():
 		var state := "locked" if entry.locked else ("done" if entry.done() else "open")
 		list.add_child(_row(String(entry.mission.id), entry.title(), entry.progress, entry.target, entry.reward_gold,
-			entry.reward_xp, state, entry.mission.min_level))
+			entry.reward_xp, state, entry.mission.min_level, MissionsPanel.spice_reward_text(simulation.spices, entry.mission)))
 
 
 ## Aba do começo: a sequência do tutorial, com a atual em andamento; some quando acaba.
@@ -102,11 +102,12 @@ func _fill_start() -> void:
 		var done := i < tracker.completed_count()
 		var progress := mission.target if done else (tracker.progress() if i == tracker.completed_count() else 0)
 		list.add_child(_row(String(mission.id), mission.title, mini(progress, mission.target), mission.target,
-			mission.reward_gold, mission.reward_xp, "done" if done else "open", 1))
+			mission.reward_gold, mission.reward_xp, "done" if done else "open", 1,
+			MissionsPanel.spice_reward_text(simulation.spices, mission)))
 
 
 func _row(id: String, text: String, progress: int, target: int, gold: int, xp: int, state: String,
-		min_level: int) -> Control:
+		min_level: int, spice := "") -> Control:
 	var panel := PanelContainer.new()
 	panel.name = "Mission_" + id
 	panel.add_theme_stylebox_override("panel", UiTheme.card_box(10, 8))
@@ -144,12 +145,19 @@ func _row(id: String, text: String, progress: int, target: int, gold: int, xp: i
 	var reward := Label.new()
 	reward.name = "Reward"
 	reward.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	reward.text = "+%s ouro" % UiTheme.thousands(gold) + ("\n+%d XP" % xp if xp > 0 else "")
+	reward.text = "+%s ouro" % UiTheme.thousands(gold) + ("\n+%d XP" % xp if xp > 0 else "") \
+		+ ("\n" + spice if not spice.is_empty() else "")
 	line.add_child(reward)
 	if state == "locked":
 		panel.modulate = Color(1, 1, 1, 0.55)
 		heading.add_theme_color_override("font_color", LOCKED_COLOR)
 	return panel
+
+
+## "+1 Sal da Fartura" para a missão que dá tempero (DT-056), ou "".
+static func spice_reward_text(spices: SpiceCatalog, mission: MissionDefinition) -> String:
+	var spice := spices.get_definition(mission.reward_spice)
+	return "+%d %s" % [mission.reward_spice_amount, spice.display_name] if spice != null else ""
 
 
 static func _bar_style(color: Color) -> StyleBoxFlat:

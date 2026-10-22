@@ -7,15 +7,18 @@ script = ExtResource("1_cal")
 days = Array[Dictionary]([{
 "gold": 50
 }, {
+"spice": &"pepper",
 "xp": 20
 }, {
 "furniture": &"flower_vase"
 }, {
-"gold": 100
+"gold": 100,
+"spice": &"salt"
 }, {
 "surface": &"wall_brick"
 }, {
 "gold": 150,
+"spice": &"herbs",
 "xp": 30
 }, {
 "furniture": &"bookshelf",

@@ -73,7 +73,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Pacote do relatório: comida que estraga, temperos e troféus (seção 4, item 4)
 
 - [x] **1. Comida que estraga no fogão** (DT-055): o prato pronto aguenta o dobro do preparo (no mínimo 10 minutos); estragado, só sai jogado fora.
-- [ ] **2. Temperos** (proposta 3.4): prateleira com mais porções, menos tempo, pronto na hora e recuperar o prato estragado.
+- [x] **2. Temperos** (DT-056): 5 temperos (porções, menos tempo, pronto na hora e salvar o estragado), ganhos no presente e nas missões ou comprados no fogão.
 - [ ] **3. Troféus que aceleram os fogões em volta** (proposta 3.11).
 
 ## Passe visual (18/10/2026)

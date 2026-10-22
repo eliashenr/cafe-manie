@@ -4,6 +4,20 @@
 
 🟢 **CONCLUÍDO**
 
+**Novo pacote do relatório, etapa 2: temperos** (DT-056)
+
+- **5 temperos**, usados no fogão:
+  - **Sal da Fartura:** +20% de porções no prato que está cozinhando;
+  - **Pimenta-Relâmpago:** 1 hora a menos de preparo;
+  - **Páprica-Foguete:** 6 horas a menos;
+  - **Tempero Instantâneo:** o prato fica pronto na hora;
+  - **Ervas Salva-Prato:** o prato estragado volta a ficar pronto.
+- **Como usar:** toque num fogão que está cozinhando (ou com prato estragado). Os temperos que servem aparecem em cartões, com quantos você tem.
+  - Se você tem o tempero, ele é usado na hora.
+  - Se não tem, o cartão mostra o preço; comprar pede confirmação.
+- **Onde ganhar:** no presente diário (dias 2, 4 e 6) e em 5 missões semanais.
+- **O save guarda** a prateleira e o tempero no fogão (versão 12).
+
 **Novo pacote do relatório, etapa 1: comida que estraga no fogão** (DT-055)
 
 - **O prato pronto esquecido no fogão estraga** depois do dobro do tempo de preparo, e nunca antes de 10 minutos.
@@ -267,6 +281,12 @@
 
 🧪 **TESTADO**
 
+- **Temperos: 531 testes automatizados PASSARAM.**
+  - **Regra:** os 5 temperos válidos, na ordem e com ícone; o sal dá porções uma vez por prato e elas chegam ao balcão; o prato grande com sal se reparte em dois balcões; pimenta e páprica adiantam sem passar do ponto; o instantâneo deixa pronto; as ervas salvam o estragado (e, se estragar de novo, avisa de novo); cada tempero só na hora certa; comprar (nível, preço, sem ouro, e não cobra se não servir); presente diário e missões dão temperos; o save guarda a prateleira e o tempero no fogão, e save antigo começa sem nenhum.
+  - **Na tela:** o fogão que cozinha mostra os 4 temperos com quantos você tem e o preço; usar é na hora, com o efeito subindo do fogão, e o cartão vira "Já temperado"; comprar pede confirmação com Cancelar escolhido; o fogão estragado mostra as ervas; o presente diário e o aviso da missão mostram o tempero; a janela das missões mostra o tempero do prêmio.
+  - **Defeitos inseridos de propósito: 36 de 36 pegos (2 só depois de testes novos).**
+  - **Foto conferida:** a Lasanha cozinhando, com o Sal (você tem 2), a Pimenta (você tem 1), a Páprica e o Instantâneo com preço.
+  - **Cena principal: PASSOU**, zero erros.
 - **Comida que estraga: 515 testes automatizados PASSARAM.**
   - **Regra:** configuração válida; prato rápido aguenta o mínimo e prato longo aguenta mais; o prato estraga no segundo certo; estragado não vai para o balcão, não é buscado pelo garçom, não conta como prato a caminho e deixa o fogão ocupado; jogar fora só o estragado, e o fogão fica livre; a pausa segura; com fator 0 nada estraga; pratos de 4 horas ou mais aguentam uma noite.
   - **Na simulação:** avisa uma vez por prato estragado; o que estragou com o jogo fechado é contado nas boas-vindas, sem aviso repetido.

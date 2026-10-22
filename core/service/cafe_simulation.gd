@@ -32,6 +32,8 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## Um tempero da prateleira foi usado num fogão (DT-056).
+signal spice_used(stove_id: StringName, spice: SpiceDefinition)
 ## Um prato pronto ficou tempo demais no fogão e estragou (DT-055). Avisa uma vez por prato.
 signal dish_spoiled(stove_id: StringName, recipe: RecipeDefinition)
 
@@ -72,6 +74,9 @@ var furniture: FurnitureCatalog
 var recipes: RecipeCatalog
 ## Bebidas das máquinas (DT-052), de res://data/drinks.
 var drinks: DrinkCatalog
+## Temperos que existem (DT-056) e os que o jogador tem na prateleira.
+var spices: SpiceCatalog
+var spice_shelf := Inventory.new()
 ## Energia gasta pelas bebidas; recarrega sozinha com o tempo.
 var energy: Energy
 ## Domínio das receitas: estrelas por cozinhar muitas vezes a mesma (DT-053).
@@ -152,6 +157,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	set_surfaces(SurfaceCatalog.load_from())
 	collections = CollectionCatalog.load_from()
 	drinks = DrinkCatalog.load_from()
+	spices = SpiceCatalog.load_from()
 	wall_items = WallItemCatalog.load_from()
 	coin_shop = CoinShop.load_from(wallet)
 	var no_missions: Array[MissionDefinition] = []
@@ -334,6 +340,77 @@ func collect(stove_id: StringName) -> int:
 		stats.add(PlayerStats.DISHES_COOKED)
 		_record_mastery(recipe)
 	return result
+
+
+# --- Temperos (DT-056) -----------------------------------------------------
+
+## O tempero serve agora para este fogão? OK, ou o motivo de não servir.
+func can_use_spice(stove_id: StringName, spice_id: StringName) -> int:
+	var spice := spices.get_definition(spice_id)
+	if spice == null:
+		return ServiceResult.UNKNOWN_ITEM
+	if not kitchen.is_stove(stove_id):
+		return ServiceResult.NOT_A_STOVE
+	if not spice.works_on(kitchen.stove_status(stove_id)):
+		return ServiceResult.NOT_SPOILED if spice.effect == SpiceDefinition.Effect.RECOVER else ServiceResult.NOT_COOKING
+	if spice.effect == SpiceDefinition.Effect.EXTRA_SERVINGS and kitchen.is_seasoned(stove_id):
+		return ServiceResult.ALREADY_SEASONED
+	return ServiceResult.OK
+
+
+## Usa no fogão um tempero da prateleira.
+func use_spice(stove_id: StringName, spice_id: StringName) -> int:
+	var check := can_use_spice(stove_id, spice_id)
+	if check != ServiceResult.OK:
+		return check
+	if not spice_shelf.take(spice_id):
+		return ServiceResult.NO_SPICE
+	var spice := spices.get_definition(spice_id)
+	match spice.effect:
+		SpiceDefinition.Effect.EXTRA_SERVINGS:
+			kitchen.add_servings(stove_id, spice.extra_servings(kitchen.stove_recipe(stove_id).servings))
+		SpiceDefinition.Effect.CUT_TIME:
+			kitchen.rush(stove_id, spice.amount)
+		SpiceDefinition.Effect.INSTANT:
+			kitchen.rush(stove_id, INF)
+		SpiceDefinition.Effect.RECOVER:
+			kitchen.recover(stove_id)
+			_spoiled_seen.erase(stove_id)
+	spice_used.emit(stove_id, spice)
+	return ServiceResult.OK
+
+
+## Compra um tempero com Café Ouro; ele vai para a prateleira.
+func buy_spice(spice_id: StringName) -> int:
+	var spice := spices.get_definition(spice_id)
+	if spice == null or spice.price <= 0:
+		return ServiceResult.UNKNOWN_ITEM
+	if spice.unlock_level > progression.level:
+		return ServiceResult.SPICE_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, spice.price):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	wallet.spend(Wallet.SOFT, spice.price, "Tempero: %s" % spice.display_name)
+	spice_shelf.add(spice_id)
+	return ServiceResult.OK
+
+
+## Compra e usa na hora. Não cobra nada se o tempero não servir para o fogão.
+func buy_and_use_spice(stove_id: StringName, spice_id: StringName) -> int:
+	var check := can_use_spice(stove_id, spice_id)
+	if check != ServiceResult.OK:
+		return check
+	var bought := buy_spice(spice_id)
+	if bought != ServiceResult.OK:
+		return bought
+	return use_spice(stove_id, spice_id)
+
+
+## Tempero de presente (presente diário ou missão). Retorna se entregou.
+func _gift_spice(spice_id: StringName, amount: int) -> bool:
+	if spices.get_definition(spice_id) == null or amount <= 0:
+		return false
+	spice_shelf.add(spice_id, amount)
+	return true
 
 
 ## Joga fora o prato estragado do fogão, que fica livre para cozinhar de novo.
@@ -713,6 +790,10 @@ func claim_daily() -> Dictionary:
 		else:
 			style.own(surface.id)
 			delivered["surface"] = surface.id
+	var spice_id := StringName(reward.get("spice", &""))
+	if _gift_spice(spice_id, int(reward.get("spice_amount", 1))):
+		delivered["spice"] = spice_id
+		delivered["spice_amount"] = int(reward.get("spice_amount", 1))
 	if delivered["gold"] > 0:
 		wallet.earn(Wallet.SOFT, delivered["gold"], "Recompensa diária (dia %d)" % day)
 	if delivered["xp"] > 0:
@@ -1572,6 +1653,7 @@ func _mission_state(kind: MissionDefinition.Kind) -> int:
 func _on_mission_completed(mission: MissionDefinition) -> void:
 	if mission.reward_gold > 0:
 		wallet.earn(Wallet.SOFT, mission.reward_gold, "Missão: %s" % mission.title)
+	_gift_spice(mission.reward_spice, mission.reward_spice_amount)
 	mission_completed.emit(mission)
 	if mission.reward_xp > 0:
 		progression.add_xp(mission.reward_xp)
@@ -1590,6 +1672,7 @@ func _on_board_mission_completed(entry: MissionBoard.Entry, board: MissionBoard)
 	var period := "diária" if board == daily_missions else "semanal"
 	if entry.reward_gold > 0:
 		wallet.earn(Wallet.SOFT, entry.reward_gold, "Missão %s: %s" % [period, entry.title()])
+	_gift_spice(entry.mission.reward_spice, entry.mission.reward_spice_amount)
 	board_mission_completed.emit(board, entry)
 	if entry.reward_xp > 0:
 		progression.add_xp(entry.reward_xp)

@@ -21,6 +21,8 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+## Onde o brilho do tempero estoura, em relação ao centro do piso do fogão (em cima da panela).
+const SPICE_BURST_OFFSET := Vector2(0, -90)
 const SPOILED_MESSAGE := "O prato de %s estragou de tanto esperar no fogão. Toque no fogão para jogar fora."
 
 ## Folga, em pixels de mundo, que a câmera pode passar da borda do grid.
@@ -120,6 +122,7 @@ func _ready() -> void:
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
 	simulation.recipe_mastered.connect(_on_recipe_mastered)
 	simulation.dish_spoiled.connect(_on_dish_spoiled)
+	simulation.spice_used.connect(_on_spice_used)
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
@@ -334,6 +337,7 @@ func _connect_sounds() -> void:
 	simulation.achievement_unlocked.connect(play.bind(&"achievement").unbind(2))
 	simulation.recipe_mastered.connect(play.bind(&"achievement").unbind(3))
 	simulation.dish_spoiled.connect(play.bind(&"error").unbind(2))
+	simulation.spice_used.connect(play.bind(&"achievement").unbind(2))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
@@ -447,6 +451,43 @@ func discard_stove(stove_id: StringName) -> int:
 	return result
 
 
+## Usa no fogão um tempero da prateleira (DT-056). Recusa deixa a barra explicar o motivo.
+func use_spice(stove_id: StringName, spice_id: StringName) -> int:
+	last_service_result = simulation.use_spice(stove_id, spice_id)
+	state_changed.emit()
+	return last_service_result
+
+
+## Compra o tempero e usa na hora (a confirmação já foi pedida pela barra).
+func buy_and_use_spice(stove_id: StringName, spice_id: StringName) -> int:
+	var spice := simulation.spices.get_definition(spice_id)
+	last_service_result = simulation.buy_and_use_spice(stove_id, spice_id)
+	if last_service_result == ServiceResult.OK:
+		_float_over(stove_id, "-%s" % UiTheme.thousands(spice.price), FEEDBACK_SPEND, Vector2(0, 22))
+	state_changed.emit()
+	return last_service_result
+
+
+## Tempero usado: o efeito sobe do fogão com um brilho.
+func _on_spice_used(stove_id: StringName, spice: SpiceDefinition) -> void:
+	var kitchen := simulation.kitchen
+	var text := "%s!" % spice.display_name
+	match spice.effect:
+		SpiceDefinition.Effect.EXTRA_SERVINGS:
+			text = "+%d porções" % (kitchen.stove_servings(stove_id) - kitchen.stove_recipe(stove_id).servings)
+		SpiceDefinition.Effect.CUT_TIME:
+			text = "Pronto!" if kitchen.stove_status(stove_id) == Kitchen.StoveStatus.READY \
+				else "-%s" % WorldLayer.format_time(spice.amount)
+		SpiceDefinition.Effect.INSTANT:
+			text = "Pronto na hora!"
+		SpiceDefinition.Effect.RECOVER:
+			text = "Prato salvo!"
+	_float_over(stove_id, text, FEEDBACK_GOOD)
+	var placement := layout.get_placement(stove_id)
+	if placement != null:
+		FxParticles.gold_burst(particles, IsoProjection.cell_center(placement.origin) + SPICE_BURST_OFFSET)
+
+
 ## Serve a bebida ao cliente que tocou (DT-052): sai na hora, gastando energia. Recusa explica o motivo.
 func serve_drink(customer: Customer) -> int:
 	var drink := customer.drink
@@ -506,6 +547,9 @@ func _on_board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 		rewards.append("+%s ouro" % UiTheme.thousands(entry.reward_gold))
 	if entry.reward_xp > 0:
 		rewards.append("+%d XP" % entry.reward_xp)
+	var spice := MissionsPanel.spice_reward_text(simulation.spices, entry.mission)
+	if not spice.is_empty():
+		rewards.append(spice)
 	var period := "diária" if board == simulation.daily_missions else "semanal"
 	EventBus.message_posted.emit("Missão %s concluída: %s  %s" % [period, entry.title(), "  ".join(rewards)])
 	state_changed.emit()
@@ -518,6 +562,9 @@ func _on_mission_completed(mission: MissionDefinition) -> void:
 		rewards.append("+%d ouro" % mission.reward_gold)
 	if mission.reward_xp > 0:
 		rewards.append("+%d XP" % mission.reward_xp)
+	var spice := MissionsPanel.spice_reward_text(simulation.spices, mission)
+	if not spice.is_empty():
+		rewards.append(spice)
 	var text := "Missão concluída: %s" % mission.title
 	if not rewards.is_empty():
 		text += "  %s" % "  ".join(rewards)

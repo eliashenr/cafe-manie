@@ -4,6 +4,34 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-056 — Temperos
+
+**Problema:**
+- No Café Mania, a prateleira de temperos dava mais porções, encurtava o preparo e salvava o prato estragado (proposta 3.4 do relatório).
+- Com a comida que estraga (DT-055), faltava um jeito de salvar o prato esquecido.
+
+**Decisão:**
+- **5 temperos** em `data/spices` (`SpiceDefinition`), cada um com efeito, preço em Café Ouro e nível para comprar:
+  - **Sal da Fartura:** +20% de porções no prato que cozinha (pelo menos 1 a mais), um por prato;
+  - **Pimenta-Relâmpago:** 1 hora a menos de preparo;
+  - **Páprica-Foguete:** 6 horas a menos de preparo;
+  - **Tempero Instantâneo:** o prato fica pronto na hora;
+  - **Ervas Salva-Prato:** o prato estragado volta a ficar pronto.
+- **Nunca passa do ponto:** adiantar o preparo deixa o prato no máximo pronto agora, com o tempo inteiro para estragar.
+- **Onde se ganha:**
+  - no presente diário (dias 2, 4 e 6);
+  - em 5 missões semanais (o prêmio aparece na janela e no aviso);
+  - comprando com Café Ouro direto no fogão.
+- **No fogão:** escolhido o fogão, os temperos que servem aparecem em cartões, cada um com quantos você tem, o preço ou o nível de venda.
+  - Usar um da prateleira é na hora.
+  - Comprar pede confirmação, com Cancelar já escolhido, e só cobra se o tempero servir para o fogão.
+  - O efeito sobe do fogão com um brilho.
+- **Mais porções que um balcão:** se o prato com sal passa da capacidade, ele se reparte entre os balcões que têm a mesma receita e os vazios.
+- **O save guarda** a prateleira e o tempero no fogão (versão 12). Saves antigos começam sem temperos.
+- **Correção junto:** o executor de testes espera 0,3 s antes de fechar, para o áudio soltar o último som (sumiu o aviso de vazamento no fim da rodada).
+
+---
+
 ## DT-055 — Comida que estraga no fogão
 
 **Problema:**

@@ -9,6 +9,8 @@ extends SceneTree
 ## durante um teste também reprova o teste, para nunca haver falso sucesso.
 
 const TEST_DIRS: Array[String] = ["res://tests/unit", "res://tests/integration"]
+## Segundos de espera antes de fechar, para o áudio soltar os últimos sons.
+const AUDIO_RELEASE_WAIT := 0.3
 
 
 class ErrorCounter:
@@ -63,6 +65,9 @@ func _run() -> void:
 						print("          - ", reason)
 
 	print("\n%d passaram, %d falharam" % [passed, failed])
+	# O servidor de áudio solta os sons parados no próprio ritmo: fechar logo depois de um teste que tocou
+	# um som deixaria o som preso na memória (aviso de vazamento no fechamento).
+	await create_timer(AUDIO_RELEASE_WAIT).timeout
 	OS.remove_logger(_errors)
 	quit(1 if failed > 0 or passed == 0 else 0)
 

@@ -21,6 +21,8 @@ class StoveState:
 	extends RefCounted
 	var recipe: RecipeDefinition
 	var started_at: float
+	## Porções a mais do tempero (DT-056).
+	var extra_servings := 0
 
 
 class CounterStack:
@@ -156,10 +158,16 @@ func collect(stove_id: StringName) -> int:
 		StoveStatus.IDLE, StoveStatus.COOKING:
 			return ServiceResult.NOT_READY
 	var recipe: RecipeDefinition = _stoves[stove_id].recipe
-	var counter_id := _find_counter_for(recipe, recipe.servings)
-	if counter_id == &"":
+	var amount := stove_servings(stove_id)
+	var targets := _destinations(recipe, amount)
+	if targets.is_empty():
 		return ServiceResult.NO_COUNTER_SPACE
-	_add_to_counter(counter_id, recipe, recipe.servings)
+	var left := amount
+	for counter_id in targets:
+		var stack: CounterStack = _counters.get(counter_id)
+		var portion := mini(left, counter_capacity - (stack.servings if stack != null else 0))
+		_add_to_counter(counter_id, recipe, portion)
+		left -= portion
 	_stoves.erase(stove_id)
 	changed.emit()
 	return ServiceResult.OK
@@ -172,6 +180,52 @@ func discard(stove_id: StringName) -> int:
 	if stove_status(stove_id) != StoveStatus.SPOILED:
 		return ServiceResult.NOT_SPOILED
 	_stoves.erase(stove_id)
+	changed.emit()
+	return ServiceResult.OK
+
+
+# --- Temperos (DT-056) -----------------------------------------------------
+
+## Porções que o prato do fogão vai render, com as do tempero (0 se livre).
+func stove_servings(id: StringName) -> int:
+	var state: StoveState = _stoves.get(id)
+	return state.recipe.servings + state.extra_servings if state != null else 0
+
+
+## O prato do fogão já levou tempero de porções?
+func is_seasoned(id: StringName) -> bool:
+	var state: StoveState = _stoves.get(id)
+	return state != null and state.extra_servings > 0
+
+
+## Mais porções para o prato que cozinha (um tempero de porções por prato).
+func add_servings(stove_id: StringName, amount: int) -> int:
+	if stove_status(stove_id) != StoveStatus.COOKING:
+		return ServiceResult.NOT_COOKING
+	var state: StoveState = _stoves[stove_id]
+	if state.extra_servings > 0:
+		return ServiceResult.ALREADY_SEASONED
+	state.extra_servings = maxi(amount, 0)
+	changed.emit()
+	return ServiceResult.OK
+
+
+## Adianta o prato que cozinha em [param seconds] (INF = pronto na hora). No máximo fica pronto agora: nunca passa do ponto.
+func rush(stove_id: StringName, seconds: float) -> int:
+	if stove_status(stove_id) != StoveStatus.COOKING:
+		return ServiceResult.NOT_COOKING
+	var state: StoveState = _stoves[stove_id]
+	state.started_at = maxf(state.started_at - seconds, now() - state.recipe.cook_time)
+	changed.emit()
+	return ServiceResult.OK
+
+
+## O prato estragado volta a ficar pronto, como se tivesse acabado de sair.
+func recover(stove_id: StringName) -> int:
+	if stove_status(stove_id) != StoveStatus.SPOILED:
+		return ServiceResult.NOT_SPOILED
+	var state: StoveState = _stoves[stove_id]
+	state.started_at = now() - state.recipe.cook_time
 	changed.emit()
 	return ServiceResult.OK
 
@@ -210,8 +264,8 @@ func spoiled_stoves() -> Array[StringName]:
 func collect_destination(stove_id: StringName) -> StringName:
 	if stove_status(stove_id) != StoveStatus.READY:
 		return &""
-	var recipe: RecipeDefinition = _stoves[stove_id].recipe
-	return _find_counter_for(recipe, recipe.servings)
+	var targets := _destinations(_stoves[stove_id].recipe, stove_servings(stove_id))
+	return targets[0] if not targets.is_empty() else &""
 
 
 ## O que está no balcão, ou null se vazio.
@@ -274,7 +328,8 @@ func to_data() -> Dictionary:
 	for id: StringName in _stoves:
 		var state: StoveState = _stoves[id]
 		# salvo durante a pausa: o tempo dela não conta como cozinhado
-		stoves.append({"id": String(id), "recipe": String(state.recipe.id), "started_at": state.started_at + _pause_shift()})
+		stoves.append({"id": String(id), "recipe": String(state.recipe.id), "started_at": state.started_at + _pause_shift(),
+			"extra": state.extra_servings})
 	var counters: Array[Dictionary] = []
 	for id: StringName in _counters:
 		var stack: CounterStack = _counters[id]
@@ -282,13 +337,14 @@ func to_data() -> Dictionary:
 	return {"stoves": stoves, "counters": counters}
 
 
-## Restaura um preparo salvo, com o horário original de início.
-func restore_stove(id: StringName, recipe: RecipeDefinition, started_at: float) -> bool:
+## Restaura um preparo salvo, com o horário original de início (e as porções a mais do tempero).
+func restore_stove(id: StringName, recipe: RecipeDefinition, started_at: float, extra_servings := 0) -> bool:
 	if recipe == null or not is_stove(id) or _stoves.has(id):
 		return false
 	var state := StoveState.new()
 	state.recipe = recipe
 	state.started_at = started_at
+	state.extra_servings = maxi(extra_servings, 0)
 	_stoves[id] = state
 	changed.emit()
 	return true
@@ -350,6 +406,29 @@ func _find_counter_for(recipe: RecipeDefinition, amount: int) -> StringName:
 		if not _counters.has(counter_id) and _fits(counter_id, recipe, amount):
 			return counter_id
 	return &""
+
+
+## Balcões que recebem [param amount] porções: um só, se couber (como em _find_counter_for). Senão, o prato com
+## tempero se reparte, primeiro entre os balcões que já têm a receita e depois entre os vazios. Vazio se não couber.
+func _destinations(recipe: RecipeDefinition, amount: int) -> Array[StringName]:
+	var chosen: Array[StringName] = []
+	var single := _find_counter_for(recipe, amount)
+	if single != &"":
+		chosen.append(single)
+		return chosen
+	var room := 0
+	for empty in [false, true]:
+		for counter_id in _counter_ids():
+			var stack: CounterStack = _counters.get(counter_id)
+			if room >= amount or (stack == null) != empty or (stack != null and stack.recipe != recipe):
+				continue
+			var free := counter_capacity - (stack.servings if stack != null else 0)
+			if free > 0:
+				chosen.append(counter_id)
+				room += free
+	if room < amount:
+		chosen.clear()
+	return chosen
 
 
 func _add_to_counter(counter_id: StringName, recipe: RecipeDefinition, amount: int) -> void:

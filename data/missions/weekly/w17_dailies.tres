@@ -19,3 +19,5 @@ reward_gold = 400
 reward_gold_per_level = 15.0
 reward_xp = 80
 reward_xp_per_level = 3.0
+reward_spice = &"instant"
+reward_spice_amount = 1

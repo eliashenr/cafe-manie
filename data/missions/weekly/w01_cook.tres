@@ -19,3 +19,5 @@ reward_gold = 250
 reward_gold_per_level = 12.0
 reward_xp = 60
 reward_xp_per_level = 3.0
+reward_spice = &"salt"
+reward_spice_amount = 1

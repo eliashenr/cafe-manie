@@ -52,11 +52,15 @@ enum Kind {
 @export var reward_xp := 0
 @export var reward_gold_per_level := 0.0
 @export var reward_xp_per_level := 0.0
+## Tempero de presente ao concluir (DT-056); vazio = nenhum.
+@export var reward_spice: StringName = &""
+@export var reward_spice_amount := 1
 
 
 func is_valid() -> bool:
 	return id != &"" and not title.is_empty() and target > 0 and reward_gold >= 0 and reward_xp >= 0 \
-		and target_per_level >= 0.0 and reward_gold_per_level >= 0.0 and reward_xp_per_level >= 0.0 and min_level >= 1
+		and target_per_level >= 0.0 and reward_gold_per_level >= 0.0 and reward_xp_per_level >= 0.0 and min_level >= 1 \
+		and reward_spice_amount >= 1
 
 
 ## Missão de estado (o progresso é o maior valor visto, não uma soma).
