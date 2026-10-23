@@ -22,6 +22,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - os níveis 2 a 5 continuam rápidos, para prender quem começa;
   - a partir do 6 a curva fica cerca de 2 vezes mais longa;
   - o nível 30 pede 95.200 de XP.
+  - **Quem já jogava não perde nível:** o save vai para a versão 24, e o XP é convertido para a curva nova mantendo o nível e a fração do caminho até o próximo.
 - **Preços alinhados:**
   - os 5 fogões novos das coleções seguem a mesma régua de preço por efeito dos antigos;
   - a coroa e o dólmã dourado do avatar (nível 20) ficam como itens de prestígio, com cerca de 1 hora de ouro de jogo ativo.

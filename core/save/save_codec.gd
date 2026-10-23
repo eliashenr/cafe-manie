@@ -20,7 +20,7 @@ extends RefCounted
 ## trecho a trecho de parede; 7 = itens de parede escolhidos pelo jogador (antes, enfeites fixos);
 ## 8 = missões diárias e semanais; 9 = placa ABERTO/FECHADO da porta; 10 = energia das máquinas de bebida;
 ## 11 = domínio das receitas.
-const CURRENT_VERSION := 23
+const CURRENT_VERSION := 24
 
 ## Marca posta pela migração para a versão 7: o decode pendura os enfeites de sempre, para o save antigo
 ## continuar com a mesma cara. A marca não volta a ser gravada.
@@ -264,7 +264,7 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 ## Passos de migração: o índice 0 converte da versão 1 para a 2, o índice 1
 ## da 2 para a 3, e assim por diante.
 static func migrations() -> Array[Callable]:
-	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9, _v9_to_v10, _v10_to_v11, _v11_to_v12, _v12_to_v13, _v13_to_v14, _v14_to_v15, _v15_to_v16, _v16_to_v17, _v17_to_v18, _v18_to_v19, _v19_to_v20, _v20_to_v21, _v21_to_v22, _v22_to_v23]
+	return [_v1_to_v2, _v2_to_v3, _v3_to_v4, _v4_to_v5, _v5_to_v6, _v6_to_v7, _v7_to_v8, _v8_to_v9, _v9_to_v10, _v10_to_v11, _v11_to_v12, _v12_to_v13, _v13_to_v14, _v14_to_v15, _v15_to_v16, _v16_to_v17, _v17_to_v18, _v18_to_v19, _v19_to_v20, _v20_to_v21, _v21_to_v22, _v22_to_v23, _v23_to_v24]
 
 
 ## Versão 2 acrescentou inventário e missões: saves antigos começam com eles vazios.
@@ -370,6 +370,33 @@ static func _v16_to_v17(data: Dictionary) -> Dictionary:
 static func _v17_to_v18(data: Dictionary) -> Dictionary:
 	data["attractions"] = {}
 	return data
+
+
+## Curva de níveis antes e depois do balanceamento de 23/10 (DT-075): XP total para estar em cada nível.
+const XP_CURVE_V23 := [0, 30, 80, 160, 280, 450, 680, 980, 1360, 1830, 2400, 3080, 3880, 4810, 5880, 7100, 8480, 10030,
+	11760, 13680, 15800, 18130, 20680, 23460, 26480, 29750, 33280, 37080, 41160, 45530]
+const XP_CURVE_V24 := [0, 30, 80, 160, 280, 500, 880, 1480, 2330, 3450, 4650, 6050, 7750, 9700, 11950, 14500, 17400, 20650,
+	24300, 28350, 32800, 37650, 43050, 48850, 55200, 62100, 69500, 77450, 86050, 95200]
+
+
+## Versão 24 trocou a curva de níveis (DT-075): o XP do save vai para a curva nova sem o jogador perder nível, e com a
+## mesma fração do caminho até o próximo nível.
+static func _v23_to_v24(data: Dictionary) -> Dictionary:
+	data["xp"] = convert_xp(int(data.get("xp", 0)), XP_CURVE_V23, XP_CURVE_V24)
+	return data
+
+
+## Leva o XP de uma curva de níveis para outra, mantendo o nível e a fração dentro dele. Acima do último nível, o que
+## sobra passa igual.
+static func convert_xp(xp: int, from_curve: Array, to_curve: Array) -> int:
+	var index := 0
+	for i in from_curve.size():
+		if xp >= int(from_curve[i]):
+			index = i
+	if index >= from_curve.size() - 1 or index >= to_curve.size() - 1:
+		return int(to_curve[mini(index, to_curve.size() - 1)]) + xp - int(from_curve[index])
+	var fraction := float(xp - int(from_curve[index])) / float(int(from_curve[index + 1]) - int(from_curve[index]))
+	return int(to_curve[index]) + floori(fraction * (int(to_curve[index + 1]) - int(to_curve[index])))
 
 
 ## Versão 23 acrescentou os vizinhos simulados (DT-074): saves antigos começam sem visitas.

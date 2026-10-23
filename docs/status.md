@@ -10,6 +10,7 @@
 - **Subia de nível rápido demais:** nível 10 em 25 minutos e nível 15 em 1 h 18.
   - Agora, para uma pessoa: cerca de **2 h até o nível 10**, **7 h 30 até o 15** e **17 h até o 20**.
   - Os níveis 2 a 5 continuam rápidos, para prender quem começa.
+  - **Quem já jogava, como você, não perde nível:** o save converte o XP para a curva nova.
 - **Clientes irritados sem culpa do jogador:** quem pedia do cardápio podia escolher pratos de horas e saía irritado sempre.
   - Agora, do cardápio, só sai o que dá tempo de fazer; prato demorado só se já estiver no balcão.
   - A popularidade, que ficava entre 6% e 18% na simulação, agora fica entre 68% e 100%.
@@ -438,12 +439,13 @@
 
 🧪 **TESTADO**
 
-- **Balanceamento: 685 testes automatizados PASSARAM.**
+- **Balanceamento: 686 testes automatizados PASSARAM.**
+  - A conversão do save antigo mantém o nível em todos os casos testados, inclusive no limite exato de cada nível e acima do máximo.
   - O teste do cardápio agora confere que só saem pratos que dá tempo de fazer (e, sem o limite, o cardápio inteiro).
   - A curva nova tem teste: níveis 1 a 5 como eram, nível 10 com 3.450 de XP, cada nível pedindo mais que o anterior.
   - Os testes que usavam o XP antigo de um nível foram atualizados.
   - Um teste que repetia sem limite (esperando um pedido que a regra nova não deixa mais sair) ganhou limite de tentativas.
-  - **Defeitos inseridos de propósito: 4 de 4 pegos (1 só depois de reforçar um teste): cardápio sem limite de tempo, sem o prato mais rápido de reserva, limite de tempo grande demais, curva antiga do nível 10.**
+  - **Defeitos inseridos de propósito: 7 de 8 pegos (1 só depois de reforçar um teste; 1 equivalente: no limite exato de um nível, contar com ">" ou ">=" dá o mesmo XP): cardápio sem limite de tempo, sem o prato mais rápido de reserva, limite de tempo grande demais, curva antiga do nível 10, migração não converte o XP, conversão sem a fração, conversão perde o que sobra no máximo.**
   - **Simulação:** 10 horas de jogo ativo pelo robô, com os números acima.
 - **Vizinhos simulados: 685 testes automatizados PASSARAM.**
   - **Regra:**

@@ -21,6 +21,23 @@ func test_level_data_file_is_valid_up_to_level_30() -> void:
 		assert_true(step > before, "cada nível pede mais XP que o anterior (nível %d)" % (i + 1))
 
 
+## O save antigo vai para a curva nova sem o jogador perder nível (DT-075).
+func test_old_saves_keep_their_level_on_the_new_curve() -> void:
+	var table: LevelTable = load("res://data/progression/levels.tres")
+	assert_eq(Array(table.xp_to_reach), SaveCodec.XP_CURVE_V24, "a migração conhece a curva que o jogo usa")
+	var old_table := LevelTable.new()
+	old_table.xp_to_reach = PackedInt32Array(SaveCodec.XP_CURVE_V23)
+	for old_xp in [0, 29, 30, 279, 280, 1000, 3000, 13680, 45000, 45530, 50000]:
+		var new_xp := SaveCodec.convert_xp(old_xp, SaveCodec.XP_CURVE_V23, SaveCodec.XP_CURVE_V24)
+		assert_eq(table.level_for_xp(new_xp), old_table.level_for_xp(old_xp), "o nível continua com %d de XP" % old_xp)
+	assert_eq(SaveCodec.convert_xp(3000, SaveCodec.XP_CURVE_V23, SaveCodec.XP_CURVE_V24), 4650 + floori(600.0 / 680.0 * 1400),
+		"a mesma fração do caminho até o próximo nível")
+	assert_eq(SaveCodec.convert_xp(50000, SaveCodec.XP_CURVE_V23, SaveCodec.XP_CURVE_V24), 95200 + 4470, "acima do máximo, o que sobra passa igual")
+	var old_save := {"save_version": 23, "xp": 3000}
+	var migrated := SaveCodec.migrate(old_save)
+	assert_eq(table.level_for_xp(int(migrated["xp"])), 11, "o save do nível 11 continua no nível 11")
+
+
 func test_high_levels_pay_gold_and_the_first_ten_do_not() -> void:
 	var table: LevelTable = load("res://data/progression/levels.tres")
 	for level in range(1, 11):

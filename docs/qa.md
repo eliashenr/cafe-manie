@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 685 testes
+## Cobertura atual — 686 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
