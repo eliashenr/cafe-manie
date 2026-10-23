@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AvatarPartDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/avatar_part_definition.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+id = &"skin_parda"
+display_name = "Pele parda"
+slot = 0
+art = "parda"
+is_default = false
+price = 0
+min_level = 1

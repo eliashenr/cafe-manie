@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 9 do relatório, etapa 4: avatar do chef** (DT-070). **Com ela, o item 9 está completo.**
+
+- Novo botão **Chef** na faixa de baixo: abre o retrato do seu chef.
+- Escolha a **pele**, o **cabelo**, o **chapéu** e a **roupa** (21 peças).
+  - Os tons de pele e as peças iniciais são grátis.
+  - As outras custam ouro, e algumas só liberam em níveis mais altos (como a coroa e o dólmã dourado, no 20).
+- Tocar numa peça nova a **prova no retrato**. Para comprar, confirme; Cancelar já vem selecionado.
+
 **Item 9 do relatório, etapa 3: terraço ao ar livre** (DT-069, versão simplificada)
 
 - Na aba **Pisos** da loja (nível 10, 3.000 de ouro), o **Terraço** transforma a fileira da frente do salão num terraço ao ar livre.
@@ -391,6 +399,22 @@
 
 🧪 **TESTADO**
 
+- **Avatar do chef: 658 testes automatizados PASSARAM.**
+  - **Regra:**
+    - as peças são válidas, com uma inicial grátis em cada parte;
+    - o chef novo veste as iniciais;
+    - comprar cobra uma vez, e trocar é grátis;
+    - peça grátis veste sem pagar;
+    - peça bloqueada, sem ouro ou desconhecida é recusada sem cobrar;
+    - o save guarda o avatar, e peça inválida volta para a inicial, com aviso.
+  - **Na tela:**
+    - toda camada tem arte, e o botão Chef também;
+    - o botão abre o retrato com as 3 camadas;
+    - peça grátis veste na hora;
+    - peça nova aparece no retrato e a compra pergunta, com Cancelar selecionado; cancelar volta o retrato.
+  - **Defeitos inseridos de propósito: 29 de 29 pegos (3 só depois de reforçar um teste).**
+  - **Foto conferida:** a janela do avatar com a boina sendo provada e a pergunta de compra.
+  - **Cena principal: PASSOU**, zero erros.
 - **Terraço: 646 testes automatizados PASSARAM.**
   - **Regra:**
     - a configuração é válida;

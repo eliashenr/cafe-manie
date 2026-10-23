@@ -48,4 +48,5 @@ enum {
 	NOT_DIRTY,          ## não há mancha nesse piso (DT-068)
 	TERRACE_LOCKED,     ## nível insuficiente para o terraço (DT-069)
 	ALREADY_BUILT,      ## o terraço já foi construído
+	AVATAR_LOCKED,      ## nível insuficiente para a peça do avatar (DT-070)
 }

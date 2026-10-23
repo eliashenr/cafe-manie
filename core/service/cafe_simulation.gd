@@ -99,6 +99,7 @@ const STAGE_PATH := "res://data/config/stage.tres"
 const DOORS_DIR := "res://data/doors"
 const DIRT_PATH := "res://data/config/dirt.tres"
 const TERRACE_PATH := "res://data/config/terrace.tres"
+const AVATAR_DIR := "res://data/avatar"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -132,6 +133,9 @@ var dirt_config: DirtConfig
 var _dirt_wait := 0.0
 ## Terraço ao ar livre (DT-069); se está construído fica no estilo (style.terrace).
 var terrace_config: TerraceConfig
+## Avatar do chef (DT-070): as peças que existem e as que o jogador tem e veste.
+var avatar_parts: DefinitionStore
+var avatar := ChefAvatar.new()
 ## Atrações e palco (DT-066): o ouro guardado nas atrações, o show e o tempo até o próximo.
 var attractions: Attractions
 var stage_config: StageConfig
@@ -253,6 +257,15 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	dirt = FloorDirt.new(layout)
 	dirt_config = load(DIRT_PATH)
 	terrace_config = load(TERRACE_PATH)
+	avatar_parts = DefinitionStore.new(func(a: AvatarPartDefinition, b: AvatarPartDefinition) -> bool:
+		if a.price != b.price:
+			return a.price < b.price
+		return String(a.id) < String(b.id))
+	avatar_parts.load_dir(AVATAR_DIR, AvatarPartDefinition)
+	for part: AvatarPartDefinition in avatar_parts.all():
+		if part.is_default:
+			avatar.own(part.id)
+			avatar.equip(part)
 	_was_night = is_night()
 	var event_store := DefinitionStore.new(func(a: EventDefinition, b: EventDefinition) -> bool: return String(a.id) < String(b.id))
 	event_store.load_dir(EVENTS_DIR, EventDefinition)
@@ -608,6 +621,48 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Avatar do chef (DT-070) ------------------------------------------------------
+
+## Peças de uma parte do corpo, da mais barata para a mais cara.
+func avatar_parts_for(slot: AvatarPartDefinition.Slot) -> Array[AvatarPartDefinition]:
+	var parts: Array[AvatarPartDefinition] = []
+	for part: AvatarPartDefinition in avatar_parts.all():
+		if part.slot == slot:
+			parts.append(part)
+	return parts
+
+
+## A peça inicial (grátis) da parte do corpo, ou null.
+func default_avatar_part(slot: AvatarPartDefinition.Slot) -> AvatarPartDefinition:
+	for part in avatar_parts_for(slot):
+		if part.is_default:
+			return part
+	return null
+
+
+## A peça vestida na parte do corpo (a inicial, se a vestida não existe mais).
+func avatar_part(slot: AvatarPartDefinition.Slot) -> AvatarPartDefinition:
+	var part := avatar_parts.get_definition(avatar.equipped(slot)) as AvatarPartDefinition
+	return part if part != null and part.slot == slot else default_avatar_part(slot)
+
+
+## Veste a peça: a que já é do jogador troca de graça; a nova é comprada (nível e ouro).
+func use_avatar_part(part_id: StringName) -> int:
+	var part := avatar_parts.get_definition(part_id) as AvatarPartDefinition
+	if part == null:
+		return ServiceResult.UNKNOWN_ITEM
+	if not avatar.owns(part_id):
+		if part.min_level > progression.level:
+			return ServiceResult.AVATAR_LOCKED
+		if not wallet.can_afford(Wallet.SOFT, part.price):
+			return ServiceResult.NOT_ENOUGH_GOLD
+		if part.price > 0:
+			wallet.spend(Wallet.SOFT, part.price, "Avatar: %s" % part.display_name)
+		avatar.own(part_id)
+	avatar.equip(part)
+	return ServiceResult.OK
 
 
 # --- Terraço (DT-069) ----------------------------------------------------------

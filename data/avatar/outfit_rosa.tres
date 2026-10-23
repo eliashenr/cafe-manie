@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AvatarPartDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/avatar_part_definition.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+id = &"outfit_rosa"
+display_name = "Dólmã rosa"
+slot = 3
+art = "rosa"
+is_default = false
+price = 500
+min_level = 7

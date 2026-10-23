@@ -4,6 +4,35 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-070 — Avatar do chef
+
+**Problema:**
+- O relatório propõe o avatar do chef, com roupa, cabelo e chapéu comprados com ouro (proposta 3.9).
+
+**Decisão:**
+- **Peças:** 21 peças (`AvatarPartDefinition`, em `data/avatar`), em 4 partes do corpo:
+  - **4 tons de pele**, todos grátis;
+  - **6 cabelos**, de 0 a 800 de ouro;
+  - **5 chapéus**: toque, toque alto, bandana, boina e coroa (nível 20);
+  - **6 dólmãs**: branco, vermelho, azul, preto, rosa e dourado (nível 20).
+- **Regras:**
+  - cada parte tem uma peça inicial, grátis e já vestida;
+  - peça grátis ou já comprada veste na hora;
+  - peça nova se compra uma vez (nível e ouro), e depois trocar é grátis.
+- **Retrato em camadas:**
+  - roupa embaixo, a cabeça (pele e cabelo juntos, 24 combinações) no meio e o chapéu em cima;
+  - as camadas se encaixam pela âncora de cada uma, mesmo depois de a arte ser recortada.
+- **Janela "Avatar do Chef":**
+  - abre pelo botão **Chef** da faixa de baixo;
+  - tem abas Pele, Cabelo, Chapéu e Roupa;
+  - tocar numa peça nova a **prova no retrato**, e a compra pede confirmação ali mesmo, com Cancelar já selecionado.
+- **Save:**
+  - guarda as peças compradas e as vestidas (versão 20);
+  - peça vestida que não existe, não foi comprada ou é de outra parte do corpo volta para a inicial.
+- **Com isso, o item 9 do relatório está completo.**
+
+---
+
 ## DT-069 — Terraço ao ar livre (versão simplificada)
 
 **Problema:**

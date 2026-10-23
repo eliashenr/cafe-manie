@@ -6100,6 +6100,12 @@
     46.0
    ]
   },
+  "icone_chef": {
+   "anchor": [
+    58.0,
+    54.0
+   ]
+  },
   "botao_zoom_in": {
    "anchor": [
     60.0,
@@ -6254,6 +6260,216 @@
    "anchor": [
     82.0,
     186.0
+   ]
+  },
+  "avatar_cabeca_clara_curto_castanho": {
+   "anchor": [
+    50.0,
+    54.0
+   ]
+  },
+  "avatar_cabeca_clara_rabo_preto": {
+   "anchor": [
+    50.0,
+    48.0
+   ]
+  },
+  "avatar_cabeca_clara_chanel_ruivo": {
+   "anchor": [
+    52.0,
+    52.0
+   ]
+  },
+  "avatar_cabeca_clara_coque_loiro": {
+   "anchor": [
+    50.0,
+    78.0
+   ]
+  },
+  "avatar_cabeca_clara_topete_azul": {
+   "anchor": [
+    50.0,
+    74.0
+   ]
+  },
+  "avatar_cabeca_clara_longo_rosa": {
+   "anchor": [
+    51.0,
+    48.0
+   ]
+  },
+  "avatar_cabeca_morena_clara_curto_castanho": {
+   "anchor": [
+    50.0,
+    54.0
+   ]
+  },
+  "avatar_cabeca_morena_clara_rabo_preto": {
+   "anchor": [
+    50.0,
+    48.0
+   ]
+  },
+  "avatar_cabeca_morena_clara_chanel_ruivo": {
+   "anchor": [
+    52.0,
+    52.0
+   ]
+  },
+  "avatar_cabeca_morena_clara_coque_loiro": {
+   "anchor": [
+    50.0,
+    78.0
+   ]
+  },
+  "avatar_cabeca_morena_clara_topete_azul": {
+   "anchor": [
+    50.0,
+    74.0
+   ]
+  },
+  "avatar_cabeca_morena_clara_longo_rosa": {
+   "anchor": [
+    51.0,
+    48.0
+   ]
+  },
+  "avatar_cabeca_parda_curto_castanho": {
+   "anchor": [
+    50.0,
+    54.0
+   ]
+  },
+  "avatar_cabeca_parda_rabo_preto": {
+   "anchor": [
+    50.0,
+    48.0
+   ]
+  },
+  "avatar_cabeca_parda_chanel_ruivo": {
+   "anchor": [
+    52.0,
+    52.0
+   ]
+  },
+  "avatar_cabeca_parda_coque_loiro": {
+   "anchor": [
+    50.0,
+    78.0
+   ]
+  },
+  "avatar_cabeca_parda_topete_azul": {
+   "anchor": [
+    50.0,
+    74.0
+   ]
+  },
+  "avatar_cabeca_parda_longo_rosa": {
+   "anchor": [
+    51.0,
+    48.0
+   ]
+  },
+  "avatar_cabeca_negra_curto_castanho": {
+   "anchor": [
+    50.0,
+    54.0
+   ]
+  },
+  "avatar_cabeca_negra_rabo_preto": {
+   "anchor": [
+    50.0,
+    48.0
+   ]
+  },
+  "avatar_cabeca_negra_chanel_ruivo": {
+   "anchor": [
+    52.0,
+    52.0
+   ]
+  },
+  "avatar_cabeca_negra_coque_loiro": {
+   "anchor": [
+    50.0,
+    78.0
+   ]
+  },
+  "avatar_cabeca_negra_topete_azul": {
+   "anchor": [
+    50.0,
+    74.0
+   ]
+  },
+  "avatar_cabeca_negra_longo_rosa": {
+   "anchor": [
+    51.0,
+    48.0
+   ]
+  },
+  "avatar_chapeu_toque": {
+   "anchor": [
+    43.0,
+    86.0
+   ]
+  },
+  "avatar_chapeu_toque_alto": {
+   "anchor": [
+    43.0,
+    120.0
+   ]
+  },
+  "avatar_chapeu_boina": {
+   "anchor": [
+    51.0,
+    71.0
+   ]
+  },
+  "avatar_chapeu_bandana": {
+   "anchor": [
+    44.0,
+    22.0
+   ]
+  },
+  "avatar_chapeu_coroa": {
+   "anchor": [
+    46.0,
+    73.0
+   ]
+  },
+  "avatar_roupa_branca": {
+   "anchor": [
+    102.0,
+    -42.0
+   ]
+  },
+  "avatar_roupa_preta": {
+   "anchor": [
+    102.0,
+    -42.0
+   ]
+  },
+  "avatar_roupa_vermelha": {
+   "anchor": [
+    102.0,
+    -42.0
+   ]
+  },
+  "avatar_roupa_azul": {
+   "anchor": [
+    102.0,
+    -42.0
+   ]
+  },
+  "avatar_roupa_rosa": {
+   "anchor": [
+    102.0,
+    -42.0
+   ]
+  },
+  "avatar_roupa_dourada": {
+   "anchor": [
+    102.0,
+    -42.0
    ]
   },
   "fita_missoes": {

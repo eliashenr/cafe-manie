@@ -80,6 +80,7 @@ var _event_button: Button
 var _event_badge: Control
 var _event_days: Label
 var _event_dialog: EventDialog
+var _avatar_dialog: AvatarDialog
 var _coupon_label: Label
 var _energy_label: Label
 var _energy_next: Label
@@ -578,6 +579,8 @@ func _build_dialogs() -> void:
 	_build_achievements_dialog()
 	_event_dialog = EventDialog.new()
 	_add_dialog(_event_dialog)
+	_avatar_dialog = AvatarDialog.new()
+	_add_dialog(_avatar_dialog)
 	_missions_dialog = MissionsPanel.new()
 	_add_dialog(_missions_dialog)
 	_build_coin_dialogs()
@@ -873,6 +876,18 @@ func missions_dialog() -> MissionsPanel:
 
 ## Abre a janela das missões (diárias, semanais e as do começo) e volta a mostrar o cartão do tutorial.
 ## Com outra janela aberta, não abre (uma pergunta por vez).
+func avatar_dialog() -> AvatarDialog:
+	return _avatar_dialog
+
+
+## Abre o avatar do chef (DT-070), se nenhuma outra janela estiver aberta.
+func show_avatar() -> void:
+	for dialog: Window in find_children("*", "Window", true, false):
+		if dialog.visible and dialog != _avatar_dialog:
+			return
+	_avatar_dialog.show_for(simulation)
+
+
 func show_missions() -> void:
 	_mission_collapsed = false
 	_refresh_mission()

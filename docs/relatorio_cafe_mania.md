@@ -248,7 +248,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 6. **Feito em 22/10:** crítico com cupons (DT-061), loja de troca (DT-062) e o evento de Halloween com prazo, historinha e fogão de evento (3.17 e 3.10, DT-063).
 7. **Feito em 22/10:** noite no café, com luminárias e o cardápio noturno do Fogão Lua Cheia (3.12, DT-064).
 8. **Feito em 22/10:** plantação e frozen yogurt (3.14, DT-065), atrações e palco (3.7 e 3.16, DT-066).
-9. **Em andamento (23/10):** portas e coleções completas (DT-067), chão sujo (DT-068) e terraço simplificado (DT-069) feitos (3.8); depois, avatar (3.9).
+9. **Feito em 23/10:** portas e coleções completas (DT-067), chão sujo (DT-068) e terraço simplificado (DT-069), da 3.8, e o avatar do chef (3.9, DT-070).
 10. **Bem depois:** delivery, filial na praia e 2º andar (3.18), e o social com servidor (3.9).
 
 ## 5. Cuidados

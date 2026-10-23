@@ -223,6 +223,19 @@ func _set_panel() -> void:
 			_cafe.hud.show_coin_shop(true)
 		"pausa":
 			_cafe.set_paused(true)
+		"avatar":
+			_keep_window = "AvatarDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			var sim = _cafe.simulation
+			sim.progression.add_xp(9000)  # nível 16
+			sim.wallet.earn(&"soft_currency", 5000, "vitrine")
+			for part in [&"skin_morena_clara", &"hair_coque_loiro", &"outfit_vermelha"]:
+				sim.use_avatar_part(part)
+			_cafe.hud.show_avatar()
+			var dialog = _cafe.hud.avatar_dialog()
+			dialog.show_slot(2)  # chapéus
+			dialog.choose(&"hat_boina")  # provando a boina, com a pergunta de compra
 		"portas":
 			_cafe.build_bar.open_shop(_cafe.build_bar.ShopTab.WALL)
 			_cafe.build_bar.show_shop_collection(&"japones")

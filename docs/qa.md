@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 646 testes
+## Cobertura atual — 658 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -25,6 +25,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
 | `unit/test_progression.gd` | 9 | curva de níveis até o **30**, cada nível pedindo mais XP; ouro só do 11 em diante; subir vários níveis de uma vez, nível máximo |
+| `unit/test_avatar.gd` | 8 | **avatar do chef:** peças válidas com uma inicial grátis por parte; chef novo com as iniciais; comprar uma vez e trocar de graça; peça grátis; recusas sem cobrar; save; save adulterado volta para as iniciais; peça vestida inválida mostra a inicial |
 | `unit/test_terrace.gd` | 6 | **terraço:** configuração; nível, ouro, cobra uma vez e não constrói duas; fileira da frente que acompanha a expansão; paga mais de dia, normal lá dentro e à noite; beleza; save |
 | `unit/test_dirt.gd` | 7 | **chão sujo:** configuração; mancha do lado da cadeira (e sem chance, nenhuma); limite e só em piso livre; móvel cobre a mancha; limpar dá ouro e XP; chão sujo tira popularidade, limpo e fechado não; save |
 | `unit/test_doors.gd` | 7 | **portas e coleções completas:** uma porta por coleção, a inicial grátis; toda coleção com fogão, balcão e janela; começa com a clássica; comprar uma vez e trocar de graça; recusas sem cobrar; beleza; save (e porta sem compra volta para a clássica) |
@@ -59,6 +60,7 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_achievements.gd` | 10 | conquista Mestre até o nível 30; dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
+| `integration/test_avatar_scene.gd` | 4 | arte de todas as camadas e do botão; o botão Chef abre o retrato; peça grátis veste na hora; provar, cancelar e comprar com confirmação |
 | `integration/test_terrace_scene.gd` | 4 | arte do deque e da cerca; cartão bloqueado; construir com confirmação desenha o deque e a cerca na borda de baixo; o deque acompanha a expansão |
 | `integration/test_dirt_scene.gd` | 2 | mancha no piso com a arte e o aviso; o toque limpa com o ouro subindo |
 | `integration/test_doors_scene.gd` | 4 | arte de toda porta aberta e fechada; estados na loja; comprar com confirmação e a fachada desenha; voltar para a já comprada é na hora |
@@ -115,6 +117,7 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Avatar do chef (29 de 29 pegos (3 só depois de reforçar um teste)):** peça sem trava de nível, peça sem checar ouro, comprar peça não cobra, peça comprada não fica do jogador, peça desconhecida aceita, chef novo sem peças, peça vestida inválida não volta, peça de outra parte do corpo vale, peças de todas as partes juntas, veste peça não comprada, save sem as peças vestidas, save sem as peças compradas, save não lê as vestidas, save perde as iniciais, save aceita peça não comprada, save aceita peça de outra parte, save sem aviso de peça, migração sem o avatar, peça sem arte é válida, peça com preço negativo é válida, botão Chef não abre, retrato sem a camada da roupa, peça grátis pede compra, peça nova compra sem perguntar, provar não mostra no retrato, sem foco no Cancelar, cancelar não volta, comprar sem aviso, peça bloqueada tocável.
 - **Terraço (28 de 28 pegos (1 só depois de reforçar um teste)):** terraço sem trava de nível, terraço sem checar ouro, terraço não cobra, terraço constrói duas vezes, terraço não fica construído, terraço na fileira errada, terraço sem terraço tem pisos, is_terrace na fileira errada, is_terrace fora do café, is_terrace sem terraço, terraço não paga mais, terraço paga mais à noite, todo mundo paga como no terraço, terraço sem beleza, save sem o terraço, save não lê o terraço, config com preço negativo é válida, config sem nome é válida, deque não aparece, estilo não passa o terraço ao piso, expansão não move o deque, sem cerca, cerca dos dois lados, loja sem terraço, terraço sem perguntar, terraço bloqueado tocável, terraço construído tocável, terraço sem aviso.
 - **Chão sujo (27 de 27 pegos (1 só depois de reforçar um teste)):** ninguém suja o chão, suja mesmo sem chance, sem limite de manchas, mancha longe da cadeira, limpar não dá ouro, limpar não dá XP, limpar o limpo dá ouro, limpar sem sinal, chão sujo não tira popularidade, perda não depende das manchas, perde popularidade fechado, chão limpo tira popularidade, perde a cada passo, o tempo de chão sujo não corre, mancha em cima de móvel, mancha fora do café, suja duas vezes a mesma, móvel não cobre a mancha, save sem as manchas, save não lê as manchas, migração sem o chão, config sem limite é válida, config com intervalo zero é válida, manchas não aparecem no piso, toque não limpa, limpar sem o ouro subindo, sem aviso da mancha.
 - **Portas e coleções completas (22 de 22 pegos (3 só depois de reforçar um teste)):** comprar porta não cobra, porta sem trava de nível, porta sem checar ouro, porta comprada não fica do jogador, porta desconhecida aceita, porta não soma beleza, café novo sem porta, porta inválida não volta para a inicial, set_door aceita porta não comprada, save sem a porta, save não lê a porta, save aceita porta não comprada, porta sem id é válida, porta com preço negativo é válida, fachada ignora a porta escolhida, estilo não passa a porta para a fachada, loja sem portas, comprar porta sem perguntar, porta comprada pergunta de novo, porta bloqueada tocável, porta na entrada tocável, compra de porta sem aviso.
@@ -168,6 +171,15 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Avatar do chef (23/10)
+
+1. [ ] Toque em **Chef** na faixa de baixo: abre a janela com o retrato do chef (dólmã branco, cabelo curto e toque).
+2. [ ] Na aba Pele, toque em outro tom: o retrato muda na hora, sem cobrar.
+3. [ ] Na aba Chapéu, toque na Boina: ela aparece no retrato, e embaixo aparece "Comprar Boina francesa por 400 ouro?", com Cancelar selecionado.
+4. [ ] Toque em Cancelar: o retrato volta ao toque. Toque de novo na Boina e em Comprar: o ouro diminui e a boina fica.
+5. [ ] Volte para o Toque de chef e depois para a Boina: as trocas são grátis.
+6. [ ] Feche e abra o jogo: o chef continua com o mesmo visual.
 
 ## Roteiro de teste manual — Terraço (23/10)
 

@@ -618,6 +618,16 @@ def export_ui(sheet, manifest):
         sheet.add(f"medalhao_{name}", draw(D), (-4.0, -4.0, 74.0, 76.0), (32.0, 32.0))
     # retrato de quem conta a historinha do evento (DT-063)
     sheet.add("retrato_bruxa", halloween3.witch_portrait(D), (-70.0, -110.0, 140.0, 170.0), (0.0, 0.0))
+    # avatar do chef (DT-070): as camadas na mesma caixa do retrato
+    import avatar3
+    portrait_box = (-70.0, -110.0, 140.0, 170.0)
+    for skin in avatar3.SKINS:
+        for hair in avatar3.HAIRS:
+            sheet.add(f"avatar_cabeca_{skin}_{hair}", avatar3.head_layer(D, skin, hair), portrait_box, (0.0, 0.0))
+    for hat in avatar3.HATS:
+        sheet.add(f"avatar_chapeu_{hat}", avatar3.hat_layer(D, hat), portrait_box, (0.0, 0.0))
+    for outfit in avatar3.OUTFITS:
+        sheet.add(f"avatar_roupa_{outfit}", avatar3.outfit_layer(D, outfit), portrait_box, (0.0, 0.0))
     for name, (width, color) in ui3.RIBBONS.items():
         sheet.add(f"fita_{name}", ui3.ribbon_band(D, width, color), (-width / 2 - 10, -2.0, width + 20, 26.0), (0.0, 0.0))
     for name, (light, dark) in ui3.STRIPES.items():

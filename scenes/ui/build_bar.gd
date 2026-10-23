@@ -70,6 +70,7 @@ const SERVICE_MESSAGES := {
 	ServiceResult.DOOR_LOCKED: "Essa porta ainda não está liberada no seu nível",
 	ServiceResult.TERRACE_LOCKED: "O terraço ainda não está liberado no seu nível",
 	ServiceResult.ALREADY_BUILT: "O terraço já está pronto",
+	ServiceResult.AVATAR_LOCKED: "Essa peça do avatar ainda não está liberada no seu nível",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -499,6 +500,7 @@ func _show_icon_bar() -> void:
 	_add_icon(_buttons, "RenovateButton", "rolo", "Reformar", func() -> void: open_shop(ShopTab.FLOOR))
 	_add_expand_button()
 	_add_hire_button()
+	_add_icon(_buttons, "ChefBarButton", "chef", "Chef", func() -> void: cafe.hud.show_avatar())
 	_add_icon(_buttons, "MissionsBarButton", "prancheta", "Missões", func() -> void: cafe.hud.show_missions())
 	_add_icon(_buttons, "GiftsBarButton", "presente", "Presentes", func() -> void: cafe.hud.daily_requested.emit())
 	_add_icon(_buttons, "AchievementsBarButton", "trofeu", "Conquistas", func() -> void: cafe.hud.show_achievements())

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AvatarPartDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/avatar_part_definition.gd" id="1_part"]
+
+[resource]
+script = ExtResource("1_part")
+id = &"hair_chanel_ruivo"
+display_name = "Chanel ruivo"
+slot = 1
+art = "chanel_ruivo"
+is_default = false
+price = 300
+min_level = 3

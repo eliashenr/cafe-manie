@@ -331,6 +331,7 @@ func _watch_for_changes() -> void:
 	simulation.popularity_changed.connect(_mark_dirty.unbind(1))
 	simulation.inventory.changed.connect(_mark_dirty)
 	simulation.style.changed.connect(_mark_dirty)
+	simulation.avatar.changed.connect(_mark_dirty)
 	simulation.missions.progress_changed.connect(_mark_dirty)
 	simulation.stats.changed.connect(_mark_dirty.unbind(2))
 	simulation.daily.changed.connect(_mark_dirty)
