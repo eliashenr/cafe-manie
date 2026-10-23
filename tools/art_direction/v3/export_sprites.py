@@ -624,6 +624,11 @@ def export_ui(sheet, manifest):
     sheet.add("retrato_bruxa", halloween3.witch_portrait(D), (-70.0, -110.0, 140.0, 170.0), (0.0, 0.0))
     # filial na praia (DT-072): a ilustração da janela da cidade
     sheet.add("filial_praia", ui3.branch3.beach_cafe(D), (-3.0, -3.0, ui3.branch3.W + 6.0, ui3.branch3.H + 6.0), (0.0, 0.0))
+    # vizinhos simulados (DT-074): o retrato de cada personagem da faixa de vizinhos
+    import hud3
+    for neighbor_name, _level, spec, _bg in hud3.NEIGHBORS:
+        slug = neighbor_name.lower().replace("ó", "o").replace(" ", "_")
+        sheet.add(f"vizinho_{slug}", hud3.portrait(D, spec), (-70.0, -110.0, 140.0, 170.0), (0.0, 0.0))
     # avatar do chef (DT-070): as camadas na mesma caixa do retrato
     import avatar3
     portrait_box = (-70.0, -110.0, 140.0, 170.0)

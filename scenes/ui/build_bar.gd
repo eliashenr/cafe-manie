@@ -78,6 +78,7 @@ const SERVICE_MESSAGES := {
 	ServiceResult.BRANCH_LOCKED: "A filial na praia ainda não está liberada no seu nível",
 	ServiceResult.BRANCH_CLOSED: "Abra a filial na praia primeiro",
 	ServiceResult.NO_MORE_UPGRADES: "A filial já está no nível máximo",
+	ServiceResult.ALREADY_VISITED: "Você já ajudou esse vizinho hoje: volte amanhã",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",

@@ -388,6 +388,8 @@ func _connect_sounds() -> void:
 	simulation.terrace_built.connect(play.bind(&"achievement"))
 	simulation.delivery_sent.connect(play.bind(&"coin").unbind(1))
 	simulation.branch_collected.connect(play.bind(&"coin").unbind(1))
+	simulation.neighbor_visited.connect(play.bind(&"coin").unbind(2))
+	simulation.neighbor_visits.changed.connect(_mark_dirty)
 	simulation.branch.changed.connect(_mark_dirty)
 	simulation.show_started.connect(play.bind(&"level_up"))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))

@@ -230,6 +230,16 @@ func _set_panel() -> void:
 			_cafe.hud.show_coin_shop(true)
 		"pausa":
 			_cafe.set_paused(true)
+		"vizinhos":
+			_keep_window = "CityDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			var sim = _cafe.simulation
+			sim.visit_neighbor(&"beto")  # um já visitado hoje
+			for day in 2:
+				sim.neighbor_visits.record(&"lia", -10 - day, sim.neighbors_config.max_friendship)  # amizade de outros dias
+			_cafe.hud.show_city()
+			_cafe.hud.city_dialog().show_tab(&"neighbors")
 		"cidade":
 			_keep_window = "CityDialog"
 			for window: Window in _cafe.find_children("*", "Window", true, false):

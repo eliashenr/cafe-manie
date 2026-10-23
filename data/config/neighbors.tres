@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NeighborsConfig" format=3]
+
+[ext_resource type="Script" path="res://core/service/neighbors_config.gd" id="1_neighbors"]
+
+[resource]
+script = ExtResource("1_neighbors")
+visit_gold = 40
+visit_gold_per_level = 4
+visit_xp = 10
+max_friendship = 5
+gold_per_friendship = 0.1

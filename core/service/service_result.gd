@@ -54,4 +54,5 @@ enum {
 	BRANCH_LOCKED,      ## nível insuficiente para abrir a filial (DT-072)
 	BRANCH_CLOSED,      ## a filial ainda não foi aberta
 	NO_MORE_UPGRADES,   ## a filial já está no nível máximo
+	ALREADY_VISITED,    ## esse vizinho já foi visitado hoje (DT-074)
 }

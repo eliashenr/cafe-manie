@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="NeighborDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/service/neighbor_definition.gd" id="1_neighbor"]
+
+[resource]
+script = ExtResource("1_neighbor")
+id = &"beto"
+display_name = "Beto"
+cafe_name = "Lanchonete do Beto"
+help_text = "temperou os pratos"
+art = "beto"
+level = 18

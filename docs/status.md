@@ -4,6 +4,12 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 10 do relatório, etapa 4: vizinhos simulados** (DT-074). **Com ela, o item 10 está completo** (o 2º andar ficou planejado).
+
+- Na janela da **Cidade**, nova aba **Vizinhos**: Ana, Beto, Duda, Caio, Lia, Rafa e Vó Cida, cada um com o seu café.
+- **Uma vez por dia**, ajude cada vizinho: ganha ouro e XP, e o aviso conta o que você fez (por exemplo, "temperou os pratos").
+- Cada visita aumenta a **amizade** (até 5), e amizade maior dá mais ouro.
+
 **Item 10 do relatório, etapa 3: 2º andar** (DT-073) — **planejado, não feito**
 
 - Ele mexe em quase todos os sistemas do jogo de uma vez (navegação, paredes, móveis, expansões e save).
@@ -419,6 +425,20 @@
 
 🧪 **TESTADO**
 
+- **Vizinhos simulados: 685 testes automatizados PASSARAM.**
+  - **Regra:**
+    - os 7 vizinhos e a configuração são válidos;
+    - visitar dá ouro e XP uma vez por dia, e os outros vizinhos continuam livres;
+    - a amizade cresce a cada dia até o máximo e aumenta o ouro;
+    - café de nível maior dá visita mais rica;
+    - o save guarda as visitas.
+  - **Na tela:**
+    - todo vizinho tem retrato;
+    - a aba Vizinhos mostra um cartão para cada um;
+    - ajudar faz o ouro subir, mostra o aviso e apaga o botão até amanhã.
+  - **Defeitos inseridos de propósito: 22 de 22 pegos.**
+  - **Foto conferida:** a aba Vizinhos com os 7 cartões.
+  - **Cena principal: PASSOU**, zero erros.
 - **Filial na praia: 678 testes automatizados PASSARAM.**
   - **Regra:**
     - a configuração é válida;

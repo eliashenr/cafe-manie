@@ -110,7 +110,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **1. Delivery** (DT-071): o Balcão de Entregas recebe pedidos de porções, que pagam mais que no salão.
 - [x] **2. Filial na praia** (DT-072, versão simplificada): um segundo café que rende ouro sozinho, com 4 níveis e pratos da praia.
 - [ ] **3. 2º andar** (DT-073): planejado e documentado; fica para uma etapa só dele, quando o PO pedir.
-- [ ] **4. Vizinhos simulados:** cafés de personagens para visitar e ajudar.
+- [x] **4. Vizinhos simulados** (DT-074): 7 cafés de personagens para visitar e ajudar uma vez por dia, com amizade.
 
 ## Passe visual (18/10/2026)
 

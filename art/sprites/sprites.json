@@ -6298,6 +6298,48 @@
     2.0
    ]
   },
+  "vizinho_ana": {
+   "anchor": [
+    50.0,
+    56.0
+   ]
+  },
+  "vizinho_beto": {
+   "anchor": [
+    50.0,
+    62.0
+   ]
+  },
+  "vizinho_duda": {
+   "anchor": [
+    52.0,
+    60.0
+   ]
+  },
+  "vizinho_caio": {
+   "anchor": [
+    50.0,
+    60.0
+   ]
+  },
+  "vizinho_lia": {
+   "anchor": [
+    51.0,
+    56.0
+   ]
+  },
+  "vizinho_rafa": {
+   "anchor": [
+    50.0,
+    82.0
+   ]
+  },
+  "vizinho_vo_cida": {
+   "anchor": [
+    50.0,
+    86.0
+   ]
+  },
   "avatar_cabeca_clara_curto_castanho": {
    "anchor": [
     50.0,

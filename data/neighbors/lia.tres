@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="NeighborDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/service/neighbor_definition.gd" id="1_neighbor"]
+
+[resource]
+script = ExtResource("1_neighbor")
+id = &"lia"
+display_name = "Lia"
+cafe_name = "Bistrô da Lia"
+help_text = "regou as plantas"
+art = "lia"
+level = 30

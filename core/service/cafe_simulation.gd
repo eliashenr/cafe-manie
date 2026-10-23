@@ -37,6 +37,8 @@ signal show_started
 signal show_ended
 ## O jogador coletou o ouro de uma atração.
 signal attraction_collected(attraction_id: StringName, amount: int)
+## O jogador visitou e ajudou um vizinho: o ouro e o XP já foram entregues (DT-074).
+signal neighbor_visited(neighbor: NeighborDefinition, gold: int)
 ## O ouro da filial na praia foi coletado; o XP já foi entregue (DT-072).
 signal branch_collected(amount: int)
 ## Uma entrega saiu: o ouro e o XP já foram entregues (DT-071).
@@ -106,6 +108,8 @@ const TERRACE_PATH := "res://data/config/terrace.tres"
 const AVATAR_DIR := "res://data/avatar"
 const DELIVERY_PATH := "res://data/config/delivery.tres"
 const BRANCH_PATH := "res://data/config/branch.tres"
+const NEIGHBORS_DIR := "res://data/neighbors"
+const NEIGHBORS_PATH := "res://data/config/neighbors.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -148,6 +152,10 @@ var delivery: DeliveryBoard
 ## Filial na praia (DT-072): um segundo café que rende ouro sozinho.
 var branch_config: BranchConfig
 var branch: BeachBranch
+## Vizinhos simulados (DT-074): os personagens, a recompensa e as visitas de cada dia.
+var neighbors: DefinitionStore
+var neighbors_config: NeighborsConfig
+var neighbor_visits := NeighborVisits.new()
 ## Atrações e palco (DT-066): o ouro guardado nas atrações, o show e o tempo até o próximo.
 var attractions: Attractions
 var stage_config: StageConfig
@@ -278,6 +286,10 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	delivery = DeliveryBoard.new(delivery_config)
 	branch_config = load(BRANCH_PATH)
 	branch = BeachBranch.new(branch_config)
+	neighbors = DefinitionStore.new(func(a: NeighborDefinition, b: NeighborDefinition) -> bool:
+		return a.level < b.level or (a.level == b.level and String(a.id) < String(b.id)))
+	neighbors.load_dir(NEIGHBORS_DIR, NeighborDefinition)
+	neighbors_config = load(NEIGHBORS_PATH)
 	for part: AvatarPartDefinition in avatar_parts.all():
 		if part.is_default:
 			avatar.own(part.id)
@@ -637,6 +649,38 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Vizinhos simulados (DT-074) -------------------------------------------------
+
+## O vizinho ainda pode ser visitado hoje?
+func can_visit_neighbor(neighbor_id: StringName) -> bool:
+	return neighbors.get_definition(neighbor_id) != null and not neighbor_visits.visited_on(neighbor_id, clock.local_day())
+
+
+## Ouro da visita: o fixo, mais um tanto pelo nível do café do vizinho, mais um tanto por coração de amizade.
+func neighbor_reward(neighbor_id: StringName) -> int:
+	var neighbor := neighbors.get_definition(neighbor_id) as NeighborDefinition
+	if neighbor == null:
+		return 0
+	var base := neighbors_config.visit_gold + neighbors_config.visit_gold_per_level * neighbor.level
+	return roundi(base * (1.0 + neighbors_config.gold_per_friendship * neighbor_visits.friendship(neighbor_id)))
+
+
+## Visita o vizinho e ajuda no café dele (uma vez por dia): dá ouro e XP e soma um coração de amizade.
+func visit_neighbor(neighbor_id: StringName) -> int:
+	var neighbor := neighbors.get_definition(neighbor_id) as NeighborDefinition
+	if neighbor == null:
+		return ServiceResult.UNKNOWN_ITEM
+	if neighbor_visits.visited_on(neighbor_id, clock.local_day()):
+		return ServiceResult.ALREADY_VISITED
+	var gold := neighbor_reward(neighbor_id)
+	neighbor_visits.record(neighbor_id, clock.local_day(), neighbors_config.max_friendship)
+	wallet.earn(Wallet.SOFT, gold, "Visita: %s" % neighbor.display_name)
+	_record(MissionDefinition.Kind.EARN_GOLD, gold)
+	progression.add_xp(neighbors_config.visit_xp)
+	neighbor_visited.emit(neighbor, gold)
+	return ServiceResult.OK
 
 
 # --- Filial na praia (DT-072) ------------------------------------------------------

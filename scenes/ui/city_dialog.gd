@@ -1,15 +1,25 @@
 class_name CityDialog
 extends AcceptDialog
-## Pela cidade (DT-072): o que fica fora da cafeteria. A filial na praia: abrir, coletar o ouro que ela juntou e
-## melhorar. As compras pedem confirmação ali mesmo, com Cancelar já selecionado.
+## Pela cidade (DT-072 e DT-074): o que fica fora da cafeteria, em duas abas.
+## - Filial na praia: abrir, coletar o ouro que ela juntou e melhorar; as compras pedem confirmação ali mesmo, com
+##   Cancelar já selecionado.
+## - Vizinhos: um cartão por vizinho, com o retrato, a amizade e o botão de ajudar (uma vez por dia).
 
 const ART_SIZE := Vector2(300, 196)
 const TEXT_WIDTH := 380.0
+const TAB_NAMES := {&"branch": "Filial na praia", &"neighbors": "Vizinhos"}
+const NEIGHBOR_COLUMNS := 4
+const NEIGHBOR_PORTRAIT := Vector2(82, 86)
 
 var simulation: CafeSimulation
+## Aba na tela: &"branch" ou &"neighbors".
+var tab: StringName = &"branch"
 ## Compra esperando confirmação: &"open" (abrir a filial), &"upgrade" (melhorar) ou &"" (nenhuma).
 var pending: StringName = &""
 
+var _tabs: HBoxContainer
+var _branch_panel: HBoxContainer
+var _neighbors: GridContainer
 var _art: TextureRect
 var _heading: Label
 var _info: Label
@@ -26,9 +36,30 @@ func _init() -> void:
 	name = "CityDialog"
 	title = "Pela cidade"
 	ok_button_text = "Fechar"
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 10)
+	add_child(root)
+	_tabs = HBoxContainer.new()
+	root.add_child(_tabs)
+	for tab_id: StringName in TAB_NAMES:
+		var tab_button := Button.new()
+		tab_button.name = "CityTab_" + String(tab_id)
+		tab_button.text = TAB_NAMES[tab_id]
+		tab_button.toggle_mode = true
+		tab_button.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
+		tab_button.pressed.connect(show_tab.bind(tab_id))
+		_tabs.add_child(tab_button)
 	var row := HBoxContainer.new()
+	row.name = "BranchPanel"
 	row.add_theme_constant_override("separation", 16)
-	add_child(row)
+	root.add_child(row)
+	_branch_panel = row
+	_neighbors = GridContainer.new()
+	_neighbors.name = "NeighborsPanel"
+	_neighbors.columns = NEIGHBOR_COLUMNS
+	_neighbors.add_theme_constant_override("h_separation", 10)
+	_neighbors.add_theme_constant_override("v_separation", 10)
+	root.add_child(_neighbors)
 	_art = TextureRect.new()
 	_art.custom_minimum_size = ART_SIZE
 	_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -68,6 +99,30 @@ func show_for(new_simulation: CafeSimulation) -> void:
 	_refresh()
 	popup_centered()
 	get_ok_button().grab_focus()
+
+
+func show_tab(tab_id: StringName) -> void:
+	tab = tab_id
+	pending = &""
+	_refresh()
+
+
+## Visita o vizinho e ajuda no café dele: o aviso conta o que o jogador fez e quanto ganhou.
+func visit(neighbor_id: StringName) -> void:
+	var neighbor: NeighborDefinition = simulation.neighbors.get_definition(neighbor_id)
+	var gold := simulation.neighbor_reward(neighbor_id)
+	var result := simulation.visit_neighbor(neighbor_id)
+	if result == ServiceResult.OK:
+		EventBus.message_posted.emit("Você %s no %s: +%s ouro, +%d XP" % [neighbor.help_text, neighbor.cafe_name,
+			UiTheme.thousands(gold), simulation.neighbors_config.visit_xp])
+	else:
+		EventBus.message_posted.emit(BuildBar.SERVICE_MESSAGES.get(result, "Não deu certo"))
+	_refresh()
+
+
+## Botão de ajudar de um vizinho (para os testes).
+func neighbor_button(neighbor_id: StringName) -> Button:
+	return _neighbors.find_child("Visit_" + String(neighbor_id), true, false) as Button
 
 
 func _process(_delta: float) -> void:
@@ -131,6 +186,11 @@ func confirm_text() -> String:
 func _refresh() -> void:
 	if simulation == null:
 		return
+	for tab_button: Button in _tabs.get_children():
+		tab_button.button_pressed = tab_button.name == "CityTab_" + String(tab)
+	_branch_panel.visible = tab == &"branch"
+	_neighbors.visible = tab == &"neighbors"
+	_refresh_neighbors()
 	var config := simulation.branch_config
 	var branch := simulation.branch
 	var locked := config.unlock_level > simulation.progression.level
@@ -166,6 +226,43 @@ func _refresh_numbers() -> void:
 	var gold := simulation.branch.gold_ready(simulation.clock.now())
 	_collect.text = "Coletar %s ouro" % UiTheme.thousands(gold)
 	_collect.disabled = gold <= 0
+
+
+## Um cartão por vizinho: retrato, nome e nível do café, amizade e o botão de ajudar (ou "Visitado hoje").
+func _refresh_neighbors() -> void:
+	for child in _neighbors.get_children():
+		_neighbors.remove_child(child)
+		child.queue_free()
+	if tab != &"neighbors":
+		return
+	var config := simulation.neighbors_config
+	for neighbor: NeighborDefinition in simulation.neighbors.all():
+		var card := VBoxContainer.new()
+		card.name = "Neighbor_" + String(neighbor.id)
+		card.alignment = BoxContainer.ALIGNMENT_CENTER
+		var portrait := TextureRect.new()
+		portrait.custom_minimum_size = NEIGHBOR_PORTRAIT
+		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		var art := ArtSprites.get_sprite("vizinho_" + neighbor.art)
+		portrait.texture = art.texture if art != null else null
+		card.add_child(portrait)
+		var title := Label.new()
+		title.text = "%s · nível %d" % [neighbor.display_name, neighbor.level]
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		card.add_child(title)
+		var friendship := Label.new()
+		friendship.name = "Friendship"
+		friendship.text = "Amizade %d/%d" % [simulation.neighbor_visits.friendship(neighbor.id), config.max_friendship]
+		friendship.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		friendship.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
+		card.add_child(friendship)
+		var can_visit := simulation.can_visit_neighbor(neighbor.id)
+		var button := _button("Visit_" + String(neighbor.id), card, visit.bind(neighbor.id))
+		button.text = "Ajudar · +%s ouro" % UiTheme.thousands(simulation.neighbor_reward(neighbor.id)) if can_visit \
+			else "Visitado hoje"
+		button.disabled = not can_visit
+		_neighbors.add_child(card)
 
 
 func _wrapped(label_name: String, parent: Control) -> Label:

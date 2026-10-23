@@ -4,6 +4,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-074 — Vizinhos simulados
+
+**Problema:**
+- O relatório propõe vizinhos (visitar o café de amigos, ajudar, mandar presentes), mas isso precisa do servidor da Fase 6.
+- Até lá, ele sugere simular "vizinhos" com cafés de personagens do jogo, para visitar e ganhar pequenas recompensas (proposta 3.9).
+
+**Decisão:**
+- **7 vizinhos** (`NeighborDefinition`, em `data/neighbors`): Ana, Beto, Duda, Caio, Lia, Rafa e Vó Cida.
+  - São os personagens da faixa de vizinhos do desenho do HUD.
+  - Cada um tem um café com nome, um nível e uma ajuda própria (limpar as mesas, temperar os pratos, lavar a louça...).
+- **Visitar e ajudar:**
+  - uma vez por dia (pelo dia do relógio do jogador) por vizinho;
+  - dá ouro (40 mais 4 por nível do café dele) e 10 de XP;
+  - o aviso conta o que o jogador fez e onde.
+- **Amizade:** cada visita soma um coração, até 5; cada coração aumenta o ouro da visita em 10%.
+- **Na tela:** aba **Vizinhos** na janela da Cidade, com um cartão por vizinho (retrato, nível, amizade e o botão "Ajudar" ou "Visitado hoje").
+- **Configuração e save:**
+  - os números ficam em `data/config/neighbors.tres` (`NeighborsConfig`);
+  - o save guarda o dia da última visita e a amizade de cada vizinho (versão 23).
+- **Com o servidor (Fase 6):** os vizinhos simulados podem ficar junto dos amigos de verdade.
+- **Com isso, o item 10 do relatório está completo** (o 2º andar ficou planejado, DT-073).
+
+---
+
 ## DT-073 — 2º andar: planejado, ainda não feito
 
 **Problema:**
