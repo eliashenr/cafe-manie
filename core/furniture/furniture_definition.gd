@@ -37,6 +37,8 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 @export var attraction_time := 0.0
 ## Palco (DT-066): com ele na cafeteria, de tempos em tempos tem show e os clientes chegam mais rápido.
 @export var stage := false
+## Balcão de Entregas (DT-071): com ele na cafeteria, chegam pedidos de porções para mandar para casa.
+@export var delivery := false
 ## Pé de fruta (DT-065): a fruta que dá, quanto tempo leva para amadurecer e quantas frutas dá por colheita.
 @export var fruit: StringName = &""
 @export var fruit_grow_time := 0.0

@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 10 do relatório, etapa 1: delivery** (DT-071)
+
+- Novo móvel na aba **Cozinha**: o **Balcão de Entregas** (nível 8).
+- Com ele no café, chegam **pedidos de entrega**: até 3 de cada vez, um novo a cada 30 minutos, até com o jogo fechado.
+- **Toque no Balcão de Entregas:** a barra mostra os pedidos.
+  - O botão fica aceso quando há porções suficientes nos balcões.
+  - Mandar paga **50% a mais** que vender no salão, e dá XP.
+
 **Item 9 do relatório, etapa 4: avatar do chef** (DT-070). **Com ela, o item 9 está completo.**
 
 - Novo botão **Chef** na faixa de baixo: abre o retrato do seu chef.
@@ -399,6 +407,23 @@
 
 🧪 **TESTADO**
 
+- **Delivery: 669 testes automatizados PASSARAM.**
+  - **Regra:**
+    - a configuração e o balcão são válidos;
+    - sem o balcão não chegam pedidos, e com ele o primeiro chega na hora;
+    - chega um a cada intervalo, até o limite, também com o jogo fechado;
+    - os pedidos usam receitas liberadas e comuns, e pagam mais que o salão;
+    - mandar confere as porções, tira dos balcões e paga ouro e XP;
+    - sem o balcão, nada sai;
+    - com o quadro cheio, o próximo espera um intervalo depois da entrega;
+    - o save guarda os pedidos.
+  - **Na tela:**
+    - o balcão tem arte nas 4 rotações e fica na aba Cozinha;
+    - escolhido, a barra mostra os pedidos, apagados sem porções e acesos com elas;
+    - mandar faz o ouro subir, mostra o aviso e tira o pedido da barra.
+  - **Defeitos inseridos de propósito: 31 de 31 pegos (1 só depois de reforçar um teste; 1 equivalente: o filtro da noite era redundante e saiu do código).**
+  - **Foto conferida:** o Balcão de Entregas escolhido, com os 3 pedidos na barra e o de Coxinha aceso.
+  - **Cena principal: PASSOU**, zero erros.
 - **Avatar do chef: 658 testes automatizados PASSARAM.**
   - **Regra:**
     - as peças são válidas, com uma inicial grátis em cada parte;

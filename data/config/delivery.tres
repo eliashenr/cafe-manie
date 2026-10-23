@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DeliveryConfig" format=3]
+
+[ext_resource type="Script" path="res://core/service/delivery_config.gd" id="1_delivery"]
+
+[resource]
+script = ExtResource("1_delivery")
+max_orders = 3
+order_interval = 1800.0
+min_servings = 3
+max_servings = 8
+gold_multiplier = 1.5
+xp_per_serving = 2

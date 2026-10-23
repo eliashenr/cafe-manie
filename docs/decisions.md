@@ -4,6 +4,32 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-071 — Delivery: o Balcão de Entregas
+
+**Problema:**
+- O relatório propõe um balcão de entregas que manda porções prontas para clientes em casa, em troca de ouro (proposta 3.18).
+
+**Decisão:**
+- **Balcão de Entregas:**
+  - um móvel novo, na aba **Cozinha**;
+  - nível 8, 1.500 de ouro, só 1 por café;
+  - arte própria: balcão laranja com caixas, bolsa térmica e a plaquinha da motinho.
+- **Pedidos** (`DeliveryBoard`):
+  - com o balcão no café, chegam até **3 pedidos**;
+  - o primeiro chega na hora, e depois chega **um a cada 30 minutos**, também com o jogo fechado;
+  - com o quadro cheio, o próximo chega 30 minutos depois de uma entrega;
+  - cada pedido pede de 3 a 8 porções de uma receita já liberada, dos fogões comuns e fora do cardápio noturno.
+- **Mandar:**
+  - escolhido o Balcão de Entregas, a barra mostra **um botão por pedido**;
+  - o botão fica aceso quando há porções suficientes nos balcões;
+  - mandar tira as porções dos balcões e paga **50% a mais** que no salão, mais 2 de XP por porção;
+  - o ouro sobe do balcão, e um aviso confirma a entrega.
+- **Configuração e save:**
+  - os números ficam em `data/config/delivery.tres` (`DeliveryConfig`);
+  - o save guarda os pedidos e o horário do próximo (versão 21).
+
+---
+
 ## DT-070 — Avatar do chef
 
 **Problema:**

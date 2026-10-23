@@ -49,4 +49,6 @@ enum {
 	TERRACE_LOCKED,     ## nível insuficiente para o terraço (DT-069)
 	ALREADY_BUILT,      ## o terraço já foi construído
 	AVATAR_LOCKED,      ## nível insuficiente para a peça do avatar (DT-070)
+	NO_DELIVERY_COUNTER, ## falta o Balcão de Entregas (DT-071)
+	NOT_ENOUGH_SERVINGS, ## faltam porções nos balcões para a entrega
 }

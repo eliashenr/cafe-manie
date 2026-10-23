@@ -71,6 +71,8 @@ const SERVICE_MESSAGES := {
 	ServiceResult.TERRACE_LOCKED: "O terraço ainda não está liberado no seu nível",
 	ServiceResult.ALREADY_BUILT: "O terraço já está pronto",
 	ServiceResult.AVATAR_LOCKED: "Essa peça do avatar ainda não está liberada no seu nível",
+	ServiceResult.NO_DELIVERY_COUNTER: "Ponha um Balcão de Entregas no café para receber pedidos",
+	ServiceResult.NOT_ENOUGH_SERVINGS: "Faltam porções nos balcões para essa entrega",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -386,7 +388,7 @@ static func profile_text(definition: FurnitureDefinition) -> String:
 
 ## A aba da loja mostra este móvel? Troféus aceleram fogões (DT-057): ficam na Cozinha, não na Decoração.
 static func shows_in_tab(definition: FurnitureDefinition, tab: ShopTab) -> bool:
-	if definition.is_trophy():
+	if definition.is_trophy() or definition.delivery:
 		return tab == ShopTab.KITCHEN
 	return SHOP_TAB_CATEGORIES.has(tab) and SHOP_TAB_CATEGORIES[tab].has(definition.category)
 
@@ -477,7 +479,7 @@ func _signature() -> Array:
 	var book: StringName = _chosen_book.get(cafe.selected_id, &"") if _has_selection() else &""
 	return [cafe.mode, cafe.selected_id if _has_selection() else &"", stove_status,
 		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty(), shop_tab, shop_open,
-		shop_collection, shop_page, book, _recipe_page.get(book, 0)]
+		shop_collection, shop_page, book, _recipe_page.get(book, 0), cafe.simulation.delivery.version]
 
 
 func _refresh_in_place() -> void:
@@ -921,6 +923,9 @@ func _show_selection_controls() -> void:
 				attraction.attraction_capacity])
 	elif placement.definition.stage:
 		_message_source = func() -> String: return _with_problem(_stage_message())
+	elif placement.definition.delivery:
+		_message_source = func() -> String: return _with_problem(_delivery_message())
+		_show_delivery_controls()
 	elif placement.definition.fruit != &"":
 		_message_source = func() -> String: return _with_problem(_tree_message(id))
 	elif placement.definition.machine == FROZEN_MACHINE:
@@ -938,6 +943,28 @@ func _show_selection_controls() -> void:
 	_add_square(_buttons, "RemoveButton", "store", "Guardar", cafe.remove_selected)
 	_add_square(_buttons, "SellButton", "sell", "Vender", ask_sell_selected)
 	_add_square(_buttons, "CloseButton", "close", "Fechar", cafe.clear_selection)
+
+
+## Balcão de Entregas escolhido (DT-071): um botão por pedido, aceso quando há porções nos balcões para mandar.
+func _show_delivery_controls() -> void:
+	var simulation := cafe.simulation
+	var orders := simulation.delivery.orders
+	for i in orders.size():
+		var order := orders[i]
+		var button := _add_text_button("Delivery_%d" % i, "%s ×%d · %s ouro" % [order.recipe.display_name, order.servings,
+			UiTheme.thousands(order.gold)], func() -> void: cafe.send_delivery(i))
+		_updaters.append(func() -> void: button.disabled = simulation.kitchen.servings_of(order.recipe) < order.servings)
+
+
+func _delivery_message() -> String:
+	var simulation := cafe.simulation
+	var wait := WorldLayer.format_time(simulation.delivery.seconds_until_next(simulation.clock.now()))
+	if simulation.delivery.orders.is_empty():
+		return "Entregas: nenhum pedido agora. O próximo chega em %s" % wait
+	var text := "Entregas: mande as porções que estão nos balcões"
+	if simulation.delivery.orders.size() < simulation.delivery_config.max_orders:
+		text += "  —  próximo pedido em %s" % wait
+	return text
 
 
 ## Palco escolhido (DT-066): o show agora, ou quanto falta para o próximo.

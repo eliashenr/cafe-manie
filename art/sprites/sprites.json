@@ -1849,6 +1849,30 @@
     382.67
    ]
   },
+  "delivery_counter_r0": {
+   "anchor": [
+    127.67,
+    352.67
+   ]
+  },
+  "delivery_counter_r1": {
+   "anchor": [
+    127.67,
+    352.67
+   ]
+  },
+  "delivery_counter_r2": {
+   "anchor": [
+    127.67,
+    352.67
+   ]
+  },
+  "delivery_counter_r3": {
+   "anchor": [
+    127.67,
+    352.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -7273,6 +7297,12 @@
    "1": "stage_r0",
    "2": "stage_r0",
    "3": "stage_r0"
+  },
+  "delivery_counter": {
+   "0": "delivery_counter_r0",
+   "1": "delivery_counter_r1",
+   "2": "delivery_counter_r2",
+   "3": "delivery_counter_r3"
   },
   "dj_booth": {
    "0": "dj_booth_r0",

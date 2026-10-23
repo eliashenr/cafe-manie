@@ -37,6 +37,8 @@ signal show_started
 signal show_ended
 ## O jogador coletou o ouro de uma atração.
 signal attraction_collected(attraction_id: StringName, amount: int)
+## Uma entrega saiu: o ouro e o XP já foram entregues (DT-071).
+signal delivery_sent(order: DeliveryBoard.Order)
 ## O terraço ao ar livre ficou pronto (DT-069).
 signal terrace_built
 ## Uma mancha do chão foi limpa: o ouro e o XP já foram entregues (DT-068).
@@ -100,6 +102,7 @@ const DOORS_DIR := "res://data/doors"
 const DIRT_PATH := "res://data/config/dirt.tres"
 const TERRACE_PATH := "res://data/config/terrace.tres"
 const AVATAR_DIR := "res://data/avatar"
+const DELIVERY_PATH := "res://data/config/delivery.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -136,6 +139,9 @@ var terrace_config: TerraceConfig
 ## Avatar do chef (DT-070): as peças que existem e as que o jogador tem e veste.
 var avatar_parts: DefinitionStore
 var avatar := ChefAvatar.new()
+## Entregas (DT-071): os pedidos esperando no Balcão de Entregas.
+var delivery_config: DeliveryConfig
+var delivery: DeliveryBoard
 ## Atrações e palco (DT-066): o ouro guardado nas atrações, o show e o tempo até o próximo.
 var attractions: Attractions
 var stage_config: StageConfig
@@ -262,6 +268,8 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 			return a.price < b.price
 		return String(a.id) < String(b.id))
 	avatar_parts.load_dir(AVATAR_DIR, AvatarPartDefinition)
+	delivery_config = load(DELIVERY_PATH)
+	delivery = DeliveryBoard.new(delivery_config)
 	for part: AvatarPartDefinition in avatar_parts.all():
 		if part.is_default:
 			avatar.own(part.id)
@@ -621,6 +629,47 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Entregas (DT-071) -------------------------------------------------------------
+
+func has_delivery_counter() -> bool:
+	return layout.placements().any(func(p: CafeLayout.Placement) -> bool: return p.definition.delivery)
+
+
+## Receitas que podem vir nos pedidos: as liberadas no nível e dos fogões comuns (o cardápio noturno é do Fogão Lua
+## Cheia, então também fica de fora).
+func delivery_menu() -> Array[RecipeDefinition]:
+	var menu: Array[RecipeDefinition] = []
+	for recipe: RecipeDefinition in recipes.all():
+		if recipe.unlock_level <= progression.level and recipe.stove == &"":
+			menu.append(recipe)
+	return menu
+
+
+## Traz os pedidos que chegaram (só com o Balcão de Entregas na cafeteria).
+func refresh_delivery() -> void:
+	if has_delivery_counter():
+		delivery.refresh(clock.now(), delivery_menu(), rng)
+
+
+## Manda o pedido com as porções dos balcões: dá o ouro e o XP da entrega.
+func send_delivery(index: int) -> int:
+	if not has_delivery_counter():
+		return ServiceResult.NO_DELIVERY_COUNTER
+	if index < 0 or index >= delivery.orders.size():
+		return ServiceResult.UNKNOWN_ITEM
+	var order := delivery.orders[index]
+	if kitchen.servings_of(order.recipe) < order.servings:
+		return ServiceResult.NOT_ENOUGH_SERVINGS
+	for i in order.servings:
+		kitchen.take_serving(order.recipe)
+	delivery.complete(index, clock.now())
+	wallet.earn(Wallet.SOFT, order.gold, "Entrega: %s" % order.recipe.display_name)
+	_record(MissionDefinition.Kind.EARN_GOLD, order.gold)
+	progression.add_xp(order.xp)
+	delivery_sent.emit(order)
+	return ServiceResult.OK
 
 
 # --- Avatar do chef (DT-070) ------------------------------------------------------
@@ -1754,6 +1803,7 @@ func tick(delta: float) -> void:
 	refresh_event()
 	_watch_night()
 	_watch_spoilage()
+	refresh_delivery()
 	_update_arrivals(delta)
 	_update_critic(delta)
 	_update_show(delta)

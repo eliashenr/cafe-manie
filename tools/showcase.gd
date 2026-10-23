@@ -147,6 +147,13 @@ func _initialize() -> void:
 		worried.critic = true
 		simulation.critic_star = {"cell": Vector2i(4, 6), "gold": 200, "xp": 50, "coupons": 3}
 		simulation.wallet.earn(&"coupons", 7, "vitrine")
+	if _panel == "entregas":
+		simulation.progression.add_xp(1000)  # nível 8
+		_stoves = [place.call(&"delivery_counter", Vector2i(0, 4), 3)]
+		simulation.refresh_delivery()
+		simulation.delivery.orders[0] = simulation.delivery.make_order(recipes.get_definition(&"coxinha"), 4)  # já no balcão
+		simulation.delivery.orders.append(simulation.delivery.make_order(recipes.get_definition(&"pastel"), 6))
+		simulation.delivery.orders.append(simulation.delivery.make_order(recipes.get_definition(&"coffee"), 8))
 	if _panel == "terraco":
 		simulation.progression.add_xp(46000)  # nível 30
 		simulation.wallet.earn(&"soft_currency", 5000, "vitrine")
@@ -210,7 +217,7 @@ func _set_panel() -> void:
 		"loja":
 			var tab := _panel.get_slice(":", 1)
 			_cafe.build_bar.open_shop(_cafe.build_bar.ShopTab.get(tab, 0) if not tab.is_empty() else 0)
-		"fogao", "estragado", "temperos", "trofeu", "trem", "noite":
+		"fogao", "estragado", "temperos", "trofeu", "trem", "noite", "entregas":
 			var stove = _cafe.layout.get_placement(_stoves[0])
 			_cafe.select_at_world(IsoProjection.cell_center(stove.origin))
 			if _panel == "noite":

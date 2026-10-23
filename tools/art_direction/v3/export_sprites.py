@@ -308,6 +308,10 @@ import fun3  # noqa: E402
 for _id, _draw in fun3.ATTRACTIONS.items():
     FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
 FURNITURE["stage"] = ((2, 2), _collection_decor(fun3.stage), 1)
+# Entregas (DT-071): o Balcão de Entregas (a frente aparece como a dos balcões).
+import delivery3  # noqa: E402
+
+FURNITURE["delivery_counter"] = ((1, 1), lambda D, iso, fp, rotation: delivery3.delivery_counter(D, iso, 0, 0, FACE.get(rotation)), 4)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 

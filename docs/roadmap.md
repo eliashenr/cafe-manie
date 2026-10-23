@@ -105,6 +105,13 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **3. Terraço** (DT-069, versão simplificada): a fileira da frente vira terraço com deque e cerca de jardim; de dia, quem senta lá paga 25% a mais.
 - [x] **4. Avatar do chef** (DT-070): pele, cabelo, chapéu e roupa; as peças novas se provam no retrato e se compram com ouro.
 
+## Pacote do relatório: delivery, filial, 2º andar e vizinhos (seção 4, item 10)
+
+- [x] **1. Delivery** (DT-071): o Balcão de Entregas recebe pedidos de porções, que pagam mais que no salão.
+- [ ] **2. Filial na praia** (versão simplificada).
+- [ ] **3. 2º andar** (planejado e documentado).
+- [ ] **4. Vizinhos simulados:** cafés de personagens para visitar e ajudar.
+
 ## Passe visual (18/10/2026)
 
 - [x] **Efeitos visuais só na tela** (DT-044):

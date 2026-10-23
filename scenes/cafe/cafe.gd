@@ -386,6 +386,7 @@ func _connect_sounds() -> void:
 	simulation.attraction_collected.connect(play.bind(&"coin").unbind(2))
 	simulation.floor_cleaned.connect(play.bind(&"coin").unbind(3))
 	simulation.terrace_built.connect(play.bind(&"achievement"))
+	simulation.delivery_sent.connect(play.bind(&"coin").unbind(1))
 	simulation.show_started.connect(play.bind(&"level_up"))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
@@ -755,6 +756,19 @@ func _on_achievement_unlocked(achievement: AchievementDefinition, tier: int) -> 
 
 ## Expande a cafeteria (a confirmação fica na barra de baixo).
 ## Constrói o terraço (DT-069); a barra já pediu confirmação.
+## Manda o pedido de entrega (DT-071) com as porções dos balcões; o ouro sobe do Balcão de Entregas.
+func send_delivery(index: int) -> int:
+	var orders := simulation.delivery.orders
+	var order: DeliveryBoard.Order = orders[index] if index >= 0 and index < orders.size() else null
+	last_service_result = simulation.send_delivery(index)
+	if last_service_result == ServiceResult.OK:
+		_float_over(selected_id, "+%s ouro" % UiTheme.thousands(order.gold), FEEDBACK_GOLD)
+		EventBus.message_posted.emit("Entrega enviada: %s ×%d! +%s ouro" % [order.recipe.display_name, order.servings,
+			UiTheme.thousands(order.gold)])
+	state_changed.emit()
+	return last_service_result
+
+
 func build_terrace() -> int:
 	last_service_result = simulation.build_terrace()
 	if last_service_result == ServiceResult.OK:
