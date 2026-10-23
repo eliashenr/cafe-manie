@@ -37,6 +37,8 @@ signal show_started
 signal show_ended
 ## O jogador coletou o ouro de uma atração.
 signal attraction_collected(attraction_id: StringName, amount: int)
+## Uma mancha do chão foi limpa: o ouro e o XP já foram entregues (DT-068).
+signal floor_cleaned(cell: Vector2i, gold: int, xp: int)
 ## Um pé de fruta foi colhido: as frutas já estão no estoque (DT-065).
 signal fruit_harvested(tree_id: StringName, fruit: FruitDefinition, amount: int)
 ## Anoiteceu ([param night] true) ou amanheceu: o cardápio noturno abriu ou fechou (DT-064).
@@ -93,6 +95,7 @@ const NIGHT_PATH := "res://data/config/night.tres"
 const FRUITS_DIR := "res://data/fruits"
 const STAGE_PATH := "res://data/config/stage.tres"
 const DOORS_DIR := "res://data/doors"
+const DIRT_PATH := "res://data/config/dirt.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -120,6 +123,10 @@ var critic_config: CriticConfig
 var critic_star := {}
 ## Portas da entrada (DT-067), uma por coleção.
 var doors: DefinitionStore
+## Chão sujo (DT-068): as manchas e o tempo de chão sujo até a próxima perda de popularidade.
+var dirt: FloorDirt
+var dirt_config: DirtConfig
+var _dirt_wait := 0.0
 ## Atrações e palco (DT-066): o ouro guardado nas atrações, o show e o tempo até o próximo.
 var attractions: Attractions
 var stage_config: StageConfig
@@ -238,6 +245,8 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	orchard = Orchard.new(layout, clock)
 	attractions = Attractions.new(layout)
 	stage_config = load(STAGE_PATH)
+	dirt = FloorDirt.new(layout)
+	dirt_config = load(DIRT_PATH)
 	_was_night = is_night()
 	var event_store := DefinitionStore.new(func(a: EventDefinition, b: EventDefinition) -> bool: return String(a.id) < String(b.id))
 	event_store.load_dir(EVENTS_DIR, EventDefinition)
@@ -593,6 +602,40 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Chão sujo (DT-068) -------------------------------------------------------
+
+## Limpa a mancha da célula: dá o ouro e o XP da limpeza.
+func clean_floor(cell: Vector2i) -> int:
+	if not dirt.clean(cell):
+		return ServiceResult.NOT_DIRTY
+	wallet.earn(Wallet.SOFT, dirt_config.clean_gold, "Limpeza do chão")
+	_record(MissionDefinition.Kind.EARN_GOLD, dirt_config.clean_gold)
+	progression.add_xp(dirt_config.clean_xp)
+	floor_cleaned.emit(cell, dirt_config.clean_gold, dirt_config.clean_xp)
+	return ServiceResult.OK
+
+
+## Às vezes quem terminou de comer deixa uma mancha num piso livre do lado da cadeira.
+func _maybe_leave_dirt(customer: Customer) -> void:
+	if dirt.count() >= dirt_config.max_spots or rng.randf() >= dirt_config.spot_chance:
+		return
+	var options := navigation.access_cells(customer.seat_id).filter(func(cell: Vector2i) -> bool:
+		return not dirt.has_spot(cell) and cell != layout.entrance)
+	if not options.is_empty():
+		dirt.add(options[rng.randi_range(0, options.size() - 1)])
+
+
+## Com o café aberto e o chão sujo, a popularidade cai um pouco a cada intervalo (mais manchas, mais perda).
+func _update_dirt(delta: float) -> void:
+	if closed or dirt.count() == 0:
+		_dirt_wait = 0.0
+		return
+	_dirt_wait += delta
+	if _dirt_wait >= dirt_config.popularity_interval:
+		_dirt_wait = 0.0
+		_change_popularity(-dirt_config.popularity_loss_per_spot * dirt.count())
 
 
 # --- Portas (DT-067) ---------------------------------------------------------
@@ -1612,6 +1655,7 @@ func tick(delta: float) -> void:
 	_update_arrivals(delta)
 	_update_critic(delta)
 	_update_show(delta)
+	_update_dirt(delta)
 	_update_queue(delta)
 	_assign_servings()
 	for customer in customers.duplicate():
@@ -1717,6 +1761,7 @@ func _update_customer(customer: Customer, delta: float) -> void:
 			customer.eat_left -= delta
 			if customer.eat_left <= 0.0:
 				_pay(customer)
+				_maybe_leave_dirt(customer)
 				if not _go_play(customer):
 					_send_away(customer, true)
 		Customer.State.WALKING_TO_PLAY:

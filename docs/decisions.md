@@ -4,6 +4,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-068 — Chão sujo
+
+**Problema:**
+- O relatório propõe chão sujo de vez em quando: um toque limpa e dá um pouco de ouro e XP, e um chão limpo segura a popularidade (proposta 3.8).
+
+**Decisão:**
+- **Quem suja:** quem termina de comer tem 20% de chance de deixar uma **mancha de café** num piso livre do lado da cadeira.
+- **Limites:**
+  - no máximo 5 manchas ao mesmo tempo;
+  - nunca na entrada;
+  - móvel posto em cima cobre a mancha.
+- **Limpar:**
+  - um toque na mancha limpa;
+  - dá 5 de ouro e 2 de XP, com o ouro subindo e o brilho de moedas;
+  - a primeira mancha da sessão vem com um aviso explicando.
+- **Popularidade:**
+  - com o café aberto e o chão sujo, a cada 60 segundos a popularidade cai 0,5 por mancha;
+  - chão limpo não perde nada, e café fechado também não.
+- **Configuração:** os números ficam em `data/config/dirt.tres` (`DirtConfig`).
+- **Save:** guarda as manchas (versão 19); saves antigos começam com o chão limpo.
+- **Arte:** 3 variações de poça de café com respingos e migalhas, desenhadas no piso.
+
+---
+
 ## DT-067 — Portas por coleção e coleções completas
 
 **Problema:**

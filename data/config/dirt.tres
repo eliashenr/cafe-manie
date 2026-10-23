@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DirtConfig" format=3]
+
+[ext_resource type="Script" path="res://core/service/dirt_config.gd" id="1_dirt"]
+
+[resource]
+script = ExtResource("1_dirt")
+spot_chance = 0.2
+max_spots = 5
+clean_gold = 5
+clean_xp = 2
+popularity_interval = 60.0
+popularity_loss_per_spot = 0.5

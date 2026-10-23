@@ -21,6 +21,7 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const DIRT_HINT_MESSAGE := "Um cliente sujou o chão! Toque na mancha para limpar: dá ouro, e o chão limpo segura a popularidade."
 const SHOW_STARTED_MESSAGE := "Começou o show no palco! Os clientes chegam mais rápido enquanto ele dura."
 const SHOW_ENDED_MESSAGE := "O show acabou. O próximo começa daqui a pouco."
 const NIGHT_MESSAGE := "Anoiteceu! As luzes acenderam e o cardápio noturno está aberto no Fogão Lua Cheia."
@@ -95,6 +96,8 @@ var _since_gold_offer := INF
 var _save_dirty := false
 var _since_last_save := 0.0
 var _saving_enabled := true
+## O aviso de como limpar o chão já apareceu nesta sessão (DT-068).
+var _dirt_hint_shown := false
 
 var grid: CafeGrid:
 	get:
@@ -157,6 +160,8 @@ func _ready() -> void:
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
+	simulation.dirt.changed.connect(_on_dirt_changed)
+	_on_dirt_changed()
 
 	_fit_floor_and_camera()
 	camera.tapped.connect(_on_tapped)
@@ -377,6 +382,7 @@ func _connect_sounds() -> void:
 	simulation.critic_star_collected.connect(play.bind(&"achievement").unbind(1))
 	simulation.fruit_harvested.connect(play.bind(&"coin").unbind(3))
 	simulation.attraction_collected.connect(play.bind(&"coin").unbind(2))
+	simulation.floor_cleaned.connect(play.bind(&"coin").unbind(3))
 	simulation.show_started.connect(play.bind(&"level_up"))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
@@ -505,6 +511,25 @@ func renew_trophy(trophy_id: StringName) -> int:
 
 
 ## Coleta o ouro que os clientes deixaram na atração (DT-066).
+## Limpa a mancha do piso (DT-068), com o ouro subindo e o brilho da limpeza.
+func clean_floor(cell: Vector2i) -> int:
+	last_service_result = simulation.clean_floor(cell)
+	if last_service_result == ServiceResult.OK:
+		var at := IsoProjection.cell_center(cell)
+		FxParticles.gold_burst(effects, at)
+		FloatingText.spawn(effects, at + Vector2(0, -30), "+%d ouro" % simulation.dirt_config.clean_gold, FEEDBACK_GOLD)
+	state_changed.emit()
+	return last_service_result
+
+
+## Mostra as manchas no piso; a primeira do jogo vem com um aviso de como limpar.
+func _on_dirt_changed() -> void:
+	floor_view.dirt = simulation.dirt.spots()
+	if simulation.dirt.count() > 0 and not _dirt_hint_shown:
+		_dirt_hint_shown = true
+		EventBus.message_posted.emit(DIRT_HINT_MESSAGE)
+
+
 func collect_attraction(attraction_id: StringName) -> int:
 	var amount := simulation.attractions.gold(attraction_id)
 	last_service_result = simulation.collect_attraction(attraction_id)
@@ -1108,6 +1133,10 @@ func tap_at_world(world_position: Vector2) -> void:
 		return
 	if tapped != null and simulation.attractions.gold(tapped.id) > 0:
 		collect_attraction(tapped.id)
+		return
+	var cell := IsoProjection.world_to_cell(world_position)
+	if tapped == null and simulation.dirt.has_spot(cell):
+		clean_floor(cell)
 		return
 	var placement := layout.placement_at(IsoProjection.world_to_cell(world_position))
 	if placement != null and simulation.kitchen.is_stove(placement.id) \

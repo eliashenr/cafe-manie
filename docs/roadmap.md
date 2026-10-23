@@ -101,7 +101,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Pacote do relatório: café mais completo e avatar (seção 4, item 9)
 
 - [x] **1. Portas por coleção e coleções completas** (DT-067): 13 portas na loja; toda coleção com fogão, balcão, porta e janela.
-- [ ] **2. Chão sujo:** manchas aparecem; um toque limpa e dá ouro e XP; chão limpo segura a popularidade.
+- [x] **2. Chão sujo** (DT-068): os clientes deixam manchas; um toque limpa e dá ouro e XP; chão sujo faz a popularidade cair.
 - [ ] **3. Pátio:** mesas ao ar livre na calçada.
 - [ ] **4. Avatar do chef:** roupa, cabelo e chapéu comprados com ouro.
 

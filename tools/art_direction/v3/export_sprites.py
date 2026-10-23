@@ -528,6 +528,11 @@ def export_scene(sheet, manifest):
             names.append(name)
         floors[surface_id] = {"mode": "xadrez" if variants == "xadrez" else "variantes", "sprites": names}
     sheet.add("piso_entrada", tiles3.entrance_mat(D, iso), TILE_BOUNDS)
+    import dirt3  # chão sujo (DT-068)
+    manifest["floor_dirt"] = []
+    for variant in range(dirt3.VARIANTS):
+        sheet.add(f"mancha_chao_{variant}", dirt3.floor_spot(D, iso, variant), TILE_BOUNDS)
+        manifest["floor_dirt"].append(f"mancha_chao_{variant}")
     walls = {}
     for surface_id, draw in tiles3.WALLS.items():
         walls[surface_id] = {}

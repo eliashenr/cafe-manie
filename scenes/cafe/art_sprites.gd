@@ -145,6 +145,12 @@ static func floor_tile(surface_id: StringName, cell: Vector2i) -> Sprite:
 
 
 ## Tapete da entrada (por cima do piso).
+## Mancha do chão sujo (DT-068): a variação muda de piso para piso.
+static func floor_dirt(cell: Vector2i) -> Sprite:
+	var names: Array = _load_manifest().get("floor_dirt", [])
+	return null if names.is_empty() else get_sprite(names[posmod(cell.x * 5 + cell.y * 3, names.size())])
+
+
 static func floor_entrance() -> Sprite:
 	return get_sprite(_load_manifest().get("floor_entrance", ""))
 

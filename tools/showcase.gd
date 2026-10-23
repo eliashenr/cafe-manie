@@ -147,6 +147,9 @@ func _initialize() -> void:
 		worried.critic = true
 		simulation.critic_star = {"cell": Vector2i(4, 6), "gold": 200, "xp": 50, "coupons": 3}
 		simulation.wallet.earn(&"coupons", 7, "vitrine")
+	if _panel == "sujo":
+		for cell in [Vector2i(2, 3), Vector2i(5, 5), Vector2i(2, 6)]:
+			simulation.dirt.add(cell)
 	if _panel == "portas":
 		simulation.progression.add_xp(46000)  # nível 30
 		simulation.wallet.earn(&"soft_currency", 5000, "vitrine")

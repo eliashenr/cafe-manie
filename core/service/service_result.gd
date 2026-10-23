@@ -45,4 +45,5 @@ enum {
 	NOT_AN_ATTRACTION,  ## o móvel escolhido não é uma atração (DT-066)
 	NOTHING_TO_COLLECT, ## a atração ainda não tem ouro
 	DOOR_LOCKED,        ## nível insuficiente para a porta (DT-067)
+	NOT_DIRTY,          ## não há mancha nesse piso (DT-068)
 }

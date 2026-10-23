@@ -5102,6 +5102,24 @@
     -9.81
    ]
   },
+  "mancha_chao_0": {
+   "anchor": [
+    63.19,
+    -26.81
+   ]
+  },
+  "mancha_chao_1": {
+   "anchor": [
+    62.19,
+    -19.81
+   ]
+  },
+  "mancha_chao_2": {
+   "anchor": [
+    39.19,
+    -16.81
+   ]
+  },
   "parede_wall_cream_R": {
    "anchor": [
     5.48,
@@ -5273,7 +5291,7 @@
   "parede_wall_2010s_R": {
    "anchor": [
     3.48,
-    306.24
+    307.24
    ]
   },
   "parede_wall_2010s_L": {
@@ -5285,7 +5303,7 @@
   "parede_wall_club_R": {
    "anchor": [
     3.48,
-    306.24
+    307.24
    ]
   },
   "parede_wall_club_L": {
@@ -5296,7 +5314,7 @@
   },
   "enfeite_janela_R": {
    "anchor": [
-    11.48,
+    10.48,
     302.24
    ]
   },
@@ -5476,7 +5494,7 @@
   },
   "enfeite_janela_country_R": {
    "anchor": [
-    10.48,
+    11.48,
     302.24
    ]
   },
@@ -7360,6 +7378,11 @@
   "herbs": "tempero_herbs"
  },
  "food_width": 64.0,
+ "floor_dirt": [
+  "mancha_chao_0",
+  "mancha_chao_1",
+  "mancha_chao_2"
+ ],
  "floors": {
   "floor_beige": {
    "mode": "xadrez",

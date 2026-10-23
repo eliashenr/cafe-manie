@@ -52,6 +52,11 @@ var painted: Dictionary = {}:
 
 ## Reforma em andamento: os pisos marcados já aparecem com o revestimento escolhido.
 var paint_surface: SurfaceDefinition
+## Pisos com mancha (DT-068), desenhados por cima do revestimento.
+var dirt: Array[Vector2i] = []:
+	set(value):
+		dirt = value
+		queue_redraw()
 var paint_cells: Array[Vector2i] = []
 
 var selected_cell := CafeGrid.NO_CELL:
@@ -144,6 +149,10 @@ func _draw_art_floor() -> void:
 	var mat := ArtSprites.floor_entrance()
 	if mat != null and _is_inside(entrance):
 		draw_texture_rect(mat.texture, mat.rect_at(IsoProjection.cell_top_vertex(entrance)), false)
+	for cell in dirt:
+		var spot := ArtSprites.floor_dirt(cell)
+		if spot != null and _is_inside(cell):
+			draw_texture_rect(spot.texture, spot.rect_at(IsoProjection.cell_top_vertex(cell)), false)
 	var outline := PackedVector2Array([IsoProjection.vertex_to_world(Vector2.ZERO), front_right[1], front_right[0],
 		front_left[0], IsoProjection.vertex_to_world(Vector2.ZERO)])
 	draw_polyline(outline, ART_INK, 2.0, true)

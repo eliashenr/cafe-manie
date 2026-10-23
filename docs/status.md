@@ -4,6 +4,12 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 9 do relatório, etapa 2: chão sujo** (DT-068)
+
+- Às vezes, um cliente que terminou de comer deixa uma **mancha de café** no chão, do lado da cadeira (no máximo 5).
+- **Toque na mancha para limpar:** dá 5 de ouro e 2 de XP.
+- Enquanto houver manchas com o café aberto, a **popularidade cai aos poucos**. Com o chão limpo, ela se segura.
+
 **Item 9 do relatório, etapa 1: portas por coleção e coleções completas** (DT-067)
 
 - **Portas:** a porta da entrada virou item da loja, na aba **Paredes**, com um modelo para cada uma das 13 coleções.
@@ -378,6 +384,21 @@
 
 🧪 **TESTADO**
 
+- **Chão sujo: 636 testes automatizados PASSARAM.**
+  - **Regra:**
+    - a configuração é válida;
+    - quem terminou de comer deixa a mancha do lado da cadeira, num piso livre (sem chance, não deixa);
+    - o limite de manchas vale, e não suja móvel, fora do café nem a mesma célula duas vezes;
+    - móvel posto em cima cobre a mancha;
+    - limpar dá ouro e XP, e limpar o limpo não dá nada;
+    - o chão sujo tira popularidade por mancha a cada intervalo; o chão limpo e o café fechado, não;
+    - o save guarda as manchas.
+  - **Na tela:**
+    - a mancha aparece no piso, com a arte e o aviso;
+    - o toque limpa, com o ouro subindo, sem selecionar o piso.
+  - **Defeitos inseridos de propósito: 27 de 27 pegos (1 só depois de reforçar um teste).**
+  - **Foto conferida:** três manchas no piso e o aviso de como limpar.
+  - **Cena principal: PASSOU**, zero erros.
 - **Portas e coleções completas: 627 testes automatizados PASSARAM.**
   - **Regra:**
     - toda coleção tem uma porta válida, e só a clássica é inicial e grátis;
