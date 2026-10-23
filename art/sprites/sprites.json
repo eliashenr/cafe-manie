@@ -1495,6 +1495,36 @@
     298.67
    ]
   },
+  "witch_cauldron_r0": {
+   "anchor": [
+    116.67,
+    282.67
+   ]
+  },
+  "witch_cauldron_r1": {
+   "anchor": [
+    116.67,
+    281.67
+   ]
+  },
+  "witch_cauldron_r2": {
+   "anchor": [
+    116.67,
+    281.67
+   ]
+  },
+  "witch_cauldron_r3": {
+   "anchor": [
+    116.67,
+    281.67
+   ]
+  },
+  "giant_pumpkin_r0": {
+   "anchor": [
+    90.67,
+    212.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -1558,13 +1588,13 @@
   "encosto_chair_mexican_r1": {
    "anchor": [
     1.67,
-    217.67
+    218.67
    ]
   },
   "encosto_chair_mexican_r2": {
    "anchor": [
     63.67,
-    217.67
+    218.67
    ]
   },
   "encosto_chair_80s_r1": {
@@ -5326,6 +5356,18 @@
     67.0
    ]
   },
+  "medalhao_evento": {
+   "anchor": [
+    67.0,
+    67.0
+   ]
+  },
+  "retrato_bruxa": {
+   "anchor": [
+    82.0,
+    186.0
+   ]
+  },
   "fita_missoes": {
    "anchor": [
     100.0,
@@ -5339,6 +5381,12 @@
    ]
   },
   "fita_conquistas": {
+   "anchor": [
+    122.0,
+    2.0
+   ]
+  },
+  "fita_evento": {
    "anchor": [
     122.0,
     2.0
@@ -6001,6 +6049,18 @@
    "1": "popcorn_cart_r0",
    "2": "popcorn_cart_r0",
    "3": "popcorn_cart_r0"
+  },
+  "witch_cauldron": {
+   "0": "witch_cauldron_r0",
+   "1": "witch_cauldron_r1",
+   "2": "witch_cauldron_r2",
+   "3": "witch_cauldron_r3"
+  },
+  "giant_pumpkin": {
+   "0": "giant_pumpkin_r0",
+   "1": "giant_pumpkin_r0",
+   "2": "giant_pumpkin_r0",
+   "3": "giant_pumpkin_r0"
   },
   "dj_booth": {
    "0": "dj_booth_r0",

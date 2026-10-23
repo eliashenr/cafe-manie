@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/mission_definition.gd" id="1_mission"]
+
+[resource]
+script = ExtResource("1_mission")
+id = &"h3_happy"
+order = 3
+title = "Deixe %d clientes satisfeitos"
+hint = "Sirva antes de a paciência cair da metade."
+kind = 6
+target = 25
+target_per_level = 0.5
+furniture_category = -1
+min_level = 1
+min_cook_time = 0.0
+limit_to_unlocked_recipes = false
+reward_gold = 400
+reward_gold_per_level = 10.0
+reward_xp = 50
+reward_xp_per_level = 2.0

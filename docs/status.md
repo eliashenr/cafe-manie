@@ -4,12 +4,21 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 6 do relatório, etapa 3: evento de Halloween** (DT-063). **Com ela, o item 6 está completo.**
+
+- **De 20/10 a 3/11,** aparece um medalhão de abóbora à esquerda, com os dias que faltam.
+- **Tocando nele,** a Bruxa Morgana conta a historinha (4 quadros) e depois mostra as 5 missões do evento, com o prazo.
+- **Prêmios:**
+  - o **Caldeirão da Bruxa** chega na 1ª missão e fica mais rápido na 3ª e na 5ª (20%, 40% e 60%);
+  - completar tudo dá a **Abóbora Gigante**.
+- Todo ano o evento volta, com as missões do zero; o caldeirão continua com o nível que já tinha.
+
 **Item 6 do relatório, etapa 2: loja de troca de cupons** (DT-062)
 
 - **Aba Cupons na loja**, com 4 itens exclusivos: Estátua do Crítico, Fonte de Chocolate, Árvore de Cupcakes e Carrinho de Pipoca.
 - Os itens mudam a cada 2 semanas. A barra diz quantos cupons você tem e quando chegam itens novos.
 - **Testes:** 581 passaram; a cena principal subiu sem erros.
-- **Falta:** a rodada de defeitos de propósito desta etapa e a etapa 3 do item 6 (o evento de Halloween, com a arte já desenhada).
+- **Defeitos inseridos de propósito: 11 de 11 pegos** (troca fora da temporada, troca sem cupons suficientes, troca sem gastar cupons, troca cobrada como compra, temporada ignorada, temporada que nunca muda, contagem da temporada errada, item de cupom à venda por ouro aceito, aba Cupons vazia, cartão sem o preço em cupons, barra da aba sem os cupons).
 
 **Item 6 do relatório, etapa 1: crítico gastronômico** (DT-061)
 
@@ -336,6 +345,12 @@
 
 🧪 **TESTADO**
 
+- **Evento de Halloween: 593 testes automatizados PASSARAM.**
+  - **Regra:** os dados do Halloween (historinha, 5 missões, caldeirão de prêmio com um corte por nível, cada vez maior, e prêmio final fora da venda); as datas do evento, inclusive um que vira o ano, e a edição; o quadro só durante o evento e os dias que faltam; o caldeirão na 1ª missão, nível 2 na 3ª, 3 na 5ª e a Abóbora Gigante no fim, sem repetir; o caldeirão mais rápido a cada nível; a historinha uma vez por edição; a edição nova recomeça as missões e mantém o caldeirão; o save guarda tudo, e a migração acrescenta o campo.
+  - **Na tela:** o medalhão só durante o evento, com os dias; a historinha quadro a quadro e depois as missões; o aviso do caldeirão ganho.
+  - **Defeitos inseridos de propósito: 23 de 23 pegos (2 só depois de testes novos).**
+  - **Fotos conferidas:** a Bruxa Morgana contando a historinha, e a janela das missões com o prazo e os prêmios.
+  - **Cena principal: PASSOU**, zero erros.
 - **Crítico: 576 testes automatizados PASSARAM.**
   - **Regra:** configuração válida, prêmio que cresce com o nível, cupons que crescem com a popularidade e temas que giram; vem só do nível 5, depois de um tempo de café aberto, uma vez por dia (e de novo no outro dia); com o café fechado, não vem; pede um prato da aba da semana e não pede bebida; servido rápido, estrela com ouro, XP e cupons, que entram na carteira uma vez só; servido devagar ou sem ser servido, sem estrela; o save guarda a visita e a estrela, e a migração acrescenta o campo.
   - **Na tela:** o aviso da chegada com o tema; a estrela na mesa, que dá o prêmio ao ser tocada, com o contador de cupons aparecendo; o aviso quando ele vai embora sem ser servido.

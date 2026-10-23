@@ -32,6 +32,14 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## Começou uma edição de um evento com prazo (DT-063).
+signal event_started(event: EventDefinition)
+## Uma missão do evento foi concluída; o ouro e o XP já foram entregues.
+signal event_mission_completed(event: EventDefinition, entry: MissionBoard.Entry)
+## O fogão de prêmio do evento chegou a um nível (1 = acabou de ganhar o fogão, guardado no inventário).
+signal event_stove_upgraded(event: EventDefinition, level: int)
+## Todas as missões do evento concluídas: o enfeite de prêmio já está no inventário.
+signal event_finished(event: EventDefinition)
 ## O crítico gastronômico chegou e vai sentar (DT-061).
 signal critic_arrived(customer: Customer)
 ## O crítico foi embora: [param star] = foi servido rápido e deixou a estrela na mesa.
@@ -71,6 +79,7 @@ const DAILY_REWARDS_PATH := "res://data/config/daily_rewards.tres"
 const ENERGY_PATH := "res://data/config/energy.tres"
 const MASTERY_PATH := "res://data/config/mastery.tres"
 const CRITIC_PATH := "res://data/config/critic.tres"
+const EVENTS_DIR := "res://data/events"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -96,6 +105,15 @@ var stove_sets: StoveSets
 var critic_config: CriticConfig
 ## Estrela que o crítico deixou na mesa, esperando o toque: {"cell", "gold", "xp", "coupons"}; vazio = nenhuma.
 var critic_star := {}
+## Eventos com prazo (DT-063), o quadro de missões do que vale agora (null fora de evento) e o que já aconteceu.
+var events: Array[EventDefinition] = []
+var event_board: MissionBoard
+## Nível de cada fogão de evento ganho (id do móvel -> nível).
+var event_stove_levels := {}
+## Edição em que a historinha de cada evento já foi vista, e em que o prêmio final já foi entregue (id -> ano).
+var event_story_seen := {}
+var _event_final_given := {}
+var _event_id: StringName = &""
 ## Dia (local) da última visita do crítico; -1 = nunca veio.
 var _critic_day := -1
 ## Segundos de café aberto, hoje, esperando o crítico.
@@ -184,6 +202,9 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	drinks = DrinkCatalog.load_from()
 	spices = SpiceCatalog.load_from()
 	critic_config = load(CRITIC_PATH)
+	var event_store := DefinitionStore.new(func(a: EventDefinition, b: EventDefinition) -> bool: return String(a.id) < String(b.id))
+	event_store.load_dir(EVENTS_DIR, EventDefinition)
+	events.assign(event_store.all())
 	wall_items = WallItemCatalog.load_from()
 	coin_shop = CoinShop.load_from(wallet)
 	var no_missions: Array[MissionDefinition] = []
@@ -320,6 +341,8 @@ func _record(kind: MissionDefinition.Kind, amount := 1, recipe: RecipeDefinition
 	missions.record(kind, amount, furniture_category)
 	daily_missions.record(kind, amount, recipe, furniture_category)
 	weekly_missions.record(kind, amount, recipe, furniture_category)
+	if event_board != null:
+		event_board.record(kind, amount, recipe, furniture_category)
 
 
 ## Troca a sequência de missões (começa da primeira).
@@ -367,6 +390,9 @@ func cook_time_on(stove_id: StringName, recipe: RecipeDefinition) -> float:
 		if stove.stove_max_time > 0.0:
 			base = minf(base, stove.stove_max_time)
 		cut += stove.stove_time_cut
+		var level := int(event_stove_levels.get(stove.id, 0))
+		if level > 0 and level <= stove.stove_level_cuts.size():
+			cut += stove.stove_level_cuts[level - 1]
 	return base * maxf(1.0 - cut, 1.0 - config.max_speedup)
 
 
@@ -523,6 +549,114 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Eventos com prazo (DT-063) -------------------------------------------
+
+## O evento que vale hoje, ou null.
+func current_event() -> EventDefinition:
+	var today := clock.local_date()
+	for event in events:
+		if event.is_active_on(today):
+			return event
+	return null
+
+
+## Dias que o evento atual ainda dura depois de hoje (0 = acaba hoje; -1 = sem evento).
+func event_days_left() -> int:
+	var event := current_event()
+	if event == null:
+		return -1
+	var days := 0
+	while days < 366 and event.is_active_on(clock.local_date(days + 1)):
+		days += 1
+	return days
+
+
+## A historinha do evento atual ainda não foi vista nesta edição?
+func event_story_pending() -> bool:
+	var event := current_event()
+	return event != null and int(event_story_seen.get(event.id, -1)) != event.edition_for(clock.local_date())
+
+
+func mark_event_story_seen() -> void:
+	var event := current_event()
+	if event != null:
+		event_story_seen[event.id] = event.edition_for(clock.local_date())
+
+
+## Liga o quadro de missões do evento que vale hoje (cada edição começa do zero) ou desliga fora do evento.
+func refresh_event() -> void:
+	var event := current_event()
+	if event == null:
+		event_board = null
+		_event_id = &""
+		return
+	var edition := event.edition_for(clock.local_date())
+	if event_board == null or _event_id != event.id:
+		event_board = MissionBoard.new(CafeSimulation.load_missions(event.missions_dir))
+		event_board.mission_completed.connect(_on_event_mission_completed)
+		_event_id = event.id
+	if event_board.start_period(edition, progression.level, order_menu().size()):
+		event_started.emit(event)
+
+
+## Estado dos eventos em tipos simples (para o save).
+func events_to_data() -> Dictionary:
+	var levels := {}
+	for id: StringName in event_stove_levels:
+		levels[String(id)] = event_stove_levels[id]
+	var seen := {}
+	for id: StringName in event_story_seen:
+		seen[String(id)] = event_story_seen[id]
+	var given := {}
+	for id: StringName in _event_final_given:
+		given[String(id)] = _event_final_given[id]
+	return {"id": String(_event_id), "board": event_board.to_data() if event_board != null else {}, "stove_levels": levels,
+		"story_seen": seen, "final_given": given}
+
+
+func restore_events(data: Dictionary) -> void:
+	event_stove_levels.clear()
+	event_story_seen.clear()
+	_event_final_given.clear()
+	for key in ["stove_levels", "story_seen", "final_given"]:
+		var target: Dictionary = {"stove_levels": event_stove_levels, "story_seen": event_story_seen,
+			"final_given": _event_final_given}[key]
+		var saved: Dictionary = data.get(key, {}) if data.get(key) is Dictionary else {}
+		for id in saved:
+			target[StringName(id)] = int(saved[id])
+	event_board = null
+	refresh_event()
+	var board: Dictionary = data.get("board", {}) if data.get("board") is Dictionary else {}
+	if event_board != null and StringName(str(data.get("id", ""))) == _event_id and not board.is_empty():
+		event_board.restore(board, progression.level, order_menu().size())
+
+
+## Missão do evento concluída: entrega o ouro e o XP e confere o fogão de prêmio e o prêmio final.
+func _on_event_mission_completed(entry: MissionBoard.Entry) -> void:
+	var event := current_event()
+	if event == null:
+		return
+	if entry.reward_gold > 0:
+		wallet.earn(Wallet.SOFT, entry.reward_gold, "Evento %s: %s" % [event.title, entry.title()])
+	event_mission_completed.emit(event, entry)
+	if entry.reward_xp > 0:
+		progression.add_xp(entry.reward_xp)
+	var completed := event_board.completed_count()
+	var level := event.stove_level_for(completed)
+	var before := int(event_stove_levels.get(event.prize_stove, 0))
+	if level > before and furniture.get_definition(event.prize_stove) != null:
+		if before == 0 and placed_count(event.prize_stove) == 0 and inventory.count(event.prize_stove) == 0:
+			inventory.add(event.prize_stove)
+		event_stove_levels[event.prize_stove] = level
+		event_stove_upgraded.emit(event, level)
+	var edition := event.edition_for(clock.local_date())
+	if completed >= event_board.size() and int(_event_final_given.get(event.id, -1)) != edition:
+		_event_final_given[event.id] = edition
+		if furniture.get_definition(event.final_prize) != null:
+			inventory.add(event.final_prize)
+		event_finished.emit(event)
 
 
 # --- Crítico gastronômico (DT-061) -----------------------------------------
@@ -1272,6 +1406,7 @@ func tick(delta: float) -> void:
 	if paused:
 		return
 	refresh_mission_periods()
+	refresh_event()
 	_watch_spoilage()
 	_update_arrivals(delta)
 	_update_critic(delta)

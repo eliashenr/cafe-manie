@@ -363,6 +363,8 @@ static func profile_text(definition: FurnitureDefinition) -> String:
 		parts.append("+%d%% de porções" % roundi(definition.stove_servings_bonus * 100.0))
 	if definition.stove_xp_bonus > 0.0:
 		parts.append("+%d%% de XP" % roundi(definition.stove_xp_bonus * 100.0))
+	if not definition.stove_level_cuts.is_empty():
+		parts.append("mais rápido a cada nível do evento (até %d%%)" % roundi(definition.stove_level_cuts[-1] * 100.0))
 	if definition.max_per_cafe > 0:
 		parts.append("só %d por café" % definition.max_per_cafe)
 	return ", ".join(parts)

@@ -287,6 +287,11 @@ import critic3  # noqa: E402
 
 for _id, _draw in critic3.DECOR.items():
     FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
+# Evento de Halloween (DT-063): o Caldeirão da Bruxa (fogão) e a Abóbora Gigante (enfeite).
+import halloween3  # noqa: E402
+
+FURNITURE["witch_cauldron"] = ((1, 1), lambda D, iso, fp, rotation: halloween3.cauldron_stove(D, iso, 0, 0, FACE.get(rotation)), 4)
+FURNITURE["giant_pumpkin"] = ((1, 1), _collection_decor(halloween3.giant_pumpkin), 1)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 
@@ -572,6 +577,8 @@ def export_ui(sheet, manifest):
         sheet.add(f"botao_{kind}", ui3.square_button(D, kind, color), (0.0, 0.0, 64.0, 66.0), (32.0, 32.0))
     for name, draw in ui3.MEDALLIONS.items():
         sheet.add(f"medalhao_{name}", draw(D), (-4.0, -4.0, 74.0, 76.0), (32.0, 32.0))
+    # retrato de quem conta a historinha do evento (DT-063)
+    sheet.add("retrato_bruxa", halloween3.witch_portrait(D), (-70.0, -110.0, 140.0, 170.0), (0.0, 0.0))
     for name, (width, color) in ui3.RIBBONS.items():
         sheet.add(f"fita_{name}", ui3.ribbon_band(D, width, color), (-width / 2 - 10, -2.0, width + 20, 26.0), (0.0, 0.0))
     for name, (light, dark) in ui3.STRIPES.items():

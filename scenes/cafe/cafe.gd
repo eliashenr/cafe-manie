@@ -21,6 +21,10 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const EVENT_STARTED_MESSAGE := "Começou o %s! Toque na abóbora, à esquerda, para ver a história e as missões."
+const EVENT_STOVE_WON_MESSAGE := "Você ganhou o %s! Ele cozinha %d%% mais rápido e está guardado na Loja, aba Cozinha."
+const EVENT_STOVE_LEVEL_MESSAGE := "O %s subiu para o nível %d: agora cozinha %d%% mais rápido!"
+const EVENT_FINISHED_MESSAGE := "Você completou o %s! Prêmio: %s, guardado na Loja."
 const CRITIC_ARRIVED_MESSAGE := "O crítico gastronômico chegou! Esta semana ele avalia: %s. Sirva rápido para ganhar a estrela."
 const CRITIC_STAR_MESSAGE := "O crítico adorou! Toque na estrela que ele deixou na mesa para receber o prêmio."
 const CRITIC_UNHAPPY_MESSAGE := "O crítico foi embora sem ser servido a tempo. Ele volta outro dia."
@@ -124,6 +128,7 @@ func _ready() -> void:
 	hud.coin_pack_chosen.connect(_on_coin_pack_chosen)
 	hud.pause_toggled.connect(toggle_pause)
 	hud.closed_toggled.connect(toggle_closed)
+	hud.event_requested.connect(_on_event_requested)
 	simulation.mission_completed.connect(_on_mission_completed)
 	simulation.board_mission_completed.connect(_on_board_mission_completed)
 	simulation.achievement_unlocked.connect(_on_achievement_unlocked)
@@ -133,6 +138,10 @@ func _ready() -> void:
 	simulation.trophy_worn_out.connect(_on_trophy_worn_out)
 	simulation.stove_set_completed.connect(_on_stove_set_completed)
 	simulation.critic_arrived.connect(_on_critic_arrived)
+	simulation.event_started.connect(_on_event_started)
+	simulation.event_mission_completed.connect(_on_event_mission_completed)
+	simulation.event_stove_upgraded.connect(_on_event_stove_upgraded)
+	simulation.event_finished.connect(_on_event_finished)
 	simulation.critic_left.connect(_on_critic_left)
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
@@ -351,6 +360,8 @@ func _connect_sounds() -> void:
 	simulation.spice_used.connect(play.bind(&"achievement").unbind(2))
 	simulation.stove_set_completed.connect(play.bind(&"achievement").unbind(1))
 	simulation.critic_arrived.connect(play.bind(&"level_up").unbind(1))
+	simulation.event_mission_completed.connect(play.bind(&"achievement").unbind(2))
+	simulation.event_stove_upgraded.connect(play.bind(&"level_up").unbind(2))
 	simulation.critic_star_collected.connect(play.bind(&"achievement").unbind(1))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
@@ -387,7 +398,7 @@ func _on_daily_requested() -> void:
 ## Alguma janela de pergunta aberta? Só cabe uma por vez na tela.
 func is_dialog_open() -> bool:
 	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(), hud.missions_dialog(),
-			hud.name_dialog(), build_bar.confirm_dialog(), hud.coin_dialog(), hud.coin_info_dialog()]:
+			hud.name_dialog(), build_bar.confirm_dialog(), hud.coin_dialog(), hud.coin_info_dialog(), hud.event_dialog()]:
 		if dialog.visible:
 			return true
 	return false
@@ -490,6 +501,34 @@ func collect_critic_star() -> Dictionary:
 		FxParticles.gold_burst(particles, at)
 	state_changed.emit()
 	return reward
+
+
+## Toque no medalhão do evento: abre a janela dele (uma janela por vez).
+func _on_event_requested() -> void:
+	if not is_dialog_open():
+		hud.show_event()
+
+
+func _on_event_started(event: EventDefinition) -> void:
+	EventBus.message_posted.emit(EVENT_STARTED_MESSAGE % event.title)
+
+
+func _on_event_mission_completed(event: EventDefinition, entry: MissionBoard.Entry) -> void:
+	EventBus.message_posted.emit("%s: missão concluída! %s  +%s ouro" % [event.title, entry.title(), UiTheme.thousands(entry.reward_gold)])
+
+
+func _on_event_stove_upgraded(event: EventDefinition, level: int) -> void:
+	var stove := catalog.get_definition(event.prize_stove)
+	var cut := roundi(stove.stove_level_cuts[level - 1] * 100.0) if level <= stove.stove_level_cuts.size() else 0
+	if level == 1:
+		EventBus.message_posted.emit(EVENT_STOVE_WON_MESSAGE % [stove.display_name, cut])
+	else:
+		EventBus.message_posted.emit(EVENT_STOVE_LEVEL_MESSAGE % [stove.display_name, level, cut])
+
+
+func _on_event_finished(event: EventDefinition) -> void:
+	var prize := catalog.get_definition(event.final_prize)
+	EventBus.message_posted.emit(EVENT_FINISHED_MESSAGE % [event.title, prize.display_name if prize != null else "um enfeite"])
 
 
 func _on_critic_arrived(_customer: Customer) -> void:

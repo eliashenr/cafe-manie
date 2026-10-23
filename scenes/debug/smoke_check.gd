@@ -76,6 +76,7 @@ func _finish() -> void:
 		"receitas": sim.recipes.all().size(),
 		"bebidas": sim.drinks.size(),
 		"temperos": sim.spices.size(),
+		"eventos": sim.events.size(),
 		"clientes": sim.customer_types.size(),
 		"missoes": sim.missions.missions.size(),
 		"expansoes": sim.expansions.steps.size(),

@@ -87,7 +87,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 
 - [x] **1. Crítico gastronômico** (DT-061): uma visita por dia com tema da semana; servido rápido, deixa a estrela com ouro, XP e cupons.
 - [x] **2. Loja de troca de cupons** (DT-062): aba Cupons com 4 itens exclusivos em 2 temporadas.
-- [ ] **3. Evento de Halloween**, com historinha, missões com prazo e o Caldeirão da Bruxa que sobe de nível.
+- [x] **3. Evento de Halloween** (DT-063): historinha da Bruxa Morgana, 5 missões com prazo, o Caldeirão da Bruxa que sobe de nível e a Abóbora Gigante.
 
 ## Passe visual (18/10/2026)
 

@@ -22,6 +22,11 @@ func local_day() -> int:
 	return floori((now() + utc_offset_seconds()) / 86400.0)
 
 
+## Data no calendário local ({"year", "month", "day", ...}) de hoje mais [param day_offset] dias (DT-063).
+func local_date(day_offset := 0) -> Dictionary:
+	return Time.get_date_dict_from_unix_time((local_day() + day_offset) * 86400)
+
+
 ## Segundos até a próxima meia-noite do jogador (quando o dia local muda).
 func seconds_to_next_local_day() -> float:
 	return 86400.0 - fposmod(now() + utc_offset_seconds(), 86400.0)

@@ -47,6 +47,8 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 @export_range(0.0, 2.0) var stove_servings_bonus := 0.0
 ## XP a mais ao tirar cada prato (0.25 = +25%).
 @export_range(0.0, 2.0) var stove_xp_bonus := 0.0
+## Fogão de evento (DT-063): corte no tempo de preparo em cada nível (o 1º valor é o do nível 1).
+@export var stove_level_cuts: PackedFloat32Array = []
 
 @export_group("Troféu acelerador (DT-057)")
 ## Quanto mais rápidos ficam os fogões nas 8 casas em volta (0.25 = 25% menos tempo). 0 = não é troféu.
@@ -74,7 +76,8 @@ func is_valid() -> bool:
 
 ## Fogão com perfil (DT-058): mais rápido, com tempo máximo, mais porções ou mais XP?
 func has_stove_profile() -> bool:
-	return stove_time_cut > 0.0 or stove_max_time > 0.0 or stove_servings_bonus > 0.0 or stove_xp_bonus > 0.0
+	return stove_time_cut > 0.0 or stove_max_time > 0.0 or stove_servings_bonus > 0.0 or stove_xp_bonus > 0.0 \
+		or not stove_level_cuts.is_empty()
 
 
 ## Troféu que acelera os fogões em volta (DT-057)?

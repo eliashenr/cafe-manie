@@ -4,6 +4,38 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-063 — Evento de Halloween, com prazo e historinha
+
+**Problema:**
+- O relatório propõe eventos de 1 a 2 semanas com historinha, missões com prazo e prêmio final (proposta 3.17).
+- Propõe também o fogão de evento que sobe de nível com as missões (proposta 3.10).
+
+**Decisão:**
+- **Evento** (`EventDefinition` em `data/events`): volta todo ano nas mesmas datas.
+  - A historinha é `Array[String]`: com `PackedStringArray`, ela chegava vazia no jogo exportado (a conferência do exe pegou).
+  - O Halloween vale de 20/10 a 3/11.
+  - Aceita eventos que viram o ano, como Natal e Réveillon.
+- **Historinha:** a Bruxa Morgana conta, em 4 quadros com o retrato dela, na primeira vez de cada edição.
+- **5 missões próprias** (`data/events/halloween`): cozinhar, servir, deixar satisfeitos, ganhar ouro e pratos demorados.
+  - Cada edição recomeça do zero; as metas e o ouro acompanham o nível.
+- **Prêmio que sobe de nível:** o **Caldeirão da Bruxa**, um fogão que não se compra com ouro.
+  - Chega na 1ª missão, sobe para o nível 2 na 3ª e para o 3 na 5ª.
+  - Cada nível corta mais o tempo de preparo: 20%, 40% e 60% (`stove_level_cuts`), somando com o troféu até o limite de 80%.
+  - O nível fica para sempre, mesmo depois do evento.
+- **Prêmio final:** completar tudo dá a **Abóbora Gigante**.
+- **Na tela:**
+  - um medalhão de abóbora no HUD, só durante o evento, com os dias que faltam;
+  - tocar nele abre a janela: a historinha ou, depois, o prazo, as missões e os prêmios;
+  - avisos no começo, a cada missão e a cada nível do caldeirão.
+- **Cuidados do relatório:**
+  - missões possíveis sem pagar;
+  - o prazo é o anunciado;
+  - o prêmio não depende de sorte.
+- **O save guarda** o quadro de missões, os níveis do caldeirão, a historinha vista e o prêmio final (versão 16).
+- **Com isso, o item 6 do relatório está completo.**
+
+---
+
 ## DT-062 — Loja de troca de cupons
 
 **Problema:** os cupons do crítico (DT-061) precisavam de uso (proposta 3.15 do relatório).
@@ -14,7 +46,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - temporada 2: Árvore de Cupcakes (15) e Carrinho de Pipoca (25).
 - **As temporadas giram a cada 2 semanas** (`shop_seasons` e `weeks_per_season` em `critic.tres`). A barra diz quantos cupons você tem e quando chegam itens novos.
 - **Trocar gasta cupons, e não ouro.** O item guardado volta de graça, mesmo fora da temporada.
-- **Testes:** 581 passaram, e a cena principal subiu sem erros. A rodada de defeitos de propósito desta etapa ficou para a próxima sessão.
+- **Testes:** 581 passaram, a cena principal subiu sem erros, e os 11 defeitos inseridos de propósito foram pegos.
 
 ---
 

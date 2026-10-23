@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="EventDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/progression/event_definition.gd" id="1_event"]
+
+[resource]
+script = ExtResource("1_event")
+id = &"halloween"
+title = "Halloween no Café"
+start_month = 10
+start_day = 20
+end_month = 11
+end_day = 3
+speaker = "Bruxa Morgana"
+portrait = "retrato_bruxa"
+story = Array[String](["Buuu! Calma, sou eu, a Bruxa Morgana. Meu caldeirão quebrou bem na semana do Halloween!", "Sem caldeirão, não tem sopa de abóbora para a festa das bruxas. Você me ajuda a manter a cidade bem alimentada?", "Cumpra as missões do Halloween antes do prazo. A cada missão, eu conserto um pouco mais do meu Caldeirão da Bruxa...", "...e ele fica com você! Quanto mais missões, mais rápido ele cozinha. E quem completar tudo ganha a Abóbora Gigante!"])
+missions_dir = "res://data/events/halloween"
+prize_stove = &"witch_cauldron"
+stove_levels_at = PackedInt32Array(1, 3, 5)
+final_prize = &"giant_pumpkin"

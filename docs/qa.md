@@ -12,7 +12,7 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 576 testes
+## Cobertura atual — 593 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -25,6 +25,8 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_content_data.gd` | 10 | receitas, clientes, níveis e jogo novo: válidos, lucrativos, layout inicial legal, um balcão por fogão |
 | `unit/test_wallet.gd` | 7 | ganhos, gastos, recusas, registro com limite |
 | `unit/test_progression.gd` | 9 | curva de níveis até o **30**, cada nível pedindo mais XP; ouro só do 11 em diante; subir vários níveis de uma vez, nível máximo |
+| `unit/test_events.gd` | 8 | **evento:** dados do Halloween; datas e edição (inclusive virando o ano); quadro só no evento e dias que faltam; caldeirão na 1ª, 3ª e 5ª missão e prêmio final; caldeirão mais rápido a cada nível; historinha uma vez por edição; edição nova recomeça e mantém o caldeirão; save |
+| `unit/test_coupon_shop.gd` | 3 | **loja de troca:** itens exclusivos válidos em todas as temporadas; a loja muda a cada temporada; trocar gasta cupons, fora da temporada não, guardado volta de graça |
 | `unit/test_critic.gd` | 7 | **crítico:** configuração e prêmios; do nível 5, depois de um tempo, uma vez por dia; não vem com o café fechado; pede da aba da semana; estrela com ouro, XP e cupons uma vez só; devagar ou sem servir, sem estrela; save da visita e da estrela |
 | `unit/test_stove_sets.gd` | 5 | **multifogão:** conjunto válido e prêmio fora da venda; completa só em linha reta e na ordem; o dobro de porções; prêmio uma vez só; save do prêmio |
 | `unit/test_theme_stove.gd` | 3 | **Fogão Japonês:** 4 receitas próprias na aba Japão; só saem nele; clientes só pedem com o fogão |
@@ -51,6 +53,8 @@ Como rodar está no [README](../README.md#testes-automatizados).
 | `unit/test_achievements.gd` | 10 | conquista Mestre até o nível 30; dados válidos e progressivos; paga uma vez; vários degraus de uma vez; contadores seguem o jogo; save não paga de novo; save antigo recebe o que merecia |
 | `unit/test_daily_rewards.gd` | 11 | sequência e volta ao início; uma vez por dia; perder um dia; relógio para trás; meia-noite local; ouro, XP, móvel e revestimento; save |
 | `unit/test_sound_synth.gd` | 4 | todos os sons existem e são curtos; duração certa; sem estourar volume; sem estalo |
+| `integration/test_event_scene.gd` | 3 | medalhão só no evento, com os dias; historinha e depois as missões; aviso do caldeirão ganho |
+| `integration/test_coupon_shop_scene.gd` | 2 | aba Cupons com os itens, o preço e o saldo; trocar pela aba gasta os cupons |
 | `integration/test_critic_scene.gd` | 3 | aviso da chegada com o tema; estrela na mesa paga ao ser tocada e o contador de cupons aparece; aviso de quem sai sem ser servido |
 | `integration/test_stove_sets_scene.gd` | 2 | dica da peça e prêmio fora da loja; progresso no fogão, aviso de completo e relógio guardado |
 | `integration/test_theme_stove_scene.gd` | 2 | aba Japão no fogão comum com "Só no Fogão Japonês"; no Fogão Japonês os pratos saem |
@@ -99,6 +103,8 @@ Para garantir que a suíte pega defeitos de verdade, bugs são inseridos de prop
 - **Arte v3 do cenário (8 de 8 pegos):** xadrez sem alternar, variação mudando a cada desenho, parede sem a altura da arte, cerca fechando a entrada, cerca por baixo do salão, exterior parado na expansão, cerca sem acompanhar a entrada, enfeites sem repetir.
 - **Arte v3 dos móveis e personagens (13 de 13 pegos):** sentado ignora a cadeira, andar sem trocar de pé, espelho trocado, expressão sem paciência, balão sem camada de cima, garçom sem bandeja, prato fica na mesa depois que o cliente sai, prato fora do lado da cadeira, cadeira não vira no modo de construção, save antigo não vira as cadeiras, save atual também vira, assento entre duas mesas troca de lado, móvel ignora a rotação.
 - **Movimento (6 de 6 pegos):** salto sem caminhada, senta antes de chegar na cadeira, passada sem quique, cliente surgindo na porta, cliente sumindo na hora, passos sem alternar.
+- **Evento de Halloween (23 de 23 pegos (2 só depois de testes novos)):** evento fora da data vale, evento que vira o ano não vale, edição do ano errado, nível do caldeirão atrasado, níveis fora de ordem aceitos, dias que faltam errados, quadro do evento continua depois, edição nova não recomeça, missão do evento não conta, caldeirão não é entregue, caldeirão repetido, caldeirão não sobe de nível, sem prêmio final, missão do evento sem ouro, caldeirão sem acelerar, historinha toda vez, save sem o progresso do evento, save sem ler os níveis e a historinha, migração sem os eventos, medalhão escondido, janela pula a historinha, janela sem as missões, caldeirão ganho sem aviso.
+- **Loja de troca (11 de 11 pegos):** troca fora da temporada, troca sem cupons suficientes, troca sem gastar cupons, troca cobrada como compra, temporada ignorada, temporada que nunca muda, contagem da temporada errada, item de cupom à venda por ouro aceito, aba Cupons vazia, cartão sem o preço em cupons, barra da aba sem os cupons.
 - **Crítico (24 de 24 pegos (2 só depois de reforçar os testes)):** crítico antes do nível, crítico várias vezes no dia, crítico sem esperar, crítico com o café fechado, crítico pede fora do tema, crítico pede como cliente comum, estrela mesmo servido devagar, estrela sem cupons, estrela sem dar os cupons, estrela sem dar o ouro, estrela paga duas vezes, save sem a estrela, save sem o dia da visita, save sem ler a estrela, migração sem o crítico, mais cupons no café menos popular, temas não giram, configuração sem tema aceita, ouro do crítico não cresce, chegada sem aviso, saída sem aviso, estrela invisível, toque não pega a estrela, contador de cupons escondido.
 - **Multifogão Trem (18 de 18 pegos):** peça fora de ordem vale, conjunto incompleto vale, só vale em uma direção, conjunto completo não dobra, conjunto triplica, prêmio repetido, conjunto sem prêmio, conjunto sem aviso, mudar o café não confere o conjunto, prêmio à venda, save sem os prêmios, save sem ler os prêmios, migração sem os prêmios, loja sem a dica da peça, fogão sem o progresso do trem, fogão completo sem dizer o dobro, prêmio guardado some da loja, aviso do conjunto sem o texto.
 - **Fogão Japonês (10 de 10 pegos):** receita temática em qualquer fogão, começar sem conferir o fogão, cardápio com pratos sem o fogão, sorteio ignora o cardápio, livro sem o "Só no", livro deixa tocar no prato de outro fogão, dango sai em qualquer fogão, tempurá antes do fogão, fogão sem o nome novo, tempurá desequilibrado.
@@ -144,6 +150,15 @@ Rode o jogo (F5) com o seu save ou um jogo novo e confira:
 15. [ ] Toque no medalhão **MISSÕES**: o cartão some; toque de novo: volta. **CONQUISTAS** abre a lista.
 16. [ ] Os botões azuis da direita aproximam e afastam a câmera e ligam e desligam o som.
 17. [ ] Sensação: os personagens, o cenário e a interface parecem os das pranchas aprovadas? Algum tamanho ficou estranho? *(anote)*
+
+## Roteiro de teste manual — Evento de Halloween e loja de troca (22/10)
+
+1. [ ] Entre no jogo entre 20/10 e 3/11: aparece o aviso "Começou o Halloween no Café!" e o medalhão da abóbora, à esquerda, com os dias que faltam.
+2. [ ] Toque na abóbora: a Bruxa Morgana conta a historinha em 4 quadros (botão Próximo).
+3. [ ] Depois da historinha, a janela mostra o prazo, as 5 missões e os prêmios; tocando de novo na abóbora, a historinha não volta.
+4. [ ] Conclua a 1ª missão do evento: aparece o aviso de que você ganhou o Caldeirão da Bruxa; ele está guardado na Loja, aba Cozinha.
+5. [ ] Ponha o caldeirão na cozinha e toque nele: a dica diz que ele fica mais rápido a cada nível do evento.
+6. [ ] Com cupons do crítico, abra a Loja na aba Cupons: aparecem os itens da temporada com o preço em cupons; troque um e confira que os cupons saíram (e o ouro não).
 
 ## Roteiro de teste manual — Crítico (22/10)
 

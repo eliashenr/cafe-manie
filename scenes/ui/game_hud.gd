@@ -35,6 +35,8 @@ signal pause_toggled
 signal closed_toggled
 ## O jogador escolheu um pacote de Café Ouro na vitrine.
 signal coin_pack_chosen(pack_id: StringName)
+## O jogador tocou no medalhão do evento (DT-063).
+signal event_requested
 
 const SOFT_CURRENCY_NAME := "Café Ouro"
 const COIN_UNAVAILABLE_TEXT := ("A compra de Café Ouro com dinheiro de verdade fica disponível quando o Café Manie estiver "
@@ -74,6 +76,10 @@ const COUPON_PILL_BELOW_GOLD := Vector2(28, 62)
 const COUPON_PILL_BELOW_ENERGY := Vector2(28, 98)
 var _energy_button: Button
 var _coupon_pill: Control
+var _event_button: Button
+var _event_badge: Control
+var _event_days: Label
+var _event_dialog: EventDialog
 var _coupon_label: Label
 var _energy_label: Label
 var _energy_next: Label
@@ -238,6 +244,28 @@ func _refresh_coupons() -> void:
 	_coupon_pill.visible = coupons > 0
 	_coupon_pill.position = COUPON_PILL_BELOW_ENERGY if _energy_button.visible else COUPON_PILL_BELOW_GOLD
 	_coupon_label.text = UiTheme.thousands(coupons)
+
+
+## Medalhão do evento (DT-063): aparece enquanto um evento vale, com os dias que faltam.
+func _refresh_event() -> void:
+	var event := simulation.current_event()
+	_event_button.visible = event != null
+	if event != null:
+		var days := simulation.event_days_left()
+		_event_days.text = "%dd" % days if days > 0 else "hoje"
+
+
+func is_event_visible() -> bool:
+	return _event_button.visible
+
+
+func event_dialog() -> EventDialog:
+	return _event_dialog
+
+
+func show_event() -> void:
+	_event_dialog.simulation = simulation
+	_event_dialog.show_event()
 
 
 ## Cupons que o contador mostra, ou -1 se ele está escondido (para os testes).
@@ -406,6 +434,13 @@ func _build_medallions() -> void:
 	_daily_badge = _badge("1")
 	_place(gift, _daily_badge, Vector2(56, -4), Vector2(24, 24))
 	_medallion("AchievementsButton", "conquistas", "CONQUISTAS", Vector2(46, 378), show_achievements)
+	_event_button = _medallion("EventButton", "evento", "HALLOWEEN", Vector2(46, 478), func() -> void: event_requested.emit())
+	_event_badge = _badge("")
+	_place(_event_button, _event_badge, Vector2(50, -4), Vector2(36, 24))
+	_event_days = _event_badge.get_child(0) as Label
+	_event_days.name = "EventDays"
+	_event_days.size = Vector2(36, 24)
+	_event_button.visible = false
 	_build_mission_card()
 
 
@@ -541,6 +576,8 @@ func _build_toast() -> void:
 
 func _build_dialogs() -> void:
 	_build_achievements_dialog()
+	_event_dialog = EventDialog.new()
+	_add_dialog(_event_dialog)
 	_missions_dialog = MissionsPanel.new()
 	_add_dialog(_missions_dialog)
 	_build_coin_dialogs()
@@ -896,6 +933,7 @@ func refresh() -> void:
 	_beauty_bar.value = beauty / 100.0
 	_refresh_energy()
 	_refresh_coupons()
+	_refresh_event()
 	_refresh_daily()
 	_refresh_mission()
 

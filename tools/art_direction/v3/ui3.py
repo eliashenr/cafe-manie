@@ -7,6 +7,7 @@ from icons3 import *  # noqa: F401,F403
 from icons3 import glyph as _canvas_glyph, _gloss
 from hud3 import medallion, ribbon, portrait, CHEF_BIA, LEO
 import critic3
+import halloween3
 
 GLYPH_STROKE = 'fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"'
 
@@ -135,8 +136,9 @@ BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute"
            ("rotate", "blue"), ("move", "blue"), ("store", "blue"), ("sell", "orange"), ("serve", "green"), ("trash", "red"),
            ("check", "green"), ("close", "red"), ("left", "blue"), ("right", "blue")]
 
-MEDALLIONS = {"missoes": medallion_missions, "presente": medallion_gift, "conquistas": medallion_trophy}
+MEDALLIONS = {"missoes": medallion_missions, "presente": medallion_gift, "conquistas": medallion_trophy,
+              "evento": halloween3.medallion_event}
 
-RIBBONS = {"missoes": (84, "#ff4d6d"), "presente": (88, "#b06bff"), "conquistas": (106, "#26a93a")}
+RIBBONS = {"missoes": (84, "#ff4d6d"), "presente": (88, "#b06bff"), "conquistas": (106, "#26a93a"), "evento": (106, "#ff8a1a")}
 
 STRIPES = {"xp": ("#ffe34d", "#ffb400"), "beleza": ("#ffa3cf", "#ff5fa2")}

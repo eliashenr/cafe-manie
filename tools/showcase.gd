@@ -10,7 +10,7 @@ extends SceneTree
 ## fechado (a placa FECHADO na porta), estragado (o café esquecido no fogão estragou, com o Jogar fora),
 ## temperos (a lasanha cozinhando com os temperos no painel), trofeu (um troféu de ouro entre os fogões, escolhido),
 ## trem (o Multifogão Trem completo, com a locomotiva escolhida), critico (o crítico sentado, a estrela numa mesa e os
-## cupons), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
+## cupons), evento (a janela do Halloween na historinha; evento:missoes nas missões), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio)
 ## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30).
 ##
@@ -42,6 +42,8 @@ func _initialize() -> void:
 	if japanese:
 		_panel = "livro:japao:1:30"
 	var clock = load("res://core/time/manual_clock.gd").new()
+	if _panel.begins_with("evento"):
+		clock.time = Time.get_unix_time_from_datetime_string("2026-10-25T12:00:00")  # durante o Halloween
 	var catalog = load("res://core/furniture/furniture_catalog.gd").load_from()
 	var layout = load("res://core/cafe/cafe_layout.gd").new(Vector2i(8, 8), Vector2i(7, 4))
 	var simulation = load("res://core/service/cafe_simulation.gd").with_game_data(clock, layout, catalog, 7)
@@ -190,6 +192,13 @@ func _set_panel() -> void:
 				_cafe.build_bar.show_recipe_book(StringName(tab))
 			if _panel.get_slice_count(":") > 2:
 				_cafe.build_bar.show_recipe_page(int(_panel.get_slice(":", 2)) - 1)
+		"evento":
+			_keep_window = "EventDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			if _panel.get_slice(":", 1) == "missoes":
+				_cafe.simulation.mark_event_story_seen()
+			_cafe.hud.show_event()
 		"missoes":
 			_keep_window = "MissionsDialog"
 			for window: Window in _cafe.find_children("*", "Window", true, false):

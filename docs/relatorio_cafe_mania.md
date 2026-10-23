@@ -245,7 +245,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 3. **Feito em 22/10:** livro com abas e domínio (3.13, DT-053) e 25 receitas novas, uma a cada nível até o 30 (3.3, DT-053 e DT-054).
 4. **Feito em 22/10:** comida que estraga e temperos (3.4, DT-055 e DT-056) e troféus que aceleram os fogões em volta (3.11, DT-057).
 5. **Feito em 22/10:** fogões com perfil (DT-058), Fogão Japonês com receitas próprias (DT-059) e Multifogão Trem (DT-060), da 3.10; o fogão de evento vem com o Halloween.
-6. **Em andamento:** crítico com cupons (3.5 e 3.15, DT-061), loja de troca e o primeiro evento com prazo (3.17).
+6. **Feito em 22/10:** crítico com cupons (DT-061), loja de troca (DT-062) e o evento de Halloween com prazo, historinha e fogão de evento (3.17 e 3.10, DT-063).
 7. **Depois:** noite no café (3.12).
 8. **Depois:** plantação e frozen yogurt (3.14), atrações e palco (3.7 e 3.16).
 9. **Depois:** portas, coleções completas e pátio (3.8), avatar (3.9).
