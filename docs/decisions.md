@@ -4,6 +4,28 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-073 — 2º andar: planejado, ainda não feito
+
+**Problema:**
+- O relatório propõe um 2º andar: mais um piso de café, por cima do térreo (proposta 3.18).
+- Hoje tudo parte de **um** grid por café: a navegação, o desenho das paredes e da mureta, a profundidade dos móveis, as expansões, o terraço, o chão sujo e o save.
+
+**Decisão:**
+- **Não fazer agora.** O item fica planejado e documentado; as outras partes do item 10 seguem.
+- **Por quê:**
+  - um segundo andar mexe em quase todos os sistemas de uma vez;
+  - um erro nele pode quebrar saves e o atendimento de quem já joga;
+  - pede uma etapa só para ele, com mais tempo de teste.
+- **Como seria (para quando o PO pedir):**
+  1. **Regra:** `CafeSimulation` passa a ter uma lista de andares, cada um com o seu `CafeLayout` e a sua navegação. A cozinha, os balcões e os garçons continuam no térreo.
+  2. **Escada:** um móvel novo (2x1) que liga os andares. Os clientes que não acham cadeira no térreo sobem por ela, e os garçons levam os pratos.
+  3. **Tela:** um botão "Térreo / 1º andar" troca o andar que aparece. O de baixo fica escurecido atrás, como num corte.
+  4. **Save:** `layout` vira `floors` (lista), com migração que põe o café de hoje como o térreo.
+  5. **Liberar:** compra no nível 20, como uma expansão grande.
+  6. **Testes:** navegação entre andares, garçom subindo, save com dois andares e migração.
+
+---
+
 ## DT-072 — Filial na praia (versão simplificada)
 
 **Problema:**

@@ -4,6 +4,11 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 10 do relatório, etapa 3: 2º andar** (DT-073) — **planejado, não feito**
+
+- Ele mexe em quase todos os sistemas do jogo de uma vez (navegação, paredes, móveis, expansões e save).
+- Por isso, deixei o passo a passo pronto em `docs/decisions.md` (DT-073), para virar uma etapa só dele quando você pedir.
+
 **Item 10 do relatório, etapa 2: filial na praia** (DT-072, versão simplificada)
 
 - Novo botão **Cidade** na faixa de baixo: abre a janela da **Filial na Praia**.
