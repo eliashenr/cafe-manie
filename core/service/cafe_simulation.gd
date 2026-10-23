@@ -92,6 +92,7 @@ const EVENTS_DIR := "res://data/events"
 const NIGHT_PATH := "res://data/config/night.tres"
 const FRUITS_DIR := "res://data/fruits"
 const STAGE_PATH := "res://data/config/stage.tres"
+const DOORS_DIR := "res://data/doors"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -117,6 +118,8 @@ var stove_sets: StoveSets
 var critic_config: CriticConfig
 ## Estrela que o crítico deixou na mesa, esperando o toque: {"cell", "gold", "xp", "coupons"}; vazio = nenhuma.
 var critic_star := {}
+## Portas da entrada (DT-067), uma por coleção.
+var doors: DefinitionStore
 ## Atrações e palco (DT-066): o ouro guardado nas atrações, o show e o tempo até o próximo.
 var attractions: Attractions
 var stage_config: StageConfig
@@ -221,6 +224,9 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	layout.in_use_provider = is_in_use
 	layout.agent_cells_provider = agent_cells
 	popularity = config.popularity_start
+	doors = DefinitionStore.new(func(a: DoorDefinition, b: DoorDefinition) -> bool:
+		return a.price < b.price or (a.price == b.price and String(a.id) < String(b.id)))
+	doors.load_dir(DOORS_DIR, DoorDefinition)
 	set_surfaces(SurfaceCatalog.load_from())
 	collections = CollectionCatalog.load_from()
 	drinks = DrinkCatalog.load_from()
@@ -321,6 +327,10 @@ func set_surfaces(catalog: SurfaceCatalog) -> void:
 		if start != null:
 			style.own(start.id)
 			style.apply(start)
+	var door := default_door()
+	if door != null:
+		style.own(door.id)
+		style.set_door(door.id)
 
 
 ## Troca a lista de conquistas (os contadores continuam).
@@ -583,6 +593,41 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Portas (DT-067) ---------------------------------------------------------
+
+## A porta inicial (de graça), ou null.
+func default_door() -> DoorDefinition:
+	if doors == null:
+		return null
+	for door: DoorDefinition in doors.all():
+		if door.is_default:
+			return door
+	return null
+
+
+## A porta da entrada agora (a inicial, se a do save não existe mais).
+func current_door() -> DoorDefinition:
+	var door := doors.get_definition(style.door_id) as DoorDefinition
+	return door if door != null else default_door()
+
+
+## Põe a porta na entrada: a que já é do jogador troca de graça; a nova é comprada (nível e ouro).
+func use_door(door_id: StringName) -> int:
+	var door := doors.get_definition(door_id) as DoorDefinition
+	if door == null:
+		return ServiceResult.UNKNOWN_ITEM
+	if not style.owns(door_id):
+		if door.min_level > progression.level:
+			return ServiceResult.DOOR_LOCKED
+		if not wallet.can_afford(Wallet.SOFT, door.price):
+			return ServiceResult.NOT_ENOUGH_GOLD
+		if door.price > 0:
+			wallet.spend(Wallet.SOFT, door.price, "Porta: %s" % door.display_name)
+		style.own(door_id)
+	style.set_door(door_id)
+	return ServiceResult.OK
 
 
 # --- Atrações e palco (DT-066) ----------------------------------------------
@@ -1239,6 +1284,8 @@ func beauty() -> int:
 	var total := 0
 	for placement in layout.placements():
 		total += placement.definition.beauty
+	if doors != null and current_door() != null:
+		total += current_door().beauty
 	if surfaces == null:
 		return total
 	var floor_sum := 0.0

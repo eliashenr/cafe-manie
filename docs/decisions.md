@@ -4,6 +4,38 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-067 — Portas por coleção e coleções completas
+
+**Problema:**
+- O relatório propõe a porta como item da loja, com modelos por coleção, e coleções completas, cada uma com fogão, balcão, porta e janela próprios (proposta 3.8).
+- Faltavam 5 fogões, 5 balcões e 12 janelas, e a porta era fixa.
+
+**Decisão:**
+- **Porta:** `DoorDefinition` em `data/doors`, uma por coleção (13 ao todo):
+  - a **Porta Clássica** é a inicial e grátis;
+  - as outras custam de 450 a 700 de ouro, liberam do nível 3 ao 7 e somam 6 de beleza;
+  - comprada uma vez, trocar para ela é grátis e na hora;
+  - comprar pede confirmação, com Cancelar já selecionado.
+- **Onde fica:**
+  - na loja, na aba **Paredes**, filtrável por coleção;
+  - a fachada desenha a porta escolhida, aberta ou com a plaquinha FECHADO;
+  - cada modelo pinta o batente e o toldo com as cores da coleção.
+- **Save:**
+  - o estilo guarda a porta em `"door"`, sem mudar a versão;
+  - um save sem porta, ou com uma que não existe ou não foi comprada, volta para a clássica.
+- **Coleções completas:**
+  - **5 fogões novos**, com perfis leves:
+    - Fliperama (anos 80): -15% de tempo;
+    - Discoteca (balada): +30% de XP;
+    - Verde e Amarelo (brasileiro): +15% de porções;
+    - a Lenha (country): +10% de porções;
+    - Talavera (mexicano): -10% de tempo.
+  - **5 balcões novos:** Groovy, Fliperama, Verde e Amarelo, Bistrô e Bambu.
+  - **12 janelas novas:** cada coleção tem pelo menos uma janela que deixa a luz entrar.
+  - Um teste confere que toda coleção tem fogão, balcão, porta e janela à venda.
+
+---
+
 ## DT-066 — Atrações e palco
 
 **Problema:**

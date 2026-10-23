@@ -4,6 +4,15 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 9 do relatório, etapa 1: portas por coleção e coleções completas** (DT-067)
+
+- **Portas:** a porta da entrada virou item da loja, na aba **Paredes**, com um modelo para cada uma das 13 coleções.
+  - A clássica é a inicial e grátis. As outras custam ouro e somam beleza.
+  - Depois de comprada, trocar é grátis.
+  - A fachada mostra a porta escolhida.
+- **Coleções completas:** toda coleção agora tem fogão, balcão, porta e janela próprios.
+  - Entraram 5 fogões, 5 balcões e 12 janelas.
+
 **Item 8 do relatório, etapa 2: atrações e palco** (DT-066). **Com ela, o item 8 está completo.**
 
 - **Atrações:** a jukebox, o fliperama e as novas **Máquina de Garra** (nível 10) e **Jogo de Argolas** (nível 12).
@@ -369,6 +378,23 @@
 
 🧪 **TESTADO**
 
+- **Portas e coleções completas: 627 testes automatizados PASSARAM.**
+  - **Regra:**
+    - toda coleção tem uma porta válida, e só a clássica é inicial e grátis;
+    - toda coleção tem fogão, balcão e janela à venda;
+    - o café novo começa com a clássica;
+    - comprar cobra uma vez, e trocar é grátis;
+    - porta bloqueada, sem ouro ou desconhecida é recusada sem cobrar;
+    - a porta soma beleza;
+    - o save guarda a porta, e porta sem compra ou inexistente volta para a clássica.
+  - **Na tela:**
+    - toda porta tem a arte aberta e fechada;
+    - a loja mostra "Na entrada", "Comprada", o nível e o preço;
+    - comprar pergunta, com Cancelar selecionado, e a fachada desenha a porta nova;
+    - voltar para uma já comprada é na hora.
+  - **Defeitos inseridos de propósito: 22 de 22 pegos (3 só depois de reforçar um teste).**
+  - **Foto conferida:** a loja na coleção Japonês, com a Porta Japonesa na entrada e a Janela Shoji.
+  - **Cena principal: PASSOU**, zero erros.
 - **Atrações e palco: 616 testes automatizados PASSARAM.**
   - **Regra:** dados válidos; o cliente vai brincar, libera a cadeira, deixa o ouro e vai embora; sem chance ou com a atração cheia, vai embora direto; o ouro não passa da capacidade; coletar dá o ouro e esvazia; a atração que sai manda embora quem ia brincar; o palco faz show depois do intervalo, acelera as chegadas e acaba, e com o café fechado não tem show; o save guarda o ouro.
   - **Na tela:** a atração com ouro mostra a moeda e o toque coleta, com a barra dizendo quanto há; no show, as notas sobem e o aviso aparece.

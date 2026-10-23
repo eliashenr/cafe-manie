@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WallItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/wall_item_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"janelao_brasileiro"
+display_name = "Janelão Brasileiro"
+art = "janelao_brasileiro"
+collection = &"brasileiro"
+lets_light_in = true
+price = 130
+min_level = 4
+beauty = 6

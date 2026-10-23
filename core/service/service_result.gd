@@ -44,4 +44,5 @@ enum {
 	NO_FRUIT,           ## faltam frutas para o frozen yogurt
 	NOT_AN_ATTRACTION,  ## o móvel escolhido não é uma atração (DT-066)
 	NOTHING_TO_COLLECT, ## a atração ainda não tem ouro
+	DOOR_LOCKED,        ## nível insuficiente para a porta (DT-067)
 }

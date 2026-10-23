@@ -827,6 +827,9 @@ func _apply_style() -> void:
 	wall_view.painted = wall_segments
 	front_view.wall_style = wall_view.wall_style
 	front_view.painted = wall_segments
+	var door := simulation.current_door()
+	if door != null:
+		front_view.door_base = door.sprite_base
 	var hung := {}
 	var items := style.hung_items()
 	for wall_segment: String in items:
@@ -1042,6 +1045,17 @@ func _show_paint_preview() -> void:
 
 
 ## Compra (se preciso) e aplica um revestimento. A confirmação da compra fica na barra.
+## Põe a porta escolhida na entrada (DT-067); comprar já pediu confirmação pela barra.
+func use_door(door_id: StringName) -> int:
+	var door: DoorDefinition = simulation.doors.get_definition(door_id)
+	var buying := door != null and not simulation.style.owns(door_id) and door.price > 0
+	last_service_result = simulation.use_door(door_id)
+	if last_service_result == ServiceResult.OK and buying:
+		EventBus.message_posted.emit("%s na entrada! -%d ouro" % [door.display_name, door.price])
+	state_changed.emit()
+	return last_service_result
+
+
 func use_surface(surface_id: StringName) -> int:
 	var definition := simulation.surfaces.get_definition(surface_id)
 	if definition == null:

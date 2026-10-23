@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WallItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/wall_item_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"janela_country"
+display_name = "Janela de Fazenda"
+art = "janela_country"
+collection = &"country"
+lets_light_in = true
+price = 110
+min_level = 4
+beauty = 5

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DoorDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/door_definition.gd" id="1_door"]
+
+[resource]
+script = ExtResource("1_door")
+id = &"door_mexicano"
+display_name = "Porta Mexicana"
+collection = &"mexicano"
+is_default = false
+sprite_base = "enfeite_porta_mexicano"
+price = 550
+min_level = 5
+beauty = 6

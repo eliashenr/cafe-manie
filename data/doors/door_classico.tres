@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DoorDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/door_definition.gd" id="1_door"]
+
+[resource]
+script = ExtResource("1_door")
+id = &"door_classico"
+display_name = "Porta Clássica"
+collection = &"classico"
+is_default = true
+sprite_base = "enfeite_porta"
+price = 0
+min_level = 1
+beauty = 0

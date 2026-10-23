@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DoorDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/door_definition.gd" id="1_door"]
+
+[resource]
+script = ExtResource("1_door")
+id = &"door_festa"
+display_name = "Porta de Festa"
+collection = &"festa"
+is_default = false
+sprite_base = "enfeite_porta_festa"
+price = 500
+min_level = 4
+beauty = 6

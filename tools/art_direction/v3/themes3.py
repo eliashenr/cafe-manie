@@ -831,6 +831,15 @@ STOVES = {
     "stove_blue": dict(enamel="#2f5fbf", top_color="#ffffff", panel=("#fff3c4", "#e0c25a", "#9a7a2e"), knob="#e0c25a",
                        door=("#5a86e0", "#1d3f86"), handle="#e0c25a"),
     "stove_yellow": dict(enamel="#ffcf3f", top_color="#ffffff", knob="#2a2c34", door=("#ffe48a", "#e0a800"), handle="#2a2c34"),
+    # coleções completas (DT-067)
+    "stove_arcade": dict(enamel="#8a4fd1", top_color="#3ee0ff", panel=("#3a3c46", "#1d1d24", "#0e0e14"), knob="#ff3d7f",
+                         door=("#b07bff", "#4a2a8a"), handle="#3ee0ff"),
+    "stove_disco": dict(enamel="#1d1d2b", top_color="#ff4dd2", panel=("#e8edf2", "#b9c3cf", "#6a7280"), knob="#ff4dd2",
+                        door=("#3a3a4a", "#0e0e14"), handle="#b06bff"),
+    "stove_samba": dict(enamel="#2fae3a", top_color="#ffd23f", knob="#1d4fa8", door=("#5fd06a", "#1d7a26"), handle="#ffd23f"),
+    "stove_wood": dict(enamel="#b8432f", top_color="#e0b97e", panel=("#e0b97e", "#a86d40", "#6a4a2a"), knob="#3a2a1a",
+                       door=("#d9734a", "#7a2a1e"), handle="#3a2a1a"),
+    "stove_talavera": dict(enamel="#f4f0e6", top_color="#2f6fd9", knob="#e0303a", door=("#5a8ae0", "#1d3f86"), handle="#ffd23f"),
 }
 COUNTERS = {
     "counter_steel": dict(body="#b9c3cf", top="#eef2f6", face="plain", rim="#c9d3de", veins=False),
@@ -840,6 +849,12 @@ COUNTERS = {
     "counter_tile": dict(body="#2f6fd9", top="#ffffff", face="panels", rim="#ffffff", veins=False),
     "counter_neon": dict(body="#1d1d2b", top="#2a2a3a", face="plain", rim="#ff4dd2", veins=False),
     "counter_red": dict(body="#e0303a", top="#ffffff", face="panels", rim="#c9d3de"),
+    # coleções completas (DT-067)
+    "counter_groovy": dict(body="#f07a1a", top="#ffd27a", face="panels", rim="#a8522a", veins=False),
+    "counter_arcade": dict(body="#4a2a8a", top="#2a2a3a", face="plain", rim="#3ee0ff", veins=False),
+    "counter_samba": dict(body="#2fae3a", top="#ffffff", face="panels", rim="#ffd23f"),
+    "counter_bistro": dict(body="#2a2a33", top="#ffffff", face="panels", rim="#d9b44a"),
+    "counter_bamboo": dict(body="#d9b47a", top="#f4ead6", face="planks", rim="#8a5a2e", veins=False),
 }
 
 DECOR = {

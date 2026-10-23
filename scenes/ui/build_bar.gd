@@ -67,6 +67,7 @@ const SERVICE_MESSAGES := {
 	ServiceResult.NO_FRUIT: "Faltam frutas: colha nos pés de fruta",
 	ServiceResult.NOT_AN_ATTRACTION: "Esse móvel não é uma atração",
 	ServiceResult.NOTHING_TO_COLLECT: "Ainda não tem ouro: espere os clientes brincarem",
+	ServiceResult.DOOR_LOCKED: "Essa porta ainda não está liberada no seu nível",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -402,6 +403,7 @@ func _shop_items() -> Array:
 			var kind := SurfaceDefinition.Kind.FLOOR if shop_tab == ShopTab.FLOOR else SurfaceDefinition.Kind.WALL
 			items.assign(cafe.simulation.surfaces.all(kind))
 			if shop_tab == ShopTab.WALL:
+				items.append_array(cafe.simulation.doors.all())
 				items.append_array(cafe.simulation.wall_items.all())
 				items.append(_remove_item_card())
 		_:
@@ -605,6 +607,8 @@ func _show_shop() -> void:
 			_add_furniture_item(item)
 		elif item is WallItemDefinition:
 			_add_wall_item(item)
+		elif item is DoorDefinition:
+			_add_door_item(item)
 		else:
 			_add_surface_item(item)
 	var pages := shop_page_count()
@@ -745,6 +749,41 @@ func _add_wall_item(wall_item: WallItemDefinition) -> void:
 		else:
 			item.show_state(wall_item.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, wall_item.price))
 		item.disabled = locked)
+
+
+## Porta da entrada na loja (DT-067): a que está na entrada, as já compradas (trocar é grátis) e o preço das outras.
+func _add_door_item(door: DoorDefinition) -> void:
+	var simulation := cafe.simulation
+	var item := _add_item("Door_" + String(door.id), door.display_name, ArtSprites.get_sprite(door.sprite_base + "_L"),
+		func() -> void: ask_use_door(door.id))
+	_updaters.append(func() -> void:
+		var owned := simulation.style.owns(door.id)
+		var locked := not owned and door.min_level > simulation.progression.level
+		if simulation.current_door() == door:
+			item.text = "%s\nNa entrada" % door.display_name
+			item.show_state(0, 0, "Na entrada", true)
+		elif owned:
+			item.text = "%s\nComprada" % door.display_name
+			item.show_state(0, 0, "Comprada", true)
+		elif locked:
+			item.text = "%s\nNível %d" % [door.display_name, door.min_level]
+			item.show_state(door.price, door.min_level, "", false)
+		else:
+			item.text = "%s\n%d ouro" % [door.display_name, door.price]
+			item.show_state(door.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, door.price))
+		item.disabled = locked or simulation.current_door() == door)
+
+
+## Porta já comprada: troca na hora. Nova: comprar pede confirmação.
+func ask_use_door(door_id: StringName) -> void:
+	var door: DoorDefinition = cafe.simulation.doors.get_definition(door_id)
+	if door == null:
+		return
+	if cafe.simulation.style.owns(door_id) or door.price == 0:
+		cafe.use_door(door_id)
+		return
+	_ask("Comprar porta?", "Comprar a %s por %d Café Ouro? Depois de comprada, trocar é grátis." % [door.display_name, door.price],
+		"Comprar", func() -> void: cafe.use_door(door_id))
 
 
 func _add_surface_item(surface: SurfaceDefinition) -> void:

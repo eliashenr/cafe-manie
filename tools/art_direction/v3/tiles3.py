@@ -794,11 +794,19 @@ def wall_radio(D):
     return "".join(o)
 
 
-def wall_round_window(D):
-    """Janela redonda (escotilha) com céu e moldura branca."""
+def wall_round_window(D, frame="#ffffff", sky=("#6cc8ff", "#e3f6ff"), lattice=False):
+    """Janela redonda (escotilha) com céu e moldura (branca na clássica; as coleções mudam as cores, DT-067).
+    lattice: janela japonesa redonda, com papel de arroz e treliça de madeira no lugar do céu."""
     cx, cy, r = L / 2, -68, 13
-    o = [f'<circle cx="{f(cx)}" cy="{cy}" r="{r + 4}" fill="#ffffff" stroke="{INK3}" stroke-width="1.2"/>']
-    o.append(f'<circle cx="{f(cx)}" cy="{cy}" r="{r}" fill="{D.lin([(0, "#6cc8ff"), (1, "#e3f6ff")])}" stroke="{INK3}" stroke-width="0.9"/>')
+    o = [f'<circle cx="{f(cx)}" cy="{cy}" r="{r + 4}" fill="{frame}" stroke="{INK3}" stroke-width="1.2"/>']
+    o.append(f'<circle cx="{f(cx)}" cy="{cy}" r="{r}" fill="{D.lin([(0, sky[0]), (1, sky[1])])}" stroke="{INK3}" stroke-width="0.9"/>')
+    if lattice:
+        bars = []
+        for k in (-2, -1, 0, 1, 2):
+            half = math.sqrt(max(r * r - (k * 5.2) ** 2, 0.0))
+            bars.append(f"M{f(cx + k * 5.2)},{f(cy - half)} V{f(cy + half)} M{f(cx - half)},{f(cy + k * 5.2)} H{f(cx + half)}")
+        o.append(f'<path d="{" ".join(bars)}" stroke="{shade(frame, 0.15)}" stroke-width="1.1"/>')
+        return "".join(o)
     o.append(f'<ellipse cx="{f(cx - 4)}" cy="{cy - 4}" rx="6" ry="3" fill="#ffffff" opacity="0.95"/>')
     o.append(f'<path d="M{f(cx - r)},{cy + 5} Q{f(cx)},{cy - 1} {f(cx + r)},{cy + 4} L{f(cx + r - 2)},{cy + 8} A{r},{r} 0 0,1 {f(cx - r + 2)},{cy + 8} Z" fill="#8fe06a"/>')
     o.append(f'<path d="M{f(cx - 7)},{cy + 6} L{f(cx + 2)},{cy - 9}" stroke="#ffffff" stroke-width="2.4" opacity="0.6"/>')
@@ -808,17 +816,17 @@ def wall_round_window(D):
     return "".join(o)
 
 
-def wall_arched_window(D):
-    """Janelão em arco, alto, com vidro dividido e floreira."""
+def wall_arched_window(D, frame="#ffffff", box=("#e07a2e", "#b0532a")):
+    """Janelão em arco, alto, com vidro dividido e floreira (moldura e floreira nas cores da coleção, DT-067)."""
     u0, u1, z0, z1 = 8, L - 8, 38, 90
     w = u1 - u0
     arch = f"M{u0},{-z0} V{-z1 + w / 2} A{w / 2},{w / 2} 0 0,1 {u1},{-z1 + w / 2} V{-z0} Z"
-    o = [f'<path d="M{u0 - 4},{-z0 + 1} V{-z1 + w / 2} A{w / 2 + 4},{w / 2 + 4} 0 0,1 {u1 + 4},{-z1 + w / 2} V{-z0 + 1} Z" fill="#ffffff" stroke="{INK3}" stroke-width="1.2"/>']
+    o = [f'<path d="M{u0 - 4},{-z0 + 1} V{-z1 + w / 2} A{w / 2 + 4},{w / 2 + 4} 0 0,1 {u1 + 4},{-z1 + w / 2} V{-z0 + 1} Z" fill="{frame}" stroke="{INK3}" stroke-width="1.2"/>']
     o.append(f'<path d="{arch}" fill="{D.lin([(0, "#6cc8ff"), (0.7, "#c8ecff"), (1, "#eaf9ff")])}" stroke="{INK3}" stroke-width="0.9"/>')
     o.append(f'<path d="M{u0},{-z0 - 10} Q{u0 + w * 0.4},{-z0 - 20} {u1},{-z0 - 13} V{-z0} H{u0} Z" fill="#8fe06a" opacity="0.9"/>')
     o.append(f'<path d="M{f(L / 2)},{-z1} V{-z0} M{u0},{-z0 - 22} H{u1}" stroke="#ffffff" stroke-width="2.6"/>')
     o.append(f'<path d="M{u0 + 4},{-z0 - 4} L{u0 + w * 0.45},{-z1 + 14}" stroke="#ffffff" stroke-width="2.6" opacity="0.6"/>')
-    o.append(f'<rect x="{u0 - 6}" y="{-z0}" width="{w + 12}" height="7" rx="2" fill="{D.lin([(0, "#e07a2e"), (1, "#b0532a")])}" stroke="{INK3}" stroke-width="1"/>')
+    o.append(f'<rect x="{u0 - 6}" y="{-z0}" width="{w + 12}" height="7" rx="2" fill="{D.lin([(0, box[0]), (1, box[1])])}" stroke="{INK3}" stroke-width="1"/>')
     for i, c in enumerate(("#ff4d8d", "#ffd23f", "#ff7a2f", "#b06bff")):
         x = u0 + 2 + i * (w - 4) / 3
         o.append(f'<circle cx="{f(x)}" cy="{-z0 - 3}" r="2.6" fill="{c}" stroke="{INK3}" stroke-width="0.6"/>')
@@ -887,21 +895,34 @@ DECORATIONS.update({
     "neon_xicara": lambda D, side: wall_neon(D),
     "espelho": lambda D, side: wall_mirror(D),
     "planta_pendurada": lambda D, side: wall_hanging_plant(D),
+    # janelas das coleções (DT-067)
+    "janela_diner": lambda D, side: wall_round_window(D, frame="#e0303a"),
+    "janela_neon": lambda D, side: wall_round_window(D, frame="#b06bff", sky=("#2a1440", "#6a3ab0")),
+    "janela_country": lambda D, side: wall_window(D, "#b8432f"),
+    "janela_festa": lambda D, side: wall_window(D, "#b06bff"),
+    "janelao_italiano": lambda D, side: wall_arched_window(D, frame="#2f8a3a", box=("#c47a3a", "#8a4a1e")),
+    "janela_shoji": lambda D, side: wall_round_window(D, frame="#8a5a2e", sky=("#fffaf0", "#f4e6cc"), lattice=True),
+    "janelao_mexicano": lambda D, side: wall_arched_window(D, frame="#2f6fd9", box=("#ffd23f", "#e0303a")),
+    "janela_groovy": lambda D, side: wall_round_window(D, frame="#f07a1a", sky=("#ffb04a", "#ffe7a0")),
+    "janela_arcade": lambda D, side: wall_round_window(D, frame="#3ee0ff", sky=("#4a2a8a", "#ff3d7f")),
+    "janelao_brasileiro": lambda D, side: wall_arched_window(D, frame="#2fae3a", box=("#ffd23f", "#2f6fd9")),
+    "janela_industrial": lambda D, side: wall_window(D, "#4a4d5a"),
+    "janelao_frances": lambda D, side: wall_arched_window(D, frame="#2a2a33", box=("#ffe7a0", "#8a6a2e")),
 })
 
 
-def wall_doorway(D, closed=False):
-    """Entrada na parede da frente: batente branco com toldo listrado e a plaquinha "ABERTO" (o vão fica livre).
-    Com o café fechado, a plaquinha diz "FECHADO", em vermelho."""
+def wall_doorway(D, closed=False, frame=("#ffffff", "#dfe6ee"), awning=("#ffffff", "#ff4d5e"), name="entrada"):
+    """Entrada na parede da frente: batente com toldo listrado e a plaquinha "ABERTO" (o vão fica livre).
+    Com o café fechado, a plaquinha diz "FECHADO", em vermelho. Cada coleção pinta o batente e o toldo (DT-067)."""
     top = 78
     o = []
     for x0 in (0.5, L - 5.5):
-        o.append(f'<rect x="{f(x0)}" y="{-top}" width="5" height="{top}" fill="{D.lin([(0, "#ffffff"), (1, "#dfe6ee")], 0, 0, 1, 0)}" '
+        o.append(f'<rect x="{f(x0)}" y="{-top}" width="5" height="{top}" fill="{D.lin([(0, frame[0]), (1, frame[1])], 0, 0, 1, 0)}" '
                  f'stroke="{INK3}" stroke-width="1.1"/>')
-    o.append(f'<rect x="-1" y="{-top - 6}" width="{f(L + 2)}" height="7" rx="1.5" fill="#ffffff" stroke="{INK3}" stroke-width="1.1"/>')
-    # toldo listrado vermelho e branco por cima do batente
-    stripes = D.raw("toldo_entrada", '<pattern id="toldo_entrada" patternUnits="userSpaceOnUse" width="8" height="8">'
-                    '<rect width="8" height="8" fill="#ffffff"/><rect width="4" height="8" fill="#ff4d5e"/></pattern>')
+    o.append(f'<rect x="-1" y="{-top - 6}" width="{f(L + 2)}" height="7" rx="1.5" fill="{frame[0]}" stroke="{INK3}" stroke-width="1.1"/>')
+    # toldo listrado por cima do batente
+    stripes = D.raw(f"toldo_{name}", f'<pattern id="toldo_{name}" patternUnits="userSpaceOnUse" width="8" height="8">'
+                    f'<rect width="8" height="8" fill="{awning[0]}"/><rect width="4" height="8" fill="{awning[1]}"/></pattern>')
     o.append(f'<path d="M-3,{-top - 6} L{f(L + 3)},{-top - 6} L{f(L + 1)},{-top + 6} Q{f(L * 0.75)},{-top + 10} {f(L / 2)},{-top + 6} '
              f'Q{f(L * 0.25)},{-top + 10} -1,{-top + 6} Z" fill="{stripes}" stroke="{INK3}" stroke-width="1"/>')
     # plaquinha "ABERTO" (ou "FECHADO")
@@ -916,6 +937,25 @@ def wall_doorway(D, closed=False):
 
 DECORATIONS["porta"] = lambda D, side: wall_doorway(D)
 DECORATIONS["porta_fechada"] = lambda D, side: wall_doorway(D, closed=True)
+
+# Portas das coleções (DT-067): nome -> (batente claro e escuro, faixas do toldo)
+DOORS = {
+    "frances": (("#2a2a33", "#15151b"), ("#ffffff", "#2a2a33")),
+    "japones": (("#c98a4b", "#8a5a2e"), ("#2a3f86", "#1d2a5a")),
+    "italiano": (("#2f8a3a", "#1d5a26"), ("#ffffff", "#2f8a3a")),
+    "anos70": (("#f07a1a", "#a84a0a"), ("#ffd27a", "#a8522a")),
+    "americano": (("#7fdcc0", "#3aa88a"), ("#ffffff", "#e0303a")),
+    "anos2010": (("#c9d4e0", "#8f9aa7"), ("#f4f7fa", "#4a4d5a")),
+    "festa": (("#ffcf3f", "#e0a800"), ("#ff8ab8", "#ffe066")),
+    "anos80": (("#8a4fd1", "#4a2a8a"), ("#3ee0ff", "#ff3d7f")),
+    "balada": (("#2a1440", "#120a20"), ("#b06bff", "#2a1440")),
+    "brasileiro": (("#2fae3a", "#1d7a26"), ("#ffd23f", "#2fae3a")),
+    "country": (("#a8703a", "#6a4a2a"), ("#f4ead6", "#b8432f")),
+    "mexicano": (("#d9734a", "#a84a2a"), ("#ffd23f", "#e0303a")),
+}
+for _name, (_door_frame, _door_awning) in DOORS.items():
+    DECORATIONS[f"porta_{_name}"] = (lambda fr, aw, nm: lambda D, side: wall_doorway(D, False, fr, aw, nm))(_door_frame, _door_awning, _name)
+    DECORATIONS[f"porta_{_name}_fechada"] = (lambda fr, aw, nm: lambda D, side: wall_doorway(D, True, fr, aw, nm))(_door_frame, _door_awning, _name)
 
 
 def wall_piece(side, flat):

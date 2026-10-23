@@ -19,6 +19,8 @@ const EDGE_RIGHT := "right"
 
 var floor_id: StringName = &""
 var wall_id: StringName = &""
+## Porta da entrada (DT-067).
+var door_id: StringName = &""
 var _owned: Dictionary = {}  # StringName -> true
 var _floor_cells: Dictionary = {}  # Vector2i -> StringName (só o que difere da base)
 var _wall_cells: Dictionary = {}  # String "borda:índice" -> StringName (só o que difere da base)
@@ -143,6 +145,15 @@ func apply(definition: SurfaceDefinition) -> bool:
 	return true
 
 
+## Troca a porta da entrada (só por uma que já é do jogador).
+func set_door(id: StringName) -> bool:
+	if not owns(id):
+		return false
+	door_id = id
+	changed.emit()
+	return true
+
+
 func to_data() -> Dictionary:
 	var floor_cells := []
 	for cell: Vector2i in _floor_cells:
@@ -153,7 +164,8 @@ func to_data() -> Dictionary:
 	var wall_items := []
 	for wall_segment: String in _wall_items:
 		wall_items.append([wall_segment, String(_wall_items[wall_segment])])
-	return {"floor": String(floor_id), "wall": String(wall_id), "owned": owned().map(func(id: StringName) -> String: return String(id)),
+	return {"floor": String(floor_id), "wall": String(wall_id), "door": String(door_id),
+		"owned": owned().map(func(id: StringName) -> String: return String(id)),
 		"floor_cells": floor_cells, "wall_cells": wall_cells, "wall_items": wall_items}
 
 
@@ -163,6 +175,7 @@ func restore(data: Dictionary) -> void:
 		_owned[StringName(str(id))] = true
 	floor_id = StringName(str(data.get("floor", "")))
 	wall_id = StringName(str(data.get("wall", "")))
+	door_id = StringName(str(data.get("door", "")))
 	_floor_cells.clear()
 	for entry in data.get("floor_cells", []):
 		if entry is Array and entry.size() == 3:

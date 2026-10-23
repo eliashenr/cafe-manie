@@ -208,6 +208,13 @@ static func _restore_style(simulation: CafeSimulation, data: Dictionary, result:
 			applied = simulation.surfaces.default_for(kind)
 			if applied != null:
 				style.apply(applied)  # a base inválida vira a inicial (e a pintura dessa parte sai)
+	# Porta que deixou de existir (ou que não é do jogador) vira a inicial (DT-067).
+	var door := simulation.doors.get_definition(style.door_id)
+	if door == null or not style.owns(door.id):
+		if style.door_id != &"":
+			result.warnings.append("Porta ignorada: %s" % style.door_id)
+		var start := simulation.default_door()
+		style.door_id = start.id if start != null else &""
 	# Item de parede que deixou de existir sai da parede.
 	for wall_segment: String in style.hung_items():
 		if simulation.wall_items.get_definition(style.hung_items()[wall_segment]) == null:

@@ -98,6 +98,13 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **1. Plantação e frozen yogurt** (DT-065): 3 pés de fruta e a máquina de frozen, que usa as frutas.
 - [x] **2. Atrações e palco** (DT-066): 4 atrações em que os clientes brincam e deixam ouro; o palco faz shows que aceleram as chegadas.
 
+## Pacote do relatório: café mais completo e avatar (seção 4, item 9)
+
+- [x] **1. Portas por coleção e coleções completas** (DT-067): 13 portas na loja; toda coleção com fogão, balcão, porta e janela.
+- [ ] **2. Chão sujo:** manchas aparecem; um toque limpa e dá ouro e XP; chão limpo segura a popularidade.
+- [ ] **3. Pátio:** mesas ao ar livre na calçada.
+- [ ] **4. Avatar do chef:** roupa, cabelo e chapéu comprados com ouro.
+
 ## Passe visual (18/10/2026)
 
 - [x] **Efeitos visuais só na tela** (DT-044):

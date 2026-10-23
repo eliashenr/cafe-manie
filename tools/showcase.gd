@@ -147,6 +147,15 @@ func _initialize() -> void:
 		worried.critic = true
 		simulation.critic_star = {"cell": Vector2i(4, 6), "gold": 200, "xp": 50, "coupons": 3}
 		simulation.wallet.earn(&"coupons", 7, "vitrine")
+	if _panel == "portas":
+		simulation.progression.add_xp(46000)  # nível 30
+		simulation.wallet.earn(&"soft_currency", 5000, "vitrine")
+		simulation.use_door(&"door_japones")
+		place.call(&"counter_bamboo", Vector2i(0, 3), 3)
+		var style_script = load("res://core/cafe/cafe_style.gd")
+		for i in [2, 5]:
+			simulation.style.own(&"janela_shoji")
+			simulation.style.hang([style_script.segment(style_script.EDGE_TOP, i)] as Array[String], &"janela_shoji")
 	if _panel == "bebidas":
 		simulation.progression.add_xp(280)  # nível 5
 		place.call(&"machine_coffee", Vector2i(0, 4), 3)
@@ -204,6 +213,9 @@ func _set_panel() -> void:
 			_cafe.hud.show_coin_shop(true)
 		"pausa":
 			_cafe.set_paused(true)
+		"portas":
+			_cafe.build_bar.open_shop(_cafe.build_bar.ShopTab.WALL)
+			_cafe.build_bar.show_shop_collection(&"japones")
 		"fechado":
 			_cafe.set_closed(true)
 		"livro":

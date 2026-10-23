@@ -33,6 +33,11 @@ var closed := false:
 		queue_redraw()
 
 ## Revestimento de base da parede e os trechos pintados por cima ({"borda:índice": SurfaceDefinition}).
+## Nome-base do desenho da porta (DoorDefinition.sprite_base).
+var door_base := "enfeite_porta":
+	set(value):
+		door_base = value
+		queue_redraw()
 var wall_style: SurfaceDefinition:
 	set(value):
 		wall_style = value
@@ -137,9 +142,9 @@ func _draw_front_walls() -> void:
 		draw_polyline(outline, PAINT_LINE, 2.5, true)
 
 
-## Desenho da porta: com a plaquinha ABERTO ou FECHADO.
+## Desenho da porta escolhida (DT-067): com a plaquinha ABERTO ou FECHADO.
 func door_sprite_name() -> String:
-	return "enfeite_porta_fechada_L" if closed else "enfeite_porta_L"
+	return door_base + ("_fechada" if closed else "") + "_L"
 
 
 func _draw_low_wall(wall_segment: String) -> void:
