@@ -32,6 +32,11 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## Começou um show no palco (DT-066): os clientes chegam mais rápido enquanto ele dura.
+signal show_started
+signal show_ended
+## O jogador coletou o ouro de uma atração.
+signal attraction_collected(attraction_id: StringName, amount: int)
 ## Um pé de fruta foi colhido: as frutas já estão no estoque (DT-065).
 signal fruit_harvested(tree_id: StringName, fruit: FruitDefinition, amount: int)
 ## Anoiteceu ([param night] true) ou amanheceu: o cardápio noturno abriu ou fechou (DT-064).
@@ -86,6 +91,7 @@ const CRITIC_PATH := "res://data/config/critic.tres"
 const EVENTS_DIR := "res://data/events"
 const NIGHT_PATH := "res://data/config/night.tres"
 const FRUITS_DIR := "res://data/fruits"
+const STAGE_PATH := "res://data/config/stage.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -111,6 +117,11 @@ var stove_sets: StoveSets
 var critic_config: CriticConfig
 ## Estrela que o crítico deixou na mesa, esperando o toque: {"cell", "gold", "xp", "coupons"}; vazio = nenhuma.
 var critic_star := {}
+## Atrações e palco (DT-066): o ouro guardado nas atrações, o show e o tempo até o próximo.
+var attractions: Attractions
+var stage_config: StageConfig
+var show_left := 0.0
+var _show_wait := 0.0
 ## Plantação (DT-065): as frutas que existem, os pés de fruta e o estoque de frutas colhidas.
 var fruits: DefinitionStore
 var orchard: Orchard
@@ -219,6 +230,8 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	fruits = DefinitionStore.new(func(a: FruitDefinition, b: FruitDefinition) -> bool: return a.order < b.order)
 	fruits.load_dir(FRUITS_DIR, FruitDefinition)
 	orchard = Orchard.new(layout, clock)
+	attractions = Attractions.new(layout)
+	stage_config = load(STAGE_PATH)
 	_was_night = is_night()
 	var event_store := DefinitionStore.new(func(a: EventDefinition, b: EventDefinition) -> bool: return String(a.id) < String(b.id))
 	event_store.load_dir(EVENTS_DIR, EventDefinition)
@@ -570,6 +583,83 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Atrações e palco (DT-066) ----------------------------------------------
+
+## Tira o ouro que os clientes deixaram na atração.
+func collect_attraction(attraction_id: StringName) -> int:
+	if not attractions.is_attraction(attraction_id):
+		return ServiceResult.NOT_AN_ATTRACTION
+	var amount := attractions.collect(attraction_id)
+	if amount <= 0:
+		return ServiceResult.NOTHING_TO_COLLECT
+	wallet.earn(Wallet.SOFT, amount, "Atração: %s" % layout.get_placement(attraction_id).definition.display_name)
+	_record(MissionDefinition.Kind.EARN_GOLD, amount)
+	attraction_collected.emit(attraction_id, amount)
+	return ServiceResult.OK
+
+
+## O café tem palco?
+func has_stage() -> bool:
+	return layout.placements().any(func(p: CafeLayout.Placement) -> bool: return p.definition.stage)
+
+
+## Tem show agora?
+func show_running() -> bool:
+	return show_left > 0.0
+
+
+## Segundos até o próximo show (com palco e café aberto); 0 durante o show.
+func seconds_until_show() -> float:
+	return 0.0 if show_running() else maxf(stage_config.show_interval - _show_wait, 0.0)
+
+
+## Com palco e café aberto, o tempo corre até o show; o show dura um tempo e acaba.
+func _update_show(delta: float) -> void:
+	if show_running():
+		show_left -= delta
+		if show_left <= 0.0 or not has_stage():
+			show_left = 0.0
+			show_ended.emit()
+		return
+	if closed or not has_stage():
+		return
+	_show_wait += delta
+	if _show_wait >= stage_config.show_interval:
+		_show_wait = 0.0
+		show_left = stage_config.show_duration
+		show_started.emit()
+
+
+## Às vezes quem pagou vai brincar numa atração com lugar, livre e alcançável. Retorna se foi.
+func _go_play(customer: Customer) -> bool:
+	if customer.critic or rng.randf() >= config.attraction_visit_chance:
+		return false
+	var busy := {}
+	for other in customers:
+		if other.attraction_id != &"":
+			busy[other.attraction_id] = true
+	var options: Array[StringName] = []
+	for placement in layout.placements():
+		if attractions.has_room(placement.id) and not busy.has(placement.id):
+			options.append(placement.id)
+	if options.is_empty():
+		return false
+	var target: StringName = options[rng.randi_range(0, options.size() - 1)]
+	var goals := navigation.access_cells(target)
+	var stand_at := navigation.access_cells(customer.seat_id)
+	var start := stand_at[0] if not stand_at.is_empty() else customer.cell()
+	var path := navigation.path_to_any(start, goals)
+	if path.is_empty():
+		return false
+	_cancel_order_of(customer)
+	customer.seat_id = &""
+	customer.position = Vector2(start)
+	customer.attraction_id = target
+	customer.follow(path, goals)
+	customer.state = Customer.State.WALKING_TO_PLAY
+	return true
 
 
 # --- Plantação (DT-065) -----------------------------------------------------
@@ -1365,7 +1455,7 @@ func queue_spot(index: int) -> Vector2:
 ## Intervalo médio entre chegadas agora: popularidade, beleza e nível.
 func spawn_interval_now() -> float:
 	return config.spawn_interval_for(popularity) * (1.0 - beauty_factor() * config.beauty_spawn_bonus) \
-		* config.level_spawn_factor(progression.level)
+		* config.level_spawn_factor(progression.level) * (stage_config.spawn_multiplier if show_left > 0.0 else 1.0)
 
 
 ## Pedidos esperando um prato que não está em nenhum balcão: {id da receita: quantos}.
@@ -1474,6 +1564,7 @@ func tick(delta: float) -> void:
 	_watch_spoilage()
 	_update_arrivals(delta)
 	_update_critic(delta)
+	_update_show(delta)
 	_update_queue(delta)
 	_assign_servings()
 	for customer in customers.duplicate():
@@ -1579,6 +1670,17 @@ func _update_customer(customer: Customer, delta: float) -> void:
 			customer.eat_left -= delta
 			if customer.eat_left <= 0.0:
 				_pay(customer)
+				if not _go_play(customer):
+					_send_away(customer, true)
+		Customer.State.WALKING_TO_PLAY:
+			if customer.advance(delta):
+				customer.state = Customer.State.PLAYING
+				customer.play_left = layout.get_placement(customer.attraction_id).definition.attraction_time
+		Customer.State.PLAYING:
+			customer.play_left -= delta
+			if customer.play_left <= 0.0:
+				attractions.add_play(customer.attraction_id)
+				customer.attraction_id = &""
 				_send_away(customer, true)
 		Customer.State.LEAVING:
 			if customer.advance(delta):
@@ -1964,6 +2066,11 @@ func _on_layout_changed() -> void:
 ## mais perto. Sem a pausa, nada disso acontece (o que está em uso não sai do lugar).
 func _settle_after_layout_change() -> void:
 	for customer in customers.duplicate():
+		if customer.state in [Customer.State.WALKING_TO_PLAY, Customer.State.PLAYING] \
+				and not attractions.is_attraction(customer.attraction_id):
+			customer.attraction_id = &""
+			_send_away(customer, true)  # a atração saiu: vai embora sem reclamar
+			continue
 		if customer.seat_id == &"" or customer.state in [Customer.State.LEAVING, Customer.State.GONE, Customer.State.QUEUED]:
 			continue
 		var seat := layout.get_placement(customer.seat_id)

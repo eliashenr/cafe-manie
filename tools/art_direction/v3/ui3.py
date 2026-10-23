@@ -8,6 +8,7 @@ from icons3 import glyph as _canvas_glyph, _gloss
 from hud3 import medallion, ribbon, portrait, CHEF_BIA, LEO
 import critic3
 import halloween3
+import fun3
 
 GLYPH_STROKE = 'fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"'
 
@@ -127,7 +128,7 @@ ICONS = {
     "estrela_vazia": lambda D: star(D, "#d9e3f0", "#aab8cc"), "presente": gift, "trofeu": trophy,
     "prancheta": clipboard, "loja": shop_house, "rolo": roller, "expandir": expand, "livro": book,
     "bolo": cake, "martelo": hammer, "cadeado": padlock, "garcom": waiter_icon, "energia": energy_bolt,
-    "cupom": critic3.coupon, "critico": critic3.critic_badge,
+    "cupom": critic3.coupon, "critico": critic3.critic_badge, "nota": fun3.note_icon,
 }
 
 BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("music", "blue"),

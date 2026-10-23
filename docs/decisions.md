@@ -4,6 +4,31 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-066 — Atrações e palco
+
+**Problema:**
+- O relatório propõe atrações em que o cliente brinca e deixa ouro, e um palco com shows que aceleram a chegada de clientes (propostas 3.7 e 3.16).
+
+**Decisão:**
+- **4 atrações**, com `attraction_gold`, `attraction_capacity` e `attraction_time` em `FurnitureDefinition`:
+  - a jukebox e o fliperama, que já existiam;
+  - a **Máquina de Garra** (nível 10, 1.800) e o **Jogo de Argolas** (nível 12, 2.400), novos.
+- **Como funciona:**
+  - quem pagou vai, com 35% de chance (`attraction_visit_chance`), brincar numa atração com lugar, livre e alcançável;
+  - ele libera a cadeira, anda até a atração, brinca uns segundos, deixa o ouro e vai embora feliz;
+  - o ouro fica guardado na atração (`Attractions`), até a capacidade dela;
+  - com ouro, a atração mostra uma moeda, e o toque coleta;
+  - se a atração sai do café, quem ia brincar vai embora sem reclamar.
+- **Palco** (2x2, nível 15, 5.000, só 1 por café), com os tempos em `data/config/stage.tres`:
+  - a cada 10 minutos de café aberto, começa um **show** de 2 minutos;
+  - durante o show, os clientes chegam duas vezes mais rápido;
+  - as notas musicais sobem do palco, e avisos marcam o começo e o fim;
+  - com o café fechado, não tem show.
+- **O save guarda** o ouro das atrações (versão 18). O tempo até o show recomeça ao abrir o jogo.
+- **Com isso, o item 8 do relatório está completo.**
+
+---
+
 ## DT-065 — Plantação e frozen yogurt
 
 **Problema:**

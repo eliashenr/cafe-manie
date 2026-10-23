@@ -117,6 +117,7 @@ func refresh(simulation: CafeSimulation) -> void:
 	_refresh_trophies(simulation.trophies)
 	_refresh_lights(simulation.darkness())
 	_refresh_orchard(simulation.orchard)
+	_refresh_fun(simulation)
 	_refresh_critic_star(simulation.critic_star)
 	_refresh_table_dishes(simulation)
 	_refresh_agents(simulation)
@@ -217,6 +218,18 @@ func _refresh_critic_star(star: Dictionary) -> void:
 func critic_star_hit(world_position: Vector2) -> bool:
 	return _critic_star != null and _critic_star.visible \
 		and world_position.distance_to(_critic_star.position) <= CRITIC_STAR_TAP_RADIUS
+
+
+## Moeda em cima da atração com ouro guardado e notas no palco durante o show (DT-066).
+func _refresh_fun(simulation: CafeSimulation) -> void:
+	for id: StringName in _views:
+		var view: FurnitureView = _views[id]
+		if view.definition == null:
+			continue
+		if view.definition.attraction_gold > 0:
+			view.set_attraction_gold(simulation.attractions.gold(id))
+		elif view.definition.stage:
+			view.set_show(simulation.show_running())
 
 
 ## Fruta madura aparece em cima do pé (DT-065).

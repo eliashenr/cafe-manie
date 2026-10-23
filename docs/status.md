@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 8 do relatório, etapa 2: atrações e palco** (DT-066). **Com ela, o item 8 está completo.**
+
+- **Atrações:** a jukebox, o fliperama e as novas **Máquina de Garra** (nível 10) e **Jogo de Argolas** (nível 12).
+  - Às vezes, um cliente que acabou de comer vai brincar numa delas e deixa ouro.
+  - A atração mostra uma moeda; toque para coletar.
+- **Palco** (nível 15): a cada 10 minutos de café aberto tem **show** de 2 minutos.
+  - As notas sobem do palco, e os clientes chegam duas vezes mais rápido.
+
 **Item 8 do relatório, etapa 1: plantação e frozen yogurt** (DT-065)
 
 - **3 pés de fruta** (nível 7): morango, manga e mirtilo. Eles amadurecem com o tempo, até com o jogo fechado.
@@ -361,6 +369,12 @@
 
 🧪 **TESTADO**
 
+- **Atrações e palco: 616 testes automatizados PASSARAM.**
+  - **Regra:** dados válidos; o cliente vai brincar, libera a cadeira, deixa o ouro e vai embora; sem chance ou com a atração cheia, vai embora direto; o ouro não passa da capacidade; coletar dá o ouro e esvazia; a atração que sai manda embora quem ia brincar; o palco faz show depois do intervalo, acelera as chegadas e acaba, e com o café fechado não tem show; o save guarda o ouro.
+  - **Na tela:** a atração com ouro mostra a moeda e o toque coleta, com a barra dizendo quanto há; no show, as notas sobem e o aviso aparece.
+  - **Defeitos inseridos de propósito: 20 de 20 pegos (2 só depois de reforçar um teste).**
+  - **Foto conferida:** a máquina de garra com a moeda, o jogo de argolas e o palco com as notas do show.
+  - **Cena principal: PASSOU**, zero erros.
 - **Plantação e frozen: 607 testes automatizados PASSARAM.**
   - **Regra:** dados válidos (pé sem frutas e frozen sem fruta e sem energia recusados); o pé amadurece no segundo certo, dá as frutas e recomeça; colher verde ou o que não é pé, recusado; o frozen só no cardápio com fruta, gasta fruta e não energia, e sem fruta não sai; o save guarda os pés e as frutas.
   - **Na tela:** o pé maduro mostra a fruta e o toque colhe, com a barra dizendo quanto falta; a máquina mostra o estoque.

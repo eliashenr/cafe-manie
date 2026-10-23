@@ -1591,6 +1591,24 @@
     275.67
    ]
   },
+  "claw_machine_r0": {
+   "anchor": [
+    81.67,
+    302.67
+   ]
+  },
+  "ring_toss_r0": {
+   "anchor": [
+    83.67,
+    199.67
+   ]
+  },
+  "stage_r0": {
+   "anchor": [
+    244.67,
+    382.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -5362,6 +5380,12 @@
     58.0
    ]
   },
+  "icone_nota": {
+   "anchor": [
+    33.0,
+    46.0
+   ]
+  },
   "botao_zoom_in": {
    "anchor": [
     60.0,
@@ -6241,6 +6265,24 @@
    "1": "machine_frozen_r1",
    "2": "machine_frozen_r2",
    "3": "machine_frozen_r3"
+  },
+  "claw_machine": {
+   "0": "claw_machine_r0",
+   "1": "claw_machine_r0",
+   "2": "claw_machine_r0",
+   "3": "claw_machine_r0"
+  },
+  "ring_toss": {
+   "0": "ring_toss_r0",
+   "1": "ring_toss_r0",
+   "2": "ring_toss_r0",
+   "3": "ring_toss_r0"
+  },
+  "stage": {
+   "0": "stage_r0",
+   "1": "stage_r0",
+   "2": "stage_r0",
+   "3": "stage_r0"
   },
   "dj_booth": {
    "0": "dj_booth_r0",

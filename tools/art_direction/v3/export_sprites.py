@@ -302,6 +302,12 @@ import orchard3  # noqa: E402
 for _id, _draw in orchard3.TREES.items():
     FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
 FURNITURE["machine_frozen"] = ((1, 1), _machine(orchard3.frozen_machine), 4)
+# Atrações e palco (DT-066).
+import fun3  # noqa: E402
+
+for _id, _draw in fun3.ATTRACTIONS.items():
+    FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
+FURNITURE["stage"] = ((2, 2), _collection_decor(fun3.stage), 1)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 

@@ -42,4 +42,6 @@ enum {
 	NOT_A_TREE,         ## o móvel escolhido não é um pé de fruta (DT-065)
 	NOT_RIPE,           ## as frutas ainda não amadureceram
 	NO_FRUIT,           ## faltam frutas para o frozen yogurt
+	NOT_AN_ATTRACTION,  ## o móvel escolhido não é uma atração (DT-066)
+	NOTHING_TO_COLLECT, ## a atração ainda não tem ouro
 }

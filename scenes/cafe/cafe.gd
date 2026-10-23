@@ -21,6 +21,8 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const SHOW_STARTED_MESSAGE := "Começou o show no palco! Os clientes chegam mais rápido enquanto ele dura."
+const SHOW_ENDED_MESSAGE := "O show acabou. O próximo começa daqui a pouco."
 const NIGHT_MESSAGE := "Anoiteceu! As luzes acenderam e o cardápio noturno está aberto no Fogão Lua Cheia."
 const DAY_MESSAGE := "Amanheceu! O cardápio noturno fecha até a noite."
 const EVENT_STARTED_MESSAGE := "Começou o %s! Toque na abóbora, à esquerda, para ver a história e as missões."
@@ -146,6 +148,8 @@ func _ready() -> void:
 	simulation.critic_arrived.connect(_on_critic_arrived)
 	simulation.event_started.connect(_on_event_started)
 	simulation.night_changed.connect(_on_night_changed)
+	simulation.show_started.connect(func() -> void: EventBus.message_posted.emit(SHOW_STARTED_MESSAGE))
+	simulation.show_ended.connect(func() -> void: EventBus.message_posted.emit(SHOW_ENDED_MESSAGE))
 	simulation.event_mission_completed.connect(_on_event_mission_completed)
 	simulation.event_stove_upgraded.connect(_on_event_stove_upgraded)
 	simulation.event_finished.connect(_on_event_finished)
@@ -372,6 +376,8 @@ func _connect_sounds() -> void:
 	simulation.event_stove_upgraded.connect(play.bind(&"level_up").unbind(2))
 	simulation.critic_star_collected.connect(play.bind(&"achievement").unbind(1))
 	simulation.fruit_harvested.connect(play.bind(&"coin").unbind(3))
+	simulation.attraction_collected.connect(play.bind(&"coin").unbind(2))
+	simulation.show_started.connect(play.bind(&"level_up"))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
@@ -494,6 +500,16 @@ func renew_trophy(trophy_id: StringName) -> int:
 	if last_service_result == ServiceResult.OK:
 		_float_over(trophy_id, "Renovado!", FEEDBACK_GOOD)
 		_float_over(trophy_id, "-%s" % UiTheme.thousands(price), FEEDBACK_SPEND, Vector2(0, 22))
+	state_changed.emit()
+	return last_service_result
+
+
+## Coleta o ouro que os clientes deixaram na atração (DT-066).
+func collect_attraction(attraction_id: StringName) -> int:
+	var amount := simulation.attractions.gold(attraction_id)
+	last_service_result = simulation.collect_attraction(attraction_id)
+	if last_service_result == ServiceResult.OK:
+		_float_over(attraction_id, "+%s ouro" % UiTheme.thousands(amount), FEEDBACK_GOLD)
 	state_changed.emit()
 	return last_service_result
 
@@ -1075,6 +1091,9 @@ func tap_at_world(world_position: Vector2) -> void:
 	var tapped := layout.placement_at(IsoProjection.world_to_cell(world_position))
 	if tapped != null and simulation.orchard.is_ripe(tapped.id):
 		harvest_tree(tapped.id)
+		return
+	if tapped != null and simulation.attractions.gold(tapped.id) > 0:
+		collect_attraction(tapped.id)
 		return
 	var placement := layout.placement_at(IsoProjection.world_to_cell(world_position))
 	if placement != null and simulation.kitchen.is_stove(placement.id) \

@@ -12,6 +12,8 @@ enum State {
 	GONE,              ## saiu; será removido
 	QUEUED,            ## na fila da calçada, esperando vagar uma cadeira
 	WAITING_FOR_DRINK, ## pediu uma bebida: espera o jogador tocar nele (DT-052)
+	WALKING_TO_PLAY,   ## depois de pagar, a caminho de uma atração (DT-066)
+	PLAYING,           ## brincando na atração; depois deixa o ouro e vai embora
 }
 
 var type: CustomerType
@@ -40,6 +42,9 @@ var paid := 0
 var ordered_from_menu := false
 ## É o crítico gastronômico (DT-061).
 var critic := false
+## Atração em que vai brincar (DT-066) e quantos segundos ainda brinca.
+var attraction_id: StringName = &""
+var play_left := 0.0
 
 
 func patience_fraction() -> float:

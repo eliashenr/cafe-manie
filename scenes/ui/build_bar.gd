@@ -65,6 +65,8 @@ const SERVICE_MESSAGES := {
 	ServiceResult.NOT_A_TREE: "Esse móvel não é um pé de fruta",
 	ServiceResult.NOT_RIPE: "As frutas ainda não amadureceram",
 	ServiceResult.NO_FRUIT: "Faltam frutas: colha nos pés de fruta",
+	ServiceResult.NOT_AN_ATTRACTION: "Esse móvel não é uma atração",
+	ServiceResult.NOTHING_TO_COLLECT: "Ainda não tem ouro: espere os clientes brincarem",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -104,6 +106,8 @@ const SHOP_TAB_COLORS := {
 	ShopTab.COUPONS: Color("e0457f"),
 }
 ## Categorias de móvel em cada aba de móveis.
+## Atração escolhida (DT-066).
+const ATTRACTION_TEXT := "%s: os clientes brincam e deixam ouro (%d de %d guardado). Toque nela para coletar"
 ## Máquina de frozen yogurt (DT-065): o campo machine dela.
 const FROZEN_MACHINE := &"frozen"
 ## Barra da aba Cupons (DT-062).
@@ -836,6 +840,13 @@ func _show_selection_controls() -> void:
 		_message_source = func() -> String:
 			var stack := kitchen.counter_stack(id)
 			return _with_problem("Balcão vazio" if stack == null else "Balcão: %s ×%d" % [stack.recipe.display_name, stack.servings])
+	elif placement.definition.attraction_gold > 0:
+		var attraction := placement.definition
+		_message_source = func() -> String:
+			return _with_problem(ATTRACTION_TEXT % [attraction.display_name, cafe.simulation.attractions.gold(id),
+				attraction.attraction_capacity])
+	elif placement.definition.stage:
+		_message_source = func() -> String: return _with_problem(_stage_message())
 	elif placement.definition.fruit != &"":
 		_message_source = func() -> String: return _with_problem(_tree_message(id))
 	elif placement.definition.machine == FROZEN_MACHINE:
@@ -853,6 +864,16 @@ func _show_selection_controls() -> void:
 	_add_square(_buttons, "RemoveButton", "store", "Guardar", cafe.remove_selected)
 	_add_square(_buttons, "SellButton", "sell", "Vender", ask_sell_selected)
 	_add_square(_buttons, "CloseButton", "close", "Fechar", cafe.clear_selection)
+
+
+## Palco escolhido (DT-066): o show agora, ou quanto falta para o próximo.
+func _stage_message() -> String:
+	var simulation := cafe.simulation
+	if simulation.show_running():
+		return "Palco: show acontecendo! Os clientes chegam mais rápido por mais %s" % WorldLayer.format_time(simulation.show_left)
+	if simulation.closed:
+		return "Palco: com o café fechado, não tem show"
+	return "Palco: próximo show em %s" % WorldLayer.format_time(simulation.seconds_until_show())
 
 
 ## Pé de fruta escolhido (DT-065): quanto falta para amadurecer, ou que já pode colher.

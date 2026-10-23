@@ -96,7 +96,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Pacote do relatório: plantação, frozen, atrações e palco (seção 4, item 8)
 
 - [x] **1. Plantação e frozen yogurt** (DT-065): 3 pés de fruta e a máquina de frozen, que usa as frutas.
-- [ ] **2. Atrações e palco**: clientes brincam e deixam ouro; shows no palco trazem mais clientes.
+- [x] **2. Atrações e palco** (DT-066): 4 atrações em que os clientes brincam e deixam ouro; o palco faz shows que aceleram as chegadas.
 
 ## Passe visual (18/10/2026)
 

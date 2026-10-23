@@ -11,7 +11,8 @@ extends SceneTree
 ## temperos (a lasanha cozinhando com os temperos no painel), trofeu (um troféu de ouro entre os fogões, escolhido),
 ## trem (o Multifogão Trem completo, com a locomotiva escolhida), critico (o crítico sentado, a estrela numa mesa e os
 ## cupons), evento (a janela do Halloween na historinha; evento:missoes nas missões), noite (o café às 23h, com as
-## luminárias acesas e o Fogão Lua Cheia), pomar (os pés de fruta maduros e a máquina de frozen), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
+## luminárias acesas e o Fogão Lua Cheia), pomar (os pés de fruta maduros e a máquina de frozen), diversao (atrações
+## com ouro e o show no palco), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio)
 ## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30).
 ##
@@ -123,6 +124,13 @@ func _initialize() -> void:
 		_stoves = [place.call(&"stove_moon", Vector2i(3, 0), 0)]
 		place.call(&"floor_lamp", Vector2i(1, 6))
 		place.call(&"paris_lamp", Vector2i(6, 3))
+	if _panel == "diversao":
+		simulation.progression.add_xp(9000)  # nível 16
+		var claw: StringName = place.call(&"claw_machine", Vector2i(6, 2))
+		place.call(&"ring_toss", Vector2i(6, 4))
+		place.call(&"stage", Vector2i(5, 6))
+		simulation.attractions.add_play(claw)
+		simulation.show_left = simulation.stage_config.show_duration  # show acontecendo
 	if _panel == "pomar":
 		simulation.progression.add_xp(1000)  # nível 8
 		place.call(&"tree_strawberry", Vector2i(1, 6))

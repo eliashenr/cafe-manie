@@ -17,3 +17,6 @@ efficiency = 0
 comfort = 0
 placeholder_color = Color(0.165, 0.176, 0.431, 1)
 placeholder_height = 70.0
+attraction_gold = 6
+attraction_capacity = 90
+attraction_time = 8.0

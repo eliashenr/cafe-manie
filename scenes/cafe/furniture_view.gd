@@ -48,6 +48,8 @@ const WORN_MODULATE := Color(0.62, 0.62, 0.66)
 const FRUIT_BADGE_LIFT := 96.0
 const FRUIT_BADGE_RADIUS := 18.0
 const FRUIT_ICON := 28.0
+## Notas do show: de onde sobem, acima do meio do palco.
+const NOTES_LIFT := 50.0
 ## Luz da luminária à noite (DT-064): cor quente, força no escuro total e altura acima do chão.
 const LIGHT_COLOR := Color(1.0, 0.86, 0.55)
 const LIGHT_ENERGY := 1.2
@@ -133,6 +135,9 @@ var status_spoiled := false
 var worn := false
 ## Pé de fruta maduro (DT-065): mostra a fruta para colher.
 var fruit_ready := false
+## Ouro guardado na atração (DT-066): com ouro, mostra a moeda para coletar.
+var attraction_gold := 0
+var _notes: CPUParticles2D
 ## Receita no fogão ou no balcão (null = nada), o texto curto do selo do fogão
 ## ("0:12", "Pronto!") e quantas porções há no balcão.
 var kitchen_recipe: RecipeDefinition
@@ -549,6 +554,30 @@ func _draw_plate(center: Vector2) -> void:
 	draw_set_transform(Vector2.ZERO)
 
 
+func set_attraction_gold(value: int) -> void:
+	if value == attraction_gold:
+		return
+	attraction_gold = value
+	_overlay.queue_redraw()
+
+
+## Show no palco: as notas sobem enquanto ele dura.
+func set_show(on: bool) -> void:
+	if not on and _notes == null:
+		return
+	if _notes == null:
+		var note := ArtSprites.get_sprite("icone_nota")
+		_notes = FxParticles.notes(note.texture if note != null else FxParticles.soft_dot())
+		_notes.position = _footprint_center() - Vector2(0.0, NOTES_LIFT)
+		_fx.add_child(_notes)
+	_notes.emitting = on
+
+
+## As notas do show estão subindo?
+func showing() -> bool:
+	return _notes != null and _notes.emitting
+
+
 func set_fruit_ready(value: bool) -> void:
 	if value == fruit_ready:
 		return
@@ -558,6 +587,15 @@ func set_fruit_ready(value: bool) -> void:
 
 ## Selos no filho de cima: o do fogão (prato, progresso e tempo), o número do balcão e a fruta madura do pé.
 func _draw_overlay() -> void:
+	if attraction_gold > 0 and definition != null and definition.attraction_gold > 0:
+		var spot := _footprint_center() - Vector2(0.0, FRUIT_BADGE_LIFT)
+		_overlay.draw_circle(spot, FRUIT_BADGE_RADIUS, BADGE_FILL, true, -1.0, true)
+		_overlay.draw_arc(spot, FRUIT_BADGE_RADIUS, 0.0, TAU, 40, BADGE_READY, 2.4, true)
+		var coin := ArtSprites.get_sprite("icone_moeda")
+		if coin != null:
+			var size := Vector2.ONE * FRUIT_ICON
+			_overlay.draw_texture_rect(coin.texture, Rect2(spot - size / 2.0, size), false)
+		return
 	if fruit_ready and definition != null and definition.fruit != &"":
 		var center := _footprint_center() - Vector2(0.0, FRUIT_BADGE_LIFT)
 		_overlay.draw_circle(center, FRUIT_BADGE_RADIUS, BADGE_FILL, true, -1.0, true)

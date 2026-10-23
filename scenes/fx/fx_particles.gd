@@ -10,6 +10,9 @@ const STEAM_COLOR := Color(1.0, 1.0, 1.0, 0.55)
 ## Comida estragada (DT-055): o mesmo vapor, verde e mais lento.
 const STINK_COLOR := Color(0.55, 0.72, 0.22, 0.6)
 const STINK_SPEED := 0.55
+## Notas do show no palco (DT-066).
+const NOTES_AMOUNT := 8
+const NOTES_LIFETIME := 2.2
 ## Pagamento: confete dourado que estoura e cai, mais umas faíscas.
 const CONFETTI_AMOUNT := 18
 const SPARK_AMOUNT := 10
@@ -64,6 +67,30 @@ static func stink() -> CPUParticles2D:
 	var fade := Gradient.new()
 	fade.set_color(0, STINK_COLOR)
 	fade.set_color(1, Color(STINK_COLOR, 0.0))
+	particles.color_ramp = fade
+	return particles
+
+
+## Notas musicais que sobem do palco durante o show (DT-066; ligue e desligue com emitting).
+static func notes(texture: Texture2D) -> CPUParticles2D:
+	var particles := CPUParticles2D.new()
+	particles.name = "Notes"
+	particles.amount = NOTES_AMOUNT
+	particles.lifetime = NOTES_LIFETIME
+	particles.preprocess = NOTES_LIFETIME  # o show já começa com notas no ar
+	particles.texture = texture
+	particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	particles.emission_sphere_radius = 40.0
+	particles.direction = Vector2(0, -1)
+	particles.spread = 35.0
+	particles.gravity = Vector2(0, -20)
+	particles.initial_velocity_min = 30.0
+	particles.initial_velocity_max = 50.0
+	particles.scale_amount_min = 0.25
+	particles.scale_amount_max = 0.4
+	var fade := Gradient.new()
+	fade.set_color(0, Color.WHITE)
+	fade.set_color(1, Color(1, 1, 1, 0))
 	particles.color_ramp = fade
 	return particles
 

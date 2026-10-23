@@ -81,6 +81,10 @@ extends Resource
 ## Segundos bebendo antes de pagar.
 @export var drink_time := 3.0
 
+@export_group("Atrações (DT-066)")
+## Chance de um cliente que pagou ir brincar numa atração com lugar (em vez de ir embora direto).
+@export_range(0.0, 1.0) var attraction_visit_chance := 0.35
+
 @export_group("Cozinha")
 ## Porções que cabem em um balcão.
 @export var counter_capacity := 40
