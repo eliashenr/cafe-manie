@@ -11,7 +11,7 @@ extends SceneTree
 ## temperos (a lasanha cozinhando com os temperos no painel), trofeu (um troféu de ouro entre os fogões, escolhido),
 ## trem (o Multifogão Trem completo, com a locomotiva escolhida), critico (o crítico sentado, a estrela numa mesa e os
 ## cupons), evento (a janela do Halloween na historinha; evento:missoes nas missões), noite (o café às 23h, com as
-## luminárias acesas e o Fogão Lua Cheia), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
+## luminárias acesas e o Fogão Lua Cheia), pomar (os pés de fruta maduros e a máquina de frozen), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio)
 ## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30).
 ##
@@ -123,6 +123,17 @@ func _initialize() -> void:
 		_stoves = [place.call(&"stove_moon", Vector2i(3, 0), 0)]
 		place.call(&"floor_lamp", Vector2i(1, 6))
 		place.call(&"paris_lamp", Vector2i(6, 3))
+	if _panel == "pomar":
+		simulation.progression.add_xp(1000)  # nível 8
+		place.call(&"tree_strawberry", Vector2i(1, 6))
+		place.call(&"tree_mango", Vector2i(6, 2))
+		place.call(&"tree_blueberry", Vector2i(6, 4))
+		place.call(&"machine_frozen", Vector2i(5, 6), 0)
+		clock.advance(1800.0)  # todos maduros (e a lasanha da vitrine ainda não estraga)
+		worried.state = 7  # Customer.State.WAITING_FOR_DRINK
+		worried.order = null
+		worried.drink = simulation.drinks.get_definition(&"frozen_mango")
+		simulation.fruit_stock.add(&"mango", 3)
 	if _panel == "critico":
 		simulation.progression.add_xp(680)  # nível 8
 		worried.critic = true

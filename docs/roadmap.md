@@ -93,6 +93,11 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 
 - [x] **Noite no café** (DT-064): das 19h às 6h o café escurece e as luminárias acendem; o Fogão Lua Cheia abre o cardápio noturno.
 
+## Pacote do relatório: plantação, frozen, atrações e palco (seção 4, item 8)
+
+- [x] **1. Plantação e frozen yogurt** (DT-065): 3 pés de fruta e a máquina de frozen, que usa as frutas.
+- [ ] **2. Atrações e palco**: clientes brincam e deixam ouro; shows no palco trazem mais clientes.
+
 ## Passe visual (18/10/2026)
 
 - [x] **Efeitos visuais só na tela** (DT-044):

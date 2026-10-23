@@ -62,6 +62,9 @@ const SERVICE_MESSAGES := {
 	ServiceResult.NOT_IN_SEASON: "Esse item não está na loja de troca desta temporada",
 	ServiceResult.NOT_ENOUGH_COUPONS: "Faltam cupons: sirva bem o crítico para ganhar mais",
 	ServiceResult.NOT_NIGHT: "Esse prato é do cardápio noturno: só começa à noite",
+	ServiceResult.NOT_A_TREE: "Esse móvel não é um pé de fruta",
+	ServiceResult.NOT_RIPE: "As frutas ainda não amadureceram",
+	ServiceResult.NO_FRUIT: "Faltam frutas: colha nos pés de fruta",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -101,6 +104,8 @@ const SHOP_TAB_COLORS := {
 	ShopTab.COUPONS: Color("e0457f"),
 }
 ## Categorias de móvel em cada aba de móveis.
+## Máquina de frozen yogurt (DT-065): o campo machine dela.
+const FROZEN_MACHINE := &"frozen"
 ## Barra da aba Cupons (DT-062).
 const COUPON_SHOP_TEXT := "Loja de troca: você tem %d cupons  —  itens novos em %s"
 ## Dica da peça do multifogão na loja (DT-060).
@@ -831,6 +836,12 @@ func _show_selection_controls() -> void:
 		_message_source = func() -> String:
 			var stack := kitchen.counter_stack(id)
 			return _with_problem("Balcão vazio" if stack == null else "Balcão: %s ×%d" % [stack.recipe.display_name, stack.servings])
+	elif placement.definition.fruit != &"":
+		_message_source = func() -> String: return _with_problem(_tree_message(id))
+	elif placement.definition.machine == FROZEN_MACHINE:
+		var machine_name := placement.definition.display_name
+		_message_source = func() -> String:
+			return _with_problem("%s  —  frutas: %s" % [machine_name, cafe.simulation.fruit_stock_text()])
 	elif placement.definition.is_trophy():
 		_message_source = func() -> String: return _with_problem(_trophy_message(id))
 		_show_trophy_controls(id)
@@ -842,6 +853,18 @@ func _show_selection_controls() -> void:
 	_add_square(_buttons, "RemoveButton", "store", "Guardar", cafe.remove_selected)
 	_add_square(_buttons, "SellButton", "sell", "Vender", ask_sell_selected)
 	_add_square(_buttons, "CloseButton", "close", "Fechar", cafe.clear_selection)
+
+
+## Pé de fruta escolhido (DT-065): quanto falta para amadurecer, ou que já pode colher.
+func _tree_message(tree_id: StringName) -> String:
+	var simulation := cafe.simulation
+	var definition := cafe.layout.get_placement(tree_id).definition
+	var fruit: FruitDefinition = simulation.fruits.get_definition(definition.fruit)
+	var fruit_name := fruit.display_name if fruit != null else "frutas"
+	if simulation.orchard.is_ripe(tree_id):
+		return "%s: maduro! Toque no pé para colher %d de %s" % [definition.display_name, definition.fruit_yield, fruit_name]
+	return "%s: %s fica madura em %s" % [definition.display_name, fruit_name,
+		WorldLayer.format_time(simulation.orchard.seconds_left(tree_id))]
 
 
 ## Troféu escolhido (DT-057): o botão de renovar, com o preço; apagado enquanto ele está cheio.

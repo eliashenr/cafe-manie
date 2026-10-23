@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DrinkDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/drink_definition.gd" id="1_drink"]
+
+[resource]
+script = ExtResource("1_drink")
+id = &"frozen_mango"
+display_name = "Frozen de Manga"
+machine = &"frozen"
+energy_cost = 0
+sell_price = 16
+xp_reward = 7
+unlock_level = 7
+fruit = &"mango"
+fruit_cost = 1

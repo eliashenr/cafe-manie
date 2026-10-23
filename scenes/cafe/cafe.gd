@@ -371,6 +371,7 @@ func _connect_sounds() -> void:
 	simulation.event_mission_completed.connect(play.bind(&"achievement").unbind(2))
 	simulation.event_stove_upgraded.connect(play.bind(&"level_up").unbind(2))
 	simulation.critic_star_collected.connect(play.bind(&"achievement").unbind(1))
+	simulation.fruit_harvested.connect(play.bind(&"coin").unbind(3))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
 	simulation.surface_bought.connect(play.bind(&"purchase").unbind(1))
@@ -493,6 +494,17 @@ func renew_trophy(trophy_id: StringName) -> int:
 	if last_service_result == ServiceResult.OK:
 		_float_over(trophy_id, "Renovado!", FEEDBACK_GOOD)
 		_float_over(trophy_id, "-%s" % UiTheme.thousands(price), FEEDBACK_SPEND, Vector2(0, 22))
+	state_changed.emit()
+	return last_service_result
+
+
+## Colhe o pé de fruta maduro (DT-065): as frutas sobem do vaso.
+func harvest_tree(tree_id: StringName) -> int:
+	var fruit_id := layout.get_placement(tree_id).definition.fruit
+	last_service_result = simulation.harvest(tree_id)
+	if last_service_result == ServiceResult.OK:
+		var fruit: FruitDefinition = simulation.fruits.get_definition(fruit_id)
+		_float_over(tree_id, "+%d %s" % [simulation.layout.get_placement(tree_id).definition.fruit_yield, fruit.display_name], FEEDBACK_GOOD)
 	state_changed.emit()
 	return last_service_result
 
@@ -1059,6 +1071,10 @@ func tap_at_world(world_position: Vector2) -> void:
 	var thirsty := world_layer.drink_customer_at(world_position)
 	if thirsty != null:
 		serve_drink(thirsty)
+		return
+	var tapped := layout.placement_at(IsoProjection.world_to_cell(world_position))
+	if tapped != null and simulation.orchard.is_ripe(tapped.id):
+		harvest_tree(tapped.id)
 		return
 	var placement := layout.placement_at(IsoProjection.world_to_cell(world_position))
 	if placement != null and simulation.kitchen.is_stove(placement.id) \

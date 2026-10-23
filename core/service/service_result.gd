@@ -39,4 +39,7 @@ enum {
 	NOT_IN_SEASON,      ## o item da loja de troca não está nesta temporada (DT-062)
 	NOT_ENOUGH_COUPONS, ## cupons insuficientes para a troca
 	NOT_NIGHT,          ## prato do cardápio noturno: só começa à noite (DT-064)
+	NOT_A_TREE,         ## o móvel escolhido não é um pé de fruta (DT-065)
+	NOT_RIPE,           ## as frutas ainda não amadureceram
+	NO_FRUIT,           ## faltam frutas para o frozen yogurt
 }

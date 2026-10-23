@@ -18,7 +18,11 @@ extends Resource
 @export var xp_reward := 2
 ## Nível do jogador a partir do qual os clientes pedem a bebida.
 @export var unlock_level := 1
+## Frozen yogurt (DT-065): a fruta que gasta (vazio = bebida comum) e quantas. Com fruta, não precisa de energia.
+@export var fruit: StringName = &""
+@export var fruit_cost := 1
 
 
 func is_valid() -> bool:
-	return id != &"" and machine != &"" and energy_cost >= 1 and sell_price >= 0 and xp_reward >= 0 and unlock_level >= 1
+	return id != &"" and machine != &"" and energy_cost >= 0 and (energy_cost >= 1 or fruit != &"") and sell_price >= 0 \
+		and xp_reward >= 0 and unlock_level >= 1 and (fruit == &"" or fruit_cost >= 1)

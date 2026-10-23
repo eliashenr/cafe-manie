@@ -296,6 +296,12 @@ FURNITURE["giant_pumpkin"] = ((1, 1), _collection_decor(halloween3.giant_pumpkin
 import night3  # noqa: E402
 
 FURNITURE["stove_moon"] = ((1, 1), lambda D, iso, fp, rotation: night3.moon_stove(D, iso, 0, 0, FACE.get(rotation)), 4)
+# Plantação e frozen yogurt (DT-065): os pés de fruta (enfeites) e a máquina de frozen.
+import orchard3  # noqa: E402
+
+for _id, _draw in orchard3.TREES.items():
+    FURNITURE[_id] = ((1, 1), _collection_decor(_draw), 1)
+FURNITURE["machine_frozen"] = ((1, 1), _machine(orchard3.frozen_machine), 4)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 
@@ -448,6 +454,9 @@ FOOD_SIZE = 48.0
 # id da bebida no jogo -> desenho em drinks3
 DRINKS = {"espresso": "expresso", "cappuccino": "cappuccino", "hot_chocolate": "chocolate",
           "orange_juice": "laranja", "lemonade": "limonada", "strawberry_smoothie": "morango"}
+# id do frozen no jogo -> copinho em orchard3, e id da fruta -> desenho da fruta (DT-065)
+FROZEN_DRINKS = {"frozen_strawberry": "frozen_morango", "frozen_mango": "frozen_manga", "frozen_blueberry": "frozen_mirtilo"}
+FRUITS = {"strawberry": "morango", "mango": "manga", "blueberry": "mirtilo"}
 # id do tempero no jogo -> desenho em spices3 (DT-056)
 SPICES = {"salt": "sal", "pepper": "pimenta", "paprika": "paprica", "instant": "instantaneo", "herbs": "ervas"}
 MOODS = ("feliz", "esperando", "bravo")
@@ -464,11 +473,18 @@ def export_food(sheet, manifest):
     for drink_id, kind in DRINKS.items():
         bounds = (-FOOD_SIZE * 0.6, -FOOD_SIZE * 0.66, FOOD_SIZE * 1.2, FOOD_SIZE * 1.2)
         sheet.add(f"bebida_{drink_id}", drinks3.drink(sheet.D, kind, 0, 0, FOOD_SIZE), bounds)
+    for drink_id, kind in FROZEN_DRINKS.items():
+        bounds = (-FOOD_SIZE * 0.6, -FOOD_SIZE * 0.66, FOOD_SIZE * 1.2, FOOD_SIZE * 1.2)
+        sheet.add(f"bebida_{drink_id}", orchard3.frozen(sheet.D, kind, 0, 0, FOOD_SIZE), bounds)
+    for fruit_id, kind in FRUITS.items():
+        bounds = (-FOOD_SIZE * 0.6, -FOOD_SIZE * 0.66, FOOD_SIZE * 1.2, FOOD_SIZE * 1.2)
+        sheet.add(f"fruta_{fruit_id}", orchard3.fruit(sheet.D, kind, 0, 0, FOOD_SIZE), bounds)
     for spice_id, kind in SPICES.items():
         bounds = (-FOOD_SIZE * 0.6, -FOOD_SIZE * 0.66, FOOD_SIZE * 1.2, FOOD_SIZE * 1.2)
         sheet.add(f"tempero_{spice_id}", spices3.spice(sheet.D, kind, 0, 0, FOOD_SIZE), bounds)
     manifest["food"] = {recipe_id: f"prato_{recipe_id}" for recipe_id in FOODS}
-    manifest["drinks"] = {drink_id: f"bebida_{drink_id}" for drink_id in DRINKS}
+    manifest["drinks"] = {drink_id: f"bebida_{drink_id}" for drink_id in list(DRINKS) + list(FROZEN_DRINKS)}
+    manifest["fruits"] = {fruit_id: f"fruta_{fruit_id}" for fruit_id in FRUITS}
     manifest["spices"] = {spice_id: f"tempero_{spice_id}" for spice_id in SPICES}
     # Largura de cada prato, em pixels de mundo, quando desenhado em tamanho natural.
     manifest["food_width"] = round(FOOD_SIZE * WORLD, 2)

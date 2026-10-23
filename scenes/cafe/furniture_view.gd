@@ -44,6 +44,10 @@ const TROPHY_AREA_FILL := Color(1.0, 0.85, 0.2, 0.22)
 const TROPHY_AREA_EDGE := Color(1.0, 0.72, 0.1, 0.9)
 const TROPHY_REACH := 1
 const WORN_MODULATE := Color(0.62, 0.62, 0.66)
+## Fruta madura no pé (DT-065): o selo branco com a fruta, acima do vaso.
+const FRUIT_BADGE_LIFT := 96.0
+const FRUIT_BADGE_RADIUS := 18.0
+const FRUIT_ICON := 28.0
 ## Luz da luminária à noite (DT-064): cor quente, força no escuro total e altura acima do chão.
 const LIGHT_COLOR := Color(1.0, 0.86, 0.55)
 const LIGHT_ENERGY := 1.2
@@ -127,6 +131,8 @@ var status_ready := false
 var status_spoiled := false
 ## Troféu sem cargas (DT-057): desenhado apagado.
 var worn := false
+## Pé de fruta maduro (DT-065): mostra a fruta para colher.
+var fruit_ready := false
 ## Receita no fogão ou no balcão (null = nada), o texto curto do selo do fogão
 ## ("0:12", "Pronto!") e quantas porções há no balcão.
 var kitchen_recipe: RecipeDefinition
@@ -543,8 +549,23 @@ func _draw_plate(center: Vector2) -> void:
 	draw_set_transform(Vector2.ZERO)
 
 
-## Selos no filho de cima: o do fogão (prato, progresso e tempo) e o número do balcão.
+func set_fruit_ready(value: bool) -> void:
+	if value == fruit_ready:
+		return
+	fruit_ready = value
+	_overlay.queue_redraw()
+
+
+## Selos no filho de cima: o do fogão (prato, progresso e tempo), o número do balcão e a fruta madura do pé.
 func _draw_overlay() -> void:
+	if fruit_ready and definition != null and definition.fruit != &"":
+		var center := _footprint_center() - Vector2(0.0, FRUIT_BADGE_LIFT)
+		_overlay.draw_circle(center, FRUIT_BADGE_RADIUS, BADGE_FILL, true, -1.0, true)
+		_overlay.draw_arc(center, FRUIT_BADGE_RADIUS, 0.0, TAU, 40, BADGE_READY, 2.4, true)
+		var icon := ArtSprites.fruit(definition.fruit)
+		if icon != null:
+			_overlay.draw_texture_rect(icon.texture, icon.rect_at(center + Vector2(0.0, 2.0), FRUIT_ICON / ArtSprites.food_width()), false)
+		return
 	if definition == null or not shows_kitchen_art() or look in [Look.GHOST_VALID, Look.GHOST_INVALID]:
 		return
 	if definition.category == FurnitureDefinition.Category.COOKING:

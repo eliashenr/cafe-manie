@@ -31,6 +31,10 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 @export_range(0, 100) var comfort := 0
 ## Quantos desse móvel cabem na cafeteria (0 = sem limite).
 @export var max_per_cafe := 0
+## Pé de fruta (DT-065): a fruta que dá, quanto tempo leva para amadurecer e quantas frutas dá por colheita.
+@export var fruit: StringName = &""
+@export var fruit_grow_time := 0.0
+@export var fruit_yield := 0
 ## Luminária (DT-064): raio da luz que acende à noite, em pixels de mundo (0 = não acende).
 @export var light_radius := 0.0
 ## false = não se compra com ouro: só se ganha (prêmio de conjunto, de evento ou da loja de cupons).
@@ -72,6 +76,7 @@ func is_valid() -> bool:
 		and (category == Category.MACHINE) == (machine != &"") \
 		and (not is_trophy() or (trophy_dishes > 0 and renew_price >= 0)) \
 		and max_per_cafe >= 0 and stove_max_time >= 0.0 and coupon_price >= 0 \
+		and (fruit == &"" or (fruit_grow_time > 0.0 and fruit_yield > 0)) \
 		and (coupon_price == 0 or not sold_for_gold) \
 		and (category == Category.COOKING or not has_stove_profile())
 

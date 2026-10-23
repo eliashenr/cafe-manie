@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="FurnitureDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/furniture/furniture_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"tree_mango"
+display_name = "Pé de Manga"
+category = 4
+footprint = Vector2i(1, 1)
+needs_access = false
+price = 900
+min_level = 7
+beauty = 10
+efficiency = 0
+comfort = 0
+fruit = &"mango"
+fruit_grow_time = 1200.0
+fruit_yield = 4
+placeholder_color = Color(1, 0.7, 0.2, 1)
+placeholder_height = 60.0

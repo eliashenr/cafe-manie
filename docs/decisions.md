@@ -4,6 +4,33 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-065 — Plantação e frozen yogurt
+
+**Problema:**
+- O relatório propõe um pequeno ciclo de produção como no original (proposta 3.14).
+- Árvores frutíferas dão frutas com o tempo, e uma máquina de frozen yogurt usa essas frutas para servir sobremesa na hora.
+
+**Decisão:**
+- **3 pés de fruta** (enfeites de 1 piso, nível 7), com `fruit`, `fruit_grow_time` e `fruit_yield` em `FurnitureDefinition`:
+
+  | Pé | Preço | Amadurece em | Frutas por colheita |
+  |---|---|---|---|
+  | Morango | 600 | 10 min | 3 |
+  | Manga | 900 | 20 min | 4 |
+  | Mirtilo | 1.200 | 30 min | 5 |
+
+- **Amadurecer pelo relógio** (`Orchard`), inclusive com o jogo fechado.
+  - O pé novo começa a crescer ao ser posto.
+  - Maduro, mostra a fruta num selo; o toque colhe e começa a próxima fornada.
+- **Frutas** (`data/fruits`) vão para um estoque. A barra do pé diz quanto falta para amadurecer.
+- **Máquina de Frozen Yogurt** (nível 7, 1.500): 3 sabores, como as bebidas (o cliente pede e o jogador toca nele).
+  - O frozen gasta 1 fruta e nenhuma energia (`fruit` e `fruit_cost` em `DrinkDefinition`).
+  - Só entra no cardápio com a fruta no estoque.
+  - A barra da máquina mostra o estoque de frutas.
+- **O save guarda** os pés crescendo e as frutas (versão 17).
+
+---
+
 ## DT-064 — Noite no café
 
 **Problema:**

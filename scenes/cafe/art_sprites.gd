@@ -75,6 +75,12 @@ static func drink(drink_id: StringName) -> Sprite:
 	return null if sprite_name.is_empty() else get_sprite(sprite_name)
 
 
+## Ícone da fruta colhida (DT-065), ou null se não há arte.
+static func fruit(fruit_id: StringName) -> Sprite:
+	var sprite_name: String = _load_manifest().get("fruits", {}).get(String(fruit_id), "")
+	return null if sprite_name.is_empty() else get_sprite(sprite_name)
+
+
 ## Ícone do tempero (DT-056), ou null se não há arte.
 static func spice(spice_id: StringName) -> Sprite:
 	var sprite_name: String = _load_manifest().get("spices", {}).get(String(spice_id), "")

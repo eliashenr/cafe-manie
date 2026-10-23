@@ -32,6 +32,8 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## Um pé de fruta foi colhido: as frutas já estão no estoque (DT-065).
+signal fruit_harvested(tree_id: StringName, fruit: FruitDefinition, amount: int)
 ## Anoiteceu ([param night] true) ou amanheceu: o cardápio noturno abriu ou fechou (DT-064).
 signal night_changed(night: bool)
 ## Começou uma edição de um evento com prazo (DT-063).
@@ -83,6 +85,7 @@ const MASTERY_PATH := "res://data/config/mastery.tres"
 const CRITIC_PATH := "res://data/config/critic.tres"
 const EVENTS_DIR := "res://data/events"
 const NIGHT_PATH := "res://data/config/night.tres"
+const FRUITS_DIR := "res://data/fruits"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -108,6 +111,10 @@ var stove_sets: StoveSets
 var critic_config: CriticConfig
 ## Estrela que o crítico deixou na mesa, esperando o toque: {"cell", "gold", "xp", "coupons"}; vazio = nenhuma.
 var critic_star := {}
+## Plantação (DT-065): as frutas que existem, os pés de fruta e o estoque de frutas colhidas.
+var fruits: DefinitionStore
+var orchard: Orchard
+var fruit_stock := Inventory.new()
 ## Horário da noite (DT-064) e se o último passo foi de noite (para avisar quando muda).
 var night_config: NightConfig
 var _was_night := false
@@ -209,6 +216,9 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	spices = SpiceCatalog.load_from()
 	critic_config = load(CRITIC_PATH)
 	night_config = load(NIGHT_PATH)
+	fruits = DefinitionStore.new(func(a: FruitDefinition, b: FruitDefinition) -> bool: return a.order < b.order)
+	fruits.load_dir(FRUITS_DIR, FruitDefinition)
+	orchard = Orchard.new(layout, clock)
 	_was_night = is_night()
 	var event_store := DefinitionStore.new(func(a: EventDefinition, b: EventDefinition) -> bool: return String(a.id) < String(b.id))
 	event_store.load_dir(EVENTS_DIR, EventDefinition)
@@ -560,6 +570,29 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Plantação (DT-065) -----------------------------------------------------
+
+## Colhe o pé de fruta maduro: as frutas vão para o estoque.
+func harvest(tree_id: StringName) -> int:
+	if not orchard.is_tree(tree_id):
+		return ServiceResult.NOT_A_TREE
+	if not orchard.is_ripe(tree_id):
+		return ServiceResult.NOT_RIPE
+	var fruit_id := layout.get_placement(tree_id).definition.fruit
+	var amount := orchard.harvest(tree_id)
+	fruit_stock.add(fruit_id, amount)
+	fruit_harvested.emit(tree_id, fruits.get_definition(fruit_id) as FruitDefinition, amount)
+	return ServiceResult.OK
+
+
+## "Morango ×3, Manga ×0": o estoque de frutas, na ordem.
+func fruit_stock_text() -> String:
+	var parts: Array[String] = []
+	for fruit: FruitDefinition in fruits.all():
+		parts.append("%s ×%d" % [fruit.display_name, fruit_stock.count(fruit.id)])
+	return ", ".join(parts)
 
 
 # --- Noite no café (DT-064) -----------------------------------------------
@@ -1595,7 +1628,8 @@ func drink_menu() -> Array[DrinkDefinition]:
 		if machine != &"" and not seen.has(machine):
 			seen[machine] = true
 			menu.append_array(drinks.for_machine(machine, progression.level))
-	return menu
+	# frozen yogurt (DT-065) só entra no cardápio com fruta no estoque
+	return menu.filter(func(d: DrinkDefinition) -> bool: return d.fruit == &"" or fruit_stock.count(d.fruit) >= d.fruit_cost)
 
 
 ## O café tem alguma máquina de bebida?
@@ -1621,8 +1655,13 @@ func serve_drink(customer: Customer) -> int:
 		return ServiceResult.NOT_WAITING_FOR_DRINK
 	if not has_machine_for(customer.drink):
 		return ServiceResult.NO_MACHINE
-	if not energy.spend(customer.drink.energy_cost, clock.now()):
+	var drink := customer.drink
+	if drink.fruit != &"" and fruit_stock.count(drink.fruit) < drink.fruit_cost:
+		return ServiceResult.NO_FRUIT
+	if drink.energy_cost > 0 and not energy.spend(drink.energy_cost, clock.now()):
 		return ServiceResult.NOT_ENOUGH_ENERGY
+	for i in (drink.fruit_cost if drink.fruit != &"" else 0):
+		fruit_stock.take(drink.fruit)
 	customer.patience_when_served = customer.patience_fraction()
 	customer.state = Customer.State.EATING
 	customer.eat_left = config.drink_time

@@ -44,12 +44,12 @@ func _thirsty(drink_id: StringName) -> Customer:
 
 func test_drink_data_is_valid_and_every_drink_has_its_machine() -> void:
 	_setup()
-	assert_eq(sim.drinks.size(), 6)
+	assert_eq(sim.drinks.size(), 9, "6 bebidas e 3 frozen yogurts (DT-065)")
 	var machines := {}
 	for definition in sim.furniture.all():
 		if definition.category == FurnitureDefinition.Category.MACHINE:
 			machines[definition.machine] = definition
-	assert_eq(machines.size(), 2, "máquina de café e de sucos")
+	assert_eq(machines.size(), 3, "máquinas de café, de sucos e de frozen")
 	for drink in sim.drinks.all():
 		assert_true(drink.is_valid(), String(drink.id))
 		assert_true(machines.has(drink.machine), "a bebida %s tem máquina" % drink.id)

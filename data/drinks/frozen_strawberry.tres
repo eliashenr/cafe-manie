@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DrinkDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/drink_definition.gd" id="1_drink"]
+
+[resource]
+script = ExtResource("1_drink")
+id = &"frozen_strawberry"
+display_name = "Frozen de Morango"
+machine = &"frozen"
+energy_cost = 0
+sell_price = 12
+xp_reward = 5
+unlock_level = 7
+fruit = &"strawberry"
+fruit_cost = 1

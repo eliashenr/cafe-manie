@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DrinkDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/drink_definition.gd" id="1_drink"]
+
+[resource]
+script = ExtResource("1_drink")
+id = &"frozen_blueberry"
+display_name = "Frozen de Mirtilo"
+machine = &"frozen"
+energy_cost = 0
+sell_price = 20
+xp_reward = 9
+unlock_level = 7
+fruit = &"blueberry"
+fruit_cost = 1

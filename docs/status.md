@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 8 do relatório, etapa 1: plantação e frozen yogurt** (DT-065)
+
+- **3 pés de fruta** (nível 7): morango, manga e mirtilo. Eles amadurecem com o tempo, até com o jogo fechado.
+  - Maduros, mostram a fruta num selo; toque para colher.
+- **Máquina de Frozen Yogurt** (nível 7): os clientes pedem frozen de morango, manga ou mirtilo, como as bebidas.
+  - Cada frozen gasta 1 fruta, e não energia.
+  - A máquina mostra quantas frutas você tem.
+
 **Item 7 do relatório: noite no café** (DT-064)
 
 - **Das 19h às 6h** (no horário do seu computador), o café e a cidade escurecem aos poucos, num tom azul-noite, e as **luminárias acendem**.
@@ -353,6 +361,13 @@
 
 🧪 **TESTADO**
 
+- **Plantação e frozen: 607 testes automatizados PASSARAM.**
+  - **Regra:** dados válidos (pé sem frutas e frozen sem fruta e sem energia recusados); o pé amadurece no segundo certo, dá as frutas e recomeça; colher verde ou o que não é pé, recusado; o frozen só no cardápio com fruta, gasta fruta e não energia, e sem fruta não sai; o save guarda os pés e as frutas.
+  - **Na tela:** o pé maduro mostra a fruta e o toque colhe, com a barra dizendo quanto falta; a máquina mostra o estoque.
+  - O teste antigo das bebidas passou a contar 9 bebidas e 3 máquinas.
+  - **Defeitos inseridos de propósito: 17 de 17 pegos.**
+  - **Foto conferida:** os 3 pés maduros, a máquina de frozen e um cliente pedindo frozen de manga.
+  - **Cena principal: PASSOU**, zero erros.
 - **Noite no café: 601 testes automatizados PASSARAM.**
   - **Regra:** o horário da noite e a escuridão subindo e descendo nos crepúsculos; os dados do cardápio noturno e do fogão; os pratos da noite só começam à noite (e o que começou de madrugada termina de dia); os clientes só pedem à noite; o aviso ao anoitecer e ao amanhecer, uma vez cada.
   - **Na tela:** de dia sem escuro e com a luminária apagada, à noite escuro e acesa; de dia, o livro com "Só à noite"; o aviso de anoitecer.
