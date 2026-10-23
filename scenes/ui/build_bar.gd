@@ -16,7 +16,9 @@ extends CanvasLayer
 ## tempos e mensagens são atualizados no lugar a cada frame, para um clique
 ## nunca se perder porque um cliente pagou no meio dele.
 
-const ICON_BUTTON_SIZE := Vector2(92, 74)
+const ICON_BUTTON_SIZE := Vector2(84, 74)
+## Espaço entre os botões da faixa: com 9 ícones, ela cabe entre a carinha da satisfação e a borda direita.
+const ICON_SEPARATION := 6
 ## Quadradinhos por página da loja.
 const ITEMS_PER_PAGE := 6
 const RECIPE_BUTTON_SIZE := Vector2(132, 92)
@@ -73,6 +75,9 @@ const SERVICE_MESSAGES := {
 	ServiceResult.AVATAR_LOCKED: "Essa peça do avatar ainda não está liberada no seu nível",
 	ServiceResult.NO_DELIVERY_COUNTER: "Ponha um Balcão de Entregas no café para receber pedidos",
 	ServiceResult.NOT_ENOUGH_SERVINGS: "Faltam porções nos balcões para essa entrega",
+	ServiceResult.BRANCH_LOCKED: "A filial na praia ainda não está liberada no seu nível",
+	ServiceResult.BRANCH_CLOSED: "Abra a filial na praia primeiro",
+	ServiceResult.NO_MORE_UPGRADES: "A filial já está no nível máximo",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -214,6 +219,7 @@ func _ready() -> void:
 
 	_bar = _card("Bar", 18)
 	_buttons = _row("Buttons")
+	_buttons.add_theme_constant_override("separation", ICON_SEPARATION)
 	_bar.add_child(_buttons)
 	_stack.add_child(_bar)
 
@@ -503,6 +509,7 @@ func _show_icon_bar() -> void:
 	_add_expand_button()
 	_add_hire_button()
 	_add_icon(_buttons, "ChefBarButton", "chef", "Chef", func() -> void: cafe.hud.show_avatar())
+	_add_icon(_buttons, "CityBarButton", "cidade", "Cidade", func() -> void: cafe.hud.show_city())
 	_add_icon(_buttons, "MissionsBarButton", "prancheta", "Missões", func() -> void: cafe.hud.show_missions())
 	_add_icon(_buttons, "GiftsBarButton", "presente", "Presentes", func() -> void: cafe.hud.daily_requested.emit())
 	_add_icon(_buttons, "AchievementsBarButton", "trofeu", "Conquistas", func() -> void: cafe.hud.show_achievements())

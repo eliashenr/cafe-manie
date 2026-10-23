@@ -4,6 +4,13 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 10 do relatório, etapa 2: filial na praia** (DT-072, versão simplificada)
+
+- Novo botão **Cidade** na faixa de baixo: abre a janela da **Filial na Praia**.
+- No nível 15, abra a filial por 8.000 de ouro. Ela **trabalha sozinha** e junta ouro por hora, até com o jogo fechado.
+- Toque em **Coletar** para pegar o ouro (ganha um pouco de XP também).
+- **Melhore** a filial até o nível 4: ela rende mais, guarda mais horas e ganha um prato da praia a cada nível.
+
 **Item 10 do relatório, etapa 1: delivery** (DT-071)
 
 - Novo móvel na aba **Cozinha**: o **Balcão de Entregas** (nível 8).
@@ -407,6 +414,22 @@
 
 🧪 **TESTADO**
 
+- **Filial na praia: 678 testes automatizados PASSARAM.**
+  - **Regra:**
+    - a configuração é válida;
+    - abrir confere nível e ouro, cobra uma vez e não abre duas vezes;
+    - o ouro junta por hora até o limite do nível;
+    - coletar dá ouro e XP e recomeça a conta;
+    - melhorar confere o ouro, coleta antes, rende mais e põe um prato novo, até o nível máximo;
+    - o save guarda a filial.
+  - **Na tela:**
+    - existem a ilustração e o ícone;
+    - o botão Cidade abre a janela, com a filial bloqueada no começo;
+    - abrir e melhorar perguntam, com Cancelar selecionado;
+    - coletar faz o ouro subir, com aviso.
+  - **Defeitos inseridos de propósito: 35 de 35 pegos (4 só depois de reforçar um teste).**
+  - **Foto conferida:** a janela da cidade com a filial no nível 2, o ouro para coletar e a faixa de baixo com os 9 ícones.
+  - **Cena principal: PASSOU**, zero erros.
 - **Delivery: 669 testes automatizados PASSARAM.**
   - **Regra:**
     - a configuração e o balcão são válidos;

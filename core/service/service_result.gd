@@ -51,4 +51,7 @@ enum {
 	AVATAR_LOCKED,      ## nível insuficiente para a peça do avatar (DT-070)
 	NO_DELIVERY_COUNTER, ## falta o Balcão de Entregas (DT-071)
 	NOT_ENOUGH_SERVINGS, ## faltam porções nos balcões para a entrega
+	BRANCH_LOCKED,      ## nível insuficiente para abrir a filial (DT-072)
+	BRANCH_CLOSED,      ## a filial ainda não foi aberta
+	NO_MORE_UPGRADES,   ## a filial já está no nível máximo
 }

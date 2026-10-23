@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BranchConfig" format=3]
+
+[ext_resource type="Script" path="res://core/service/branch_config.gd" id="1_branch"]
+
+[resource]
+script = ExtResource("1_branch")
+display_name = "Filial na Praia"
+unlock_level = 15
+open_price = 8000
+income_per_hour = Array[int]([240, 420, 660, 960])
+capacity_hours = Array[float]([6.0, 8.0, 10.0, 12.0])
+dishes = Array[String](["Açaí na tigela", "Peixe frito", "Picolé de frutas", "Água de coco"])
+upgrade_prices = Array[int]([12000, 25000, 45000])
+xp_per_100_gold = 5

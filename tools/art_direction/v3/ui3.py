@@ -10,6 +10,7 @@ import critic3
 import halloween3
 import fun3
 import avatar3
+import branch3
 
 GLYPH_STROKE = 'fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"'
 
@@ -130,7 +131,7 @@ ICONS = {
     "prancheta": clipboard, "loja": shop_house, "rolo": roller, "expandir": expand, "livro": book,
     "bolo": cake, "martelo": hammer, "cadeado": padlock, "garcom": waiter_icon, "energia": energy_bolt,
     "cupom": critic3.coupon, "critico": critic3.critic_badge, "nota": fun3.note_icon,
-    "chef": avatar3.chef_icon,
+    "chef": avatar3.chef_icon, "cidade": branch3.city_icon,
 }
 
 BUTTONS = [("zoom_in", "blue"), ("zoom_out", "blue"), ("sound", "blue"), ("mute", "blue"), ("music", "blue"),

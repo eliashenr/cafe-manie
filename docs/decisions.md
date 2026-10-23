@@ -4,6 +4,40 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-072 — Filial na praia (versão simplificada)
+
+**Problema:**
+- O relatório propõe uma filial na praia: um segundo café num mapa diferente, liberado por missões, com receitas próprias (proposta 3.18).
+- Um segundo café jogável exigiria outra simulação, outro mapa e outro save, quase um jogo novo.
+
+**Decisão:**
+- **Versão simplificada:** a filial é um segundo café que **trabalha sozinho**.
+- **Abrir:** a partir do nível 15, por 8.000 de ouro, uma vez só.
+- **Rendimento:**
+  - aberta, ela junta ouro por hora, também com o jogo fechado;
+  - o ouro fica guardado até um limite de horas;
+  - coletar dá o ouro e um pouco de XP (5 a cada 100 de ouro).
+- **Níveis:** 4, cada um com rendimento, limite e um **prato da praia** a mais no cardápio da filial:
+
+  | Nível | Ouro por hora | Guarda até | Prato novo | Para chegar |
+  |---|---|---|---|---|
+  | 1 | 240 | 6 h | Açaí na tigela | abrir: 8.000 |
+  | 2 | 420 | 8 h | Peixe frito | 12.000 |
+  | 3 | 660 | 10 h | Picolé de frutas | 25.000 |
+  | 4 | 960 | 12 h | Água de coco | 45.000 |
+
+  - Melhorar coleta antes o ouro guardado, para não mudar de rendimento no meio da conta.
+- **Na tela:**
+  - novo botão **Cidade** na faixa de baixo abre a janela "Pela cidade", com a ilustração do quiosque na praia;
+  - abrir e melhorar pedem confirmação ali mesmo, com Cancelar já selecionado;
+  - a faixa de baixo ficou com botões um pouco mais estreitos para caberem os 9 ícones.
+- **Configuração e save:**
+  - os números ficam em `data/config/branch.tres` (`BranchConfig`);
+  - o save guarda a filial (versão 22).
+- **Fica para depois:** jogar dentro da filial, com mapa e clientes próprios.
+
+---
+
 ## DT-071 — Delivery: o Balcão de Entregas
 
 **Problema:**

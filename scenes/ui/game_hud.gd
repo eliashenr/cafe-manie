@@ -81,6 +81,7 @@ var _event_badge: Control
 var _event_days: Label
 var _event_dialog: EventDialog
 var _avatar_dialog: AvatarDialog
+var _city_dialog: CityDialog
 var _coupon_label: Label
 var _energy_label: Label
 var _energy_next: Label
@@ -581,6 +582,8 @@ func _build_dialogs() -> void:
 	_add_dialog(_event_dialog)
 	_avatar_dialog = AvatarDialog.new()
 	_add_dialog(_avatar_dialog)
+	_city_dialog = CityDialog.new()
+	_add_dialog(_city_dialog)
 	_missions_dialog = MissionsPanel.new()
 	_add_dialog(_missions_dialog)
 	_build_coin_dialogs()
@@ -886,6 +889,18 @@ func show_avatar() -> void:
 		if dialog.visible and dialog != _avatar_dialog:
 			return
 	_avatar_dialog.show_for(simulation)
+
+
+func city_dialog() -> CityDialog:
+	return _city_dialog
+
+
+## Abre a janela da cidade (DT-072), se nenhuma outra janela estiver aberta.
+func show_city() -> void:
+	for dialog: Window in find_children("*", "Window", true, false):
+		if dialog.visible and dialog != _city_dialog:
+			return
+	_city_dialog.show_for(simulation)
 
 
 func show_missions() -> void:

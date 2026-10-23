@@ -230,6 +230,17 @@ func _set_panel() -> void:
 			_cafe.hud.show_coin_shop(true)
 		"pausa":
 			_cafe.set_paused(true)
+		"cidade":
+			_keep_window = "CityDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			var sim = _cafe.simulation
+			sim.progression.add_xp(9000)  # nível 16
+			sim.wallet.earn(&"soft_currency", 30000, "vitrine")
+			sim.open_branch()
+			sim.upgrade_branch()
+			sim.branch.since -= 3.5 * 3600.0  # três horas e meia juntando ouro
+			_cafe.hud.show_city()
 		"avatar":
 			_keep_window = "AvatarDialog"
 			for window: Window in _cafe.find_children("*", "Window", true, false):

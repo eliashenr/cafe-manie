@@ -37,6 +37,8 @@ signal show_started
 signal show_ended
 ## O jogador coletou o ouro de uma atração.
 signal attraction_collected(attraction_id: StringName, amount: int)
+## O ouro da filial na praia foi coletado; o XP já foi entregue (DT-072).
+signal branch_collected(amount: int)
 ## Uma entrega saiu: o ouro e o XP já foram entregues (DT-071).
 signal delivery_sent(order: DeliveryBoard.Order)
 ## O terraço ao ar livre ficou pronto (DT-069).
@@ -103,6 +105,7 @@ const DIRT_PATH := "res://data/config/dirt.tres"
 const TERRACE_PATH := "res://data/config/terrace.tres"
 const AVATAR_DIR := "res://data/avatar"
 const DELIVERY_PATH := "res://data/config/delivery.tres"
+const BRANCH_PATH := "res://data/config/branch.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -142,6 +145,9 @@ var avatar := ChefAvatar.new()
 ## Entregas (DT-071): os pedidos esperando no Balcão de Entregas.
 var delivery_config: DeliveryConfig
 var delivery: DeliveryBoard
+## Filial na praia (DT-072): um segundo café que rende ouro sozinho.
+var branch_config: BranchConfig
+var branch: BeachBranch
 ## Atrações e palco (DT-066): o ouro guardado nas atrações, o show e o tempo até o próximo.
 var attractions: Attractions
 var stage_config: StageConfig
@@ -270,6 +276,8 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	avatar_parts.load_dir(AVATAR_DIR, AvatarPartDefinition)
 	delivery_config = load(DELIVERY_PATH)
 	delivery = DeliveryBoard.new(delivery_config)
+	branch_config = load(BRANCH_PATH)
+	branch = BeachBranch.new(branch_config)
 	for part: AvatarPartDefinition in avatar_parts.all():
 		if part.is_default:
 			avatar.own(part.id)
@@ -629,6 +637,49 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Filial na praia (DT-072) ------------------------------------------------------
+
+## Abre a filial: confere nível e ouro e cobra uma vez.
+func open_branch() -> int:
+	if branch.opened:
+		return ServiceResult.ALREADY_BUILT
+	if branch_config.unlock_level > progression.level:
+		return ServiceResult.BRANCH_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, branch_config.open_price):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	wallet.spend(Wallet.SOFT, branch_config.open_price, branch_config.display_name)
+	branch.open(clock.now())
+	return ServiceResult.OK
+
+
+## Coleta o ouro que a filial juntou, com um pouco de XP.
+func collect_branch() -> int:
+	if not branch.opened:
+		return ServiceResult.BRANCH_CLOSED
+	if branch.gold_ready(clock.now()) <= 0:
+		return ServiceResult.NOTHING_TO_COLLECT
+	var amount := branch.collect(clock.now())
+	wallet.earn(Wallet.SOFT, amount, branch_config.display_name)
+	_record(MissionDefinition.Kind.EARN_GOLD, amount)
+	progression.add_xp(amount * branch_config.xp_per_100_gold / 100)
+	branch_collected.emit(amount)
+	return ServiceResult.OK
+
+
+## Melhora a filial: o ouro guardado é coletado antes (para não mudar de rendimento no meio da conta).
+func upgrade_branch() -> int:
+	if not branch.opened:
+		return ServiceResult.BRANCH_CLOSED
+	if branch.is_max_level():
+		return ServiceResult.NO_MORE_UPGRADES
+	if not wallet.can_afford(Wallet.SOFT, branch.upgrade_price()):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	collect_branch()
+	wallet.spend(Wallet.SOFT, branch.upgrade_price(), "%s: melhoria" % branch_config.display_name)
+	branch.level_up()
+	return ServiceResult.OK
 
 
 # --- Entregas (DT-071) -------------------------------------------------------------

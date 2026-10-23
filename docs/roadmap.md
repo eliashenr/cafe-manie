@@ -108,7 +108,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Pacote do relatório: delivery, filial, 2º andar e vizinhos (seção 4, item 10)
 
 - [x] **1. Delivery** (DT-071): o Balcão de Entregas recebe pedidos de porções, que pagam mais que no salão.
-- [ ] **2. Filial na praia** (versão simplificada).
+- [x] **2. Filial na praia** (DT-072, versão simplificada): um segundo café que rende ouro sozinho, com 4 níveis e pratos da praia.
 - [ ] **3. 2º andar** (planejado e documentado).
 - [ ] **4. Vizinhos simulados:** cafés de personagens para visitar e ajudar.
 

@@ -622,6 +622,8 @@ def export_ui(sheet, manifest):
         sheet.add(f"medalhao_{name}", draw(D), (-4.0, -4.0, 74.0, 76.0), (32.0, 32.0))
     # retrato de quem conta a historinha do evento (DT-063)
     sheet.add("retrato_bruxa", halloween3.witch_portrait(D), (-70.0, -110.0, 140.0, 170.0), (0.0, 0.0))
+    # filial na praia (DT-072): a ilustração da janela da cidade
+    sheet.add("filial_praia", ui3.branch3.beach_cafe(D), (-3.0, -3.0, ui3.branch3.W + 6.0, ui3.branch3.H + 6.0), (0.0, 0.0))
     # avatar do chef (DT-070): as camadas na mesma caixa do retrato
     import avatar3
     portrait_box = (-70.0, -110.0, 140.0, 170.0)

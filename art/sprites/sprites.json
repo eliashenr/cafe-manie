@@ -6130,6 +6130,12 @@
     54.0
    ]
   },
+  "icone_cidade": {
+   "anchor": [
+    54.0,
+    48.0
+   ]
+  },
   "botao_zoom_in": {
    "anchor": [
     60.0,
@@ -6284,6 +6290,12 @@
    "anchor": [
     82.0,
     186.0
+   ]
+  },
+  "filial_praia": {
+   "anchor": [
+    2.0,
+    2.0
    ]
   },
   "avatar_cabeca_clara_curto_castanho": {
