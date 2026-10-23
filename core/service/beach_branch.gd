@@ -32,10 +32,13 @@ func dishes() -> Array[String]:
 	return result
 
 
-## Ouro guardado esperando a coleta.
+## Ouro guardado esperando a coleta. Com o relógio do aparelho atrasado, a conta recomeça de agora (nada de ficar
+## horas sem render esperando o relógio voltar).
 func gold_ready(now: float) -> int:
 	if not opened:
 		return 0
+	if since > now:
+		since = now
 	var hours := clampf((now - since) / 3600.0, 0.0, capacity_hours())
 	return floori(hours * income_per_hour())
 
@@ -79,7 +82,7 @@ func to_data() -> Dictionary:
 
 
 func restore(data: Dictionary) -> void:
-	opened = bool(data.get("open", false))
-	level = clampi(int(data.get("level", 1)), 1, config.max_level())
-	since = float(data.get("since", 0.0))
+	opened = SafeValue.to_bool(data.get("open", false))
+	level = clampi(SafeValue.to_int(data.get("level", 1), 1), 1, config.max_level())
+	since = SafeValue.to_float(data.get("since", 0.0))
 	changed.emit()

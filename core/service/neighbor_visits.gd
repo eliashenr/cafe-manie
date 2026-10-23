@@ -39,6 +39,6 @@ func restore(data: Dictionary) -> void:
 		var entry: Variant = data[key]
 		if entry is Dictionary:
 			var id := StringName(str(key))
-			_last_day[id] = int(entry.get("day", -1))
-			_friendship[id] = maxi(0, int(entry.get("friendship", 0)))
+			_last_day[id] = SafeValue.to_int(entry.get("day", -1), -1)
+			_friendship[id] = maxi(0, SafeValue.to_int(entry.get("friendship", 0)))
 	changed.emit()

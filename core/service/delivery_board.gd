@@ -32,6 +32,8 @@ func refresh(now: float, menu: Array[RecipeDefinition], rng: RandomNumberGenerat
 		return
 	if next_at <= 0.0:
 		next_at = now
+	# relógio do aparelho atrasado: o próximo pedido nunca fica mais longe que um intervalo
+	next_at = minf(next_at, now + config.order_interval)
 	var arrived := false
 	while orders.size() < config.max_orders and now >= next_at:
 		orders.append(make_order(menu[rng.randi_range(0, menu.size() - 1)], rng.randi_range(config.min_servings, config.max_servings)))
@@ -72,7 +74,7 @@ func to_data() -> Dictionary:
 
 func restore(data: Dictionary, recipes: RecipeCatalog) -> void:
 	orders.clear()
-	for entry in data.get("orders", []):
+	for entry in SafeValue.to_array(data.get("orders", [])):
 		if not entry is Dictionary:
 			continue
 		var recipe := recipes.get_definition(StringName(str(entry.get("recipe", ""))))
@@ -80,11 +82,11 @@ func restore(data: Dictionary, recipes: RecipeCatalog) -> void:
 			continue
 		var order := Order.new()
 		order.recipe = recipe
-		order.servings = maxi(1, int(entry.get("servings", 1)))
-		order.gold = maxi(0, int(entry.get("gold", 0)))
-		order.xp = maxi(0, int(entry.get("xp", 0)))
+		order.servings = maxi(1, SafeValue.to_int(entry.get("servings", 1), 1))
+		order.gold = maxi(0, SafeValue.to_int(entry.get("gold", 0)))
+		order.xp = maxi(0, SafeValue.to_int(entry.get("xp", 0)))
 		orders.append(order)
-	next_at = float(data.get("next_at", 0.0))
+	next_at = SafeValue.to_float(data.get("next_at", 0.0))
 	_changed()
 
 

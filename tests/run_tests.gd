@@ -4,6 +4,7 @@ extends SceneTree
 ## Uso (na pasta do projeto):
 ##   godot --headless --import
 ##   godot --headless -s res://tests/run_tests.gd
+##   godot --headless -s res://tests/run_tests.gd -- journey   (so os arquivos com "journey" no nome)
 ##
 ## Sai com código 0 se tudo passar e 1 se algo falhar. Um erro de script
 ## durante um teste também reprova o teste, para nunca haver falso sucesso.
@@ -44,8 +45,11 @@ func _run() -> void:
 	var passed := 0
 	var failed := 0
 
+	var only := OS.get_cmdline_user_args()[0] if not OS.get_cmdline_user_args().is_empty() else ""
 	for dir_path in TEST_DIRS:
 		for file_name in _test_files(dir_path):
+			if not only.is_empty() and not file_name.contains(only):
+				continue
 			var script: GDScript = load(dir_path.path_join(file_name))
 			print("\n", file_name)
 			if script == null or not script.can_instantiate():

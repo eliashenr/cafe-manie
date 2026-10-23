@@ -89,6 +89,7 @@ var _xp_bar: StripedBar
 var _level_label: Label
 var _beauty_bar: StripedBar
 var _rating_label: Label
+var _rating_card: PanelContainer
 var _stars: Array[TextureRect] = []
 var _daily_title: Label
 var _daily_digits: Array[Label] = []
@@ -523,6 +524,7 @@ func _build_mission_card() -> void:
 func _build_rating() -> void:
 	var card := PanelContainer.new()
 	card.name = "Rating"
+	_rating_card = card
 	card.add_theme_stylebox_override("panel", UiTheme.card_box(12, 0))
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_anchored(card, Vector2(0.0, 1.0), Vector2(12, -84), Vector2(196, 70))
@@ -920,6 +922,15 @@ func ask_restart() -> void:
 
 func restart_dialog() -> ConfirmationDialog:
 	return _restart_dialog
+
+
+## Esconde a satisfação enquanto a loja está aberta: em tela larga, a loja cobria só metade do quadro (QA, 23/10).
+func set_rating_visible(shown: bool) -> void:
+	_rating_card.visible = shown
+
+
+func is_rating_visible() -> bool:
+	return _rating_card.visible
 
 
 func bind(target: CafeSimulation) -> void:

@@ -12,10 +12,59 @@
 
 Como rodar está no [README](../README.md#testes-automatizados).
 
-## Cobertura atual — 686 testes
+## QA de ponta a ponta (23/10, FAÇA QA)
+
+Testador independente: não assumir que o código está certo e tentar quebrar o jogo.
+
+### O que foi feito
+
+- **Jornada completa automatizada** (`integration/test_end_to_end_journey.gd`), jogada pela tela de verdade, com o save numa pasta própria:
+  - dar nome ao café e receber o presente do dia 1;
+  - cozinhar um café pelo fogão e atender clientes por 4 minutos;
+  - comprar uma mesa pela loja, expandir e contratar pela barra;
+  - comprar a porta dos Anos 70 e o terraço, limpar uma mancha e comprar a boina do avatar;
+  - pôr o Balcão de Entregas e mandar um pedido;
+  - abrir a filial, coletar depois de uma hora e ajudar a Ana;
+  - fechar e reabrir: nível, móveis, garçons, porta, terraço, avatar, pedidos, filial e visita voltam iguais, e nenhum ouro se perde;
+  - **nenhum erro no registro do Godot** durante a jornada. Rodada 3 vezes seguidas, sem falhar.
+- **Casos-limite e toques duplos**, procurados um por um.
+- **Save estragado:** cada campo do save trocado por valores de tipo errado (texto, número, lista, dicionário, nada).
+- **Vazamento de memória:** abrir e fechar as janelas novas e a loja 25 vezes.
+- **Desempenho** (`tools/perf_check.gd`), com o café no tamanho máximo (16×16, 110 móveis, 6 garçons), medindo o desenho de verdade.
+- **Telas em outras proporções:** celular comprido (20:9) e tablet (4:3), com o HUD, a loja, o avatar e os vizinhos.
+
+### Defeitos encontrados e corrigidos
+
+| # | Defeito | Efeito para o jogador | Correção |
+|---|---|---|---|
+| 1 | A regra "uma janela por vez" não conhecia as janelas do Avatar e da Cidade | com elas abertas, o presente diário ou o evento abriam outra janela por cima | as duas entram na regra |
+| 2 | Botão de entrega apontava para a posição do pedido | num toque duplo rápido, o segundo toque mandava o pedido seguinte | o botão aponta para o pedido em si |
+| 3 | Confirmar da filial sem pergunta pendente caía em "melhorar" | (protegido pela tela) um toque a mais poderia comprar a melhoria | sem pergunta, não faz nada |
+| 4 | Relógio do aparelho atrasado | as entregas paravam por dias, e a filial também | o próximo pedido nunca fica a mais de um intervalo; a filial recomeça a conta |
+| 5 | Save com tipo errado num campo | erro de script e carregamento pela metade | leitura segura (`SafeValue`) em todos os campos novos e nos 5 antigos que tinham o problema |
+| 6 | No celular comprido, a loja cobria só metade do quadro de satisfação | a palavra "satisfeitos" aparecia cortada | o quadro sai enquanto a loja está aberta |
+| 7 | (do balanceamento) a curva nova baixaria o nível de quem já jogava | um nível 11 voltaria para o 9 | o save converte o XP mantendo o nível |
+
+### O que passou sem defeito
+
+- **Desempenho:** média de 176 quadros por segundo com o café cheio, e 151 no estresse, com 26 clientes ao mesmo tempo.
+  - O pior quadro normal foi de 13,7 ms. No estresse, houve um único engasgo de 54 ms em 3.000 quadros, provavelmente o primeiro carregamento do desenho de um personagem.
+- **Memória:** nenhum objeto perdido depois de 25 voltas abrindo e fechando as janelas e a loja.
+- **Telas:** no 20:9 e no 4:3, o HUD, a faixa de 9 ícones, a loja e as janelas novas cabem sem sobrepor (depois da correção 6).
+- **Save:** só a planta do café (`layout`) é obrigatória. Sem ela, o save é recusado sem erro e o jogo recupera a cópia de segurança, como já fazia.
+
+### Não foi possível testar
+
+- **No celular de verdade:** a medição foi neste PC. Num celular, espere de 3 a 5 vezes menos quadros por segundo, ainda acima de 30 com o café cheio.
+- **O toque com o dedo de verdade:** os toques foram simulados (como em todos os testes de cena).
+
+## Cobertura atual — 695 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
+| `integration/test_end_to_end_journey.gd` | 1 | **jornada completa de QA:** do jogo novo aos recursos dos itens 9 e 10 pela tela, fechar e reabrir com tudo igual e nenhum erro no registro |
+| `unit/test_save_robustness.gd` | 4 | **save estragado:** tipos errados nos campos novos e dentro deles, em cada campo do save e na conversão de XP; regras da leitura segura |
+| `integration/test_no_leaks.gd` | 1 | abrir e fechar janelas e loja 25 vezes sem objetos perdidos |
 | `unit/test_cafe_grid.gd` | 10 | limites, ocupação, colisão, expansão segura |
 | `unit/test_iso_projection.gd` | 8 | clique cai no piso certo, inclusive nas bordas; posições fracionárias dos personagens; vértices fracionários (calçada, cerca) |
 | `unit/test_furniture_catalog.gd` | 8 | balcões de 1 piso, 8 fogões e 8 balcões; dados de móveis válidos (95 móveis); recusa de dados ruins; todo móvel e revestimento numa coleção conhecida, e cada coleção com cadeira, mesa, enfeite, piso e parede |

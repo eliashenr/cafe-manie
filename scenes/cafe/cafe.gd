@@ -161,6 +161,7 @@ func _ready() -> void:
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
+	build_bar.shop_toggled.connect(func(shown: bool) -> void: hud.set_rating_visible(not shown))
 	simulation.dirt.changed.connect(_on_dirt_changed)
 	_on_dirt_changed()
 
@@ -427,7 +428,8 @@ func _on_daily_requested() -> void:
 ## Alguma janela de pergunta aberta? Só cabe uma por vez na tela.
 func is_dialog_open() -> bool:
 	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(), hud.missions_dialog(),
-			hud.name_dialog(), build_bar.confirm_dialog(), hud.coin_dialog(), hud.coin_info_dialog(), hud.event_dialog()]:
+			hud.name_dialog(), build_bar.confirm_dialog(), hud.coin_dialog(), hud.coin_info_dialog(), hud.event_dialog(),
+			hud.avatar_dialog(), hud.city_dialog()]:
 		if dialog.visible:
 			return true
 	return false

@@ -29,6 +29,7 @@ func test_the_chef_button_opens_the_portrait() -> void:
 	var cafe := await spawn_cafe()
 	var dialog := await _open(cafe)
 	assert_true(dialog.visible, "o botão Chef abre o avatar")
+	assert_true(cafe.is_dialog_open(), "conta como janela aberta: nada abre por cima (uma por vez)")
 	assert_eq(dialog.portrait_layers(), ["avatar_roupa_branca", "avatar_cabeca_clara_curto_castanho", "avatar_chapeu_toque"] as Array[String],
 		"o retrato empilha a roupa, a cabeça e o chapéu")
 	var locked := dialog.card(&"hair_longo_rosa")

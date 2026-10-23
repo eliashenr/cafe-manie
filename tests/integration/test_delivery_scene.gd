@@ -40,4 +40,21 @@ func test_selecting_the_counter_shows_the_orders_and_sending_pays() -> void:
 	assert_eq(sim.wallet.balance(Wallet.SOFT), gold + order.gold)
 	assert_true(all_messages(cafe).contains("Entrega enviada"), all_messages(cafe))
 	assert_eq((cafe.effects.get_child(-1) as FloatingText).text, "+%s ouro" % UiTheme.thousands(order.gold))
-	assert_true(cafe.build_bar.find_button("Delivery_0") == null, "o pedido saiu da barra")
+	assert_true(cafe.build_bar.find_button("Delivery_0") == null or cafe.build_bar.find_button("Delivery_0") != button,
+		"o pedido saiu da barra")
+
+
+func test_a_double_tap_sends_only_one_order() -> void:
+	var setup := await _delivery_cafe()
+	var cafe: Cafe = setup[0]
+	var sim := cafe.simulation
+	sim.delivery.orders.append(sim.delivery.make_order(sim.recipes.get_definition(&"coffee"), 3))
+	sim.delivery.orders[0] = sim.delivery.make_order(sim.recipes.get_definition(&"coffee"), 3)
+	sim.kitchen.restore_counter(setup[1], sim.recipes.get_definition(&"coffee"), 6)
+	cafe.select_at_world(IsoProjection.cell_center(Vector2i(0, 6)))
+	await settle()
+	var button := cafe.build_bar.find_button("Delivery_0")
+	button.pressed.emit()
+	button.pressed.emit()  # o segundo toque chega antes de a barra se refazer
+	assert_eq(sim.delivery.orders.size(), 1, "só um pedido saiu")
+	assert_eq(sim.kitchen.servings_of(sim.recipes.get_definition(&"coffee")), 3, "só as porções de um pedido")

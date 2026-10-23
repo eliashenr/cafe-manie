@@ -4,6 +4,21 @@
 
 🟢 **CONCLUÍDO**
 
+**FAÇA QA de ponta a ponta**
+
+- **Joguei o jogo inteiro de forma automática, pela tela:**
+  - do nome do café e do presente do dia 1 até a filial e os vizinhos;
+  - fechei e reabri no meio: tudo voltou igual e nenhum erro apareceu.
+- **Achei e corrigi 6 defeitos** (detalhes em `docs/qa.md`):
+  - com o Avatar ou a Cidade abertos, outra janela podia abrir por cima;
+  - num toque duplo rápido no Balcão de Entregas, saía um pedido a mais;
+  - com o relógio do aparelho atrasado, as entregas e a filial travavam;
+  - um save estragado dava erro e carregava pela metade;
+  - no celular comprido, a loja cortava o quadro de satisfação;
+  - um toque a mais na filial, sem pergunta na tela, poderia comprar a melhoria.
+- **Desempenho bom:** com o café cheio no tamanho máximo, 176 quadros por segundo neste PC (151 no estresse com 26 clientes).
+- **Sem vazamento de memória**, e as telas de celular comprido e de tablet ficam certas.
+
 **FAÇA BALANCEAMENTO** (DT-075)
 
 - Medi com um robô que joga como um jogador médio por 10 horas, com os dados reais.
@@ -439,6 +454,11 @@
 
 🧪 **TESTADO**
 
+- **QA de ponta a ponta: 695 testes automatizados PASSARAM.**
+  - **Novos:** a jornada completa (rodada 3 vezes seguidas sem falhar), o save estragado (cada campo com tipos errados), o vazamento de memória, o toque duplo nas entregas, o relógio atrasado nas entregas e na filial, e a regra de uma janela por vez com o Avatar e a Cidade.
+  - **Defeitos inseridos de propósito: 13 de 13 pegos** (1 só depois de reforçar um teste).
+  - **Fotos conferidas:** celular 20:9 (HUD, loja e vizinhos) e tablet 4:3 (HUD e avatar).
+  - **Cena principal: PASSOU**, zero erros.
 - **Balanceamento: 686 testes automatizados PASSARAM.**
   - A conversão do save antigo mantém o nível em todos os casos testados, inclusive no limite exato de cada nível e acima do máximo.
   - O teste do cardápio agora confere que só saem pratos que dá tempo de fazer (e, sem o limite, o cardápio inteiro).

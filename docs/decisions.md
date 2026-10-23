@@ -4,6 +4,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-076 — Correções do QA de ponta a ponta
+
+**Problema:**
+- O QA de ponta a ponta (23/10) achou 6 defeitos:
+  - janelas novas fora da regra de uma janela por vez;
+  - toque duplo nas entregas;
+  - confirmar da filial sem pergunta;
+  - relógio atrasado travando entregas e filial;
+  - save estragado dando erro de script;
+  - o quadro de satisfação cortado pela loja em tela larga.
+
+**Decisão:**
+- **Regra de uma janela por vez:** o Avatar e a Cidade entram em `Cafe.is_dialog_open()`.
+- **Botões ligados à coisa, não à posição:** o botão de entrega guarda o pedido; se ele já saiu, o toque não faz nada.
+- **Relógio atrasado:** o próximo pedido nunca fica a mais de um intervalo de agora, e a filial recomeça a conta.
+  - Adiantar o relógio continua possível (é o limite de qualquer jogo sem servidor). Na Fase 6, a hora vem do servidor.
+- **Leitura segura do save:** `SafeValue` (`core/save/safe_value.gd`); valor de tipo errado vira o padrão, sem erro de script.
+- **Satisfação e loja:** o HUD esconde o quadro enquanto a loja está aberta (a barra avisa por `shop_toggled`).
+- **Ferramentas de QA:**
+  - `tools/perf_check.gd` mede o desempenho com o café cheio;
+  - o executor de testes aceita um filtro (`-- journey`) para rodar só alguns arquivos.
+
+---
+
 ## DT-075 — Balanceamento: ritmo de níveis e pedidos impossíveis
 
 **Problema:**

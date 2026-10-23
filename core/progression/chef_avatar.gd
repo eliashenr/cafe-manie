@@ -50,7 +50,7 @@ func to_data() -> Dictionary:
 
 func restore(data: Dictionary) -> void:
 	_owned.clear()
-	for id in data.get("owned", []):
+	for id in SafeValue.to_array(data.get("owned", [])):
 		_owned[StringName(str(id))] = true
 	_equipped.clear()
 	var equipped_data: Variant = data.get("equipped", {})

@@ -4,8 +4,10 @@ extends CafeTestCase
 
 func test_shop_tabs_split_furniture_and_decor() -> void:
 	var cafe := await spawn_cafe()
+	assert_true(cafe.hud.is_rating_visible())
 	cafe.build_bar.open_shop()
 	await settle()
+	assert_false(cafe.hud.is_rating_visible(), "com a loja aberta, a satisfação sai (a loja cobria só metade dela)")
 	assert_true(cafe.build_bar.find_button("Build_table_round") != null, "Salão é a aba inicial")
 	assert_true(cafe.build_bar.find_button("Build_stove_basic") == null, "fogão fica em Cozinha")
 	assert_true(cafe.build_bar.find_button("Build_plant_pot") == null, "planta fica em Decoração")
@@ -14,6 +16,9 @@ func test_shop_tabs_split_furniture_and_decor() -> void:
 	assert_true(cafe.build_bar.find_button("Build_plant_pot") != null)
 	assert_true(cafe.build_bar.find_button("Build_table_round") == null)
 	assert_true(cafe.build_bar.find_button("Tab_DECOR").button_pressed, "a aba ativa aparece marcada")
+	cafe.build_bar.close_shop()
+	await settle()
+	assert_true(cafe.hud.is_rating_visible(), "e volta quando a loja fecha")
 
 
 func test_new_cafe_draws_default_floor_and_walls() -> void:

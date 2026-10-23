@@ -330,6 +330,10 @@ func expand_dialog() -> ConfirmationDialog:
 	return _confirm_dialog
 
 
+## A loja apareceu ([param shown] true) ou saiu da tela.
+signal shop_toggled(shown: bool)
+
+
 ## Abre a loja na aba pedida (no lugar da faixa de ícones).
 func open_shop(tab := shop_tab) -> void:
 	shop_tab = tab
@@ -472,6 +476,8 @@ func _rebuild() -> void:
 		_show_icon_bar()
 	if showing_shop and not _shop.visible:
 		Juice.fade_in(_shop)
+	if showing_shop != _shop.visible:
+		shop_toggled.emit(showing_shop)
 	_shop.visible = showing_shop
 	_bar.visible = not showing_shop
 	_primary_card.visible = _primary.get_child_count() > 0
@@ -959,8 +965,12 @@ func _show_delivery_controls() -> void:
 	var orders := simulation.delivery.orders
 	for i in orders.size():
 		var order := orders[i]
+		# o botão é deste pedido, não da posição: num toque duplo, o segundo toque não manda o pedido seguinte
 		var button := _add_text_button("Delivery_%d" % i, "%s ×%d · %s ouro" % [order.recipe.display_name, order.servings,
-			UiTheme.thousands(order.gold)], func() -> void: cafe.send_delivery(i))
+			UiTheme.thousands(order.gold)], func() -> void:
+				var index := simulation.delivery.orders.find(order)
+				if index >= 0:
+					cafe.send_delivery(index))
 		_updaters.append(func() -> void: button.disabled = simulation.kitchen.servings_of(order.recipe) < order.servings)
 
 

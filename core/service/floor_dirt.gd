@@ -54,7 +54,7 @@ func restore(data: Array) -> void:
 	_spots.clear()
 	for entry in data:
 		if entry is Array and entry.size() == 2:
-			var cell := Vector2i(int(entry[0]), int(entry[1]))
+			var cell := Vector2i(SafeValue.to_int(entry[0], -1), SafeValue.to_int(entry[1], -1))
 			if _is_free_floor(cell):
 				_spots[cell] = true
 	changed.emit()

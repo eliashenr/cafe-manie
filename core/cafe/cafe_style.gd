@@ -184,7 +184,7 @@ func restore(data: Dictionary) -> void:
 	floor_id = StringName(str(data.get("floor", "")))
 	wall_id = StringName(str(data.get("wall", "")))
 	door_id = StringName(str(data.get("door", "")))
-	terrace = bool(data.get("terrace", false))
+	terrace = SafeValue.to_bool(data.get("terrace", false))
 	_floor_cells.clear()
 	for entry in data.get("floor_cells", []):
 		if entry is Array and entry.size() == 3:

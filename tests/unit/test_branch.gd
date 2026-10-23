@@ -118,6 +118,15 @@ func test_upgrading_collects_first_and_raises_income_and_menu() -> void:
 	assert_eq(sim.upgrade_branch(), ServiceResult.NO_MORE_UPGRADES)
 
 
+func test_a_clock_set_back_does_not_freeze_the_branch() -> void:
+	_setup()
+	_open()
+	clock.advance(-2.0 * 86400.0)  # alguém atrasou o relógio do aparelho em 2 dias
+	assert_eq(sim.branch.gold_ready(clock.now()), 0)
+	clock.advance(HOUR)
+	assert_eq(sim.branch.gold_ready(clock.now()), sim.branch.income_per_hour(), "uma hora depois, já rendeu uma hora")
+
+
 func test_the_save_keeps_the_branch() -> void:
 	_setup()
 	_open()

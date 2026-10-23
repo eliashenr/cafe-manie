@@ -127,6 +127,17 @@ func test_a_full_board_waits_an_interval_after_sending() -> void:
 	assert_eq(sim.delivery.orders.size(), sim.delivery_config.max_orders)
 
 
+func test_a_clock_set_back_does_not_freeze_the_orders() -> void:
+	_setup()
+	sim.tick(0.1)
+	clock.advance(-3.0 * 86400.0)  # alguém atrasou o relógio do aparelho em 3 dias
+	sim.tick(0.1)
+	assert_true(sim.delivery.seconds_until_next(clock.now()) <= _interval(), "o próximo pedido não fica para daqui a 3 dias")
+	clock.advance(_interval() + 1.0)
+	sim.tick(0.1)
+	assert_eq(sim.delivery.orders.size(), 2, "um intervalo depois, chega o próximo")
+
+
 func test_the_save_keeps_the_orders() -> void:
 	_setup()
 	clock.advance(_interval())

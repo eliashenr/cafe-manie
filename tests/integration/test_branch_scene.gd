@@ -19,6 +19,7 @@ func test_the_city_button_opens_the_locked_branch() -> void:
 	var cafe := await spawn_cafe()
 	var dialog := await _open_city(cafe)
 	assert_true(dialog.visible, "o botão Cidade abre a janela")
+	assert_true(cafe.is_dialog_open(), "conta como janela aberta: nada abre por cima (uma por vez)")
 	assert_true(dialog.info_text().contains("nível %d" % cafe.simulation.branch_config.unlock_level), dialog.info_text())
 	assert_true((dialog.find_child("BranchAction", true, false) as Button).disabled, "bloqueada no começo")
 	assert_false((dialog.find_child("CollectBranch", true, false) as Button).visible, "fechada, sem coletar")
@@ -58,4 +59,8 @@ func test_opening_collecting_and_upgrading() -> void:
 	(dialog.find_child("BranchConfirm", true, false) as Button).pressed.emit()
 	await settle()
 	assert_eq(sim.branch.level, 2)
+	gold = sim.wallet.balance(Wallet.SOFT)
+	dialog.confirm()  # um toque a mais, sem pergunta na tela
+	assert_eq(sim.branch.level, 2, "sem pergunta pendente, nada é comprado")
+	assert_eq(sim.wallet.balance(Wallet.SOFT), gold)
 	assert_true(dialog.menu_text().contains("Peixe frito"), dialog.menu_text())

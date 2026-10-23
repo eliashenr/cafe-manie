@@ -108,6 +108,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Balanceamento (23/10/2026)
 
 - [x] **FAÇA BALANCEAMENTO** (DT-075): ritmo de níveis "médio", pedidos do cardápio só de pratos possíveis, preços alinhados; ferramenta `tools/balance_report.gd`.
+- [x] **FAÇA QA de ponta a ponta** (DT-076): jornada completa automatizada, 6 defeitos corrigidos, desempenho, memória, save estragado e telas de celular e tablet.
 
 ## Pacote do relatório: delivery, filial, 2º andar e vizinhos (seção 4, item 10)
 

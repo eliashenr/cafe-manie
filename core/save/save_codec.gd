@@ -126,7 +126,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	if size.x <= 0 or size.y <= 0 or entrance.x < 0 or entrance.x >= size.x or entrance.y < 0 or entrance.y >= size.y:
 		result.warnings.append("Layout do save inválido")
 		return result
-	result.saved_at = float(data.get("saved_at", 0.0))
+	result.saved_at = SafeValue.to_float(data.get("saved_at", 0.0))
 
 	var furniture := FurnitureCatalog.load_from()
 	var layout := CafeLayout.new(size, entrance)
@@ -137,7 +137,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 			definition, _array_to_vec(placement.get("origin")), int(placement.get("rotation", 0)))
 		if not ok:
 			result.warnings.append("Móvel ignorado: %s" % placement)
-	layout.restore_next_serial(int(layout_data.get("next_serial", 1)))
+	layout.restore_next_serial(SafeValue.to_int(layout_data.get("next_serial", 1), 1))
 	if data.get(TURN_SEATS_KEY, false):
 		layout.turn_seats_toward_tables()
 
@@ -156,7 +156,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 			result.warnings.append("Balcão ignorado: %s" % counter)
 
 	simulation.wallet.restore(_dict(data.get("wallet")))
-	simulation.progression.restore_xp(int(data.get("xp", 0)))
+	simulation.progression.restore_xp(maxi(0, SafeValue.to_int(data.get("xp", 0))))
 	simulation.energy.set_level(simulation.progression.level, clock.now())
 	simulation.energy.restore(_dict(data.get("energy")), clock.now())
 	simulation.mastery.restore(_dict(data.get("mastery")))
@@ -173,7 +173,7 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.delivery.restore(_dict(data.get("delivery")), simulation.recipes)
 	simulation.branch.restore(_dict(data.get("branch")))
 	simulation.neighbor_visits.restore(_dict(data.get("neighbors")))
-	simulation.restore_popularity(float(data.get("popularity", simulation.config.popularity_start)))
+	simulation.restore_popularity(SafeValue.to_float(data.get("popularity"), simulation.config.popularity_start))
 	simulation.inventory.restore(_dict(data.get("inventory")))
 	simulation.missions.restore(_dict(data.get("missions")))
 	simulation.missions.refresh()
@@ -186,8 +186,8 @@ static func decode(data: Dictionary, clock: GameClock, random_seed := 0) -> Deco
 	simulation.daily_missions.restore(_dict(boards.get("daily")), simulation.progression.level, unlocked)
 	simulation.weekly_missions.restore(_dict(boards.get("weekly")), simulation.progression.level, unlocked)
 	simulation.refresh_mission_periods()  # salvo num dia (ou semana) que já passou: começa de novo
-	simulation.restore_waiter_count(int(data.get("waiters", 1)))
-	simulation.set_closed(bool(data.get("closed", false)))
+	simulation.restore_waiter_count(SafeValue.to_int(data.get("waiters", 1), 1))
+	simulation.set_closed(SafeValue.to_bool(data.get("closed", false)))
 	if data.get(LEGACY_WALL_ITEMS_KEY, false):
 		simulation.hang_legacy_wall_items()
 	var saved_name := str(data.get("cafe_name", ""))
@@ -382,7 +382,7 @@ const XP_CURVE_V24 := [0, 30, 80, 160, 280, 500, 880, 1480, 2330, 3450, 4650, 60
 ## Versão 24 trocou a curva de níveis (DT-075): o XP do save vai para a curva nova sem o jogador perder nível, e com a
 ## mesma fração do caminho até o próximo nível.
 static func _v23_to_v24(data: Dictionary) -> Dictionary:
-	data["xp"] = convert_xp(int(data.get("xp", 0)), XP_CURVE_V23, XP_CURVE_V24)
+	data["xp"] = convert_xp(maxi(0, SafeValue.to_int(data.get("xp", 0))), XP_CURVE_V23, XP_CURVE_V24)
 	return data
 
 

@@ -146,6 +146,8 @@ func ask_action() -> void:
 
 
 func confirm() -> void:
+	if pending == &"":
+		return  # nada esperando confirmação (um toque a mais não compra nada)
 	var branch := simulation.branch
 	var result: int
 	if pending == &"open":
