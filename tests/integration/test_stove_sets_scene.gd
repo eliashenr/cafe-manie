@@ -5,7 +5,7 @@ extends CafeTestCase
 
 func _train_cafe() -> Cafe:
 	var simulation := quiet_simulation()
-	simulation.progression.add_xp(46000)  # nível 30
+	simulation.progression.add_xp(99999)  # nível 30
 	simulation.wallet.earn(Wallet.SOFT, 50000, "teste")
 	simulation.layout.place(simulation.furniture.get_definition(&"counter_basic"), Vector2i(5, 0))
 	var cafe := await spawn_cafe(simulation)

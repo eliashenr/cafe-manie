@@ -77,7 +77,7 @@ func test_a_closed_cafe_gets_no_critic() -> void:
 
 
 func test_the_critic_orders_from_the_week_theme() -> void:
-	_setup(46000)  # nível 30: todas as receitas
+	_setup(99999)  # nível 30: todas as receitas
 	for week in sim.critic_config.themes.size():  # uma semana em que o tema não é a aba dos pratos mais pedidos
 		if sim.critic_theme() != &"basico":
 			break

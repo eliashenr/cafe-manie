@@ -10,7 +10,7 @@ var sim: CafeSimulation
 func _setup() -> void:
 	clock = ManualClock.new()
 	sim = CafeSimulation.create_new_game(clock, 11)
-	sim.progression.add_xp(1000)  # nível 8
+	sim.progression.add_xp(1480)  # nível 8
 	sim.wallet.earn(Wallet.SOFT, 10000, "teste")
 
 

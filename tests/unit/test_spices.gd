@@ -75,7 +75,7 @@ func test_a_seasoned_full_batch_spreads_over_two_counters() -> void:
 
 
 func test_time_spices_rush_the_dish_but_never_spoil_it() -> void:
-	_setup(46000)  # nível 30
+	_setup(99999)  # nível 30
 	sim.spice_shelf.add(&"pepper")
 	sim.spice_shelf.add(&"paprika")
 	var lobster := sim.recipes.get_definition(&"lobster")
@@ -119,7 +119,7 @@ func test_herbs_save_a_spoiled_dish() -> void:
 
 
 func test_spices_only_fit_the_right_moment() -> void:
-	_setup(9000)  # nível 16: todos à venda
+	_setup(14500)  # nível 16: todos à venda
 	assert_eq(sim.can_use_spice(stove, &"salt"), ServiceResult.NOT_COOKING, "fogão livre")
 	assert_eq(sim.can_use_spice(stove, &"nada"), ServiceResult.UNKNOWN_ITEM)
 	sim.start_cooking(stove, &"coffee")

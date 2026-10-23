@@ -14,7 +14,7 @@ func _setup() -> void:
 	sim = CafeSimulation.new(clock, CafeLayout.new(Vector2i(10, 10), Vector2i(9, 5)), load("res://data/config/service.tres"),
 		FurnitureCatalog.load_from(), RecipeCatalog.load_from(), load("res://data/progression/levels.tres"), no_customers, 7)
 	sim.wallet.earn(Wallet.SOFT, 100000, "teste")
-	sim.progression.add_xp(20000)  # nível 22: os três troféus à venda
+	sim.progression.add_xp(37650)  # nível 22: os três troféus à venda
 	stove = _place(&"stove_basic", Vector2i(2, 2))
 	_place(&"counter_basic", Vector2i(6, 6))
 

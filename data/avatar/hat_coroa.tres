@@ -9,5 +9,5 @@ display_name = "Coroa de chef estrela"
 slot = 2
 art = "coroa"
 is_default = false
-price = 2000
+price = 4500
 min_level = 20

@@ -43,7 +43,7 @@ func test_idle_stove_opens_the_book_on_the_first_tab() -> void:
 
 
 func test_the_book_opens_where_a_customer_is_waiting() -> void:
-	var setup := await _stove_cafe(680)  # nível 8: a pizza já sai
+	var setup := await _stove_cafe(1480)  # nível 8: a pizza já sai
 	var cafe: Cafe = setup[0]
 	var simulation := cafe.simulation
 	simulation.layout.place(simulation.furniture.get_definition(&"table_round"), Vector2i(4, 4))
@@ -58,12 +58,17 @@ func test_the_book_opens_where_a_customer_is_waiting() -> void:
 	customer.patience_total = 999.0
 	customer.patience_left = 999.0
 	simulation.customers.append(customer)
+	simulation.config = simulation.config.duplicate()
 	simulation.config.menu_order_chance = 1.0
-	while customer.order == null or customer.order.book != &"mundo":  # pede um prato da aba Mundo
+	simulation.config.menu_max_cook_time = 999999.0  # aqui vale qualquer prato do cardápio (DT-075)
+	for attempt in 500:  # sorteia até sair um prato da aba Mundo (sempre com limite: laço sem fim trava a bateria)
+		if customer.order != null and customer.order.book == &"mundo":
+			break
 		simulation._cancel_order_of(customer)
 		customer.order = null
 		customer.state = Customer.State.WAITING_TO_ORDER
 		simulation._place_order(customer)
+	assert_eq(customer.order.book, &"mundo", "o cliente pediu um prato da aba Mundo")
 	await _open_stove(cafe)
 	assert_true(cafe.build_bar.find_button("Book_mundo").button_pressed, "o livro abre na aba do prato esperado")
 	var dot := cafe.build_bar.find_button("Book_mundo").get_node("BookDemand") as Label

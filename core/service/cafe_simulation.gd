@@ -2119,9 +2119,14 @@ func _choose_order() -> RecipeDefinition:
 	return available[rng.randi_range(0, available.size() - 1)]
 
 
-## Uma receita liberada, sorteada com mais chance para as rápidas (café sai mais que lasanha).
+## Uma receita liberada que dá tempo de fazer enquanto o cliente espera (DT-075), sorteada com mais chance para as
+## rápidas (café sai mais que pão de queijo). Se nenhuma couber no tempo, a mais rápida.
 func _pick_from_menu() -> RecipeDefinition:
-	var menu := order_menu()
+	var all_recipes := order_menu()
+	var menu := all_recipes.filter(func(r: RecipeDefinition) -> bool: return r.cook_time <= config.menu_max_cook_time)
+	if menu.is_empty() and not all_recipes.is_empty():
+		all_recipes.sort_custom(func(a: RecipeDefinition, b: RecipeDefinition) -> bool: return a.cook_time < b.cook_time)
+		menu = [all_recipes[0]]
 	var weights: Array[float] = []
 	var total := 0.0
 	for recipe in menu:

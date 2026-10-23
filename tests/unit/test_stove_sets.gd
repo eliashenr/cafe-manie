@@ -12,7 +12,7 @@ func _setup() -> void:
 	sim = CafeSimulation.new(clock, CafeLayout.new(Vector2i(10, 10), Vector2i(9, 5)), load("res://data/config/service.tres"),
 		FurnitureCatalog.load_from(), RecipeCatalog.load_from(), load("res://data/progression/levels.tres"), no_customers, 7)
 	sim.wallet.earn(Wallet.SOFT, 100000, "teste")
-	sim.progression.add_xp(46000)  # nível 30
+	sim.progression.add_xp(99999)  # nível 30
 	sim.layout.place(sim.furniture.get_definition(&"counter_basic"), Vector2i(8, 8))
 	sim.layout.place(sim.furniture.get_definition(&"counter_basic"), Vector2i(8, 6))
 

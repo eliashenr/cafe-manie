@@ -9,5 +9,5 @@ display_name = "Dólmã dourado"
 slot = 3
 art = "dourada"
 is_default = false
-price = 2500
+price = 5500
 min_level = 20

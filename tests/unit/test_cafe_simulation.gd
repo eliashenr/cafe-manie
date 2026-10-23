@@ -295,14 +295,27 @@ func test_menu_orders_mix_counter_dishes_and_other_dishes() -> void:
 		assert_true(recipe.unlock_level <= sim.progression.level, "%s está no cardápio" % recipe.id)
 
 
-func test_quick_dishes_are_ordered_more_often_than_slow_ones() -> void:
+## Do cardápio, só sai o que fica pronto enquanto o cliente espera (DT-075), e os pratos rápidos saem mais.
+func test_menu_orders_only_dishes_that_fit_the_wait_and_favor_quick_ones() -> void:
+	var shipped: ServiceConfig = load("res://data/config/service.tres")
+	assert_true(shipped.menu_max_cook_time <= shipped.customer_patience / shipped.patience_drain_while_cooking,
+		"o limite do cardápio cabe na paciência de quem espera o prato no fogão")
 	_setup()
+	sim.config = sim.config.duplicate()
 	sim.progression.add_xp(99999)  # todas as receitas liberadas
 	var counts := {}
 	for i in 3000:
 		var recipe := sim._pick_from_menu()
+		assert_true(recipe.cook_time <= sim.config.menu_max_cook_time, "pedido demorado demais: %s" % recipe.id)
 		counts[recipe.id] = int(counts.get(recipe.id, 0)) + 1
-	assert_eq(counts.size(), sim.order_menu().size(), "todo o cardápio aparece (sem as do fogão temático, que o café não tem)")
+	assert_true(counts.has(&"coffee") and counts.has(&"cheese_bread"), "os rápidos aparecem: %s" % counts)
+	assert_true(counts[&"coffee"] > counts[&"cheese_bread"] * 1.2, "café sai mais que pão de queijo: %s" % counts)
+	sim.config.menu_max_cook_time = 999999.0
+	counts.clear()
+	for i in 3000:
+		var recipe := sim._pick_from_menu()
+		counts[recipe.id] = int(counts.get(recipe.id, 0)) + 1
+	assert_eq(counts.size(), sim.order_menu().size(), "sem limite, todo o cardápio aparece (sem as do fogão temático)")
 	assert_true(counts[&"coffee"] > counts[&"lasagna"] * 3, "café sai bem mais que lasanha: %s" % counts)
 	sim.config.menu_cook_time_weight = 0.0
 	counts.clear()
@@ -310,6 +323,8 @@ func test_quick_dishes_are_ordered_more_often_than_slow_ones() -> void:
 		var recipe := sim._pick_from_menu()
 		counts[recipe.id] = int(counts.get(recipe.id, 0)) + 1
 	assert_true(absf(counts[&"coffee"] - counts[&"lasagna"]) < 200, "com peso 0, todos com a mesma chance: %s" % counts)
+	sim.config.menu_max_cook_time = 1.0
+	assert_eq(sim._pick_from_menu().id, &"coffee", "se nada couber no tempo, o mais rápido")
 
 
 func test_patience_drains_slower_while_the_dish_is_cooking() -> void:

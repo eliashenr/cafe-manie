@@ -6,7 +6,7 @@ extends CafeTestCase
 
 func _trophy_cafe() -> Array:
 	var simulation := quiet_simulation()
-	simulation.progression.add_xp(9000)  # nível 16
+	simulation.progression.add_xp(14500)  # nível 16
 	simulation.wallet.earn(Wallet.SOFT, 20000, "teste")
 	var stove := simulation.layout.place(simulation.furniture.get_definition(&"stove_basic"), Vector2i(0, 0))
 	simulation.layout.place(simulation.furniture.get_definition(&"counter_basic"), Vector2i(3, 0))

@@ -5,7 +5,7 @@ extends CafeTestCase
 
 func _orchard_cafe() -> Array:
 	var simulation := quiet_simulation()
-	simulation.progression.add_xp(1000)  # nível 8
+	simulation.progression.add_xp(1480)  # nível 8
 	var tree := simulation.layout.place(simulation.furniture.get_definition(&"tree_strawberry"), Vector2i(4, 4))
 	simulation.layout.place(simulation.furniture.get_definition(&"machine_frozen"), Vector2i(1, 1))
 	var cafe := await spawn_cafe(simulation)

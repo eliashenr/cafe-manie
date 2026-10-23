@@ -12,7 +12,9 @@ func test_level_data_file_is_valid_up_to_level_30() -> void:
 	var table: LevelTable = load("res://data/progression/levels.tres")
 	assert_true(table.is_valid())
 	assert_eq(table.max_level(), 30, "o PO pediu o nível máximo 30")
-	assert_eq(table.xp_to_reach[9], 1830, "os níveis 1 a 10 continuam como eram")
+	assert_eq(table.xp_to_reach[4], 280, "os níveis 1 a 5 continuam rápidos, para prender quem começa (DT-075)")
+	assert_eq(table.xp_to_reach[9], 3450, "o nível 10 leva umas 2 horas de jogo ativo (DT-075)")
+	assert_true(table.xp_to_reach[29] < 99999, "add_xp(99999) nos testes ainda chega ao nível 30")
 	for i in range(2, table.xp_to_reach.size()):
 		var step := table.xp_to_reach[i] - table.xp_to_reach[i - 1]
 		var before := table.xp_to_reach[i - 1] - table.xp_to_reach[i - 2]

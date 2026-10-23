@@ -72,7 +72,7 @@ func test_jumping_several_tiers_unlocks_each_in_order() -> void:
 		if a.id == &"a06_level":
 			unlocked.append(tier))
 	var gold := sim.wallet.balance(Wallet.SOFT)
-	sim.progression.add_xp(1830)  # nível 10 de uma vez
+	sim.progression.add_xp(3450)  # nível 10 de uma vez
 	assert_eq(unlocked, [0, 1, 2])
 	var level := _achievement(&"a06_level")
 	var expected := 0

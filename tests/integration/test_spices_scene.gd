@@ -4,7 +4,7 @@ extends CafeTestCase
 ## missão mostram o tempero do prêmio.
 
 
-func _stove_cafe(xp := 9000) -> Array:
+func _stove_cafe(xp := 14500) -> Array:
 	var simulation := quiet_simulation()
 	simulation.progression.add_xp(xp)  # nível 16: todos os temperos à venda
 	simulation.wallet.earn(Wallet.SOFT, 5000, "teste")

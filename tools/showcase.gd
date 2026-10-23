@@ -83,16 +83,16 @@ func _initialize() -> void:
 	if _panel == "estragado":
 		_stoves = [ready_stove]
 	if _panel == "trem":
-		simulation.progression.add_xp(46000)  # nível 30
+		simulation.progression.add_xp(99999)  # nível 30
 		_stoves = [place.call(&"train_locomotive", Vector2i(3, 0), 0)]
 		place.call(&"train_wagon", Vector2i(4, 0), 0)
 		place.call(&"train_dining", Vector2i(5, 0), 0)
 	if _panel == "trofeu":
-		simulation.progression.add_xp(20000)  # nível 22: o troféu de ouro está liberado
+		simulation.progression.add_xp(37650)  # nível 22: o troféu de ouro está liberado
 		_stoves = [place.call(&"trophy_gold", Vector2i(2, 1))]
 	if _panel == "temperos":
 		_stoves = [cooking_stove]
-		simulation.progression.add_xp(7100)  # nível 16: todos os temperos à venda
+		simulation.progression.add_xp(14500)  # nível 16: todos os temperos à venda
 		simulation.wallet.earn(&"soft_currency", 5000, "vitrine")
 		simulation.spice_shelf.add(&"salt", 2)
 		simulation.spice_shelf.add(&"pepper", 1)
@@ -120,19 +120,19 @@ func _initialize() -> void:
 	seat.call(back_chair, 1, &"", 0.9)           # esperando para pedir, de costas
 	seat.call(front_chair, 3, &"coffee", 1.0)    # comendo, de costas
 	if _panel == "noite":
-		simulation.progression.add_xp(46000)  # nível 30
+		simulation.progression.add_xp(99999)  # nível 30
 		_stoves = [place.call(&"stove_moon", Vector2i(3, 0), 0)]
 		place.call(&"floor_lamp", Vector2i(1, 6))
 		place.call(&"paris_lamp", Vector2i(6, 3))
 	if _panel == "diversao":
-		simulation.progression.add_xp(9000)  # nível 16
+		simulation.progression.add_xp(14500)  # nível 16
 		var claw: StringName = place.call(&"claw_machine", Vector2i(6, 2))
 		place.call(&"ring_toss", Vector2i(6, 4))
 		place.call(&"stage", Vector2i(5, 6))
 		simulation.attractions.add_play(claw)
 		simulation.show_left = simulation.stage_config.show_duration  # show acontecendo
 	if _panel == "pomar":
-		simulation.progression.add_xp(1000)  # nível 8
+		simulation.progression.add_xp(1480)  # nível 8
 		place.call(&"tree_strawberry", Vector2i(1, 6))
 		place.call(&"tree_mango", Vector2i(6, 2))
 		place.call(&"tree_blueberry", Vector2i(6, 4))
@@ -143,19 +143,19 @@ func _initialize() -> void:
 		worried.drink = simulation.drinks.get_definition(&"frozen_mango")
 		simulation.fruit_stock.add(&"mango", 3)
 	if _panel == "critico":
-		simulation.progression.add_xp(680)  # nível 8
+		simulation.progression.add_xp(1480)  # nível 8
 		worried.critic = true
 		simulation.critic_star = {"cell": Vector2i(4, 6), "gold": 200, "xp": 50, "coupons": 3}
 		simulation.wallet.earn(&"coupons", 7, "vitrine")
 	if _panel == "entregas":
-		simulation.progression.add_xp(1000)  # nível 8
+		simulation.progression.add_xp(1480)  # nível 8
 		_stoves = [place.call(&"delivery_counter", Vector2i(0, 4), 3)]
 		simulation.refresh_delivery()
 		simulation.delivery.orders[0] = simulation.delivery.make_order(recipes.get_definition(&"coxinha"), 4)  # já no balcão
 		simulation.delivery.orders.append(simulation.delivery.make_order(recipes.get_definition(&"pastel"), 6))
 		simulation.delivery.orders.append(simulation.delivery.make_order(recipes.get_definition(&"coffee"), 8))
 	if _panel == "terraco":
-		simulation.progression.add_xp(46000)  # nível 30
+		simulation.progression.add_xp(99999)  # nível 30
 		simulation.wallet.earn(&"soft_currency", 5000, "vitrine")
 		simulation.build_terrace()
 		place.call(&"table_round", Vector2i(2, 7))
@@ -165,7 +165,7 @@ func _initialize() -> void:
 		for cell in [Vector2i(2, 3), Vector2i(5, 5), Vector2i(2, 6)]:
 			simulation.dirt.add(cell)
 	if _panel == "portas":
-		simulation.progression.add_xp(46000)  # nível 30
+		simulation.progression.add_xp(99999)  # nível 30
 		simulation.wallet.earn(&"soft_currency", 5000, "vitrine")
 		simulation.use_door(&"door_japones")
 		place.call(&"counter_bamboo", Vector2i(0, 3), 3)
@@ -245,7 +245,7 @@ func _set_panel() -> void:
 			for window: Window in _cafe.find_children("*", "Window", true, false):
 				window.hide()
 			var sim = _cafe.simulation
-			sim.progression.add_xp(9000)  # nível 16
+			sim.progression.add_xp(14500)  # nível 16
 			sim.wallet.earn(&"soft_currency", 30000, "vitrine")
 			sim.open_branch()
 			sim.upgrade_branch()
@@ -256,7 +256,7 @@ func _set_panel() -> void:
 			for window: Window in _cafe.find_children("*", "Window", true, false):
 				window.hide()
 			var sim = _cafe.simulation
-			sim.progression.add_xp(9000)  # nível 16
+			sim.progression.add_xp(14500)  # nível 16
 			sim.wallet.earn(&"soft_currency", 5000, "vitrine")
 			for part in [&"skin_morena_clara", &"hair_coque_loiro", &"outfit_vermelha"]:
 				sim.use_avatar_part(part)

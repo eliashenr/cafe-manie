@@ -4,6 +4,19 @@
 
 🟢 **CONCLUÍDO**
 
+**FAÇA BALANCEAMENTO** (DT-075)
+
+- Medi com um robô que joga como um jogador médio por 10 horas, com os dados reais.
+- **Subia de nível rápido demais:** nível 10 em 25 minutos e nível 15 em 1 h 18.
+  - Agora, para uma pessoa: cerca de **2 h até o nível 10**, **7 h 30 até o 15** e **17 h até o 20**.
+  - Os níveis 2 a 5 continuam rápidos, para prender quem começa.
+- **Clientes irritados sem culpa do jogador:** quem pedia do cardápio podia escolher pratos de horas e saía irritado sempre.
+  - Agora, do cardápio, só sai o que dá tempo de fazer; prato demorado só se já estiver no balcão.
+  - A popularidade, que ficava entre 6% e 18% na simulação, agora fica entre 68% e 100%.
+- **Preços:** alinhei os 5 fogões novos das coleções com os antigos e transformei a coroa e o dólmã dourado em itens de prestígio.
+- O ouro, as recompensas, a filial, as entregas, os vizinhos e a monetização já fechavam: ficaram como estavam.
+- Detalhes e tabelas em `docs/economy.md`.
+
 **Item 10 do relatório, etapa 4: vizinhos simulados** (DT-074). **Com ela, o item 10 está completo** (o 2º andar ficou planejado).
 
 - Na janela da **Cidade**, nova aba **Vizinhos**: Ana, Beto, Duda, Caio, Lia, Rafa e Vó Cida, cada um com o seu café.
@@ -425,6 +438,13 @@
 
 🧪 **TESTADO**
 
+- **Balanceamento: 685 testes automatizados PASSARAM.**
+  - O teste do cardápio agora confere que só saem pratos que dá tempo de fazer (e, sem o limite, o cardápio inteiro).
+  - A curva nova tem teste: níveis 1 a 5 como eram, nível 10 com 3.450 de XP, cada nível pedindo mais que o anterior.
+  - Os testes que usavam o XP antigo de um nível foram atualizados.
+  - Um teste que repetia sem limite (esperando um pedido que a regra nova não deixa mais sair) ganhou limite de tentativas.
+  - **Defeitos inseridos de propósito: 4 de 4 pegos (1 só depois de reforçar um teste): cardápio sem limite de tempo, sem o prato mais rápido de reserva, limite de tempo grande demais, curva antiga do nível 10.**
+  - **Simulação:** 10 horas de jogo ativo pelo robô, com os números acima.
 - **Vizinhos simulados: 685 testes automatizados PASSARAM.**
   - **Regra:**
     - os 7 vizinhos e a configuração são válidos;

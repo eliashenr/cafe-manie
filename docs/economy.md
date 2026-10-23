@@ -78,7 +78,75 @@ Receitas longas rendem mais por fornada e menos por minuto: premiam quem volta d
 
 ### Primeiro dado de balanceamento
 
-No teste de turno longo (30 min simulados, robô cozinhando sem parar, café inicial): 282 clientes servidos, 0 irritados, ouro 200 → ~750, nível 7, popularidade 100%. Isso indica que o jogo está **fácil demais** e sobe de nível rápido demais. Os números ficam como estão até o PO jogar e pedir **FAÇA BALANCEAMENTO**.
+No teste de turno longo (30 min simulados, robô cozinhando sem parar, café inicial): 282 clientes servidos, 0 irritados, ouro 200 → ~750, nível 7, popularidade 100%. Isso indicava que o jogo estava **fácil demais** e subia de nível rápido demais. O balanceamento de 23/10 (abaixo) corrigiu.
+
+## Balanceamento de 23/10 (DT-075)
+
+Pedido do PO: "nível médio", para o jogador se prender sem passar raiva e sem conseguir tudo fácil.
+
+### Como medir
+
+```bash
+godot --headless -s res://tools/balance_report.gd -- 10 0.25
+```
+
+- Um robô joga um jogo novo de verdade, com os dados reais, por 10 horas de jogo ativo (passo de 0,25 s).
+- **O que o robô faz:** cozinha o que os clientes pediram (senão a receita mais lucrativa que fica pronta em até 3 minutos); compra mesas, fogões e balcões conforme sobe; contrata um garçom a cada 4 mesas; expande o café.
+- **O que o robô não faz:** não compra enfeites nem luxo, e não cozinha pratos longos para sair do jogo.
+- **O relatório mostra:** os minutos até cada nível, o ouro e os clientes por hora, a popularidade e o motivo de cada cliente irritado.
+- **Leitura:** o robô joga sem parar e sem errar; uma pessoa leva cerca de 1,7 vez mais tempo.
+
+### Antes e depois
+
+| | Antes | Depois | Meta (robô) | Para uma pessoa |
+|---|---|---|---|---|
+| Nível 5 | 5 min | 1,5 min | rápido | ~5 min |
+| Nível 8 | 28 min | 29 min | — | ~50 min |
+| Nível 10 | 25 min* | 1 h 07 | ~1 h 10 | ~2 h |
+| Nível 15 | 1 h 18* | 4 h 26 | ~4 h | ~7 h 30 |
+| Nível 19 | 2 h 35* | 9 h 05 | — | ~15 h |
+| Popularidade | 6% a 18% (robô antigo) | 68% a 100% | alta | — |
+| Clientes irritados | 26% | 13% | baixo | — |
+
+\* Com o robô novo e só a correção do cardápio, antes da curva nova.
+
+- **Os irritados que sobraram** são pedidos rápidos (café, pão de queijo) feitos quando todos os fogões estavam ocupados ou os balcões cheios.
+  - É pressão de jogo legítima: deixar café pronto no balcão resolve.
+
+### Ouro
+
+- **Jogo ativo só com pratos rápidos:** de 4.000 a 7.600 de ouro por hora (o robô).
+  - O ouro por hora não sobe muito com o nível, porque o que limita são os clientes (mais de mil por hora) e o preço do prato rápido.
+- **Pratos longos, cozinhados antes de sair, valem muito mais por cliente:** a picanha sai por 44 a porção, contra 3 do café.
+  - Quem cozinha antes de sair e vende quando volta ganha bem mais: é o laço "cozinhar e sair" do gênero.
+- **Preços contra o ouro de jogo ativo:**
+
+  | Item | Nível | Preço | Tempo de jogo ativo |
+  |---|---|---|---|
+  | Portas | 3 a 7 | 450 a 700 | 5 a 10 min (enfeite com beleza) |
+  | Peças do avatar | 3 a 12 | 300 a 800 | 5 a 15 min (cosmético) |
+  | Coroa e dólmã dourado | 20 | 4.500 e 5.500 | ~1 h (prestígio) |
+  | Balcão de Entregas | 8 | 1.500 | ~20 min |
+  | Terraço | 10 | 3.000 | ~40 min |
+  | Garçons | 3 a 18 | 500 a 14.000 | até ~3 h |
+  | Filial na praia | 15 | 8.000 (abrir) | ~2 h |
+  | Melhorias da filial | — | 12.000 a 45.000 | 3 a 10 h (meta de longo prazo) |
+
+- Do nível 10 ao 15 o jogador ganha uns 18 mil de ouro e quer gastar uns 26 mil (expansões, terraço, garçom, filial, fogão temático). Ou seja, precisa escolher: é a tensão boa do "médio".
+
+### Rendas extras (por dia, coletando com frequência)
+
+| Fonte | Quanto | Comentário |
+|---|---|---|
+| Filial nível 1 / nível 4 | até 5.760 / até 23.000 | renda passiva; a abertura se paga em ~1,5 dia |
+| Vizinhos | ~1.000 + 70 XP | pequeno, para voltar todo dia |
+| Entregas | até ~8.000 com pratos caros | depende do que está no balcão |
+| Chão sujo | 5 por mancha | só um agrado; o importante é a popularidade |
+
+### Monetização
+
+- Os pacotes de Café Ouro vão de 500 (R$ 4,90) a 15.000 (R$ 99,90), ou seja, de alguns minutos a umas 4 a 6 horas de jogo ativo.
+- Quem paga compra conveniência; quem não paga progride (seção 86). Não mudou nada aqui.
 
 ## Decisões
 

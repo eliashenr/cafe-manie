@@ -4,6 +4,34 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-075 — Balanceamento: ritmo de níveis e pedidos impossíveis
+
+**Problema:**
+- O PO pediu um balanceamento "nível médio": o jogador precisa se prender ao jogo, sem passar raiva e sem conseguir tudo fácil demais.
+- Medição com um robô que joga como um jogador médio (`tools/balance_report.gd`, 6 a 10 horas de jogo ativo com os dados reais):
+  - **subia de nível rápido demais:** nível 10 em 25 minutos, nível 15 em 1 h 18 e nível 24 em 5 h 30;
+  - **clientes irritados sem culpa do jogador:** 40% dos clientes pediam do cardápio inteiro, inclusive pratos de 15 minutos a 12 horas, e a paciência dura uns 90 segundos.
+- Quase 80% do XP vinha dos clientes (3 por cliente, e chegam mais de mil por hora nos níveis médios).
+
+**Decisão:**
+- **Pedidos do cardápio só de pratos que dá tempo de fazer** (`menu_max_cook_time`, 60 segundos):
+  - prato demorado só sai se já estiver no balcão;
+  - se nada couber no tempo, sai o mais rápido.
+- **XP por cliente de 3 para 2.** O XP passa a vir mais de cozinhar, como no Café Mania.
+- **Curva de níveis nova** (`data/progression/levels.tres`):
+  - os níveis 2 a 5 continuam rápidos, para prender quem começa;
+  - a partir do 6 a curva fica cerca de 2 vezes mais longa;
+  - o nível 30 pede 95.200 de XP.
+- **Preços alinhados:**
+  - os 5 fogões novos das coleções seguem a mesma régua de preço por efeito dos antigos;
+  - a coroa e o dólmã dourado do avatar (nível 20) ficam como itens de prestígio, com cerca de 1 hora de ouro de jogo ativo.
+- **O resto ficou como estava**, porque os números já fecham:
+  - ouro por hora, recompensas e monetização;
+  - a filial, as entregas, os vizinhos, o chão sujo e o terraço.
+- Os números e as contas estão em `docs/economy.md` ("Balanceamento de 23/10").
+
+---
+
 ## DT-074 — Vizinhos simulados
 
 **Problema:**

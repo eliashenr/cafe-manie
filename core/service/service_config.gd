@@ -26,6 +26,9 @@ extends Resource
 ## No cardápio, os pratos rápidos saem mais: o peso de cada receita é 1 / (tempo de preparo ^ este número).
 ## 0 = todos com a mesma chance.
 @export_range(0.0, 2.0) var menu_cook_time_weight := 0.5
+## Do cardápio, o cliente só pede o que fica pronto em até tantos segundos (DT-075): prato demorado só sai se já
+## estiver no balcão. Sem isso, quem pedisse uma lasanha de 15 minutos saía irritado de qualquer jeito.
+@export var menu_max_cook_time := 60.0
 ## Quanto da paciência se gasta enquanto o prato pedido está no fogão (0.5 = metade).
 @export_range(0.0, 1.0) var patience_drain_while_cooking := 0.5
 ## Cada nível acima do 1 encurta o intervalo entre chegadas (0.06 = 6% por nível)...

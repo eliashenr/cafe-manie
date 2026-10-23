@@ -7,7 +7,7 @@ func _night_cafe(hour: float) -> Cafe:
 	var simulation := quiet_simulation()
 	clock.offset = 0
 	clock.time = Time.get_unix_time_from_datetime_string("2026-10-25T00:00:00") + hour * 3600.0
-	simulation.progression.add_xp(46000)  # nível 30
+	simulation.progression.add_xp(99999)  # nível 30
 	simulation.wallet.earn(Wallet.SOFT, 50000, "teste")
 	simulation.layout.place(simulation.furniture.get_definition(&"stove_moon"), Vector2i(0, 0))
 	simulation.layout.place(simulation.furniture.get_definition(&"counter_basic"), Vector2i(3, 0))
