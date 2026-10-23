@@ -4,6 +4,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-064 — Noite no café
+
+**Problema:**
+- O relatório propõe que, à noite (pelo relógio do jogo), o café escureça, as luzes acendam e a cidade mude (proposta 3.12).
+- Propõe também um fogão especial com um cardápio noturno, de pratos que só saem à noite e rendem mais.
+
+**Decisão:**
+- **Horário** (`data/config/night.tres`, `NightConfig`): noite das 19h às 6h, no horário do jogador, com 1 hora de anoitecer e de amanhecer.
+- **Visual:**
+  - o salão, a rua e a cidade escurecem com um tom azul-noite (`scenes/fx/night_tint.gd`, um `CanvasModulate`);
+  - o HUD fica de fora;
+  - as luminárias têm `light_radius` em `FurnitureDefinition` e acendem com uma luz quente (`PointLight2D`), mais forte quanto mais escuro;
+  - acendem as luminárias de chão, Edison e de Paris, a lâmpada de lava, o neon, a lanterna de papel, o globo de discoteca, a jukebox e o próprio fogão da noite.
+- **Fogão Lua Cheia** (nível 9, 2.500): rende 25% mais porções e libera o cardápio noturno, na aba **Noite** do livro.
+  - Os 4 pratos são Petit Gâteau, Caldo Verde, Risoto de Cogumelos e Fondue (`night_only` em `RecipeDefinition`).
+  - Eles só começam a cozinhar à noite; o que começou de madrugada termina de dia.
+  - Os clientes só pedem esses pratos à noite.
+  - De dia, o livro mostra os pratos apagados, com "Só à noite".
+  - Os pratos passam no teste de equilíbrio. O "rende mais" vem das porções a mais do fogão, e não de preço fora da curva.
+- **Avisos** ao anoitecer e ao amanhecer.
+- **Save:** nada novo. A noite sai do relógio.
+
+---
+
 ## DT-063 — Evento de Halloween, com prazo e historinha
 
 **Problema:**

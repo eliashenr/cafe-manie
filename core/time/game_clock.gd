@@ -22,6 +22,11 @@ func local_day() -> int:
 	return floori((now() + utc_offset_seconds()) / 86400.0)
 
 
+## Hora do dia no horário local (0 a 24, com fração), para a noite no café (DT-064).
+func local_hour() -> float:
+	return fposmod(now() + utc_offset_seconds(), 86400.0) / 3600.0
+
+
 ## Data no calendário local ({"year", "month", "day", ...}) de hoje mais [param day_offset] dias (DT-063).
 func local_date(day_offset := 0) -> Dictionary:
 	return Time.get_date_dict_from_unix_time((local_day() + day_offset) * 86400)

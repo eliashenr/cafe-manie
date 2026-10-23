@@ -17,3 +17,4 @@ efficiency = 0
 comfort = 0
 placeholder_color = Color(1.000, 0.353, 0.290, 1)
 placeholder_height = 60.0
+light_radius = 110.0

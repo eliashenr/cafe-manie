@@ -246,7 +246,7 @@ Pesquisa feita em 22/10/2026 a pedido do PO, para deixar o Café Manie mais pró
 4. **Feito em 22/10:** comida que estraga e temperos (3.4, DT-055 e DT-056) e troféus que aceleram os fogões em volta (3.11, DT-057).
 5. **Feito em 22/10:** fogões com perfil (DT-058), Fogão Japonês com receitas próprias (DT-059) e Multifogão Trem (DT-060), da 3.10; o fogão de evento vem com o Halloween.
 6. **Feito em 22/10:** crítico com cupons (DT-061), loja de troca (DT-062) e o evento de Halloween com prazo, historinha e fogão de evento (3.17 e 3.10, DT-063).
-7. **Depois:** noite no café (3.12).
+7. **Feito em 22/10:** noite no café, com luminárias e o cardápio noturno do Fogão Lua Cheia (3.12, DT-064).
 8. **Depois:** plantação e frozen yogurt (3.14), atrações e palco (3.7 e 3.16).
 9. **Depois:** portas, coleções completas e pátio (3.8), avatar (3.9).
 10. **Bem depois:** delivery, filial na praia e 2º andar (3.18), e o social com servidor (3.9).

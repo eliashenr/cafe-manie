@@ -593,3 +593,10 @@ COOKWARE.update({
     "misso": ("panela", "#e0a850", "#fffaf0"), "yakisoba": ("frigideira", "#e8b04a", "#ff8a2a"),
     "tempura": ("panela", "#f2c25a", "#ffe9a8"), "mochi": ("tabua", "#ffb3c7", "#a8e07a"),
 })
+
+
+# --- Cardápio noturno (DT-064): os desenhos ficam em night3 -------------------------------------
+import night3  # noqa: E402
+
+DISHES.update(night3.DISHES)
+COOKWARE.update(night3.COOKWARE)

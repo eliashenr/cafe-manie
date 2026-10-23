@@ -89,6 +89,10 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **2. Loja de troca de cupons** (DT-062): aba Cupons com 4 itens exclusivos em 2 temporadas.
 - [x] **3. Evento de Halloween** (DT-063): historinha da Bruxa Morgana, 5 missões com prazo, o Caldeirão da Bruxa que sobe de nível e a Abóbora Gigante.
 
+## Pacote do relatório: noite no café (seção 4, item 7)
+
+- [x] **Noite no café** (DT-064): das 19h às 6h o café escurece e as luminárias acendem; o Fogão Lua Cheia abre o cardápio noturno.
+
 ## Passe visual (18/10/2026)
 
 - [x] **Efeitos visuais só na tela** (DT-044):

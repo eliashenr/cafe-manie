@@ -38,4 +38,5 @@ enum {
 	NOT_FOR_SALE,       ## o móvel não se compra com ouro: só se ganha (DT-060)
 	NOT_IN_SEASON,      ## o item da loja de troca não está nesta temporada (DT-062)
 	NOT_ENOUGH_COUPONS, ## cupons insuficientes para a troca
+	NOT_NIGHT,          ## prato do cardápio noturno: só começa à noite (DT-064)
 }

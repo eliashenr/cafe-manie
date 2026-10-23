@@ -21,6 +21,8 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const NIGHT_MESSAGE := "Anoiteceu! As luzes acenderam e o cardápio noturno está aberto no Fogão Lua Cheia."
+const DAY_MESSAGE := "Amanheceu! O cardápio noturno fecha até a noite."
 const EVENT_STARTED_MESSAGE := "Começou o %s! Toque na abóbora, à esquerda, para ver a história e as missões."
 const EVENT_STOVE_WON_MESSAGE := "Você ganhou o %s! Ele cozinha %d%% mais rápido e está guardado na Loja, aba Cozinha."
 const EVENT_STOVE_LEVEL_MESSAGE := "O %s subiu para o nível %d: agora cozinha %d%% mais rápido!"
@@ -109,6 +111,8 @@ var grid: CafeGrid:
 @onready var hud: GameHud = $GameHud
 @onready var build_bar: BuildBar = $BuildBar
 @onready var sound_board: SoundBoard = $SoundBoard
+## Escurece o mundo à noite (DT-064).
+var night_tint := NightTint.new()
 
 
 func _ready() -> void:
@@ -118,6 +122,8 @@ func _ready() -> void:
 	var welcome := ""
 	if simulation == null:
 		welcome = _load_or_start_game()
+	add_child(night_tint)
+	night_tint.set_amount(simulation.darkness())
 	layout = simulation.layout
 	catalog = simulation.furniture
 	world_layer.bind(layout)
@@ -139,6 +145,7 @@ func _ready() -> void:
 	simulation.stove_set_completed.connect(_on_stove_set_completed)
 	simulation.critic_arrived.connect(_on_critic_arrived)
 	simulation.event_started.connect(_on_event_started)
+	simulation.night_changed.connect(_on_night_changed)
 	simulation.event_mission_completed.connect(_on_event_mission_completed)
 	simulation.event_stove_upgraded.connect(_on_event_stove_upgraded)
 	simulation.event_finished.connect(_on_event_finished)
@@ -173,6 +180,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	simulation.tick(delta)
+	night_tint.set_amount(simulation.darkness())
 	world_layer.refresh(simulation)
 	front_view.set_focus(world_layer.front_focus_points(selected_cell))
 	_since_last_save += delta
@@ -507,6 +515,10 @@ func collect_critic_star() -> Dictionary:
 func _on_event_requested() -> void:
 	if not is_dialog_open():
 		hud.show_event()
+
+
+func _on_night_changed(night: bool) -> void:
+	EventBus.message_posted.emit(NIGHT_MESSAGE if night else DAY_MESSAGE)
 
 
 func _on_event_started(event: EventDefinition) -> void:

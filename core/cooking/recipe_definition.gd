@@ -25,6 +25,8 @@ extends Resource
 @export var book: StringName = &"basico"
 ## Só sai neste modelo de fogão (id do móvel, DT-059); vazio = qualquer fogão.
 @export var stove: StringName = &""
+## Cardápio noturno (DT-064): só começa a cozinhar à noite, e os clientes só pedem à noite.
+@export var night_only := false
 
 @export_group("Placeholder")
 ## PLACEHOLDER_FOOD: cor usada para o prato até existir arte.

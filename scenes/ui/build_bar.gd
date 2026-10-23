@@ -61,6 +61,7 @@ const SERVICE_MESSAGES := {
 	ServiceResult.NOT_FOR_SALE: "Esse item não se compra com ouro: só se ganha",
 	ServiceResult.NOT_IN_SEASON: "Esse item não está na loja de troca desta temporada",
 	ServiceResult.NOT_ENOUGH_COUPONS: "Faltam cupons: sirva bem o crítico para ganhar mais",
+	ServiceResult.NOT_NIGHT: "Esse prato é do cardápio noturno: só começa à noite",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -899,14 +900,17 @@ func _show_stove_controls(stove_id: StringName) -> void:
 					badge.text = str(waiting)
 					var locked := dish.unlock_level > simulation.progression.level
 					var other_stove := not simulation.fits_stove(stove_id, dish)
+					var day_time := dish.night_only and not simulation.is_night()
 					if locked:
 						button.text = "%s\nNível %d" % [dish.display_name, dish.unlock_level]
+					elif day_time:
+						button.text = "%s\nSó à noite" % dish.display_name
 					elif other_stove:
 						button.text = "%s\nSó no %s" % [dish.display_name, simulation.furniture.get_definition(dish.stove).display_name]
 					else:
 						button.text = "%s\n%s · %d ouro" % [dish.display_name, WorldLayer.format_time(simulation.cook_time_on(stove_id, dish)),
 							dish.ingredient_cost]
-					button.disabled = locked or other_stove or not simulation.wallet.can_afford(Wallet.SOFT, dish.ingredient_cost))
+					button.disabled = locked or other_stove or day_time or not simulation.wallet.can_afford(Wallet.SOFT, dish.ingredient_cost))
 		Kitchen.StoveStatus.READY:
 			var serve := Button.new()
 			serve.name = "ServeButton"

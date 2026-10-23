@@ -31,6 +31,8 @@ enum Category { TABLE, SEATING, COOKING, COUNTER, DECOR, MACHINE }
 @export_range(0, 100) var comfort := 0
 ## Quantos desse móvel cabem na cafeteria (0 = sem limite).
 @export var max_per_cafe := 0
+## Luminária (DT-064): raio da luz que acende à noite, em pixels de mundo (0 = não acende).
+@export var light_radius := 0.0
 ## false = não se compra com ouro: só se ganha (prêmio de conjunto, de evento ou da loja de cupons).
 @export var sold_for_gold := true
 ## Cupons para trocar na aba Cupons da loja (DT-062); 0 = não está na loja de troca.

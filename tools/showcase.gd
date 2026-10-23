@@ -10,7 +10,8 @@ extends SceneTree
 ## fechado (a placa FECHADO na porta), estragado (o café esquecido no fogão estragou, com o Jogar fora),
 ## temperos (a lasanha cozinhando com os temperos no painel), trofeu (um troféu de ouro entre os fogões, escolhido),
 ## trem (o Multifogão Trem completo, com a locomotiva escolhida), critico (o crítico sentado, a estrela numa mesa e os
-## cupons), evento (a janela do Halloween na historinha; evento:missoes nas missões), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
+## cupons), evento (a janela do Halloween na historinha; evento:missoes nas missões), noite (o café às 23h, com as
+## luminárias acesas e o Fogão Lua Cheia), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio)
 ## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30).
 ##
@@ -42,6 +43,8 @@ func _initialize() -> void:
 	if japanese:
 		_panel = "livro:japao:1:30"
 	var clock = load("res://core/time/manual_clock.gd").new()
+	if _panel == "noite":
+		clock.time = Time.get_unix_time_from_datetime_string("2026-10-25T23:00:00") - clock.utc_offset_seconds()
 	if _panel.begins_with("evento"):
 		clock.time = Time.get_unix_time_from_datetime_string("2026-10-25T12:00:00")  # durante o Halloween
 	var catalog = load("res://core/furniture/furniture_catalog.gd").load_from()
@@ -115,6 +118,11 @@ func _initialize() -> void:
 	var worried = seat.call(right_chair, 2, &"lasagna", 0.4)   # esperando o prato, de costas, preocupada
 	seat.call(back_chair, 1, &"", 0.9)           # esperando para pedir, de costas
 	seat.call(front_chair, 3, &"coffee", 1.0)    # comendo, de costas
+	if _panel == "noite":
+		simulation.progression.add_xp(46000)  # nível 30
+		_stoves = [place.call(&"stove_moon", Vector2i(3, 0), 0)]
+		place.call(&"floor_lamp", Vector2i(1, 6))
+		place.call(&"paris_lamp", Vector2i(6, 3))
 	if _panel == "critico":
 		simulation.progression.add_xp(680)  # nível 8
 		worried.critic = true
@@ -164,9 +172,11 @@ func _set_panel() -> void:
 		"loja":
 			var tab := _panel.get_slice(":", 1)
 			_cafe.build_bar.open_shop(_cafe.build_bar.ShopTab.get(tab, 0) if not tab.is_empty() else 0)
-		"fogao", "estragado", "temperos", "trofeu", "trem":
+		"fogao", "estragado", "temperos", "trofeu", "trem", "noite":
 			var stove = _cafe.layout.get_placement(_stoves[0])
 			_cafe.select_at_world(IsoProjection.cell_center(stove.origin))
+			if _panel == "noite":
+				_cafe.build_bar.show_recipe_book(&"noite")
 		"construir":
 			_cafe.start_placing(&"table_round")
 			_cafe._on_tapped(IsoProjection.cell_center(Vector2i(5, 2)))  # o toque do modo de construção

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"mushroom_risotto"
+display_name = "Risoto de Cogumelos"
+cook_time = 1800.0
+servings = 24
+ingredient_cost = 230
+sell_price = 20
+xp_reward = 110
+book = &"noite"
+stove = &"stove_moon"
+night_only = true
+unlock_level = 9
+placeholder_color = Color(0.94, 0.88, 0.72, 1)

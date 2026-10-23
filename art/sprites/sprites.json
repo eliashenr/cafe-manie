@@ -1525,6 +1525,30 @@
     212.67
    ]
   },
+  "stove_moon_r0": {
+   "anchor": [
+    116.67,
+    308.67
+   ]
+  },
+  "stove_moon_r1": {
+   "anchor": [
+    116.67,
+    308.67
+   ]
+  },
+  "stove_moon_r2": {
+   "anchor": [
+    116.67,
+    308.67
+   ]
+  },
+  "stove_moon_r3": {
+   "anchor": [
+    116.67,
+    308.67
+   ]
+  },
   "dj_booth_r0": {
    "anchor": [
     232.67,
@@ -1994,6 +2018,30 @@
    ]
   },
   "panela_tempura": {
+   "anchor": [
+    67.67,
+    289.67
+   ]
+  },
+  "panela_petit_gateau": {
+   "anchor": [
+    62.67,
+    268.67
+   ]
+  },
+  "panela_caldo_verde": {
+   "anchor": [
+    67.67,
+    289.67
+   ]
+  },
+  "panela_mushroom_risotto": {
+   "anchor": [
+    41.67,
+    262.67
+   ]
+  },
+  "panela_fondue": {
    "anchor": [
     67.67,
     289.67
@@ -4382,6 +4430,30 @@
     12.48
    ]
   },
+  "prato_petit_gateau": {
+   "anchor": [
+    52.8,
+    24.48
+   ]
+  },
+  "prato_caldo_verde": {
+   "anchor": [
+    39.8,
+    58.48
+   ]
+  },
+  "prato_mushroom_risotto": {
+   "anchor": [
+    52.8,
+    -6.52
+   ]
+  },
+  "prato_fondue": {
+   "anchor": [
+    40.8,
+    53.48
+   ]
+  },
   "humor_feliz": {
    "anchor": [
     32.07,
@@ -6062,6 +6134,12 @@
    "2": "giant_pumpkin_r0",
    "3": "giant_pumpkin_r0"
   },
+  "stove_moon": {
+   "0": "stove_moon_r0",
+   "1": "stove_moon_r1",
+   "2": "stove_moon_r2",
+   "3": "stove_moon_r3"
+  },
   "dj_booth": {
    "0": "dj_booth_r0",
    "1": "dj_booth_r1",
@@ -6234,7 +6312,11 @@
   "mochi": "panela_mochi",
   "misso_soup": "panela_misso_soup",
   "yakisoba": "panela_yakisoba",
-  "tempura": "panela_tempura"
+  "tempura": "panela_tempura",
+  "petit_gateau": "panela_petit_gateau",
+  "caldo_verde": "panela_caldo_verde",
+  "mushroom_risotto": "panela_mushroom_risotto",
+  "fondue": "panela_fondue"
  },
  "stove_glow": {
   "0": "fogao_aceso_r0",
@@ -6372,7 +6454,11 @@
   "mochi": "prato_mochi",
   "misso_soup": "prato_misso_soup",
   "yakisoba": "prato_yakisoba",
-  "tempura": "prato_tempura"
+  "tempura": "prato_tempura",
+  "petit_gateau": "prato_petit_gateau",
+  "caldo_verde": "prato_caldo_verde",
+  "mushroom_risotto": "prato_mushroom_risotto",
+  "fondue": "prato_fondue"
  },
  "drinks": {
   "espresso": "bebida_espresso",

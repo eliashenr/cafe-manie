@@ -44,6 +44,10 @@ const TROPHY_AREA_FILL := Color(1.0, 0.85, 0.2, 0.22)
 const TROPHY_AREA_EDGE := Color(1.0, 0.72, 0.1, 0.9)
 const TROPHY_REACH := 1
 const WORN_MODULATE := Color(0.62, 0.62, 0.66)
+## Luz da luminária à noite (DT-064): cor quente, força no escuro total e altura acima do chão.
+const LIGHT_COLOR := Color(1.0, 0.86, 0.55)
+const LIGHT_ENERGY := 1.2
+const LIGHT_LIFT := 60.0
 
 const STATUS_BG := Color(0.1, 0.07, 0.05, 0.85)
 const STATUS_READY_BG := Color(0.2, 0.62, 0.3, 0.95)
@@ -144,6 +148,7 @@ var _halo := Node2D.new()
 var _fx := Node2D.new()
 var _steam: CPUParticles2D
 var _stink: CPUParticles2D
+var _light: PointLight2D
 ## Quanto a pilha de pratos do balcão está acima do lugar (anima quando chega prato).
 var stack_pop := 0.0:
 	set(value):
@@ -442,6 +447,28 @@ func _draw_halo() -> void:
 	var center := rect.get_center() - _halo.position
 	for grow in HALO_SCALES:
 		_halo.draw_texture_rect(sprite.texture, Rect2(center - rect.size * grow / 2.0, rect.size * grow), false)
+
+
+## Acende a luminária com a força da escuridão (0 = apagada). O fantasma da compra não acende.
+func set_light(darkness: float) -> void:
+	var on := darkness > 0.0 and look in [Look.NORMAL, Look.SELECTED]
+	if not on and _light == null:
+		return
+	if _light == null:
+		_light = PointLight2D.new()
+		_light.name = "Light"
+		_light.texture = FxParticles.soft_dot()
+		_light.texture_scale = definition.light_radius / (FxParticles.soft_dot().get_width() / 2.0)
+		_light.color = LIGHT_COLOR
+		_light.position = _footprint_center() - Vector2(0.0, LIGHT_LIFT)
+		_fx.add_child(_light)
+	_light.enabled = on
+	_light.energy = LIGHT_ENERGY * darkness
+
+
+## A luminária está acesa?
+func light_on() -> bool:
+	return _light != null and _light.enabled
 
 
 ## Troféu gasto: apagado (o fantasma da compra nunca fica gasto).

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"petit_gateau"
+display_name = "Petit Gâteau"
+cook_time = 300.0
+servings = 14
+ingredient_cost = 60
+sell_price = 9
+xp_reward = 22
+book = &"noite"
+stove = &"stove_moon"
+night_only = true
+unlock_level = 9
+placeholder_color = Color(0.29, 0.15, 0.08, 1)

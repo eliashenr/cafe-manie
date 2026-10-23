@@ -115,6 +115,7 @@ const FRONT_FOCUS_LIFT := 30.0
 func refresh(simulation: CafeSimulation) -> void:
 	_refresh_furniture_status(simulation.kitchen)
 	_refresh_trophies(simulation.trophies)
+	_refresh_lights(simulation.darkness())
 	_refresh_critic_star(simulation.critic_star)
 	_refresh_table_dishes(simulation)
 	_refresh_agents(simulation)
@@ -215,6 +216,14 @@ func _refresh_critic_star(star: Dictionary) -> void:
 func critic_star_hit(world_position: Vector2) -> bool:
 	return _critic_star != null and _critic_star.visible \
 		and world_position.distance_to(_critic_star.position) <= CRITIC_STAR_TAP_RADIUS
+
+
+## Luminárias acesas à noite (DT-064), mais fortes quanto mais escuro.
+func _refresh_lights(darkness: float) -> void:
+	for id: StringName in _views:
+		var view: FurnitureView = _views[id]
+		if view.definition != null and view.definition.light_radius > 0.0:
+			view.set_light(darkness)
 
 
 ## Troféu gasto fica apagado (DT-057).

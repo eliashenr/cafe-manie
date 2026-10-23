@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cooking/recipe_definition.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+id = &"fondue"
+display_name = "Fondue"
+cook_time = 3600.0
+servings = 28
+ingredient_cost = 330
+sell_price = 25
+xp_reward = 170
+book = &"noite"
+stove = &"stove_moon"
+night_only = true
+unlock_level = 9
+placeholder_color = Color(0.95, 0.76, 0.29, 1)

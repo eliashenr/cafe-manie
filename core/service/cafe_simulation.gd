@@ -32,6 +32,8 @@ signal board_mission_completed(board: MissionBoard, entry: MissionBoard.Entry)
 signal drink_served(customer: Customer, drink: DrinkDefinition)
 ## Uma receita ganhou uma estrela de domínio (DT-053); [param reward] é {"gold", "xp"}, já entregue.
 signal recipe_mastered(recipe: RecipeDefinition, stars: int, reward: Dictionary)
+## Anoiteceu ([param night] true) ou amanheceu: o cardápio noturno abriu ou fechou (DT-064).
+signal night_changed(night: bool)
 ## Começou uma edição de um evento com prazo (DT-063).
 signal event_started(event: EventDefinition)
 ## Uma missão do evento foi concluída; o ouro e o XP já foram entregues.
@@ -80,6 +82,7 @@ const ENERGY_PATH := "res://data/config/energy.tres"
 const MASTERY_PATH := "res://data/config/mastery.tres"
 const CRITIC_PATH := "res://data/config/critic.tres"
 const EVENTS_DIR := "res://data/events"
+const NIGHT_PATH := "res://data/config/night.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -105,6 +108,9 @@ var stove_sets: StoveSets
 var critic_config: CriticConfig
 ## Estrela que o crítico deixou na mesa, esperando o toque: {"cell", "gold", "xp", "coupons"}; vazio = nenhuma.
 var critic_star := {}
+## Horário da noite (DT-064) e se o último passo foi de noite (para avisar quando muda).
+var night_config: NightConfig
+var _was_night := false
 ## Eventos com prazo (DT-063), o quadro de missões do que vale agora (null fora de evento) e o que já aconteceu.
 var events: Array[EventDefinition] = []
 var event_board: MissionBoard
@@ -202,6 +208,8 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	drinks = DrinkCatalog.load_from()
 	spices = SpiceCatalog.load_from()
 	critic_config = load(CRITIC_PATH)
+	night_config = load(NIGHT_PATH)
+	_was_night = is_night()
 	var event_store := DefinitionStore.new(func(a: EventDefinition, b: EventDefinition) -> bool: return String(a.id) < String(b.id))
 	event_store.load_dir(EVENTS_DIR, EventDefinition)
 	events.assign(event_store.all())
@@ -368,6 +376,8 @@ func start_cooking(stove_id: StringName, recipe_id: StringName) -> int:
 		return ServiceResult.RECIPE_LOCKED
 	if not fits_stove(stove_id, recipe):
 		return ServiceResult.WRONG_STOVE
+	if recipe.night_only and not is_night():
+		return ServiceResult.NOT_NIGHT
 	if not wallet.can_afford(Wallet.SOFT, recipe.ingredient_cost):
 		return ServiceResult.NOT_ENOUGH_GOLD
 	var booster := trophies.booster_for(stove_id)
@@ -404,8 +414,9 @@ func fits_stove(stove_id: StringName, recipe: RecipeDefinition) -> bool:
 
 ## Receitas que os clientes podem pedir: liberadas no nível e que algum fogão do café sabe fazer.
 func order_menu() -> Array[RecipeDefinition]:
+	var night := is_night()
 	return recipes.unlocked_at(progression.level).filter(
-		func(r: RecipeDefinition) -> bool: return r.stove == &"" or placed_count(r.stove) > 0)
+		func(r: RecipeDefinition) -> bool: return (r.stove == &"" or placed_count(r.stove) > 0) and (not r.night_only or night))
 
 
 ## Porções a mais que o perfil do fogão dá a esta receita (DT-058).
@@ -549,6 +560,25 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Noite no café (DT-064) -----------------------------------------------
+
+## É noite agora (cardápio noturno aberto)?
+func is_night() -> bool:
+	return night_config.is_night(clock.local_hour())
+
+
+## Quanto escuro está agora (0 de dia, 1 no meio da noite).
+func darkness() -> float:
+	return night_config.darkness(clock.local_hour())
+
+
+func _watch_night() -> void:
+	var night := is_night()
+	if night != _was_night:
+		_was_night = night
+		night_changed.emit(night)
 
 
 # --- Eventos com prazo (DT-063) -------------------------------------------
@@ -1407,6 +1437,7 @@ func tick(delta: float) -> void:
 		return
 	refresh_mission_periods()
 	refresh_event()
+	_watch_night()
 	_watch_spoilage()
 	_update_arrivals(delta)
 	_update_critic(delta)

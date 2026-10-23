@@ -292,6 +292,10 @@ import halloween3  # noqa: E402
 
 FURNITURE["witch_cauldron"] = ((1, 1), lambda D, iso, fp, rotation: halloween3.cauldron_stove(D, iso, 0, 0, FACE.get(rotation)), 4)
 FURNITURE["giant_pumpkin"] = ((1, 1), _collection_decor(halloween3.giant_pumpkin), 1)
+# Noite no café (DT-064): o Fogão Lua Cheia.
+import night3  # noqa: E402
+
+FURNITURE["stove_moon"] = ((1, 1), lambda D, iso, fp, rotation: night3.moon_stove(D, iso, 0, 0, FACE.get(rotation)), 4)
 # Cabine de DJ 2x1: deitada ao longo de x (rotações 0 e 2) ou de y (1 e 3).
 FURNITURE["dj_booth"] = ((2, 1), lambda D, iso, fp, rotation: themes3.dj_booth(D, iso, 0, 0, "x" if fp[0] == 2 else "y"), 2)
 
@@ -437,7 +441,9 @@ FOODS = {"coffee": "cafe", "cheese_bread": "pao", "toasted_sandwich": "misto", "
          "eggs_benedict": "benedict", "curry": "curry", "black_forest": "floresta", "barbecue": "churrasco",
          "lobster": "lagosta",
          # Fogão Japonês (DT-059)
-         "mochi": "mochi", "misso_soup": "misso", "yakisoba": "yakisoba", "tempura": "tempura"}
+         "mochi": "mochi", "misso_soup": "misso", "yakisoba": "yakisoba", "tempura": "tempura",
+         # cardápio noturno (DT-064)
+         "petit_gateau": "petit_gateau", "caldo_verde": "caldo_verde", "mushroom_risotto": "risoto", "fondue": "fondue"}
 FOOD_SIZE = 48.0
 # id da bebida no jogo -> desenho em drinks3
 DRINKS = {"espresso": "expresso", "cappuccino": "cappuccino", "hot_chocolate": "chocolate",

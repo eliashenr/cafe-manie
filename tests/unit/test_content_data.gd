@@ -5,7 +5,7 @@ extends TestCase
 
 func test_recipes_load_valid_and_sorted_by_unlock_level() -> void:
 	var catalog := RecipeCatalog.load_from()
-	assert_eq(catalog.size(), 35, "as 6 do começo, as 12 do livro (DT-053), as 13 do nível 18 ao 30 (DT-054) e as 4 do Fogão Japonês (DT-059)")
+	assert_eq(catalog.size(), 39, "as 6 do começo, as 12 do livro (DT-053), as 13 do nível 18 ao 30 (DT-054), as 4 do Fogão Japonês (DT-059) e as 4 da noite (DT-064)")
 	var last_level := 0
 	for recipe in catalog.all():
 		assert_true(recipe.is_valid(), "%s inválida" % recipe.id)

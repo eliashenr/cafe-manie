@@ -7,7 +7,7 @@ extends TestCase
 func test_books_are_valid_ordered_and_every_recipe_has_its_book() -> void:
 	var catalog := RecipeCatalog.load_from()
 	var books := catalog.books()
-	assert_eq(books.size(), 5, "Básico, Brasil, Doces, Mundo e Japão")
+	assert_eq(books.size(), 6, "Básico, Brasil, Doces, Mundo, Japão e Noite")
 	for i in books.size():
 		assert_true(books[i].is_valid(), String(books[i].id))
 		if i > 0:
@@ -21,7 +21,7 @@ func test_books_are_valid_ordered_and_every_recipe_has_its_book() -> void:
 func test_a_new_recipe_at_every_level() -> void:
 	var catalog := RecipeCatalog.load_from()
 	var table: LevelTable = load("res://data/progression/levels.tres")
-	assert_eq(catalog.size(), 35)
+	assert_eq(catalog.size(), 39)
 	for level in range(1, table.max_level() + 1):
 		var found := catalog.all().filter(func(r: RecipeDefinition) -> bool: return r.unlock_level == level)
 		assert_true(not found.is_empty(), "o nível %d libera receita" % level)

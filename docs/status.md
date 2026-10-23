@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 7 do relatório: noite no café** (DT-064)
+
+- **Das 19h às 6h** (no horário do seu computador), o café e a cidade escurecem aos poucos, num tom azul-noite, e as **luminárias acendem**.
+- **Fogão Lua Cheia** (nível 9): rende 25% mais porções e abre o **cardápio noturno**, na aba **Noite** do livro.
+  - Os pratos são Petit Gâteau, Caldo Verde, Risoto de Cogumelos e Fondue.
+  - Eles só começam à noite, e os clientes só pedem à noite.
+- Avisos ao anoitecer e ao amanhecer.
+
 **Item 6 do relatório, etapa 3: evento de Halloween** (DT-063). **Com ela, o item 6 está completo.**
 
 - **De 20/10 a 3/11,** aparece um medalhão de abóbora à esquerda, com os dias que faltam.
@@ -345,6 +353,13 @@
 
 🧪 **TESTADO**
 
+- **Noite no café: 601 testes automatizados PASSARAM.**
+  - **Regra:** o horário da noite e a escuridão subindo e descendo nos crepúsculos; os dados do cardápio noturno e do fogão; os pratos da noite só começam à noite (e o que começou de madrugada termina de dia); os clientes só pedem à noite; o aviso ao anoitecer e ao amanhecer, uma vez cada.
+  - **Na tela:** de dia sem escuro e com a luminária apagada, à noite escuro e acesa; de dia, o livro com "Só à noite"; o aviso de anoitecer.
+  - Os testes antigos passaram a contar 39 receitas e 6 abas.
+  - **Defeitos inseridos de propósito: 15 de 15 pegos (1 só depois de um teste novo; um 16º mostrou uma verificação redundante, que saiu do código).**
+  - **Foto conferida:** o café às 23h, escurecido, com as luminárias acesas e a aba Noite aberta no Fogão Lua Cheia.
+  - **Cena principal: PASSOU**, zero erros.
 - **Evento de Halloween: 593 testes automatizados PASSARAM.**
   - **Regra:** os dados do Halloween (historinha, 5 missões, caldeirão de prêmio com um corte por nível, cada vez maior, e prêmio final fora da venda); as datas do evento, inclusive um que vira o ano, e a edição; o quadro só durante o evento e os dias que faltam; o caldeirão na 1ª missão, nível 2 na 3ª, 3 na 5ª e a Abóbora Gigante no fim, sem repetir; o caldeirão mais rápido a cada nível; a historinha uma vez por edição; a edição nova recomeça as missões e mantém o caldeirão; o save guarda tudo, e a migração acrescenta o campo.
   - **Na tela:** o medalhão só durante o evento, com os dias; a historinha quadro a quadro e depois as missões; o aviso do caldeirão ganho.
