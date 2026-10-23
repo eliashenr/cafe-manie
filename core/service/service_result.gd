@@ -46,4 +46,6 @@ enum {
 	NOTHING_TO_COLLECT, ## a atração ainda não tem ouro
 	DOOR_LOCKED,        ## nível insuficiente para a porta (DT-067)
 	NOT_DIRTY,          ## não há mancha nesse piso (DT-068)
+	TERRACE_LOCKED,     ## nível insuficiente para o terraço (DT-069)
+	ALREADY_BUILT,      ## o terraço já foi construído
 }

@@ -4,6 +4,13 @@
 
 🟢 **CONCLUÍDO**
 
+**Item 9 do relatório, etapa 3: terraço ao ar livre** (DT-069, versão simplificada)
+
+- Na aba **Pisos** da loja (nível 10, 3.000 de ouro), o **Terraço** transforma a fileira da frente do salão num terraço ao ar livre.
+  - O piso vira deque de madeira, e a mureta da frente vira cerca de jardim com floreiras.
+- **De dia, quem senta no terraço paga 25% a mais.** À noite, o normal.
+- O terraço acompanha a frente quando o café cresce.
+
 **Item 9 do relatório, etapa 2: chão sujo** (DT-068)
 
 - Às vezes, um cliente que terminou de comer deixa uma **mancha de café** no chão, do lado da cadeira (no máximo 5).
@@ -384,6 +391,22 @@
 
 🧪 **TESTADO**
 
+- **Terraço: 646 testes automatizados PASSARAM.**
+  - **Regra:**
+    - a configuração é válida;
+    - construir confere nível e ouro, cobra uma vez e não constrói duas vezes;
+    - o terraço é a fileira da frente e acompanha a expansão;
+    - de dia, quem senta no terraço paga mais; lá dentro e à noite, o normal;
+    - o terraço soma beleza;
+    - o save guarda o terraço.
+  - **Na tela:**
+    - existem a arte do deque e da cerca;
+    - o cartão começa bloqueado;
+    - construir pergunta, com Cancelar selecionado, e desenha o deque e a cerca só na borda de baixo;
+    - o deque acompanha a expansão.
+  - **Defeitos inseridos de propósito: 28 de 28 pegos (1 só depois de reforçar um teste).**
+  - **Foto conferida:** o terraço com a cerca branca, as floreiras e o deque, com uma mesa na frente.
+  - **Cena principal: PASSOU**, zero erros.
 - **Chão sujo: 636 testes automatizados PASSARAM.**
   - **Regra:**
     - a configuração é válida;

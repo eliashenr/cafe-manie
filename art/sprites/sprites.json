@@ -5102,6 +5102,30 @@
     -9.81
    ]
   },
+  "piso_terraco_0": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "piso_terraco_1": {
+   "anchor": [
+    134.19,
+    3.19
+   ]
+  },
+  "cerca_jardim_R": {
+   "anchor": [
+    4.48,
+    104.24
+   ]
+  },
+  "cerca_jardim_L": {
+   "anchor": [
+    4.48,
+    167.33
+   ]
+  },
   "mancha_chao_0": {
    "anchor": [
     63.19,
@@ -5255,7 +5279,7 @@
   "parede_wall_japanese_R": {
    "anchor": [
     3.48,
-    306.24
+    307.24
    ]
   },
   "parede_wall_japanese_L": {
@@ -5267,7 +5291,7 @@
   "parede_wall_french_R": {
    "anchor": [
     3.48,
-    306.24
+    307.24
    ]
   },
   "parede_wall_french_L": {
@@ -5279,7 +5303,7 @@
   "parede_wall_brazil_R": {
    "anchor": [
     3.48,
-    306.24
+    307.24
    ]
   },
   "parede_wall_brazil_L": {
@@ -5494,7 +5518,7 @@
   },
   "enfeite_janela_country_R": {
    "anchor": [
-    11.48,
+    10.48,
     302.24
    ]
   },
@@ -7378,6 +7402,13 @@
   "herbs": "tempero_herbs"
  },
  "food_width": 64.0,
+ "terrace": {
+  "floor": [
+   "piso_terraco_0",
+   "piso_terraco_1"
+  ],
+  "fence": "cerca_jardim"
+ },
  "floor_dirt": [
   "mancha_chao_0",
   "mancha_chao_1",

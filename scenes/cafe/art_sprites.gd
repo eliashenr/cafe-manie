@@ -145,6 +145,18 @@ static func floor_tile(surface_id: StringName, cell: Vector2i) -> Sprite:
 
 
 ## Tapete da entrada (por cima do piso).
+## Deque do terraço (DT-069): a variação muda de piso para piso.
+static func terrace_floor(cell: Vector2i) -> Sprite:
+	var names: Array = _load_manifest().get("terrace", {}).get("floor", [])
+	return null if names.is_empty() else get_sprite(names[posmod(cell.x, names.size())])
+
+
+## Cerca de jardim do terraço, no lado pedido ("R" ao longo de x, "L" ao longo de y).
+static func terrace_fence(side: String) -> Sprite:
+	var sprite_name: String = _load_manifest().get("terrace", {}).get("fence", "")
+	return null if sprite_name.is_empty() else get_sprite("%s_%s" % [sprite_name, side])
+
+
 ## Mancha do chão sujo (DT-068): a variação muda de piso para piso.
 static func floor_dirt(cell: Vector2i) -> Sprite:
 	var names: Array = _load_manifest().get("floor_dirt", [])

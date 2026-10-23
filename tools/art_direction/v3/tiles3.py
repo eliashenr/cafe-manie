@@ -123,6 +123,23 @@ def entrance_mat(D, iso):
     return "".join(o)
 
 
+def floor_deck(D, iso, seed):
+    """Deque do terraço (DT-069): tábuas de madeira escura ao longo de y, com frestas e pregos."""
+    r = Rng(seed)
+    woods = ["#c98a5a", "#bf7f4f", "#d29563", "#b97a4a"]
+    o = [_base(iso, "#7a4a2a")]
+    for i in range(5):
+        x0, x1 = i / 5 + 0.012, (i + 1) / 5 - 0.012
+        o.append(P(_quad(iso, x0, 0, x1, 1), woods[int(r.u(0, len(woods)))], "#6a3e22", 0.6))
+        for yy in (0.18, 0.82):
+            px, py = iso.v((x0 + x1) / 2, yy)
+            o.append(C(px, py, 0.8, "#5a3a22", None))
+        gx, gy0, gy1 = x0 + (x1 - x0) * r.u(0.3, 0.7), r.u(0.25, 0.4), r.u(0.55, 0.75)
+        p0, p1 = iso.v(gx, gy0), iso.v(gx, gy1)
+        o.append(line(p0[0], p0[1], p1[0], p1[1], "#9a6038", 0.7, 'opacity="0.6"'))
+    return "".join(o)
+
+
 # id do revestimento -> (variações, desenho). O jogo escolhe a variação: "a"/"b" pelo xadrez, ou pelo piso.
 FLOORS = {
     "floor_beige": ("xadrez", lambda D, iso, v: floor_checker(D, iso, "#fbe8c4", "#f1d29c", "#d9b77e", v)),
@@ -909,6 +926,25 @@ DECORATIONS.update({
     "janela_industrial": lambda D, side: wall_window(D, "#4a4d5a"),
     "janelao_frances": lambda D, side: wall_arched_window(D, frame="#2a2a33", box=("#ffe7a0", "#8a6a2e")),
 })
+
+
+def garden_fence(D):
+    """Cerca de jardim do terraço (DT-069): estacas brancas de ponta, duas travessas e floreiras com flores."""
+    o = []
+    for v in (-10, -24):
+        o.append(f'<rect x="-1" y="{v - 2.5}" width="{f(L + 2)}" height="5" rx="1.2" fill="#f4f7fa" stroke="{INK3}" stroke-width="0.9"/>')
+    n = 6
+    for i in range(n):
+        x = 2 + i * (L - 4) / (n - 1) - 2.2
+        o.append(f'<path d="M{f(x)},0 V-30 L{f(x + 2.2)},-34 L{f(x + 4.4)},-30 V0 Z" fill="{D.lin([(0, "#ffffff"), (1, "#dfe6ee")], 0, 0, 1, 0)}" '
+                 f'stroke="{INK3}" stroke-width="0.9"/>')
+    o.append(f'<rect x="2" y="-9" width="{f(L - 4)}" height="9" rx="1.5" fill="{D.lin([(0, "#c98a5a"), (1, "#8a5a2e")])}" stroke="{INK3}" stroke-width="0.9"/>')
+    r = Rng(97)
+    for i in range(7):
+        x = 5 + i * (L - 10) / 6
+        o.append(f'<ellipse cx="{f(x)}" cy="-10" rx="3.4" ry="2.6" fill="#3fbf4a" stroke="#1d6b33" stroke-width="0.6"/>')
+        o.append(f'<circle cx="{f(x + r.u(-1.2, 1.2))}" cy="{f(-11 + r.u(-0.8, 0.8))}" r="1.5" fill="{("#ff4d8d", "#ffd23f", "#ffffff", "#b06bff")[i % 4]}" stroke="{INK3}" stroke-width="0.4"/>')
+    return "".join(o)
 
 
 def wall_doorway(D, closed=False, frame=("#ffffff", "#dfe6ee"), awning=("#ffffff", "#ff4d5e"), name="entrada"):

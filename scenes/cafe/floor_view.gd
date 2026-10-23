@@ -52,6 +52,11 @@ var painted: Dictionary = {}:
 
 ## Reforma em andamento: os pisos marcados já aparecem com o revestimento escolhido.
 var paint_surface: SurfaceDefinition
+## Pisos do terraço (DT-069): deque de madeira onde o jogador não pintou outro piso.
+var terrace: Array[Vector2i] = []:
+	set(value):
+		terrace = value
+		queue_redraw()
 ## Pisos com mancha (DT-068), desenhados por cima do revestimento.
 var dirt: Array[Vector2i] = []:
 	set(value):
@@ -112,6 +117,14 @@ func has_art() -> bool:
 	return floor_style != null and ArtSprites.floor_tile(floor_style.id, Vector2i.ZERO) != null
 
 
+## Peça desenhada no piso: o deque do terraço onde não foi pintado outro piso (DT-069), senão o revestimento.
+func tile_at(cell: Vector2i) -> ArtSprites.Sprite:
+	if terrace.has(cell) and not painted.has(cell) and ArtSprites.terrace_floor(cell) != null:
+		return ArtSprites.terrace_floor(cell)
+	var tile := ArtSprites.floor_tile(surface_at(cell).id, cell)
+	return tile if tile != null else ArtSprites.floor_tile(floor_style.id, cell)
+
+
 func _draw() -> void:
 	if has_art():
 		_draw_art_floor()
@@ -139,9 +152,7 @@ func _draw_art_floor() -> void:
 	for y in grid_size.y:
 		for x in grid_size.x:
 			var cell := Vector2i(x, y)
-			var tile := ArtSprites.floor_tile(surface_at(cell).id, cell)
-			if tile == null:
-				tile = ArtSprites.floor_tile(floor_style.id, cell)
+			var tile := tile_at(cell)
 			draw_texture_rect(tile.texture, tile.rect_at(IsoProjection.cell_top_vertex(cell)), false)
 	for cell in paint_cells:
 		if _is_inside(cell):

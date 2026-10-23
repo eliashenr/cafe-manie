@@ -68,6 +68,8 @@ const SERVICE_MESSAGES := {
 	ServiceResult.NOT_AN_ATTRACTION: "Esse móvel não é uma atração",
 	ServiceResult.NOTHING_TO_COLLECT: "Ainda não tem ouro: espere os clientes brincarem",
 	ServiceResult.DOOR_LOCKED: "Essa porta ainda não está liberada no seu nível",
+	ServiceResult.TERRACE_LOCKED: "O terraço ainda não está liberado no seu nível",
+	ServiceResult.ALREADY_BUILT: "O terraço já está pronto",
 	ServiceResult.RECIPE_LOCKED: "Receita ainda bloqueada",
 	ServiceResult.NOT_ENOUGH_GOLD: "Café Ouro insuficiente",
 	ServiceResult.UNKNOWN_RECIPE: "Receita desconhecida",
@@ -402,6 +404,8 @@ func _shop_items() -> Array:
 		ShopTab.FLOOR, ShopTab.WALL:
 			var kind := SurfaceDefinition.Kind.FLOOR if shop_tab == ShopTab.FLOOR else SurfaceDefinition.Kind.WALL
 			items.assign(cafe.simulation.surfaces.all(kind))
+			if shop_tab == ShopTab.FLOOR:
+				items.push_front(cafe.simulation.terrace_config)
 			if shop_tab == ShopTab.WALL:
 				items.append_array(cafe.simulation.doors.all())
 				items.append_array(cafe.simulation.wall_items.all())
@@ -609,6 +613,8 @@ func _show_shop() -> void:
 			_add_wall_item(item)
 		elif item is DoorDefinition:
 			_add_door_item(item)
+		elif item is TerraceConfig:
+			_add_terrace_item(item)
 		else:
 			_add_surface_item(item)
 	var pages := shop_page_count()
@@ -772,6 +778,33 @@ func _add_door_item(door: DoorDefinition) -> void:
 			item.text = "%s\n%d ouro" % [door.display_name, door.price]
 			item.show_state(door.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, door.price))
 		item.disabled = locked or simulation.current_door() == door)
+
+
+## Terraço na aba Pisos (DT-069): preço e nível, ou "Construído".
+func _add_terrace_item(config: TerraceConfig) -> void:
+	var simulation := cafe.simulation
+	var item := _add_item("Terrace", config.display_name, ArtSprites.terrace_fence("R"), ask_build_terrace)
+	_updaters.append(func() -> void:
+		var locked := config.min_level > simulation.progression.level
+		if simulation.has_terrace():
+			item.text = "%s\nConstruído" % config.display_name
+			item.show_state(0, 0, "Construído", true)
+		elif locked:
+			item.text = "%s\nNível %d" % [config.display_name, config.min_level]
+			item.show_state(config.price, config.min_level, "", false)
+		else:
+			item.text = "%s\n%d ouro" % [config.display_name, config.price]
+			item.show_state(config.price, 0, "", simulation.wallet.can_afford(Wallet.SOFT, config.price))
+		item.disabled = locked or simulation.has_terrace())
+
+
+## Construir o terraço sempre pede confirmação (é uma compra).
+func ask_build_terrace() -> void:
+	var config := cafe.simulation.terrace_config
+	if cafe.simulation.has_terrace():
+		return
+	_ask("Construir o terraço?", "Transformar a fileira da frente num terraço ao ar livre por %d Café Ouro? De dia, quem senta lá paga %d%% a mais." \
+		% [config.price, roundi(config.day_pay_bonus * 100)], "Construir", func() -> void: cafe.build_terrace())
 
 
 ## Porta já comprada: troca na hora. Nova: comprar pede confirmação.

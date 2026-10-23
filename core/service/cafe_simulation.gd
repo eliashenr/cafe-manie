@@ -37,6 +37,8 @@ signal show_started
 signal show_ended
 ## O jogador coletou o ouro de uma atração.
 signal attraction_collected(attraction_id: StringName, amount: int)
+## O terraço ao ar livre ficou pronto (DT-069).
+signal terrace_built
 ## Uma mancha do chão foi limpa: o ouro e o XP já foram entregues (DT-068).
 signal floor_cleaned(cell: Vector2i, gold: int, xp: int)
 ## Um pé de fruta foi colhido: as frutas já estão no estoque (DT-065).
@@ -96,6 +98,7 @@ const FRUITS_DIR := "res://data/fruits"
 const STAGE_PATH := "res://data/config/stage.tres"
 const DOORS_DIR := "res://data/doors"
 const DIRT_PATH := "res://data/config/dirt.tres"
+const TERRACE_PATH := "res://data/config/terrace.tres"
 ## Segundos até o primeiro cliente de um jogo novo.
 const FIRST_ARRIVAL_DELAY := 3.0
 ## Limites do nome da cafeteria (em caracteres, depois de tirar espaços das pontas).
@@ -127,6 +130,8 @@ var doors: DefinitionStore
 var dirt: FloorDirt
 var dirt_config: DirtConfig
 var _dirt_wait := 0.0
+## Terraço ao ar livre (DT-069); se está construído fica no estilo (style.terrace).
+var terrace_config: TerraceConfig
 ## Atrações e palco (DT-066): o ouro guardado nas atrações, o show e o tempo até o próximo.
 var attractions: Attractions
 var stage_config: StageConfig
@@ -247,6 +252,7 @@ func _init(game_clock: GameClock, cafe_layout: CafeLayout, service_config: Servi
 	stage_config = load(STAGE_PATH)
 	dirt = FloorDirt.new(layout)
 	dirt_config = load(DIRT_PATH)
+	terrace_config = load(TERRACE_PATH)
 	_was_night = is_night()
 	var event_store := DefinitionStore.new(func(a: EventDefinition, b: EventDefinition) -> bool: return String(a.id) < String(b.id))
 	event_store.load_dir(EVENTS_DIR, EventDefinition)
@@ -602,6 +608,45 @@ func _reward_stove_sets() -> void:
 		if furniture.get_definition(stove_set.reward) != null:
 			inventory.add(stove_set.reward)
 		stove_set_completed.emit(stove_set)
+
+
+# --- Terraço (DT-069) ----------------------------------------------------------
+
+func has_terrace() -> bool:
+	return style.terrace
+
+
+## Pisos do terraço: a fileira da frente, ao longo da borda de baixo (acompanha a expansão).
+func terrace_cells() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	if style.terrace:
+		var size := layout.grid.size
+		for x in size.x:
+			cells.append(Vector2i(x, size.y - 1))
+	return cells
+
+
+func is_terrace(cell: Vector2i) -> bool:
+	return style.terrace and layout.grid.is_inside(cell) and cell.y == layout.grid.size.y - 1
+
+
+## Constrói o terraço: confere nível e ouro e cobra uma vez.
+func build_terrace() -> int:
+	if style.terrace:
+		return ServiceResult.ALREADY_BUILT
+	if terrace_config.min_level > progression.level:
+		return ServiceResult.TERRACE_LOCKED
+	if not wallet.can_afford(Wallet.SOFT, terrace_config.price):
+		return ServiceResult.NOT_ENOUGH_GOLD
+	wallet.spend(Wallet.SOFT, terrace_config.price, terrace_config.display_name)
+	style.set_terrace(true)
+	terrace_built.emit()
+	return ServiceResult.OK
+
+
+## Quem senta no terraço de dia paga mais; à noite, o normal.
+func _terrace_factor(customer: Customer) -> float:
+	return 1.0 + terrace_config.day_pay_bonus if is_terrace(customer.seat_cell) and not is_night() else 1.0
 
 
 # --- Chão sujo (DT-068) -------------------------------------------------------
@@ -1329,6 +1374,8 @@ func beauty() -> int:
 		total += placement.definition.beauty
 	if doors != null and current_door() != null:
 		total += current_door().beauty
+	if style.terrace and terrace_config != null:
+		total += terrace_config.beauty
 	if surfaces == null:
 		return total
 	var floor_sum := 0.0
@@ -1903,7 +1950,7 @@ func _lose_patience(customer: Customer, delta: float) -> void:
 func _pay(customer: Customer) -> void:
 	var price := customer.drink.sell_price if customer.drink != null else customer.order.sell_price
 	var item_name := customer.drink.display_name if customer.drink != null else customer.order.display_name
-	var amount := maxi(1, roundi(price * customer.type.pay_multiplier))
+	var amount := maxi(1, roundi(price * customer.type.pay_multiplier * _terrace_factor(customer)))
 	customer.paid = amount
 	wallet.earn(Wallet.SOFT, amount, "Venda: %s" % item_name)
 	progression.add_xp(config.customer_xp)

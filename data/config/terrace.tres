@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TerraceConfig" format=3]
+
+[ext_resource type="Script" path="res://core/service/terrace_config.gd" id="1_terrace"]
+
+[resource]
+script = ExtResource("1_terrace")
+display_name = "Terraço ao ar livre"
+collection = &"classico"
+price = 3000
+min_level = 10
+beauty = 15
+day_pay_bonus = 0.25

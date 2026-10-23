@@ -102,7 +102,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 
 - [x] **1. Portas por coleção e coleções completas** (DT-067): 13 portas na loja; toda coleção com fogão, balcão, porta e janela.
 - [x] **2. Chão sujo** (DT-068): os clientes deixam manchas; um toque limpa e dá ouro e XP; chão sujo faz a popularidade cair.
-- [ ] **3. Pátio:** mesas ao ar livre na calçada.
+- [x] **3. Terraço** (DT-069, versão simplificada): a fileira da frente vira terraço com deque e cerca de jardim; de dia, quem senta lá paga 25% a mais.
 - [ ] **4. Avatar do chef:** roupa, cabelo e chapéu comprados com ouro.
 
 ## Passe visual (18/10/2026)

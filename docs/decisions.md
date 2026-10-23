@@ -4,6 +4,34 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-069 — Terraço ao ar livre (versão simplificada)
+
+**Problema:**
+- O relatório propõe um pátio ou terraço na calçada: uma expansão para fora, com mesas ao ar livre e entrada própria (proposta 3.8).
+- Uma área fora do grid exigiria refazer a navegação, o desenho e as expansões.
+
+**Decisão:**
+- **Versão simplificada:** o terraço transforma a **fileira da frente** do salão (ao longo da borda de baixo) num terraço ao ar livre.
+  - O piso vira **deque de madeira**, onde o jogador não pintou outro piso.
+  - A mureta dessa borda vira **cerca de jardim** com floreiras.
+  - O lado da porta continua com a mureta.
+- **Compra:**
+  - na aba **Pisos** da loja, coleção Clássico;
+  - 3.000 de ouro, nível 10, uma vez só;
+  - pede confirmação, com Cancelar já selecionado;
+  - soma 15 de beleza.
+- **Efeito:**
+  - **de dia**, quem senta numa cadeira do terraço paga **25% a mais**;
+  - à noite, paga o normal.
+- **Expansão:** o terraço acompanha a fileira da frente quando o café cresce.
+- **Configuração e save:**
+  - os números ficam em `data/config/terrace.tres` (`TerraceConfig`);
+  - o estilo guarda `"terrace"`, sem mudar a versão;
+  - saves antigos começam sem terraço.
+- **Fica para depois:** a área de fora do grid e a entrada própria.
+
+---
+
 ## DT-068 — Chão sujo
 
 **Problema:**

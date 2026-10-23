@@ -21,6 +21,8 @@ var floor_id: StringName = &""
 var wall_id: StringName = &""
 ## Porta da entrada (DT-067).
 var door_id: StringName = &""
+## Terraço ao ar livre construído (DT-069).
+var terrace := false
 var _owned: Dictionary = {}  # StringName -> true
 var _floor_cells: Dictionary = {}  # Vector2i -> StringName (só o que difere da base)
 var _wall_cells: Dictionary = {}  # String "borda:índice" -> StringName (só o que difere da base)
@@ -154,6 +156,12 @@ func set_door(id: StringName) -> bool:
 	return true
 
 
+## Constrói o terraço (a compra é da simulação).
+func set_terrace(value: bool) -> void:
+	terrace = value
+	changed.emit()
+
+
 func to_data() -> Dictionary:
 	var floor_cells := []
 	for cell: Vector2i in _floor_cells:
@@ -164,7 +172,7 @@ func to_data() -> Dictionary:
 	var wall_items := []
 	for wall_segment: String in _wall_items:
 		wall_items.append([wall_segment, String(_wall_items[wall_segment])])
-	return {"floor": String(floor_id), "wall": String(wall_id), "door": String(door_id),
+	return {"floor": String(floor_id), "wall": String(wall_id), "door": String(door_id), "terrace": terrace,
 		"owned": owned().map(func(id: StringName) -> String: return String(id)),
 		"floor_cells": floor_cells, "wall_cells": wall_cells, "wall_items": wall_items}
 
@@ -176,6 +184,7 @@ func restore(data: Dictionary) -> void:
 	floor_id = StringName(str(data.get("floor", "")))
 	wall_id = StringName(str(data.get("wall", "")))
 	door_id = StringName(str(data.get("door", "")))
+	terrace = bool(data.get("terrace", false))
 	_floor_cells.clear()
 	for entry in data.get("floor_cells", []):
 		if entry is Array and entry.size() == 3:

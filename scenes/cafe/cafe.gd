@@ -21,6 +21,7 @@ const FEEDBACK_SPEND := Color("ff9b8a")
 
 const CLOSED_MESSAGE := "Café fechado: ninguém novo entra. Quem já está lá dentro é atendido e vai embora."
 const OPEN_MESSAGE := "Café aberto! Os clientes voltam a chegar."
+const TERRACE_BUILT_MESSAGE := "Terraço pronto! De dia, quem senta na fileira da frente paga %d%% a mais."
 const DIRT_HINT_MESSAGE := "Um cliente sujou o chão! Toque na mancha para limpar: dá ouro, e o chão limpo segura a popularidade."
 const SHOW_STARTED_MESSAGE := "Começou o show no palco! Os clientes chegam mais rápido enquanto ele dura."
 const SHOW_ENDED_MESSAGE := "O show acabou. O próximo começa daqui a pouco."
@@ -383,6 +384,7 @@ func _connect_sounds() -> void:
 	simulation.fruit_harvested.connect(play.bind(&"coin").unbind(3))
 	simulation.attraction_collected.connect(play.bind(&"coin").unbind(2))
 	simulation.floor_cleaned.connect(play.bind(&"coin").unbind(3))
+	simulation.terrace_built.connect(play.bind(&"achievement"))
 	simulation.show_started.connect(play.bind(&"level_up"))
 	simulation.daily_reward_claimed.connect(play.bind(&"achievement").unbind(2))
 	simulation.furniture_bought.connect(play.bind(&"purchase").unbind(1))
@@ -751,6 +753,15 @@ func _on_achievement_unlocked(achievement: AchievementDefinition, tier: int) -> 
 
 
 ## Expande a cafeteria (a confirmação fica na barra de baixo).
+## Constrói o terraço (DT-069); a barra já pediu confirmação.
+func build_terrace() -> int:
+	last_service_result = simulation.build_terrace()
+	if last_service_result == ServiceResult.OK:
+		EventBus.message_posted.emit(TERRACE_BUILT_MESSAGE % roundi(simulation.terrace_config.day_pay_bonus * 100))
+	state_changed.emit()
+	return last_service_result
+
+
 func expand_cafe() -> int:
 	last_service_result = simulation.expand()
 	state_changed.emit()
@@ -804,6 +815,7 @@ func _fit_floor_and_camera() -> void:
 	exterior_view.entrance = layout.entrance
 	front_view.grid_size = layout.grid.size
 	front_view.entrance = layout.entrance
+	floor_view.terrace = simulation.terrace_cells()  # o terraço acompanha a fileira da frente
 	street_view.configure(layout.grid.size, layout.entrance, street_keep_clear())
 	var headroom := maxf(furniture_headroom, wall_view.wall_height)
 	var bounds := IsoProjection.grid_bounds(layout.grid.size).grow_individual(0.0, headroom, 0.0, 0.0)
@@ -855,6 +867,8 @@ func _apply_style() -> void:
 	var door := simulation.current_door()
 	if door != null:
 		front_view.door_base = door.sprite_base
+	floor_view.terrace = simulation.terrace_cells()
+	front_view.terrace = simulation.has_terrace()
 	var hung := {}
 	var items := style.hung_items()
 	for wall_segment: String in items:

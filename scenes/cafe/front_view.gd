@@ -38,6 +38,11 @@ var door_base := "enfeite_porta":
 	set(value):
 		door_base = value
 		queue_redraw()
+## Terraço (DT-069): a mureta da borda de baixo vira cerca de jardim.
+var terrace := false:
+	set(value):
+		terrace = value
+		queue_redraw()
 var wall_style: SurfaceDefinition:
 	set(value):
 		wall_style = value
@@ -147,7 +152,15 @@ func door_sprite_name() -> String:
 	return door_base + ("_fechada" if closed else "") + "_L"
 
 
+## Trecho com cerca de jardim (o terraço) em vez da mureta?
+func is_fence(wall_segment: String) -> bool:
+	return terrace and wall_segment.begins_with(CafeStyle.EDGE_BOTTOM) and ArtSprites.terrace_fence("R") != null
+
+
 func _draw_low_wall(wall_segment: String) -> void:
+	if is_fence(wall_segment):
+		_draw_fence(wall_segment)
+		return
 	var side := "R" if wall_segment.begins_with(CafeStyle.EDGE_BOTTOM) else "L"
 	var surface := surface_at(wall_segment)
 	var panel := ArtSprites.wall_panel(surface.id, side) if surface != null else null
@@ -168,6 +181,13 @@ func _draw_low_wall(wall_segment: String) -> void:
 	draw_colored_polygon(cap, CAP_TOP)
 	draw_polyline(PackedVector2Array([cap[3], cap[0], cap[1], cap[2]]), ART_INK, 1.2, true)
 	draw_line(band[0], band[1], ART_INK, 1.2, true)
+
+
+## Cerca de jardim do terraço: o desenho inteiro do trecho (os vãos entre as estacas deixam ver o salão).
+func _draw_fence(wall_segment: String) -> void:
+	var fence := ArtSprites.terrace_fence("R")
+	var ends := segment_ends(wall_segment)
+	draw_texture_rect(fence.texture, fence.rect_at(_at(ends[0])), false)
 
 
 func _at(point: Vector2, height := 0.0) -> Vector2:
