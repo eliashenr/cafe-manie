@@ -206,7 +206,7 @@ func _ready() -> void:
 	_message.add_theme_color_override("font_color", UiTheme.TEXT)
 	_message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_message.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var message_style := UiTheme.card_box(14, 8)
+	var message_style := UiTheme.glass_box(14, 8)
 	message_style.content_margin_left = 18
 	message_style.content_margin_right = 18
 	_message.add_theme_stylebox_override("normal", message_style)
@@ -290,7 +290,7 @@ func _card(card_name: String, radius := 14) -> PanelContainer:
 	card.name = card_name
 	card.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
-	card.add_theme_stylebox_override("panel", UiTheme.card_box(radius, 10))
+	card.add_theme_stylebox_override("panel", UiTheme.glass_box(radius, 10))
 	return card
 
 
@@ -534,14 +534,19 @@ func _add_icon(row: HBoxContainer, button_name: String, icon: String, text: Stri
 	button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 	button.add_theme_constant_override("icon_max_width", 44)
 	button.custom_minimum_size = ICON_BUTTON_SIZE
-	for state in ["normal", "hover", "pressed", "disabled", "focus", "hover_pressed"]:
+	for state in ["normal", "disabled", "focus"]:
 		button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-	button.add_theme_color_override("font_color", UiTheme.TEXT)
-	button.add_theme_color_override("font_hover_color", UiTheme.BLUE)
-	button.add_theme_color_override("font_pressed_color", UiTheme.BLUE_DARK)
-	button.add_theme_color_override("font_disabled_color", UiTheme.DISABLED)
-	button.add_theme_color_override("font_outline_color", Color.WHITE)
-	button.add_theme_constant_override("outline_size", 4)
+	for state in ["hover", "pressed", "hover_pressed"]:
+		var lit := UiTheme.card_box(12, 0, UiTheme.CYAN)
+		lit.bg_color = Color(UiTheme.CYAN, 0.08)
+		lit.shadow_size = 0
+		button.add_theme_stylebox_override(state, lit)
+	button.add_theme_color_override("font_color", UiTheme.WHITE_SOFT)
+	button.add_theme_color_override("font_hover_color", UiTheme.CYAN)
+	button.add_theme_color_override("font_pressed_color", UiTheme.CYAN)
+	button.add_theme_color_override("font_disabled_color", UiTheme.METAL.darkened(0.2))
+	button.add_theme_color_override("font_outline_color", UiTheme.NAVY_DEEP)
+	button.add_theme_constant_override("outline_size", 0)
 	button.add_theme_font_size_override("font_size", 13)
 	button.focus_mode = Control.FOCUS_NONE
 	button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -1183,9 +1188,8 @@ func _add_text_button(button_name: String, text: String, action: Callable) -> Bu
 	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
 		button.add_theme_stylebox_override(state, UiTheme.button_box(UiTheme.BLUE.lightened(0.1) if state == "hover" else UiTheme.BLUE,
 			UiTheme.BLUE_DARK))
-	button.add_theme_color_override("font_outline_color", UiTheme.BLUE_DARK)
-	button.add_theme_constant_override("outline_size", 4)
-	button.add_theme_font_size_override("font_size", 18)
+	button.add_theme_constant_override("outline_size", 0)
+	button.add_theme_font_size_override("font_size", 17)
 	button.pressed.connect(func() -> void: action.call())
 	_buttons.add_child(button)
 	return button

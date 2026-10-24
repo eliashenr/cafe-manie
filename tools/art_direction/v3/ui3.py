@@ -55,15 +55,24 @@ def glyph(kind):
     return _canvas_glyph(kind)
 
 
+# Cor de cada função nos botões de vidro (DT-077): ciano (comum), verde (confirmar), dourado (atenção), vermelho.
+BUTTON_ACCENTS = {"blue": "#31d7ff", "green": "#35c779", "orange": "#ffbe55", "red": "#ff5d6c"}
+
+
 def square_button(D, kind, color="blue"):
-    """Botão quadrado brilhante (como o do canvas) na caixa 64x64."""
-    pal = {"blue": ("#5bb8ff", "#1f6fd1", "#15509c"), "green": ("#7ee85a", "#26a93a", "#177a28"),
-           "orange": ("#ffc15a", "#f07b00", "#b85a00"), "red": ("#ff8a8a", "#e0303a", "#a01a24")}[color]
-    r = 12
-    o = [f'<rect x="3" y="6" width="58" height="58" rx="{r}" fill="{pal[2]}"/>']
-    o.append(f'<rect x="3" y="3" width="58" height="56" rx="{r}" fill="{D.lin([(0, pal[0]), (1, pal[1])])}" stroke="{pal[2]}" stroke-width="2"/>')
-    o.append(f'<path d="M9,{r+1} a{r-4},{r-4} 0 0,1 {r-4},{-(r-4)} h{58-2*r} a{r-4},{r-4} 0 0,1 {r-4},{r-4} v6 h-50 Z" fill="#ffffff" opacity="0.3"/>')
-    o.append(f'<g transform="translate(32,31) scale(0.62) translate(-32,-32)">{glyph(kind)}</g>')
+    """Botão quadrado de vidro escuro (DT-077): azul-marinho com brilho de vidro em cima, borda e símbolo na cor da
+    função e um halo suave no símbolo, na caixa 64x64."""
+    accent = BUTTON_ACCENTS[color]
+    r = 13
+    glow = D.raw("brilho_botao", '<filter id="brilho_botao" x="-30%" y="-30%" width="160%" height="160%">'
+                 '<feGaussianBlur stdDeviation="2.4"/></filter>')
+    o = [f'<rect x="3" y="6" width="58" height="58" rx="{r}" fill="#000000" opacity="0.35"/>']
+    o.append(f'<rect x="3" y="3" width="58" height="58" rx="{r}" fill="{D.lin([(0, "#173462"), (1, "#081631")])}" '
+             f'stroke="{accent}" stroke-opacity="0.8" stroke-width="1.6"/>')
+    o.append(f'<rect x="6" y="5.5" width="52" height="22" rx="{r - 3}" fill="#ffffff" opacity="0.07"/>')
+    shape = glyph(kind).replace("#ffffff", accent).replace("#2a7de1", "#0c1d38")
+    o.append(f'<g transform="translate(32,32) scale(0.56) translate(-32,-32)">'
+             f'<g filter="{glow}" opacity="0.65">{shape}</g>{shape}</g>')
     return "".join(o)
 
 

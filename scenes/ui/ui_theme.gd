@@ -1,32 +1,63 @@
 class_name UiTheme
 extends RefCounted
-## Visual da interface da v3 (formato do jogo antigo, desenho nosso): botões azuis
-## brilhantes, cartões brancos de borda azul, contadores escuros de borda branca e
-## texto com contorno. Os ícones e botões quadrados vêm da arte (ArtSprites).
+## Sistema de design "Nova York Futurista" (DT-077): painéis de vidro azul-marinho com borda azul, destaques em ciano,
+## dourado para moedas, nível e prêmios, verde para comprar e confirmar. Texto claro sobre o escuro, sem contorno
+## grosso (só uma sombra leve para ler em cima do cenário). Os ícones e botões quadrados vêm da arte (ArtSprites).
 
-const NAVY := Color("12254a")
-const TEXT := Color("1d3563")
-const TEXT_SOFT := Color("5a78a8")
-const BLUE := Color("2a7de1")
-const BLUE_LIGHT := Color("4a9cf0")
-const BLUE_DARK := Color("15509c")
-const CARD := Color("ffffff")
-const CARD_EDGE := Color("9fc2ea")
-const CARD_SOFT := Color("eaf4ff")
-const PILL := Color(0.106, 0.18, 0.353, 0.86)
-const ORANGE := Color("ff6b3d")
-const RED := Color("e0303a")
-const GOLD_TEXT := Color("ffe34d")
-const DISABLED := Color("aebdd0")
-const SHADOW := Color(0, 0, 0, 0.16)
+# --- Paleta (cada cor com uma função) -------------------------------------------------------------
+## Fundo mais escuro (janelas, faixas).
+const NAVY_DEEP := Color("071426")
+## Painel de vidro escuro do HUD e das janelas.
+const PANEL := Color(0.043, 0.094, 0.176, 0.93)
+## Cartão dentro de um painel (itens da loja, cartões de vizinho).
+const PANEL_RAISED := Color("0f2444")
+## Borda dos painéis e cartões.
+const PANEL_EDGE := Color("21508f")
+## Azul tecnológico: botões principais e abas ativas.
+const TECH_BLUE := Color("0878f9")
+## Ciano luminoso: seleção, foco, brilho e destaques pequenos.
+const CYAN := Color("31d7ff")
+## Dourado premium: moedas, nível, prêmios.
+const GOLD := Color("ffbe55")
+## Madeira quente (detalhes do restaurante na interface).
+const WOOD := Color("70452f")
+## Branco suave: texto principal.
+const WHITE_SOFT := Color("f5f7fa")
+## Cinza metálico: texto secundário e ícones apagados.
+const METAL := Color("8c9bad")
+## Verde de sucesso: comprar, confirmar, satisfação alta.
+const GREEN := Color("35c779")
+
+# --- Nomes antigos, agora com as cores novas (o resto da interface herda o visual) ----------------
+const NAVY := NAVY_DEEP
+const TEXT := WHITE_SOFT
+const TEXT_SOFT := Color("9fb3cc")
+const BLUE := TECH_BLUE
+const BLUE_LIGHT := Color("3a9bff")
+const BLUE_DARK := Color("0a4fb0")
+const CARD := PANEL_RAISED
+const CARD_EDGE := PANEL_EDGE
+const CARD_SOFT := Color("15325c")
+const PILL := PANEL
+const ORANGE := Color("ff9a3d")
+const RED := Color("ff4d5e")
+const GOLD_TEXT := GOLD
+const DISABLED := Color("34465f")
+const SHADOW := Color(0, 0, 0, 0.35)
+
+# --- Tipografia e medidas -------------------------------------------------------------------------
 const FONT_SIZE := 16
-## Letras das pranchas (licença OFL, em art/fonts com a licença): Fredoka para quase
-## tudo, como no HUD do canvas; Nunito para textos corridos.
+## Letras (licença OFL, em art/fonts com a licença): Fredoka para títulos, números e botões; Nunito para textos.
 const FREDOKA_PATH := "res://art/fonts/Fredoka-Variable.ttf"
 const NUNITO_PATH := "res://art/fonts/Nunito-Variable.ttf"
 ## Peso padrão da interface (as fontes são variáveis: 300 a 700 na Fredoka).
 const WEIGHT := 600
 const BOLD := 700
+## Raios: painel grande, cartão e pílula.
+const RADIUS_PANEL := 16
+const RADIUS_CARD := 12
+## Sombra do texto em cima do cenário.
+const TEXT_SHADOW := Color(0, 0, 0, 0.55)
 
 static var _theme: Theme
 static var _fonts: Dictionary = {}
@@ -43,26 +74,42 @@ static func theme() -> Theme:
 	for state in ["normal", "hover", "pressed", "disabled", "focus", "hover_pressed"]:
 		var fill: Color = {"normal": BLUE, "hover": BLUE_LIGHT, "pressed": BLUE_DARK, "disabled": DISABLED,
 			"focus": BLUE, "hover_pressed": BLUE_DARK}[state]
-		_theme.set_stylebox(state, "Button", button_box(fill, DISABLED.darkened(0.25) if state == "disabled" else BLUE_DARK))
+		_theme.set_stylebox(state, "Button", button_box(fill, fill.lightened(0.25) if state != "disabled" else DISABLED))
 	_theme.set_stylebox("focus", "Button", StyleBoxEmpty.new())
 	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color"]:
 		_theme.set_color(color_name, "Button", Color.WHITE)
-	_theme.set_color("font_disabled_color", "Button", Color("f2f6fb"))
+	_theme.set_color("font_disabled_color", "Button", METAL)
 	_theme.set_color("font_outline_color", "Button", BLUE_DARK)
-	_theme.set_constant("outline_size", "Button", 4)
+	_theme.set_constant("outline_size", "Button", 0)
 	_theme.set_constant("icon_max_width", "Button", 48)
 	_theme.set_stylebox("panel", "PanelContainer", card_box())
-	_theme.set_stylebox("panel", "AcceptDialog", card_box(14, 16))
+	_theme.set_stylebox("panel", "AcceptDialog", glass_box(RADIUS_PANEL, 18))
+	_theme.set_stylebox("panel", "ConfirmationDialog", glass_box(RADIUS_PANEL, 18))
+	# Barra de título das janelas: azul-marinho com a linha ciano embaixo
+	var border := glass_box(RADIUS_PANEL, 0, PANEL_EDGE)
+	border.bg_color = NAVY_DEEP
+	border.expand_margin_top = 34
+	border.border_width_top = 2
+	border.border_color = CYAN.darkened(0.25)
+	_theme.set_stylebox("embedded_border", "Window", border)
+	_theme.set_stylebox("embedded_unfocused_border", "Window", border)
+	_theme.set_color("title_color", "Window", WHITE_SOFT)
+	_theme.set_font("title_font", "Window", font(BOLD))
+	_theme.set_font_size("title_font_size", "Window", 18)
+	_theme.set_constant("title_height", "Window", 34)
 	_theme.set_stylebox("normal", "LineEdit", card_box(10, 8))
-	_theme.set_stylebox("focus", "LineEdit", card_box(10, 8, BLUE))
+	_theme.set_stylebox("focus", "LineEdit", card_box(10, 8, CYAN))
 	_theme.set_color("font_color", "LineEdit", TEXT)
 	_theme.set_color("font_placeholder_color", "LineEdit", TEXT_SOFT)
-	_theme.set_color("caret_color", "LineEdit", TEXT)
+	_theme.set_color("caret_color", "LineEdit", CYAN)
+	_theme.set_stylebox("background", "ProgressBar", bar_box(Color(1, 1, 1, 0.08)))
+	_theme.set_stylebox("fill", "ProgressBar", bar_box(GREEN))
+	_theme.set_color("font_color", "TooltipLabel", WHITE_SOFT)
+	_theme.set_stylebox("panel", "TooltipPanel", glass_box(8, 8))
 	return _theme
 
 
-## Fonte das pranchas no peso pedido (Fredoka; [param body] = Nunito, para textos corridos).
-## Sem os arquivos, cai na fonte padrão da Godot.
+## Fonte no peso pedido (Fredoka; [param body] = Nunito, para textos corridos). Sem os arquivos, cai na padrão.
 static func font(weight := WEIGHT, body := false) -> Font:
 	var key := "%s_%d" % ["nunito" if body else "fredoka", weight]
 	if _fonts.has(key):
@@ -78,47 +125,68 @@ static func font(weight := WEIGHT, body := false) -> Font:
 	return result
 
 
-## Botão brilhante: cor cheia, borda mais escura e uma "sola" embaixo, cantos redondos.
+## Botão: cor cheia, borda um tom mais clara (o brilho de cima) e uma "sola" escura embaixo, cantos redondos.
 static func button_box(fill: Color, edge: Color) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
 	box.bg_color = fill
 	box.border_color = edge
-	box.set_border_width_all(2)
-	box.border_width_bottom = 5
-	box.set_corner_radius_all(12)
-	box.content_margin_left = 14
-	box.content_margin_right = 14
+	box.set_border_width_all(1)
+	box.border_width_top = 2
+	box.set_corner_radius_all(RADIUS_CARD)
+	box.content_margin_left = 16
+	box.content_margin_right = 16
 	box.content_margin_top = 8
-	box.content_margin_bottom = 10
+	box.content_margin_bottom = 9
+	box.shadow_color = Color(fill.darkened(0.6), 0.55)
+	box.shadow_size = 3
+	box.shadow_offset = Vector2(0, 3)
 	box.anti_aliasing = true
 	return box
 
 
-## Cartão branco de borda azul clara, com sombra leve.
-static func card_box(radius := 12, padding := 12, edge := CARD_EDGE) -> StyleBoxFlat:
+## Cartão dentro de um painel: azul escuro com borda azul e sombra.
+static func card_box(radius := RADIUS_CARD, padding := 12, edge := CARD_EDGE) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
 	box.bg_color = CARD
 	box.border_color = edge
-	box.set_border_width_all(2)
+	box.set_border_width_all(1)
 	box.set_corner_radius_all(radius)
 	box.set_content_margin_all(padding)
 	box.shadow_color = SHADOW
-	box.shadow_size = 4
+	box.shadow_size = 5
 	box.shadow_offset = Vector2(0, 2)
 	box.anti_aliasing = true
 	return box
 
 
-## Contador escuro de borda branca (moedas, cronômetro).
-static func pill_box(radius := 17) -> StyleBoxFlat:
+## Painel de vidro escuro (HUD e janelas), com um leve brilho ciano em volta quando [param glow].
+static func glass_box(radius := RADIUS_PANEL, padding := 12, edge := PANEL_EDGE, glow := false) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
-	box.bg_color = PILL
-	box.border_color = Color.WHITE
-	box.set_border_width_all(2)
+	box.bg_color = PANEL
+	box.border_color = edge
+	box.set_border_width_all(1)
+	box.border_width_top = 2
 	box.set_corner_radius_all(radius)
-	box.shadow_color = SHADOW
-	box.shadow_size = 3
-	box.shadow_offset = Vector2(0, 2)
+	box.set_content_margin_all(padding)
+	box.shadow_color = Color(CYAN, 0.28) if glow else SHADOW
+	box.shadow_size = 10 if glow else 8
+	box.shadow_offset = Vector2.ZERO if glow else Vector2(0, 3)
+	box.anti_aliasing = true
+	return box
+
+
+## Contador do HUD (moedas, energia, cupons): pílula de vidro escuro.
+static func pill_box(radius := 18) -> StyleBoxFlat:
+	var box := glass_box(radius, 0)
+	box.shadow_size = 5
+	return box
+
+
+## Trilho ou recheio de barra (XP, missão, satisfação).
+static func bar_box(color: Color, radius := 6) -> StyleBoxFlat:
+	var box := StyleBoxFlat.new()
+	box.bg_color = color
+	box.set_corner_radius_all(radius)
 	box.anti_aliasing = true
 	return box
 
@@ -139,19 +207,30 @@ static func art(sprite_name: String, size: Vector2) -> TextureRect:
 	return rect
 
 
-## Texto com contorno (para ficar legível em cima do cenário).
+## Texto legível em cima do cenário: contorno fino (um terço do pedido) e sombra leve, no lugar do contorno grosso.
 static func outlined(text: String, size: int, color := Color.WHITE, outline := NAVY, outline_size := 5) -> Label:
 	var label := Label.new()
 	label.text = text
 	label.add_theme_font_size_override("font_size", size)
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", outline)
-	label.add_theme_constant_override("outline_size", outline_size)
+	label.add_theme_constant_override("outline_size", roundi(outline_size / 3.0))
+	if outline_size > 0:
+		label.add_theme_color_override("font_shadow_color", TEXT_SHADOW)
+		label.add_theme_constant_override("shadow_offset_y", 1)
+		label.add_theme_constant_override("shadow_outline_size", 1)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return label
 
 
-## Botão quadrado da arte (azul, verde, vermelho...) com o texto embaixo, ou só o quadrado.
+## Rótulo pequeno em caixa alta (títulos de seção do HUD: "PRESENTE DIÁRIO", "MISSÃO 1 DE 6").
+static func caption(text: String, color := TEXT_SOFT, size := 11) -> Label:
+	var label := outlined(text, size, color, Color(0, 0, 0, 0), 0)
+	label.uppercase = true
+	return label
+
+
+## Botão quadrado da arte (vidro escuro com o símbolo) com o texto embaixo, ou só o quadrado.
 ## Menor área de toque de um botão (px da tela de 1280x720, cerca de 9 mm num celular comum).
 const MIN_TOUCH := 48.0
 
@@ -172,11 +251,11 @@ static func icon_button(button_name: String, kind: String, text := "", icon_size
 	for state in ["normal", "hover", "pressed", "disabled", "focus", "hover_pressed"]:
 		button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
 	button.add_theme_color_override("font_color", TEXT)
-	button.add_theme_color_override("font_hover_color", BLUE)
-	button.add_theme_color_override("font_pressed_color", BLUE_DARK)
-	button.add_theme_color_override("font_disabled_color", DISABLED)
-	button.add_theme_color_override("font_outline_color", Color.WHITE)
-	button.add_theme_constant_override("outline_size", 4)
+	button.add_theme_color_override("font_hover_color", CYAN)
+	button.add_theme_color_override("font_pressed_color", CYAN.darkened(0.2))
+	button.add_theme_color_override("font_disabled_color", METAL)
+	button.add_theme_color_override("font_outline_color", NAVY_DEEP)
+	button.add_theme_constant_override("outline_size", 2)
 	button.add_theme_font_size_override("font_size", 14)
 	button.focus_mode = Control.FOCUS_NONE
 	button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS

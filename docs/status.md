@@ -4,6 +4,17 @@
 
 🟢 **CONCLUÍDO**
 
+**Redesign "Nova York Futurista", etapa 1: sistema de design e HUD** (DT-077)
+
+- Paleta nova: azul-marinho, azul tecnológico, ciano, dourado e verde, cada cor com uma função.
+- **HUD novo**, com os mesmos botões e funções:
+  - no alto à esquerda, o cartão com o **retrato do seu chef** (o avatar), o nível, o nome do café e a barra de XP;
+  - os contadores em pílulas escuras (ouro com o "+", energia, cupons e beleza);
+  - o presente diário, o evento e a engrenagem no alto à direita;
+  - os blocos de missões, presentes, conquistas e evento à esquerda;
+  - os botões da direita em vidro escuro, a satisfação com estrelas e a barra de baixo limpa.
+- A loja, as janelas e o cenário vêm nas próximas etapas (ver `docs/roadmap.md`).
+
 **FAÇA QA de ponta a ponta**
 
 - **Joguei o jogo inteiro de forma automática, pela tela:**
@@ -454,6 +465,10 @@
 
 🧪 **TESTADO**
 
+- **Redesign, etapa 1: 696 testes automatizados PASSARAM.**
+  - **Novos:** o retrato do chef no perfil acompanha o avatar, com o nome, a barra de XP e a beleza; o cronômetro do evento aparece só durante o evento e abre a janela dele.
+  - **Foto conferida:** o HUD novo sobre o café.
+  - **Cena principal: PASSOU**, zero erros.
 - **QA de ponta a ponta: 695 testes automatizados PASSARAM.**
   - **Novos:** a jornada completa (rodada 3 vezes seguidas sem falhar), o save estragado (cada campo com tipos errados), o vazamento de memória, o toque duplo nas entregas, o relógio atrasado nas entregas e na filial, e a regra de uma janela por vez com o Avatar e a Cidade.
   - **Defeitos inseridos de propósito: 13 de 13 pegos** (1 só depois de reforçar um teste).

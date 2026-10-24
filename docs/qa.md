@@ -58,7 +58,7 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 - **No celular de verdade:** a medição foi neste PC. Num celular, espere de 3 a 5 vezes menos quadros por segundo, ainda acima de 30 com o café cheio.
 - **O toque com o dedo de verdade:** os toques foram simulados (como em todos os testes de cena).
 
-## Cobertura atual — 695 testes
+## Cobertura atual — 696 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|

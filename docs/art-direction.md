@@ -2,7 +2,43 @@
 
 Referência: seções 5, 43, 77, 78, 130–132 do master prompt. Documento vivo: vai ser completado com as impressões do PO sobre as capturas do jogo antigo.
 
-## Direção escolhida: "Esquina Nostálgica" (30/09/2026)
+## Direção atual: "Nova York Futurista" (24/10/2026, DT-077)
+
+O PO mandou duas imagens de referência e um prompt detalhado pedindo a reformulação de **todo o jogo**. A direção nova substitui a "Esquina Nostálgica" (abaixo, que fica como histórico).
+
+**O que o PO pediu:**
+- uma cafeteria em Nova York, de um futuro próximo, que pareça um jogo comercial moderno;
+- isometria 2.5D, materiais (madeira, tijolo, metal, vidro), luz quente dentro e azulada fora, e neon com moderação;
+- robôs e painéis digitais integrados, sem virar "tudo neon";
+- interface escura e elegante, com hierarquia clara e um sistema de design único;
+- sem perder a diversão e as mecânicas do Café Manie.
+
+**Sistema de design** (`scenes/ui/ui_theme.gd`). Cada cor tem uma função:
+
+| Cor | Valor | Função |
+|---|---|---|
+| Azul-marinho profundo | `#071426` | fundo das janelas e faixas |
+| Vidro escuro | `#0B182D`, 93% | painéis do HUD e das janelas |
+| Azul tecnológico | `#0878F9` | botões principais e abas ativas |
+| Ciano luminoso | `#31D7FF` | seleção, foco, brilho e destaques pequenos |
+| Dourado premium | `#FFBE55` | moedas, nível e prêmios |
+| Madeira quente | `#70452F` | detalhes do restaurante |
+| Branco suave | `#F5F7FA` | texto principal |
+| Cinza metálico | `#8C9BAD` | texto secundário e ícones apagados |
+| Verde de sucesso | `#35C779` | comprar, confirmar, satisfação |
+
+- **Letras:** Fredoka para títulos, números e botões; Nunito para textos corridos (as duas já no projeto, licença OFL).
+- **Medidas:** painel com raio de 16, cartão com 12; texto sem contorno grosso, só uma sombra leve para ler em cima do cenário.
+- **Componentes:** painel de vidro (borda azul, brilho ciano ao passar), pílula de contador, bloco do menu lateral, botão quadrado de vidro (borda e símbolo na cor da função, com halo) e barra em degradê.
+- **Arte da interface:** contornos com 60% da espessura de antes (`UI_STROKE_SCALE`). Os traços grossos que formam o próprio desenho não mudam.
+
+**O que a referência mostra e não existe no jogo** (telefone, estatísticas, "Seja VIP"): fica de fora. Não criamos botões sem função (pedido do próprio prompt).
+
+**Limitação honesta:** as imagens de referência parecem renderização 3D. A arte do Café Manie é vetorial, gerada por código, original e sem depender de serviços de fora. Ela chega bem mais perto da atmosfera, das cores, dos materiais e da luz, mas não ao nível de foto de um render.
+
+**Etapas:** ver `docs/roadmap.md` ("Redesign Nova York Futurista").
+
+## Direção anterior: "Esquina Nostálgica" (30/09/2026)
 
 O PO mandou capturas do jogo antigo e pediu **nostalgia acima de modernidade**: quem procurar o Café Manie quer a sensação do jogo de 2010, não um jogo "moderninho". A direção visual foi montada no Claude Design, no canvas **"Café Manie — Direção Visual"**, com 5 pranchas: tela do jogo, loja, personagens, guia de estilo e o cenário sem interface.
 

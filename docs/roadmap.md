@@ -105,6 +105,16 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **3. Terraço** (DT-069, versão simplificada): a fileira da frente vira terraço com deque e cerca de jardim; de dia, quem senta lá paga 25% a mais.
 - [x] **4. Avatar do chef** (DT-070): pele, cabelo, chapéu e roupa; as peças novas se provam no retrato e se compram com ouro.
 
+## Redesign "Nova York Futurista" (24/10/2026, DT-077)
+
+- [x] **1. Sistema de design e HUD:** paleta, painéis de vidro, perfil com o retrato do chef, contadores, menus laterais, botões, satisfação e barra de baixo.
+- [ ] **2. Loja nova:** categorias à esquerda, grade de itens e painel de detalhes com "Comprar".
+- [ ] **3. Janelas no mesmo padrão:** avatar, cidade, missões, conquistas, presente, moedas, evento e perguntas.
+- [ ] **4. Nova York à noite:** prédios, janelas acesas, táxis amarelos, postes e rua molhada.
+- [ ] **5. A cafeteria:** tijolo, madeira, janelões, luminárias pendentes, letreiro neon e cozinha de inox.
+- [ ] **6. Toque futurista:** robô garçom, máquina de café inteligente e painéis digitais.
+- [ ] **7. Revisão visual e QA** comparando com a referência.
+
 ## Balanceamento (23/10/2026)
 
 - [x] **FAÇA BALANCEAMENTO** (DT-075): ritmo de níveis "médio", pedidos do cardápio só de pratos possíveis, preços alinhados; ferramenta `tools/balance_report.gd`.

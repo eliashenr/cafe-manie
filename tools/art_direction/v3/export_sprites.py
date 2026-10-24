@@ -19,6 +19,7 @@ O jogo espelha na horizontal para as outras direções, como o canvas já fazia.
 """
 import json
 import math
+import re
 import os
 import shutil
 import subprocess
@@ -48,13 +49,21 @@ GAP = 12                # px entre figuras, para nenhuma invadir a vizinha
 
 # --- Folhas ------------------------------------------------------------------------------
 
+# Traços abaixo desta largura são contorno (afinados pelo stroke_scale da folha); os mais grossos são desenho.
+OUTLINE_LIMIT = 3.5
+# Contorno da interface nova (DT-077): 60% da espessura de antes.
+UI_STROKE_SCALE = 0.6
+
+
 class Sheet:
     """Várias figuras numa imagem só. Cada figura tem um retângulo próprio e uma âncora.
     design_tile: largura do piso na escala em que a folha é desenhada (96 nas peças novas, 84 no canvas)."""
 
-    def __init__(self, name, design_tile=TILE_W):
+    def __init__(self, name, design_tile=TILE_W, stroke_scale=1.0):
         self.name = name
         self.scale = GAME_TILE_W / design_tile * DENSITY
+        # contornos mais finos (DT-077): traços de contorno (até 3.5) multiplicados por este fator
+        self.stroke_scale = stroke_scale
         self.D = Defs()
         self.items = []  # (nome, svg, x_px, y_px, w_px, h_px, left, top, anchor, repete)
         self._x = GAP
@@ -96,8 +105,12 @@ class Sheet:
         parts = []
         for (_, svg, x, y, _, _, left, top, _, _) in self.items:
             parts.append(f'<g transform="translate({f(x / self.scale - left)},{f(y / self.scale - top)})">{svg}</g>')
+        body = "".join(parts)
+        if self.stroke_scale != 1.0:
+            body = re.sub(r'stroke-width="([0-9.]+)"', lambda m: 'stroke-width="%s"' % (
+                f(float(m.group(1)) * self.stroke_scale) if float(m.group(1)) < OUTLINE_LIMIT else m.group(1)), body)
         return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-                f'viewBox="0 0 {f(width / self.scale)} {f(height / self.scale)}">{self.D.render()}{"".join(parts)}</svg>')
+                f'viewBox="0 0 {f(width / self.scale)} {f(height / self.scale)}">{self.D.render()}{body}</svg>')
 
     def manifest(self):
         out = {}
@@ -671,7 +684,7 @@ def export(out_dir=OUT):
     furniture = SheetGroup("moveis")
     people = SheetGroup("personagens")
     city = SheetGroup("cidade")
-    sheets = [Sheet("pratos"), Sheet("cenario", tiles3.TW), Sheet("interface", GAME_TILE_W)]
+    sheets = [Sheet("pratos"), Sheet("cenario", tiles3.TW), Sheet("interface", GAME_TILE_W, UI_STROKE_SCALE)]
     export_furniture(furniture, manifest)
     export_people(people, manifest)
     export_city(city, manifest)

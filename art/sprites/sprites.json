@@ -6000,56 +6000,56 @@
   },
   "icone_moeda": {
    "anchor": [
-    53.0,
-    53.0
+    52.0,
+    52.0
    ]
   },
   "icone_estrela_chef": {
    "anchor": [
-    54.0,
-    53.0
+    53.0,
+    52.0
    ]
   },
   "icone_flor": {
    "anchor": [
-    45.0,
+    44.0,
     48.0
    ]
   },
   "icone_sorriso": {
    "anchor": [
-    53.0,
-    51.0
+    52.0,
+    50.0
    ]
   },
   "icone_estrela": {
    "anchor": [
-    54.0,
-    53.0
+    53.0,
+    52.0
    ]
   },
   "icone_estrela_vazia": {
    "anchor": [
-    54.0,
-    53.0
+    53.0,
+    52.0
    ]
   },
   "icone_presente": {
    "anchor": [
-    49.0,
+    48.0,
     41.0
    ]
   },
   "icone_trofeu": {
    "anchor": [
     42.0,
-    43.0
+    42.0
    ]
   },
   "icone_prancheta": {
    "anchor": [
-    47.0,
-    50.0
+    46.0,
+    49.0
    ]
   },
   "icone_loja": {
@@ -6060,61 +6060,61 @@
   },
   "icone_rolo": {
    "anchor": [
-    49.0,
-    43.0
+    48.0,
+    42.0
    ]
   },
   "icone_expandir": {
    "anchor": [
-    57.0,
-    45.0
+    56.0,
+    44.0
    ]
   },
   "icone_livro": {
    "anchor": [
-    43.0,
-    39.0
+    42.0,
+    38.0
    ]
   },
   "icone_bolo": {
    "anchor": [
-    43.0,
-    46.0
+    42.0,
+    45.0
    ]
   },
   "icone_martelo": {
    "anchor": [
-    47.0,
-    55.0
+    46.0,
+    54.0
    ]
   },
   "icone_cadeado": {
    "anchor": [
-    41.0,
+    40.0,
     50.0
    ]
   },
   "icone_garcom": {
    "anchor": [
-    41.0,
+    40.0,
     45.0
    ]
   },
   "icone_energia": {
    "anchor": [
-    53.0,
-    55.0
+    52.0,
+    54.0
    ]
   },
   "icone_cupom": {
    "anchor": [
-    51.0,
-    43.0
+    50.0,
+    42.0
    ]
   },
   "icone_critico": {
    "anchor": [
-    43.0,
+    42.0,
     58.0
    ]
   },
@@ -6132,164 +6132,164 @@
   },
   "icone_cidade": {
    "anchor": [
-    54.0,
-    48.0
+    53.0,
+    47.0
    ]
   },
   "botao_zoom_in": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_zoom_out": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_sound": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_mute": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_music": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_music_off": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_gear": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_pause": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_play": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_door_close": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_door_open": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_rotate": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_move": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_store": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_sell": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_serve": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_trash": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_check": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_close": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_left": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "botao_right": {
    "anchor": [
-    60.0,
-    60.0
+    59.0,
+    59.0
    ]
   },
   "medalhao_missoes": {
    "anchor": [
-    67.0,
-    67.0
+    66.0,
+    66.0
    ]
   },
   "medalhao_presente": {
    "anchor": [
-    67.0,
-    67.0
+    66.0,
+    66.0
    ]
   },
   "medalhao_conquistas": {
    "anchor": [
-    67.0,
-    67.0
+    66.0,
+    66.0
    ]
   },
   "medalhao_evento": {
    "anchor": [
-    67.0,
-    67.0
+    66.0,
+    66.0
    ]
   },
   "retrato_bruxa": {
    "anchor": [
-    82.0,
-    186.0
+    81.0,
+    185.0
    ]
   },
   "filial_praia": {
@@ -6301,18 +6301,18 @@
   "vizinho_ana": {
    "anchor": [
     50.0,
-    56.0
+    55.0
    ]
   },
   "vizinho_beto": {
    "anchor": [
     50.0,
-    62.0
+    61.0
    ]
   },
   "vizinho_duda": {
    "anchor": [
-    52.0,
+    51.0,
     60.0
    ]
   },
@@ -6324,8 +6324,8 @@
   },
   "vizinho_lia": {
    "anchor": [
-    51.0,
-    56.0
+    50.0,
+    55.0
    ]
   },
   "vizinho_rafa": {
@@ -6337,31 +6337,31 @@
   "vizinho_vo_cida": {
    "anchor": [
     50.0,
-    86.0
+    85.0
    ]
   },
   "avatar_cabeca_clara_curto_castanho": {
    "anchor": [
     50.0,
-    54.0
+    53.0
    ]
   },
   "avatar_cabeca_clara_rabo_preto": {
    "anchor": [
     50.0,
-    48.0
+    47.0
    ]
   },
   "avatar_cabeca_clara_chanel_ruivo": {
    "anchor": [
-    52.0,
+    51.0,
     52.0
    ]
   },
   "avatar_cabeca_clara_coque_loiro": {
    "anchor": [
     50.0,
-    78.0
+    77.0
    ]
   },
   "avatar_cabeca_clara_topete_azul": {
@@ -6372,32 +6372,32 @@
   },
   "avatar_cabeca_clara_longo_rosa": {
    "anchor": [
-    51.0,
-    48.0
+    50.0,
+    47.0
    ]
   },
   "avatar_cabeca_morena_clara_curto_castanho": {
    "anchor": [
     50.0,
-    54.0
+    53.0
    ]
   },
   "avatar_cabeca_morena_clara_rabo_preto": {
    "anchor": [
     50.0,
-    48.0
+    47.0
    ]
   },
   "avatar_cabeca_morena_clara_chanel_ruivo": {
    "anchor": [
-    52.0,
+    51.0,
     52.0
    ]
   },
   "avatar_cabeca_morena_clara_coque_loiro": {
    "anchor": [
     50.0,
-    78.0
+    77.0
    ]
   },
   "avatar_cabeca_morena_clara_topete_azul": {
@@ -6408,32 +6408,32 @@
   },
   "avatar_cabeca_morena_clara_longo_rosa": {
    "anchor": [
-    51.0,
-    48.0
+    50.0,
+    47.0
    ]
   },
   "avatar_cabeca_parda_curto_castanho": {
    "anchor": [
     50.0,
-    54.0
+    53.0
    ]
   },
   "avatar_cabeca_parda_rabo_preto": {
    "anchor": [
     50.0,
-    48.0
+    47.0
    ]
   },
   "avatar_cabeca_parda_chanel_ruivo": {
    "anchor": [
-    52.0,
+    51.0,
     52.0
    ]
   },
   "avatar_cabeca_parda_coque_loiro": {
    "anchor": [
     50.0,
-    78.0
+    77.0
    ]
   },
   "avatar_cabeca_parda_topete_azul": {
@@ -6444,32 +6444,32 @@
   },
   "avatar_cabeca_parda_longo_rosa": {
    "anchor": [
-    51.0,
-    48.0
+    50.0,
+    47.0
    ]
   },
   "avatar_cabeca_negra_curto_castanho": {
    "anchor": [
     50.0,
-    54.0
+    53.0
    ]
   },
   "avatar_cabeca_negra_rabo_preto": {
    "anchor": [
     50.0,
-    48.0
+    47.0
    ]
   },
   "avatar_cabeca_negra_chanel_ruivo": {
    "anchor": [
-    52.0,
+    51.0,
     52.0
    ]
   },
   "avatar_cabeca_negra_coque_loiro": {
    "anchor": [
     50.0,
-    78.0
+    77.0
    ]
   },
   "avatar_cabeca_negra_topete_azul": {
@@ -6480,98 +6480,98 @@
   },
   "avatar_cabeca_negra_longo_rosa": {
    "anchor": [
-    51.0,
-    48.0
+    50.0,
+    47.0
    ]
   },
   "avatar_chapeu_toque": {
    "anchor": [
     43.0,
-    86.0
+    85.0
    ]
   },
   "avatar_chapeu_toque_alto": {
    "anchor": [
     43.0,
-    120.0
+    119.0
    ]
   },
   "avatar_chapeu_boina": {
    "anchor": [
-    51.0,
-    71.0
+    50.0,
+    70.0
    ]
   },
   "avatar_chapeu_bandana": {
    "anchor": [
-    44.0,
-    22.0
+    43.0,
+    21.0
    ]
   },
   "avatar_chapeu_coroa": {
    "anchor": [
-    46.0,
+    45.0,
     73.0
    ]
   },
   "avatar_roupa_branca": {
    "anchor": [
-    102.0,
-    -42.0
+    101.0,
+    -43.0
    ]
   },
   "avatar_roupa_preta": {
    "anchor": [
-    102.0,
-    -42.0
+    101.0,
+    -43.0
    ]
   },
   "avatar_roupa_vermelha": {
    "anchor": [
-    102.0,
-    -42.0
+    101.0,
+    -43.0
    ]
   },
   "avatar_roupa_azul": {
    "anchor": [
-    102.0,
-    -42.0
+    101.0,
+    -43.0
    ]
   },
   "avatar_roupa_rosa": {
    "anchor": [
-    102.0,
-    -42.0
+    101.0,
+    -43.0
    ]
   },
   "avatar_roupa_dourada": {
    "anchor": [
-    102.0,
-    -42.0
+    101.0,
+    -43.0
    ]
   },
   "fita_missoes": {
    "anchor": [
-    100.0,
-    2.0
+    99.0,
+    1.0
    ]
   },
   "fita_presente": {
    "anchor": [
-    104.0,
-    2.0
+    103.0,
+    1.0
    ]
   },
   "fita_conquistas": {
    "anchor": [
-    122.0,
-    2.0
+    121.0,
+    1.0
    ]
   },
   "fita_evento": {
    "anchor": [
-    122.0,
-    2.0
+    121.0,
+    1.0
    ]
   },
   "listras_xp": {

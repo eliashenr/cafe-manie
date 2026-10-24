@@ -15,8 +15,15 @@ func test_the_medallion_shows_only_during_the_event() -> void:
 	var cafe := await _event_cafe()
 	assert_true(cafe.hud.is_event_visible())
 	assert_eq((cafe.hud.find_child("EventDays", true, false) as Label).text, "9d")
+	var timer := cafe.hud.find_child("EventTimer", true, false) as Button
+	assert_true(timer.visible, "o cronômetro do evento aparece no alto (DT-077)")
+	assert_true((timer.find_child("EventTimerValue", true, false) as Label).text.begins_with("9d "), "dias e horas que faltam")
+	timer.pressed.emit()
+	await settle()
+	assert_true(cafe.hud.event_dialog().visible, "tocar no cronômetro abre o evento")
 	var later := await _event_cafe("2026-12-01T12:00:00")
 	assert_false(later.hud.is_event_visible(), "fora do evento, some")
+	assert_false((later.hud.find_child("EventTimer", true, false) as Button).visible, "e o cronômetro também")
 
 
 func test_the_story_then_the_missions() -> void:

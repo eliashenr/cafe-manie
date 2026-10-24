@@ -92,3 +92,18 @@ func test_icon_bar_opens_the_shop_and_the_achievements() -> void:
 	await settle()
 	cafe.build_bar.find_button("AchievementsBarButton").pressed.emit()
 	assert_true(cafe.hud.achievements_dialog().visible, "Conquistas abre a lista")
+
+
+## Cartão do perfil (DT-077): o retrato do chef acompanha o avatar; o nome do café, o nível e a barra de XP.
+func test_profile_card_shows_the_chef_name_level_and_xp() -> void:
+	var cafe := await spawn_cafe()
+	await settle()
+	var portrait := _find(cafe, "ChefPortrait") as AvatarPortrait
+	assert_eq(portrait.layers[1], "avatar_cabeca_clara_curto_castanho", "o retrato é o avatar do chef")
+	cafe.simulation.use_avatar_part(&"hair_rabo_preto")
+	await settle()
+	assert_eq(portrait.layers[1], "avatar_cabeca_clara_rabo_preto", "e troca junto com o avatar")
+	assert_eq((_find(cafe, "CafeNameButton") as Button).text, "Cafeteria de Teste")
+	assert_eq((_find(cafe, "XpBar") as StripedBar).text, "0 / 30 XP")
+	assert_true((_find(cafe, "BeautyBar") as StripedBar).text.begins_with("Beleza "))
+

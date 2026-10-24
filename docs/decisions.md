@@ -4,6 +4,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-077 — Redesign "Nova York Futurista": sistema de design e HUD
+
+**Problema:**
+- O PO pediu a reformulação visual de todo o jogo, a partir de duas imagens de referência (Nova York futurista, interface escura premium) e de um prompt detalhado.
+- A direção anterior ("Esquina Nostálgica", dia claro e cores vivas) foi uma escolha do PO em setembro; o pedido novo a substitui.
+
+**Decisão:**
+- **Direção nova registrada** em `docs/art-direction.md`, em 7 etapas (`docs/roadmap.md`).
+  - A arte antiga continua no histórico do Git.
+- **Sistema de design** em `UiTheme`, com a paleta do PO e uma função para cada cor.
+  - Os nomes antigos de cor apontam para as cores novas, então a loja, as janelas e a barra herdam o visual escuro de uma vez.
+  - Depois, cada tela recebe o acabamento dela.
+- **HUD novo**, com os mesmos controles e funções (nenhum botão sem função):
+  - cartão do perfil com o retrato do chef (o avatar montado pelo jogador), selo do nível, nome do café (toque para trocar), "Nova York" e a barra de XP em degradê;
+  - contadores em pílulas: ouro com o "+", energia, cupons (no lugar dos diamantes da referência) e beleza;
+  - no alto à direita, o presente diário com o cronômetro, o cronômetro do evento (só durante o evento) e a engrenagem;
+  - menu lateral em blocos de vidro: missões, presentes, conquistas e evento, com as bolinhas de aviso;
+  - botões da direita (pausa, porta, zoom, som, música) em vidro escuro, com o símbolo na cor da função;
+  - satisfação com a carinha, o percentual, "Satisfeitos", as estrelas e o que ela mede;
+  - a barra de baixo com os 9 ícones e nomes limpos.
+- **Testes:** os nomes dos nós continuam os mesmos, e os testes novos cobrem o retrato do perfil e o cronômetro do evento.
+
+---
+
 ## DT-076 — Correções do QA de ponta a ponta
 
 **Problema:**
