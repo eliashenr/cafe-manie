@@ -36,6 +36,8 @@ O PO mandou duas imagens de referência e um prompt detalhado pedindo a reformul
 
 **Limitação honesta:** as imagens de referência parecem renderização 3D. A arte do Café Manie é vetorial, gerada por código, original e sem depender de serviços de fora. Ela chega bem mais perto da atmosfera, das cores, dos materiais e da luz, mas não ao nível de foto de um render.
 
+**Loja (DT-078):** painel de vidro com as categorias numa coluna à esquerda (a ativa em azul tecnológico com brilho ciano), coleções em pílulas com a borda na cor delas, cartões escuros com o selo da coleção e um painel de detalhes com o botão verde "Comprar".
+
 **Etapas:** ver `docs/roadmap.md` ("Redesign Nova York Futurista").
 
 ## Direção anterior: "Esquina Nostálgica" (30/09/2026)

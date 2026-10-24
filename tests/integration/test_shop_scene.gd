@@ -83,7 +83,7 @@ func test_shop_hides_while_placing_and_comes_back_on_the_same_page_after_buying(
 	await settle()
 	var shop := cafe.build_bar._shop
 	assert_true(shop.visible)
-	cafe.build_bar.find_button("Build_table_round").pressed.emit()
+	buy_in_shop(cafe, cafe.build_bar.find_button("Build_table_round"))
 	await settle()
 	assert_eq(cafe.mode, Cafe.Mode.BUILD)
 	assert_false(shop.visible, "a loja some enquanto o móvel é posicionado (o salão aparece)")
@@ -95,7 +95,7 @@ func test_shop_hides_while_placing_and_comes_back_on_the_same_page_after_buying(
 	assert_true(shop.visible, "a loja volta sozinha, para comprar a cadeira em seguida")
 	assert_eq(cafe.build_bar.shop_tab, BuildBar.ShopTab.SALON, "na mesma aba")
 	assert_true(cafe.build_bar.find_button("Build_chair_wood") != null, "a cadeira está à mão")
-	cafe.build_bar.find_button("Build_chair_wood").pressed.emit()
+	buy_in_shop(cafe, cafe.build_bar.find_button("Build_chair_wood"))
 	await settle()
 	cafe.cancel_placement()
 	await settle()
@@ -161,6 +161,7 @@ func test_store_button_keeps_the_item_and_placing_again_is_free() -> void:
 	assert_true(table.text.contains("1 guardado"), table.text)
 
 	cafe.start_placing(&"table_round")
+	await settle()  # a loja (que cobre o salão) sai no fim do frame
 	tap_cell(cafe, Vector2i(4, 4))
 	await settle()
 	assert_true(cafe.build_bar.message_text().contains("guardado"), cafe.build_bar.message_text())

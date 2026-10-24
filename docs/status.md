@@ -4,6 +4,16 @@
 
 🟢 **CONCLUÍDO**
 
+**Redesign "Nova York Futurista", etapa 2: a loja nova** (DT-078)
+
+- A loja virou um **painel grande e escuro**, como na referência:
+  - as categorias à esquerda, cada uma com o ícone;
+  - as coleções no alto, cada uma na cor dela;
+  - **15 itens por página** (antes eram 6), com o selo da coleção em cada cartão;
+  - à direita, o **painel de detalhes**: desenho grande, para que serve, preço, o botão **Comprar** e os **benefícios reais** do item (beleza, quanto o fogão acelera, o troféu, o terraço e outros).
+- **Como comprar agora:** toque no item para ver os detalhes; toque de novo nele, ou em **Comprar**.
+- Com a loja aberta, os menus dos lados saem da frente e voltam quando ela fecha.
+
 **Redesign "Nova York Futurista", etapa 1: sistema de design e HUD** (DT-077)
 
 - Paleta nova: azul-marinho, azul tecnológico, ciano, dourado e verde, cada cor com uma função.
@@ -465,6 +475,11 @@
 
 🧪 **TESTADO**
 
+- **Redesign, etapa 2: 702 testes automatizados PASSARAM.**
+  - **Corrigido no caminho:** uma falha rara do teste da jornada (um garçom podia levar a porção da entrega no meio do teste; o passo agora roda com o jogo pausado).
+  - **Novos:** o primeiro item aparece ao abrir; o primeiro toque escolhe e o segundo compra; Comprar leva o item do painel; o fogão bloqueado mostra o nível e libera ao subir de nível; benefícios do fogão, do troféu, do terraço e do piso iguais aos dados; o menu lateral sai com a loja aberta.
+  - **Fotos conferidas:** as abas Salão, Cozinha e Paredes.
+  - **Cena principal: PASSOU**, zero erros.
 - **Redesign, etapa 1: 696 testes automatizados PASSARAM.**
   - **Novos:** o retrato do chef no perfil acompanha o avatar, com o nome, a barra de XP e a beleza; o cronômetro do evento aparece só durante o evento e abre a janela dele.
   - **Foto conferida:** o HUD novo sobre o café.

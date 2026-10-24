@@ -4,6 +4,32 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-078 — Redesign, etapa 2: a loja nova
+
+**Problema:**
+- A loja antiga era uma faixa clara embaixo da tela: 6 itens por página, abas coloridas no alto e nenhuma explicação do item.
+- A referência do PO mostra uma loja grande, escura, com as categorias à esquerda, as coleções no alto, uma grade de itens e um painel de detalhes com o botão "Comprar".
+
+**Decisão:**
+- **Painel de vidro** que ocupa a tela abaixo do perfil e dos contadores (que continuam à vista).
+  - O menu lateral, os botões da direita, a missão e a satisfação saem enquanto a loja está aberta e voltam quando ela fecha (`GameHud.set_shop_open`).
+- **Coluna das categorias** à esquerda, com o ícone de cada uma: Salão, Cozinha, Decoração, Pisos, Paredes e Cupons. A ativa fica em azul tecnológico, com brilho ciano.
+- **Coleções no alto**, em pílulas escuras com a borda na cor da coleção; a escolhida fica cheia. A fileira rola para o lado (dedo ou roda do mouse).
+- **Grade de 5 × 3 cartões** (15 por página, antes eram 6).
+  - O cartão é escuro, com o desenho, o nome, o preço em dourado (vermelho sem ouro) e o selo da coleção embaixo.
+  - Bloqueado, mostra o cadeado e "Nível N".
+- **Painel de detalhes** do cartão escolhido:
+  - desenho grande, nome, coleção, para que serve, preço e o botão (Comprar, Colocar no café, Usar ou Nível N);
+  - **benefícios tirados dos dados do item, nada inventado:** beleza, perfil do fogão (tempo, porções, XP, limite de tempo), troféu (quanto acelera e por quantos pratos), atração (ouro por brincadeira e quanto guarda), pé de fruta, luz à noite, limite por café, janela que deixa a luz entrar e o bônus do terraço;
+  - conforto e eficiência ficam de fora: estão nos dados, mas não mudam nada no jogo.
+- **Como comprar:** o primeiro toque escolhe e mostra os detalhes; tocar de novo no mesmo cartão, ou em "Comprar", faz a mesma ação de antes.
+  - As confirmações continuam as mesmas (porta, terraço, item de parede e troca por cupons).
+  - Ao abrir a loja, o primeiro item já aparece no painel.
+- **Avisos da loja** (cupons, falta de ouro) aparecem dentro do painel, embaixo das coleções.
+- **Testes:** a ajuda `buy_in_shop` (tocar no cartão e em Comprar) nos testes que compram pela loja, e testes novos do painel, do segundo toque, do bloqueio e do menu lateral.
+
+---
+
 ## DT-077 — Redesign "Nova York Futurista": sistema de design e HUD
 
 **Problema:**

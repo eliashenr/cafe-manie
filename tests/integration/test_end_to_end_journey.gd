@@ -99,7 +99,7 @@ func _buy_and_place(cafe: Cafe, tab: BuildBar.ShopTab, furniture_id: StringName)
 	assert_true(button != null and not button.disabled, "o móvel está à venda: " + String(furniture_id))
 	if button == null:
 		return &""
-	button.pressed.emit()
+	buy_in_shop(cafe, button)
 	await settle()
 	var size := cafe.layout.grid.size
 	var before := cafe.layout.count()
@@ -198,13 +198,13 @@ func test_the_whole_journey() -> void:
 	# 5. Porta da coleção Anos 70.
 	cafe.build_bar.open_shop(BuildBar.ShopTab.WALL)
 	var door := await _shop_button(cafe, BuildBar.ShopTab.WALL, &"anos70", "Door_door_anos70")
-	door.pressed.emit()
+	buy_in_shop(cafe, door)
 	await _confirm(cafe)
 	assert_eq(cafe.front_view.door_sprite_name(), "enfeite_porta_anos70_L", "a porta nova na fachada")
 
 	# 6. Terraço.
 	var terrace := await _shop_button(cafe, BuildBar.ShopTab.FLOOR, &"classico", "Terrace")
-	terrace.pressed.emit()
+	buy_in_shop(cafe, terrace)
 	await _confirm(cafe)
 	assert_true(sim.has_terrace() and cafe.front_view.terrace, "terraço pronto, com a cerca")
 	cafe.build_bar.close_shop()
@@ -249,12 +249,14 @@ func test_the_whole_journey() -> void:
 	if counter == &"":
 		counter = await _buy_and_place(cafe, BuildBar.ShopTab.KITCHEN, &"counter_basic")
 		cafe.build_bar.close_shop()
+	cafe.set_paused(true)  # o café anda a cada frame: sem a pausa, um garçom podia levar a porção da entrega a um cliente
 	assert_true(sim.kitchen.restore_counter(counter, order.recipe, order.servings), "porções do pedido no balcão")
 	cafe.select_at_world(IsoProjection.cell_center(sim.layout.get_placement(delivery).origin))
 	await settle()
 	cafe.build_bar.find_button("Delivery_0").pressed.emit()
 	await settle()
-	assert_true(_paid(sim, 40, "Entrega", order.gold), "a entrega pagou")
+	assert_true(_paid(sim, 40, "Entrega", order.gold), "a entrega pagou (resultado %d)" % cafe.last_service_result)
+	cafe.set_paused(false)
 	cafe.clear_selection()
 	await settle()
 

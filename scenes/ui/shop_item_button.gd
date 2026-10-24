@@ -1,22 +1,22 @@
 class_name ShopItemButton
 extends Button
-## Quadradinho da loja da v3: o desenho do item num cartão branco, o nome e a
-## etiqueta de preço com a moeda. Bloqueado, mostra o cadeado com "Nível N". No
-## lugar do preço pode vir um aviso ("1 guardado", "Em uso", "Aplicar").
+## Cartão da loja (DT-077): o desenho do item num cartão de vidro escuro, o nome, a etiqueta de preço com a moeda e
+## o selo da coleção embaixo. Escolhido, fica com a borda ciano. Bloqueado, mostra o cadeado com "Nível N". No lugar
+## do preço pode vir um aviso ("1 guardado", "Em uso", "Na entrada").
 ##
-## O texto do botão (Button.text) guarda as mesmas informações em uma linha só,
-## para quem lê a tela sem a imagem (e para os testes); ele não é desenhado.
+## O texto do botão (Button.text) guarda as mesmas informações em uma linha só, para quem lê a tela sem a imagem (e
+## para os testes); ele não é desenhado.
 
-const CARD_SIZE := Vector2(108, 136)
-const ART_MARGIN := 8.0
-const ART_BOTTOM := 52.0
+const CARD_SIZE := Vector2(130, 140)
+const ART_MARGIN := 7.0
+const ART_BOTTOM := 62.0
 const NAME_SIZE := 12
-const PRICE_SIZE := 16
-const NOTE_SIZE := 13
-const HOVER_EDGE := Color("2a7de1")
-const LOCK_SHADE := Color(0.114, 0.208, 0.388, 0.45)
-const TOO_EXPENSIVE := Color("e0303a")
-const NOTE_COLOR := Color("1a8a3e")
+const PRICE_SIZE := 15
+const NOTE_SIZE := 12
+const TAG_SIZE := 10
+const LOCK_SHADE := Color(0.02, 0.05, 0.11, 0.62)
+const TOO_EXPENSIVE := Color("ff6b78")
+const NOTE_COLOR := Color("4fe0a0")
 
 ## Desenho do item (móvel, piso ou parede) e quanto ampliar além do encaixe.
 var art: ArtSprites.Sprite
@@ -29,6 +29,15 @@ var locked_level := 0
 var note := ""
 ## O jogador tem ouro para comprar?
 var affordable := true
+## Selo da coleção embaixo do cartão ("" = sem selo) e a cor dela.
+var tag_text := ""
+var tag_color := UiTheme.METAL
+## Escolhido na loja (o painel de detalhes mostra este).
+var selected := false:
+	set(value):
+		if value != selected:
+			selected = value
+			queue_redraw()
 
 
 func _init() -> void:
@@ -41,9 +50,10 @@ func _init() -> void:
 	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_disabled_color", "font_focus_color",
 			"font_hover_pressed_color", "font_outline_color"]:
 		add_theme_color_override(color_name, Color(0, 0, 0, 0))
+	mouse_entered.connect(queue_redraw)
+	mouse_exited.connect(queue_redraw)
 
 
-## Atualiza o que aparece; só redesenha se algo mudou.
 ## Texto depois do preço (ex.: "/piso").
 var price_suffix := ""
 ## Ícone ao lado do preço: a moeda, ou o cupom na loja de troca (DT-062).
@@ -53,6 +63,7 @@ var price_icon := "icone_moeda":
 		queue_redraw()
 
 
+## Atualiza o que aparece; só redesenha se algo mudou.
 func show_state(new_price: int, new_locked_level: int, new_note: String, new_affordable: bool) -> void:
 	if new_price == price and new_locked_level == locked_level and new_note == note and new_affordable == affordable:
 		return
@@ -65,7 +76,13 @@ func show_state(new_price: int, new_locked_level: int, new_note: String, new_aff
 
 func _draw() -> void:
 	var card := Rect2(Vector2.ZERO, size)
-	var box := UiTheme.card_box(12, 0, HOVER_EDGE if is_hovered() and not disabled else UiTheme.CARD_EDGE)
+	var edge := UiTheme.CYAN if selected else (UiTheme.BLUE_LIGHT if is_hovered() and not disabled else UiTheme.CARD_EDGE)
+	var box := UiTheme.card_box(12, 0, edge)
+	if selected:
+		box.set_border_width_all(2)
+		box.shadow_color = Color(UiTheme.CYAN, 0.35)
+		box.shadow_size = 8
+		box.shadow_offset = Vector2.ZERO
 	draw_style_box(box, card)
 	var art_area := Rect2(Vector2(ART_MARGIN, ART_MARGIN), size - Vector2(ART_MARGIN * 2.0, ART_MARGIN + ART_BOTTOM))
 	draw_style_box(_soft_box(), art_area)
@@ -75,28 +92,34 @@ func _draw() -> void:
 		var drawn := texture_size * fit
 		draw_texture_rect(art.texture, Rect2(art_area.get_center() - drawn / 2.0, drawn), false)
 	var font := get_theme_default_font()
-	_draw_centered(font, title, size.y - 36.0, NAME_SIZE, UiTheme.TEXT)
+	_draw_centered(font, title, size.y - 46.0, NAME_SIZE, UiTheme.WHITE_SOFT)
 	if locked_level > 0:
 		draw_rect(art_area, LOCK_SHADE)
 		var lock := ArtSprites.get_sprite("icone_cadeado")
 		if lock != null:
-			draw_texture_rect(lock.texture, Rect2(art_area.get_center() - Vector2(18, 26), Vector2(36, 36)), false)
-		var pill := Rect2(Vector2(art_area.get_center().x - 32.0, art_area.get_center().y + 10.0), Vector2(64, 20))
-		var pill_box := UiTheme.card_box(10, 0, UiTheme.TEXT)
+			draw_texture_rect(lock.texture, Rect2(art_area.get_center() - Vector2(16, 24), Vector2(32, 32)), false)
+		var pill := Rect2(Vector2(art_area.get_center().x - 30.0, art_area.get_center().y + 9.0), Vector2(60, 18))
+		var pill_box := UiTheme.card_box(9, 0, UiTheme.GOLD)
+		pill_box.bg_color = UiTheme.NAVY_DEEP
 		pill_box.shadow_size = 0
 		draw_style_box(pill_box, pill)
-		_draw_centered(font, "Nível %d" % locked_level, pill.get_center().y + 4.5, 12, UiTheme.TEXT)
+		_draw_centered(font, "Nível %d" % locked_level, pill.get_center().y + 4.0, 11, UiTheme.GOLD)
 	if not note.is_empty():
-		_draw_centered(font, note, size.y - 12.0, NOTE_SIZE, NOTE_COLOR)
+		_draw_centered(font, note, size.y - 26.0, NOTE_SIZE, NOTE_COLOR)
 	elif locked_level == 0:
 		var text := UiTheme.thousands(price) + price_suffix
 		var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, PRICE_SIZE).x
 		var coin := ArtSprites.get_sprite(price_icon)
-		var left := (size.x - width - 24.0) / 2.0
+		var left := (size.x - width - 22.0) / 2.0
 		if coin != null:
-			draw_texture_rect(coin.texture, Rect2(Vector2(left, size.y - 30.0), Vector2(20, 20)), false)
-		draw_string(font, Vector2(left + 24.0, size.y - 14.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, PRICE_SIZE,
-			UiTheme.TEXT if affordable else TOO_EXPENSIVE)
+			draw_texture_rect(coin.texture, Rect2(Vector2(left, size.y - 41.0), Vector2(18, 18)), false)
+		draw_string(font, Vector2(left + 22.0, size.y - 26.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, PRICE_SIZE,
+			UiTheme.GOLD if affordable else TOO_EXPENSIVE)
+	if not tag_text.is_empty():
+		var strip := Rect2(Vector2(6.0, size.y - 19.0), Vector2(size.x - 12.0, 14.0))
+		var tag_box := UiTheme.bar_box(Color(tag_color, 0.32), 5)
+		draw_style_box(tag_box, strip)
+		_draw_centered(font, tag_text, strip.position.y + 11.0, TAG_SIZE, tag_color.lightened(0.45))
 
 
 ## Texto centrado; se não couber no cartão, a letra diminui (até 9).

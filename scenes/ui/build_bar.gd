@@ -19,14 +19,34 @@ extends CanvasLayer
 const ICON_BUTTON_SIZE := Vector2(84, 74)
 ## Espaço entre os botões da faixa: com 9 ícones, ela cabe entre a carinha da satisfação e a borda direita.
 const ICON_SEPARATION := 6
-## Quadradinhos por página da loja.
-const ITEMS_PER_PAGE := 6
+## Cartões por página da loja: 5 colunas por 3 linhas (DT-077).
+const ITEMS_PER_PAGE := 15
+const SHOP_COLUMNS := 5
+## Painel da loja (DT-077): onde começa, a coluna das categorias e o painel de detalhes.
+const SHOP_TOP := 104.0
+const SHOP_MARGIN := Vector2(12, 10)
+const SHOP_COLUMN_WIDTH := 186.0
+const SHOP_DETAIL_WIDTH := 276.0
+const DETAIL_ART_SIZE := Vector2(248, 132)
+## Ícone de cada aba da loja.
+const SHOP_TAB_ICONS := {
+	ShopTab.SALON: "icone_loja", ShopTab.KITCHEN: "icone_bolo", ShopTab.DECOR: "icone_flor",
+	ShopTab.FLOOR: "icone_rolo", ShopTab.WALL: "icone_martelo", ShopTab.COUPONS: "icone_cupom",
+}
+## Para que serve cada tipo de móvel (o painel de detalhes da loja).
+const CATEGORY_TEXTS := {
+	FurnitureDefinition.Category.TABLE: "Mesa para os clientes. Ponha cadeiras do lado para virar lugar.",
+	FurnitureDefinition.Category.SEATING: "Lugar para um cliente sentar. Fica virado para a mesa ao lado.",
+	FurnitureDefinition.Category.COOKING: "Fogão: cozinha os pratos do cardápio. Toque nele para escolher a receita.",
+	FurnitureDefinition.Category.COUNTER: "Balcão: guarda as porções prontas que os garçons levam aos clientes.",
+	FurnitureDefinition.Category.DECOR: "Enfeite: deixa o café mais bonito, e a beleza traz mais clientes.",
+	FurnitureDefinition.Category.MACHINE: "Máquina de bebidas: os clientes pedem e você serve tocando no balão.",
+}
 const RECIPE_BUTTON_SIZE := Vector2(132, 92)
 ## Receitas por página de uma aba do livro.
 const RECIPES_PER_PAGE := 6
 ## Lado das estrelas de domínio no cartão da receita.
 const MASTERY_STAR_SIZE := 16.0
-const TAB_SIZE := Vector2(128, 50)
 const MESSAGE_SIZE := 17
 
 ## Mensagens para o jogador em cada resultado de checagem de posição.
@@ -108,15 +128,6 @@ const SHOP_TAB_NAMES := {
 	ShopTab.WALL: "Paredes",
 	ShopTab.COUPONS: "Cupons",
 }
-## Cor de cada aba (como nas pranchas: uma cor por seção da loja).
-const SHOP_TAB_COLORS := {
-	ShopTab.SALON: Color("ff5a5f"),
-	ShopTab.KITCHEN: Color("3d8ee8"),
-	ShopTab.DECOR: Color("3cc04e"),
-	ShopTab.FLOOR: Color("9b5cff"),
-	ShopTab.WALL: Color("2ec4b6"),
-	ShopTab.COUPONS: Color("e0457f"),
-}
 ## Categorias de móvel em cada aba de móveis.
 ## Atração escolhida (DT-066).
 const ATTRACTION_TEXT := "%s: os clientes brincam e deixam ouro (%d de %d guardado). Toque nela para coletar"
@@ -156,11 +167,28 @@ var _primary: HBoxContainer
 ## Faixa de baixo: ícones, ações do móvel ou controles de construção.
 var _bar: PanelContainer
 var _buttons: HBoxContainer
-## Loja aberta: abas e quadradinhos.
-var _shop: VBoxContainer
-var _tabs: HBoxContainer
+## Loja aberta (DT-077): categorias, coleções, a grade de cartões e o painel de detalhes.
+var _shop: PanelContainer
+var _tabs: VBoxContainer
 var _chips: HBoxContainer
-var _items: HBoxContainer
+var _items: GridContainer
+var _shop_note: Label
+var _detail: PanelContainer
+var _detail_art: TextureRect
+var _detail_title: Label
+var _detail_tag: Label
+var _detail_tag_box: PanelContainer
+var _detail_text: Label
+var _detail_price_icon: TextureRect
+var _detail_price: Label
+var _buy_button: Button
+var _detail_benefits_title: Label
+var _detail_benefits: VBoxContainer
+## Cartão escolhido (o painel mostra este) e o último tocado (tocar de novo nele compra).
+var _selected_card := ""
+var _tapped_card := ""
+## Ação de cada cartão da página (comprar, pôr no café, pintar...).
+var _card_actions := {}
 var _prev_page: Button
 var _remove_card: WallItemDefinition
 var _next_page: Button
@@ -224,56 +252,7 @@ func _ready() -> void:
 	_bar.add_child(_buttons)
 	_stack.add_child(_bar)
 
-	_shop = VBoxContainer.new()
-	_shop.name = "Shop"
-	_shop.add_theme_constant_override("separation", 0)
-	_stack.add_child(_shop)
-	_tabs = HBoxContainer.new()
-	_tabs.name = "Tabs"
-	_tabs.add_theme_constant_override("separation", 6)
-	_tabs.alignment = BoxContainer.ALIGNMENT_CENTER
-	_shop.add_child(_tabs)
-	var shop_card := _card("ShopCard", 16)
-	shop_card.size_flags_horizontal = Control.SIZE_FILL  # tão largo quanto a fileira de abas
-	_shop.add_child(shop_card)
-	var shop_column := VBoxContainer.new()
-	shop_column.add_theme_constant_override("separation", 8)
-	shop_card.add_child(shop_column)
-	var top_row := HBoxContainer.new()
-	top_row.add_theme_constant_override("separation", 8)
-	shop_column.add_child(top_row)
-	_chips = HBoxContainer.new()
-	_chips.name = "Collections"
-	_chips.add_theme_constant_override("separation", 5)
-	_chips.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top_row.add_child(_chips)
-	var close := UiTheme.icon_button("CloseShopButton", "close", "", 34)
-	close.tooltip_text = "Fechar a loja"
-	close.pressed.connect(close_shop)
-	top_row.add_child(close)
-	var shop_row := HBoxContainer.new()
-	shop_row.add_theme_constant_override("separation", 10)
-	shop_column.add_child(shop_row)
-	_prev_page = UiTheme.icon_button("PrevPageButton", "left", "", 36)
-	_prev_page.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_prev_page.pressed.connect(func() -> void: show_shop_page(shop_page - 1))
-	shop_row.add_child(_prev_page)
-	_items = _row("Items")
-	_items.custom_minimum_size = Vector2(ITEMS_PER_PAGE * (ShopItemButton.CARD_SIZE.x + 10) - 10, ShopItemButton.CARD_SIZE.y)
-	_items.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	shop_row.add_child(_items)
-	var right := VBoxContainer.new()
-	right.alignment = BoxContainer.ALIGNMENT_CENTER
-	shop_row.add_child(right)
-	_next_page = UiTheme.icon_button("NextPageButton", "right", "", 36)
-	_next_page.pressed.connect(func() -> void: show_shop_page(shop_page + 1))
-	right.add_child(_next_page)
-	_page_label = Label.new()
-	_page_label.name = "PageLabel"
-	_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_page_label.add_theme_font_size_override("font_size", 13)
-	_page_label.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
-	right.add_child(_page_label)
+	_build_shop()
 
 	_confirm_dialog = ConfirmationDialog.new()
 	_confirm_dialog.name = "ConfirmDialog"
@@ -283,6 +262,167 @@ func _ready() -> void:
 		if _pending_confirm.is_valid():
 			_pending_confirm.call())
 	add_child(_confirm_dialog)
+
+
+## Painel da loja (DT-077), em cima do café: a coluna das categorias, as coleções (que rolam para o lado), a grade de
+## cartões com as páginas e o painel de detalhes do cartão escolhido, com o botão Comprar.
+func _build_shop() -> void:
+	_shop = PanelContainer.new()
+	_shop.name = "Shop"
+	_shop.mouse_filter = Control.MOUSE_FILTER_STOP
+	_shop.add_theme_stylebox_override("panel", UiTheme.glass_box(20, 16, UiTheme.PANEL_EDGE, true))
+	_shop.anchor_right = 1.0
+	_shop.anchor_bottom = 1.0
+	_shop.offset_left = SHOP_MARGIN.x
+	_shop.offset_right = -SHOP_MARGIN.x
+	_shop.offset_top = SHOP_TOP
+	_shop.offset_bottom = -SHOP_MARGIN.y
+	_shop.visible = false
+	_root.add_child(_shop)
+	var layout := HBoxContainer.new()
+	layout.add_theme_constant_override("separation", 16)
+	_shop.add_child(layout)
+
+	var column := VBoxContainer.new()
+	column.name = "Categories"
+	column.custom_minimum_size = Vector2(SHOP_COLUMN_WIDTH, 0)
+	column.add_theme_constant_override("separation", 6)
+	layout.add_child(column)
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 10)
+	column.add_child(header)
+	header.add_child(UiTheme.art("icone_loja", Vector2(42, 42)))
+	var title := UiTheme.outlined("Loja", 26, UiTheme.WHITE_SOFT, UiTheme.NAVY, 0)
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	header.add_child(title)
+	_tabs = VBoxContainer.new()
+	_tabs.name = "Tabs"
+	_tabs.add_theme_constant_override("separation", 6)
+	column.add_child(_tabs)
+
+	var center := VBoxContainer.new()
+	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center.add_theme_constant_override("separation", 8)
+	layout.add_child(center)
+	var top_row := HBoxContainer.new()
+	top_row.add_theme_constant_override("separation", 8)
+	center.add_child(top_row)
+	var scroll := ScrollContainer.new()
+	scroll.name = "CollectionScroll"
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	scroll.custom_minimum_size = Vector2(0, 36)
+	top_row.add_child(scroll)
+	_chips = _row("Collections")
+	_chips.alignment = BoxContainer.ALIGNMENT_BEGIN
+	_chips.add_theme_constant_override("separation", 6)
+	scroll.add_child(_chips)
+	var close := UiTheme.icon_button("CloseShopButton", "close", "", 38)
+	close.tooltip_text = "Fechar a loja"
+	close.pressed.connect(close_shop)
+	top_row.add_child(close)
+	_shop_note = Label.new()
+	_shop_note.name = "ShopNote"
+	_shop_note.add_theme_font_size_override("font_size", 13)
+	_shop_note.add_theme_color_override("font_color", UiTheme.CYAN)
+	_shop_note.visible = false
+	center.add_child(_shop_note)
+	_items = GridContainer.new()
+	_items.name = "Items"
+	_items.columns = SHOP_COLUMNS
+	_items.add_theme_constant_override("h_separation", 10)
+	_items.add_theme_constant_override("v_separation", 10)
+	_items.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_items.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	center.add_child(_items)
+	var pager := HBoxContainer.new()
+	pager.alignment = BoxContainer.ALIGNMENT_CENTER
+	pager.add_theme_constant_override("separation", 16)
+	center.add_child(pager)
+	_prev_page = UiTheme.icon_button("PrevPageButton", "left", "", 34)
+	_prev_page.pressed.connect(func() -> void: show_shop_page(shop_page - 1))
+	pager.add_child(_prev_page)
+	_page_label = Label.new()
+	_page_label.name = "PageLabel"
+	_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_page_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_page_label.custom_minimum_size = Vector2(56, 0)
+	_page_label.add_theme_font_size_override("font_size", 14)
+	_page_label.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
+	pager.add_child(_page_label)
+	_next_page = UiTheme.icon_button("NextPageButton", "right", "", 34)
+	_next_page.pressed.connect(func() -> void: show_shop_page(shop_page + 1))
+	pager.add_child(_next_page)
+	_build_detail(layout)
+
+
+func _build_detail(parent: Control) -> void:
+	_detail = PanelContainer.new()
+	_detail.name = "Detail"
+	_detail.custom_minimum_size = Vector2(SHOP_DETAIL_WIDTH, 0)
+	_detail.add_theme_stylebox_override("panel", UiTheme.card_box(16, 14))
+	parent.add_child(_detail)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 7)
+	_detail.add_child(column)
+	var preview := PanelContainer.new()
+	var soft := UiTheme.bar_box(UiTheme.CARD_SOFT, 12)
+	preview.add_theme_stylebox_override("panel", soft)
+	column.add_child(preview)
+	_detail_art = TextureRect.new()
+	_detail_art.name = "DetailArt"
+	_detail_art.custom_minimum_size = DETAIL_ART_SIZE
+	_detail_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_detail_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_detail_art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	preview.add_child(_detail_art)
+	_detail_title = UiTheme.outlined("", 21, UiTheme.WHITE_SOFT, UiTheme.NAVY, 0)
+	_detail_title.name = "DetailTitle"
+	_detail_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_detail_title.custom_minimum_size = Vector2(DETAIL_ART_SIZE.x, 0)
+	column.add_child(_detail_title)
+	_detail_tag_box = PanelContainer.new()
+	_detail_tag_box.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	column.add_child(_detail_tag_box)
+	_detail_tag = UiTheme.outlined("", 12, UiTheme.WHITE_SOFT, UiTheme.NAVY, 0)
+	_detail_tag.name = "DetailTag"
+	_detail_tag_box.add_child(_detail_tag)
+	_detail_text = Label.new()
+	_detail_text.name = "DetailText"
+	_detail_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_detail_text.custom_minimum_size = Vector2(DETAIL_ART_SIZE.x, 0)
+	_detail_text.add_theme_font_override("font", UiTheme.font(UiTheme.WEIGHT, true))
+	_detail_text.add_theme_font_size_override("font_size", 13)
+	_detail_text.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
+	column.add_child(_detail_text)
+	var price_row := HBoxContainer.new()
+	price_row.add_theme_constant_override("separation", 8)
+	column.add_child(price_row)
+	_detail_price_icon = UiTheme.art("icone_moeda", Vector2(30, 30))
+	price_row.add_child(_detail_price_icon)
+	_detail_price = UiTheme.outlined("", 24, UiTheme.GOLD, UiTheme.NAVY, 0)
+	_detail_price.name = "DetailPrice"
+	_detail_price.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	price_row.add_child(_detail_price)
+	_buy_button = Button.new()
+	_buy_button.name = "BuyButton"
+	_buy_button.text = "Comprar"
+	_buy_button.custom_minimum_size = Vector2(DETAIL_ART_SIZE.x, 48)
+	_buy_button.focus_mode = Control.FOCUS_NONE
+	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
+		var fill := UiTheme.GREEN.lightened(0.1) if state == "hover" else UiTheme.GREEN
+		_buy_button.add_theme_stylebox_override(state, UiTheme.button_box(fill, fill.lightened(0.3)))
+	_buy_button.add_theme_stylebox_override("disabled", UiTheme.button_box(UiTheme.DISABLED, UiTheme.DISABLED))
+	_buy_button.add_theme_font_size_override("font_size", 19)
+	_buy_button.pressed.connect(_buy_selected)
+	column.add_child(_buy_button)
+	_detail_benefits_title = UiTheme.caption("Benefícios", UiTheme.WHITE_SOFT, 13)
+	column.add_child(_detail_benefits_title)
+	_detail_benefits = VBoxContainer.new()
+	_detail_benefits.name = "DetailBenefits"
+	_detail_benefits.add_theme_constant_override("separation", 3)
+	column.add_child(_detail_benefits)
 
 
 func _card(card_name: String, radius := 14) -> PanelContainer:
@@ -314,7 +454,7 @@ func message_text() -> String:
 
 
 func find_button(button_name: String) -> Button:
-	for row: Node in [_primary, _buttons, _tabs, _chips, _items]:
+	for row: Node in [_primary, _buttons, _tabs, _chips, _items, _detail]:
 		var button := row.find_child(button_name, true, false) as Button
 		if button != null:
 			return button
@@ -498,7 +638,9 @@ func _signature() -> Array:
 func _refresh_in_place() -> void:
 	if _message_source.is_valid():
 		_message.text = _message_source.call()
-	_message.visible = not _message.text.is_empty()
+	_message.visible = not _message.text.is_empty() and not _shop.visible
+	_shop_note.text = _message.text
+	_shop_note.visible = _shop.visible and not _message.text.is_empty()
 	for updater in _updaters:
 		updater.call()
 
@@ -611,24 +753,28 @@ func _show_shop() -> void:
 		button.text = SHOP_TAB_NAMES[tab]
 		button.toggle_mode = true
 		button.button_pressed = tab == shop_tab
-		button.custom_minimum_size = TAB_SIZE
+		button.custom_minimum_size = Vector2(SHOP_COLUMN_WIDTH, 50)
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.focus_mode = Control.FOCUS_NONE
-		var color: Color = SHOP_TAB_COLORS[tab]
+		var sprite := ArtSprites.get_sprite(SHOP_TAB_ICONS[tab])
+		if sprite != null:
+			button.icon = sprite.texture
+		button.add_theme_constant_override("icon_max_width", 32)
+		button.add_theme_constant_override("h_separation", 12)
 		var active: bool = tab == shop_tab
 		for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
-			button.add_theme_stylebox_override(state, _tab_box(Color.WHITE if active else color, color.darkened(0.3),
-				state == "hover" and not active))
-		button.add_theme_color_override("font_color", UiTheme.TEXT if active else Color.WHITE)
-		button.add_theme_color_override("font_hover_color", UiTheme.TEXT if active else Color.WHITE)
-		button.add_theme_color_override("font_pressed_color", UiTheme.TEXT)
-		button.add_theme_color_override("font_outline_color", Color.WHITE if active else color.darkened(0.45))
-		button.add_theme_constant_override("outline_size", 0 if active else 4)
+			button.add_theme_stylebox_override(state, _tab_box(active, state == "hover" or state == "hover_pressed"))
+		for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
+			button.add_theme_color_override(color_name, Color.WHITE if active else UiTheme.WHITE_SOFT)
+		button.add_theme_constant_override("outline_size", 0)
 		button.add_theme_font_size_override("font_size", 17)
 		button.pressed.connect(func() -> void: show_shop_tab(this_tab))
 		_tabs.add_child(button)
 	_show_collection_chips()
 	shop_page = clampi(shop_page, 0, shop_page_count() - 1)
 	var page := _shop_items().slice(shop_page * ITEMS_PER_PAGE, (shop_page + 1) * ITEMS_PER_PAGE)
+	_card_actions.clear()
+	_tapped_card = ""
 	for item: Resource in page:
 		if item is FurnitureDefinition:
 			_add_furniture_item(item)
@@ -640,6 +786,15 @@ func _show_shop() -> void:
 			_add_terrace_item(item)
 		else:
 			_add_surface_item(item)
+		var card := _items.get_child(-1) as ShopItemButton
+		card.set_meta("resource", item)
+		var collection := cafe.simulation.collections.get_definition(item.collection) if item.collection != &"" else null
+		if collection != null:
+			card.tag_text = collection.display_name
+			card.tag_color = collection.color
+	if _items.get_node_or_null(NodePath(_selected_card)) == null:
+		_selected_card = _items.get_child(0).name if _items.get_child_count() > 0 else ""
+	_updaters.append(_refresh_detail)
 	var pages := shop_page_count()
 	_prev_page.disabled = shop_page == 0
 	_next_page.disabled = shop_page >= pages - 1
@@ -677,39 +832,42 @@ func _add_chip(chip_name: String, text: String, color: Color, active: bool, coll
 	chip.toggle_mode = true
 	chip.button_pressed = active
 	chip.focus_mode = Control.FOCUS_NONE
-	chip.custom_minimum_size = Vector2(0, 30)
+	chip.custom_minimum_size = Vector2(0, 34)
 	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
 		var box := StyleBoxFlat.new()
-		box.bg_color = color if active else (Color.WHITE if state != "hover" else color.lightened(0.85))
-		box.border_color = color.darkened(0.2)
-		box.set_border_width_all(2)
-		box.set_corner_radius_all(15)
-		box.content_margin_left = 12
-		box.content_margin_right = 12
+		box.bg_color = color if active else (Color(color, 0.22) if state.begins_with("hover") else Color(0, 0, 0, 0.18))
+		box.border_color = color.lightened(0.15) if active else Color(color, 0.7)
+		box.set_border_width_all(1)
+		box.set_corner_radius_all(17)
+		box.content_margin_left = 14
+		box.content_margin_right = 14
 		box.content_margin_top = 3
 		box.content_margin_bottom = 3
+		if active:
+			box.shadow_color = Color(color, 0.45)
+			box.shadow_size = 6
 		box.anti_aliasing = true
 		chip.add_theme_stylebox_override(state, box)
 	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
-		chip.add_theme_color_override(color_name, Color.WHITE if active else color.darkened(0.35))
-	chip.add_theme_constant_override("outline_size", 3 if active else 0)
-	chip.add_theme_color_override("font_outline_color", color.darkened(0.45))
+		chip.add_theme_color_override(color_name, Color.WHITE if active else color.lightened(0.5))
+	chip.add_theme_constant_override("outline_size", 0)
 	chip.add_theme_font_size_override("font_size", 14)
 	chip.pressed.connect(func() -> void: show_shop_collection(collection))
 	_chips.add_child(chip)
 
 
-## Aba como as das pranchas: cantos de cima redondos, a ativa branca (emendada no painel).
-func _tab_box(fill: Color, edge: Color, hover: bool) -> StyleBoxFlat:
+## Aba da loja (DT-077): a ativa em azul tecnológico com brilho; as outras, transparentes, acendendo ao passar.
+func _tab_box(active: bool, hover: bool) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
-	box.bg_color = fill.lightened(0.12) if hover else fill
-	box.border_color = edge
-	box.set_border_width_all(2)
-	box.border_width_bottom = 0
-	box.corner_radius_top_left = 14
-	box.corner_radius_top_right = 14
-	box.content_margin_top = 8
-	box.content_margin_bottom = 8
+	box.bg_color = UiTheme.TECH_BLUE if active else (Color(UiTheme.CYAN, 0.1) if hover else Color(0, 0, 0, 0))
+	box.border_color = UiTheme.CYAN if active else (Color(UiTheme.CYAN, 0.5) if hover else Color(1, 1, 1, 0.06))
+	box.set_border_width_all(1)
+	box.set_corner_radius_all(12)
+	box.content_margin_left = 12
+	box.content_margin_right = 10
+	if active:
+		box.shadow_color = Color(UiTheme.CYAN, 0.35)
+		box.shadow_size = 8
 	box.anti_aliasing = true
 	return box
 
@@ -870,9 +1028,156 @@ func _add_item(button_name: String, title: String, art: ArtSprites.Sprite, actio
 	item.name = button_name
 	item.title = title
 	item.art = art
-	item.pressed.connect(func() -> void: action.call())
+	_card_actions[button_name] = action
+	item.pressed.connect(func() -> void: _on_card_pressed(item))
 	_items.add_child(item)
 	return item
+
+
+## Loja (DT-077): o primeiro toque num cartão escolhe e mostra os detalhes; tocar de novo nele faz a ação, como o
+## botão Comprar.
+func _on_card_pressed(card: ShopItemButton) -> void:
+	if card.name == _tapped_card and card.name == _selected_card:
+		_buy_selected()
+		return
+	_selected_card = card.name
+	_tapped_card = card.name
+	_refresh_detail()
+
+
+func _selected_shop_card() -> ShopItemButton:
+	return _items.get_node_or_null(NodePath(_selected_card)) as ShopItemButton if not _selected_card.is_empty() else null
+
+
+## Comprar (ou pôr no café, ou usar) o item escolhido: a mesma ação de antes, com as confirmações de sempre.
+func _buy_selected() -> void:
+	var card := _selected_shop_card()
+	if card == null or card.disabled:
+		return
+	var action: Callable = _card_actions.get(String(card.name), Callable())
+	if action.is_valid():
+		action.call()
+
+
+## Painel de detalhes do cartão escolhido: desenho grande, nome, coleção, para que serve, preço, o botão e os
+## benefícios (tirados dos dados do item, nada inventado).
+func _refresh_detail() -> void:
+	var card := _selected_shop_card()
+	_detail.visible = card != null
+	for child in _items.get_children():
+		(child as ShopItemButton).selected = child == card
+	if card == null:
+		return
+	var resource: Resource = card.get_meta("resource", null)
+	_detail_art.texture = card.art.texture if card.art != null else null
+	_detail_title.text = card.title
+	_detail_tag_box.visible = not card.tag_text.is_empty()
+	_detail_tag.text = card.tag_text
+	var tag_style := UiTheme.bar_box(Color(card.tag_color, 0.4), 8)
+	tag_style.content_margin_left = 10
+	tag_style.content_margin_right = 10
+	tag_style.content_margin_top = 2
+	tag_style.content_margin_bottom = 2
+	_detail_tag_box.add_theme_stylebox_override("panel", tag_style)
+	var described := _describe(resource)
+	_detail_text.text = described[0]
+	var shown: Array = described[1]
+	_detail_benefits_title.visible = not shown.is_empty()
+	var labels := _detail_benefits.get_children()
+	for i in maxi(labels.size(), shown.size()):
+		if i >= labels.size():
+			var line := Label.new()
+			line.add_theme_font_size_override("font_size", 13)
+			line.add_theme_color_override("font_color", UiTheme.WHITE_SOFT)
+			_detail_benefits.add_child(line)
+			labels.append(line)
+		(labels[i] as Label).visible = i < shown.size()
+		if i < shown.size():
+			(labels[i] as Label).text = "•  " + String(shown[i])
+	_detail_price_icon.visible = card.note.is_empty() and card.locked_level == 0
+	var icon := ArtSprites.get_sprite(card.price_icon)
+	if icon != null:
+		_detail_price_icon.texture = icon.texture
+	if card.locked_level > 0:
+		_detail_price.text = "Libera no nível %d" % card.locked_level
+		_detail_price.add_theme_color_override("font_color", UiTheme.GOLD)
+	elif not card.note.is_empty():
+		_detail_price.text = card.note
+		_detail_price.add_theme_color_override("font_color", ShopItemButton.NOTE_COLOR)
+	else:
+		_detail_price.text = UiTheme.thousands(card.price) + card.price_suffix
+		_detail_price.add_theme_color_override("font_color", UiTheme.GOLD if card.affordable else ShopItemButton.TOO_EXPENSIVE)
+	_buy_button.disabled = card.disabled
+	if card.locked_level > 0:
+		_buy_button.text = "Nível %d" % card.locked_level
+	elif card.disabled:
+		_buy_button.text = card.note if not card.note.is_empty() else "Indisponível"
+	elif not card.note.is_empty():
+		_buy_button.text = "Colocar no café" if resource is FurnitureDefinition else "Usar"
+	else:
+		_buy_button.text = "Comprar"
+
+
+## Para que serve o item e os benefícios dele, tirados dos dados (DT-077).
+func _describe(resource: Resource) -> Array:
+	var benefits: Array[String] = []
+	var text := ""
+	if resource is FurnitureDefinition:
+		var item := resource as FurnitureDefinition
+		text = CATEGORY_TEXTS.get(item.category, "")
+		if item.delivery:
+			text = "Balcão de Entregas: recebe pedidos de porções para mandar para a casa dos clientes, por mais ouro."
+		elif item.stage:
+			text = "Palco: de tempos em tempos tem show, e os clientes chegam mais rápido."
+		elif item.attraction_gold > 0:
+			text = "Atração: os clientes brincam e deixam ouro nela. Toque para coletar."
+			benefits.append("%d de ouro por brincadeira, até %d guardado" % [item.attraction_gold, item.attraction_capacity])
+		elif item.fruit != &"":
+			text = "Pé de fruta: amadurece com o tempo, até com o jogo fechado. As frutas viram frozen yogurt."
+			benefits.append("%d frutas por colheita" % item.fruit_yield)
+		elif item.is_trophy():
+			text = "Troféu: acelera os fogões nas 8 casas em volta."
+			benefits.append("Fogões em volta %d%% mais rápidos, por %d pratos" % [roundi(item.stove_speed_bonus * 100.0), item.trophy_dishes])
+		if item.stove_time_cut > 0.0:
+			benefits.append("%d%% menos tempo para cozinhar" % roundi(item.stove_time_cut * 100.0))
+		if item.stove_max_time > 0.0:
+			benefits.append("Nenhum prato passa de %d minutos" % roundi(item.stove_max_time / 60.0))
+		if item.stove_servings_bonus > 0.0:
+			benefits.append("%d%% a mais de porções" % roundi(item.stove_servings_bonus * 100.0))
+		if item.stove_xp_bonus > 0.0:
+			benefits.append("%d%% a mais de XP" % roundi(item.stove_xp_bonus * 100.0))
+		if not item.stove_level_cuts.is_empty():
+			benefits.append("Fica mais rápido a cada nível do evento")
+		if item.light_radius > 0.0:
+			benefits.append("Acende à noite")
+		if item.beauty > 0:
+			benefits.append("+%d de beleza" % item.beauty)
+		if item.max_per_cafe > 0:
+			benefits.append("Só %d por café" % item.max_per_cafe)
+	elif resource is SurfaceDefinition:
+		var surface := resource as SurfaceDefinition
+		text = "Piso: troque o chão piso a piso." if surface.kind == SurfaceDefinition.Kind.FLOOR \
+			else "Parede: pinte a parede trecho a trecho."
+		if surface.beauty > 0:
+			benefits.append("+%d de beleza" % surface.beauty)
+	elif resource is WallItemDefinition:
+		var wall_item := resource as WallItemDefinition
+		text = "Item de parede: pendure num trecho da parede." if wall_item.id != &"" else "Tira o enfeite de um trecho da parede, de graça."
+		if wall_item.lets_light_in:
+			benefits.append("Deixa a luz entrar")
+		if wall_item.beauty > 0:
+			benefits.append("+%d de beleza" % wall_item.beauty)
+	elif resource is DoorDefinition:
+		var door := resource as DoorDefinition
+		text = "Porta da entrada, desenhada na fachada. Comprada uma vez, trocar é grátis."
+		if door.beauty > 0:
+			benefits.append("+%d de beleza" % door.beauty)
+	elif resource is TerraceConfig:
+		var terrace := resource as TerraceConfig
+		text = "Transforma a fileira da frente num terraço ao ar livre, com deque e cerca de jardim."
+		benefits.append("De dia, quem senta lá paga %d%% a mais" % roundi(terrace.day_pay_bonus * 100.0))
+		benefits.append("+%d de beleza" % terrace.beauty)
+	return [text, benefits]
 
 
 ## Pede confirmação antes de gastar com a expansão (seção 32: nada de compra acidental).

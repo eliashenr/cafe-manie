@@ -58,7 +58,7 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 - **No celular de verdade:** a medição foi neste PC. Num celular, espere de 3 a 5 vezes menos quadros por segundo, ainda acima de 30 com o café cheio.
 - **O toque com o dedo de verdade:** os toques foram simulados (como em todos os testes de cena).
 
-## Cobertura atual — 696 testes
+## Cobertura atual — 702 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -135,11 +135,12 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 | `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento (com as paredes) |
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
 | `integration/test_service_scene.gd` | 12 | aviso de nível alto com o ouro; jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
+| `integration/test_shop_detail_scene.gd` | 6 | **loja nova (DT-078):** primeiro item no painel ao abrir, primeiro toque escolhe e o segundo compra, Comprar leva o item do painel, bloqueio com o nível, benefícios iguais aos dados (fogão, troféu, terraço, piso), menu lateral sai com a loja aberta e o aviso vai para dentro dela |
 | `integration/test_shop_scene.gd` | 15 | loja, compra, Guardar, expansão com confirmação, missões; **Vender com confirmação** e recusa do último fogão; filtro por coleção e páginas |
 | `integration/test_style_scene.gd` | 12 | abas, piso e parede desenhados; **reforma**: escolher abre o modo, toques marcam, prévia, preço por piso, confirmação, trecho de parede e da mureta, Tudo e Cancelar, comprado antes pinta de graça; **pendurar a TV** com confirmação; tirar enfeite de graça; bloqueio; Beleza no HUD; paredes crescem com a expansão |
 | `integration/test_coin_shop_scene.gd` | 3 | o "+" do ouro abre a vitrine com os 5 pacotes; neste build a compra explica que ainda não existe e não dá ouro; com pagamento confirmado o ouro entra; faltando ouro, a vitrine aparece uma vez (sem insistir) |
 | `integration/test_progress_scene.gd` | 17 | avisos de conquista em fila, painel de conquistas, recompensa diária (abre, paga, volta no dia seguinte, não empilha janelas), nome da cafeteria, sons e botão de som |
-| `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade**; toque no botão não vaza para o piso |
+| `integration/test_touch_ui.gd` | 3 | botões da loja e das janelas respondem a **toque de verdade** (na loja, o primeiro toque escolhe e o segundo compra); toque no botão não vaza para o piso |
 | `integration/test_furniture_art.gd` | 7 | todo móvel tem arte nas 4 rotações, com âncora e escala certas; a cena e a prévia usam a arte; panela de cada receita; forno aceso só de frente; fogão e balcão mostram receita, tempo, Pronto! e porções |
 | `integration/test_hud_art.gd` | 6 | moeda com ponto de milhar e nível; estrelas pela satisfação; presente com cronômetro; zoom pelos botões; tocar no cartão da missão esconde e o medalhão abre as missões; faixa de ícones abre a loja e as conquistas |
 | `integration/test_scene_art.gd` | 6 | todo revestimento tem arte; xadrez alterna; variações estáveis; todo item de parede tem desenho nas duas paredes e a porta existe; a cena usa a arte e enquadra a parede; **mureta** nas duas bordas da frente, baixa, sem fechar a porta; exterior acompanha a expansão |

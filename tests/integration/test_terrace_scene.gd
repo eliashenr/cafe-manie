@@ -31,7 +31,7 @@ func test_building_asks_and_draws_the_deck_and_the_fence() -> void:
 	sim.wallet.earn(Wallet.SOFT, sim.terrace_config.price, "teste")
 	var card := await _terrace_card(cafe)
 	assert_false(card.disabled)
-	card.pressed.emit()
+	buy_in_shop(cafe, card)
 	var dialog := cafe.build_bar.confirm_dialog()
 	assert_true(dialog.visible and dialog.get_cancel_button().has_focus(), "construir pede confirmação, com Cancelar selecionado")
 	assert_false(sim.has_terrace(), "nada muda antes de confirmar")

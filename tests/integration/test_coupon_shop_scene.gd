@@ -28,7 +28,7 @@ func test_the_coupon_tab_shows_the_season_items() -> void:
 func test_trading_from_the_tab_spends_coupons() -> void:
 	var cafe := await _coupon_cafe(100)
 	var item := cafe.simulation.coupon_shop_items()[0]
-	cafe.build_bar.find_button("Build_" + String(item.id)).pressed.emit()
+	buy_in_shop(cafe, cafe.build_bar.find_button("Build_" + String(item.id)))
 	await settle()
 	assert_eq(cafe.mode, Cafe.Mode.BUILD, "escolhido, vai para o lugar")
 	cafe._on_tapped(IsoProjection.cell_center(Vector2i(5, 5)))

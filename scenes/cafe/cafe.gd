@@ -161,7 +161,7 @@ func _ready() -> void:
 	_connect_sounds()
 	simulation.style.changed.connect(_apply_style)
 	_apply_style()
-	build_bar.shop_toggled.connect(func(shown: bool) -> void: hud.set_rating_visible(not shown))
+	build_bar.shop_toggled.connect(hud.set_shop_open)
 	simulation.dirt.changed.connect(_on_dirt_changed)
 	_on_dirt_changed()
 

@@ -104,6 +104,8 @@ var _level_label: Label
 var _beauty_bar: StripedBar
 var _rating_label: Label
 var _rating_card: Control
+## Camada do menu lateral, dos botões da direita, da missão e da satisfação: some com a loja aberta (DT-077).
+var _side_layer: Control
 var _stars: Array[TextureRect] = []
 var _daily_title: Label
 var _daily_digits: Array[Label] = []
@@ -146,6 +148,11 @@ func _ready() -> void:
 	_build_profile()
 	_build_currencies()
 	_build_top_right()
+	_side_layer = Control.new()
+	_side_layer.name = "SideLayer"
+	_side_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_side_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(_side_layer)
 	_build_side_buttons()
 	_build_medallions()
 	_build_rating()
@@ -156,8 +163,8 @@ func _ready() -> void:
 
 # --- Montagem ------------------------------------------------------------------
 
-## Um nó posicionado a partir de um canto (ou do meio de cima) da tela.
-func _anchored(node: Control, anchor: Vector2, offset: Vector2, size: Vector2) -> Control:
+## Um nó posicionado a partir de um canto (ou do meio de cima) da tela, em [param parent] (sem ele, na raiz).
+func _anchored(node: Control, anchor: Vector2, offset: Vector2, size: Vector2, parent: Control = null) -> Control:
 	node.anchor_left = anchor.x
 	node.anchor_right = anchor.x
 	node.anchor_top = anchor.y
@@ -166,7 +173,7 @@ func _anchored(node: Control, anchor: Vector2, offset: Vector2, size: Vector2) -
 	node.offset_top = offset.y
 	node.offset_right = offset.x + size.x
 	node.offset_bottom = offset.y + size.y
-	_root.add_child(node)
+	(parent if parent != null else _root).add_child(node)
 	return node
 
 
@@ -459,31 +466,31 @@ func _build_side_buttons() -> void:
 	var y := SIDE_BUTTONS_TOP
 	_pause_button = UiTheme.icon_button("PauseButton", "pause", "", 44)
 	_pause_button.pressed.connect(func() -> void: pause_toggled.emit())
-	_anchored(_pause_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50))
+	_anchored(_pause_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
 	_build_pause_banner()
 	y += SIDE_BUTTON_STEP
 	_closed_button = UiTheme.icon_button("ClosedButton", "door_close", "", 44)
 	_closed_button.pressed.connect(func() -> void: closed_toggled.emit())
-	_anchored(_closed_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50))
+	_anchored(_closed_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
 	_closed_banner = _banner("ClosedBanner", "ClosedText", CLOSED_TEXT, UiTheme.RED, -248)  # acima da faixa da pausa
 	y += SIDE_BUTTON_STEP
 	var zoom_in := UiTheme.icon_button("ZoomInButton", "zoom_in", "", 44)
 	zoom_in.tooltip_text = "Aproximar"
 	zoom_in.pressed.connect(func() -> void: zoom_requested.emit(ZOOM_STEP))
-	_anchored(zoom_in, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50))
+	_anchored(zoom_in, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
 	y += SIDE_BUTTON_STEP
 	var zoom_out := UiTheme.icon_button("ZoomOutButton", "zoom_out", "", 44)
 	zoom_out.tooltip_text = "Afastar"
 	zoom_out.pressed.connect(func() -> void: zoom_requested.emit(1.0 / ZOOM_STEP))
-	_anchored(zoom_out, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50))
+	_anchored(zoom_out, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
 	y += SIDE_BUTTON_STEP
 	_sound_button = UiTheme.icon_button("SoundButton", "sound", "", 44)
 	_sound_button.pressed.connect(func() -> void: mute_toggled.emit(not _muted))
-	_anchored(_sound_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50))
+	_anchored(_sound_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
 	y += SIDE_BUTTON_STEP
 	_music_button = UiTheme.icon_button("MusicButton", "music", "", 44)
 	_music_button.pressed.connect(func() -> void: music_toggled.emit(not _music_muted))
-	_anchored(_music_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50))
+	_anchored(_music_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
 	show_sound_state(false)
 	show_music_state(false)
 	show_pause_state(false)
@@ -551,7 +558,7 @@ func _side_tile(button_name: String, icon: String, label: String, top: float, ac
 	for state in ["hover", "pressed", "hover_pressed"]:
 		button.add_theme_stylebox_override(state, UiTheme.glass_box(16, 0, UiTheme.CYAN, true))
 	button.pressed.connect(action)
-	_anchored(button, Vector2.ZERO, Vector2(12, top), SIDE_TILE_SIZE)
+	_anchored(button, Vector2.ZERO, Vector2(12, top), SIDE_TILE_SIZE, _side_layer)
 	_place(button, UiTheme.art(icon, Vector2(46, 46)), Vector2((SIDE_TILE_SIZE.x - 46) / 2.0, 6))
 	var text := UiTheme.caption(label, UiTheme.WHITE_SOFT, 11)
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -612,7 +619,8 @@ func _build_mission_card() -> void:
 			_refresh_mission()
 			_mission_card.accept_event())
 	_mission_card.add_theme_stylebox_override("panel", UiTheme.glass_box(14, 12))
-	_anchored(_mission_card, Vector2.ZERO, Vector2(12 + SIDE_TILE_SIZE.x + 10, SIDE_TILES_TOP), Vector2(MISSION_CARD_WIDTH, 0))
+	_anchored(_mission_card, Vector2.ZERO, Vector2(12 + SIDE_TILE_SIZE.x + 10, SIDE_TILES_TOP), Vector2(MISSION_CARD_WIDTH, 0),
+		_side_layer)
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_theme_constant_override("separation", 3)
@@ -662,7 +670,7 @@ func _build_rating() -> void:
 	_rating_card = card
 	card.add_theme_stylebox_override("panel", UiTheme.glass_box(18, 0))
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_anchored(card, Vector2(0.0, 1.0), Vector2(12, -86), Vector2(196, 74))
+	_anchored(card, Vector2(0.0, 1.0), Vector2(12, -86), Vector2(196, 74), _side_layer)
 	_place(card, UiTheme.art("icone_sorriso", Vector2(46, 46)), Vector2(7, 14))
 	_rating_label = UiTheme.outlined("0%", 23, UiTheme.WHITE_SOFT, UiTheme.NAVY, 3)
 	_rating_label.name = "RatingValue"
@@ -1039,13 +1047,14 @@ func restart_dialog() -> ConfirmationDialog:
 	return _restart_dialog
 
 
-## Esconde a satisfação enquanto a loja está aberta: em tela larga, a loja cobria só metade do quadro (QA, 23/10).
-func set_rating_visible(shown: bool) -> void:
-	_rating_card.visible = shown
+## Loja aberta (DT-077): o painel dela ocupa a tela, então o menu lateral, os botões da direita, a missão e a
+## satisfação saem e voltam quando ela fecha. O perfil e os contadores ficam.
+func set_shop_open(open: bool) -> void:
+	_side_layer.visible = not open
 
 
 func is_rating_visible() -> bool:
-	return _rating_card.visible
+	return _rating_card.is_visible_in_tree()
 
 
 func bind(target: CafeSimulation) -> void:

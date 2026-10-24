@@ -35,7 +35,7 @@ func test_choosing_a_floor_starts_a_renovation_where_taps_mark_cells() -> void:
 	await settle()
 	var wood := cafe.build_bar.find_button("Surface_floor_wood")
 	assert_true(wood.text.contains("6 ouro/piso"), "o preço é por piso: " + wood.text)
-	wood.pressed.emit()
+	buy_in_shop(cafe, wood)
 	await settle()
 	assert_eq(cafe.mode, Cafe.Mode.PAINT, "escolher o piso começa a reforma")
 	assert_true(cafe.build_bar.find_button("Surface_floor_wood") == null and cafe.build_bar.find_button("ConfirmButton") != null,
@@ -128,7 +128,7 @@ func test_hanging_a_tv_on_the_wall() -> void:
 	sim.progression.add_xp(99999)
 	sim.wallet.earn(Wallet.SOFT, 1000, "teste")
 	await settle()
-	tv.pressed.emit()
+	buy_in_shop(cafe, tv)
 	await settle()
 	assert_true(cafe.hanging_items and cafe.mode == Cafe.Mode.PAINT, "escolher o item começa a pendurar")
 	var stretch := CafeStyle.segment(CafeStyle.EDGE_TOP, 5)
