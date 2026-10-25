@@ -23,3 +23,7 @@ __pycache__/
 
 # Sprites crus (regenerados por tools/art_direction/v3/export_sprites.py)
 /tools/sprites/raw/
+
+# Saida dos renders 3D (gerada pelo Blender)
+tools/render3d/out*/
+tools/render3d/__pycache__/

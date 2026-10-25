@@ -105,6 +105,15 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **3. Terraço** (DT-069, versão simplificada): a fileira da frente vira terraço com deque e cerca de jardim; de dia, quem senta lá paga 25% a mais.
 - [x] **4. Avatar do chef** (DT-070): pele, cabelo, chapéu e roupa; as peças novas se provam no retrato e se compram com ouro.
 
+## Arte realista em 3D (25/10/2026, DT-084, ramo arte-3d)
+
+- [x] **1. Personagens:** o garçom e os 12 clientes realistas (MakeHuman), andando e sentados, com as camisetas nas cores da arte antiga.
+- [ ] **2. Roupa de garçom e óculos:** pacotes livres suits01 e glasses01 (esperando a autorização do download).
+- [ ] **3. Móveis em 3D:** cozinha, salão, enfeites, pisos e paredes.
+- [ ] **4. A cidade em 3D:** prédios, carros e calçada.
+- [ ] **5. Robô, crítico, vizinhos e retratos.**
+- [ ] **6. Revisão e junção no jogo principal.**
+
 ## Redesign "Nova York Futurista" (24/10/2026, DT-077)
 
 - [x] **1. Sistema de design e HUD:** paleta, painéis de vidro, perfil com o retrato do chef, contadores, menus laterais, botões, satisfação e barra de baixo.

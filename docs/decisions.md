@@ -4,6 +4,28 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-084 — Arte realista em 3D: começando pelos personagens (ramo arte-3d)
+
+**Problema:**
+- Depois do redesign, o PO apontou que o principal não mudou: os personagens e o jeito realista da imagem de referência (que parece um render 3D).
+- A arte do jogo é vetorial, desenhada por código: por esse caminho não chega ao realismo.
+
+**Decisão:**
+- **Refazer a arte em 3D**, renderizada no ângulo exato do jogo, com luz e sombra de verdade:
+  - **Blender 5.2.3** (programa livre, versão portátil em `C:\Blender`, sem instalar nada no Windows; o arquivo foi conferido pelo código oficial);
+  - **MakeHuman** (extensão MPFB 2.0.18 do Blender) para as pessoas, com o pacote de peças oficial de licença **CC0** (pode usar no jogo e vender, sem crédito).
+- **Provas antes:** móveis em 3D ficaram bons; o personagem montado só com formas virou boneco; o personagem do MakeHuman ficou realista. O PO aprovou seguir.
+- **Ordem:** personagens primeiro (o que o PO mais cobrou), depois os móveis, depois a cidade. A interface escura do redesign fica.
+- **Tudo no ramo `arte-3d`:** 3D ao lado de desenho fica estranho, então o jogo principal só recebe a arte nova quando tudo estiver convertido.
+- **Personagens (`tools/render3d/personagens3d.py`):**
+  - o garçom e os 12 clientes, cada um com corpo, idade, pele, cabelo e roupa próprios (o pacote livre tem 12 roupas; a cor do cabelo muda por um ajuste no material: ruivo, loiro, grisalho);
+  - os mesmos quadros e âncoras da arte 2D: em pé e 8 passos de frente e de costas (o garçom também com a bandeja), sentado de frente com as 4 expressões e sentado de costas nas rotações 1 e 2 da cadeira;
+  - as poses apontam cada osso para uma direção (braços soltos, passada com o joelho dobrando na volta, o quadril girando um pouco, sentado com as mãos no colo);
+  - as expressões usam as formas do próprio MakeHuman (cantos da boca e sobrancelhas), sem pacote extra;
+  - o lugar do prato na bandeja é medido no 3D e vai para o `sprites.json`; de costas a bandeja aparece em outro ponto da tela, então há uma medida própria (`tray_food_back`), que o jogo usa quando o garçom está de costas.
+
+---
+
 ## DT-083 — Redesign, etapa 7: revisão visual e QA
 
 **Problema:**

@@ -229,6 +229,18 @@ func test_waiter_carrying_food_uses_the_tray_pose() -> void:
 	assert_true(pose.ends_with("_costas_em_pe_bandeja"), pose)
 
 
+func test_the_plate_follows_the_tray_of_each_view() -> void:
+	var info := ArtSprites.characters()
+	var waiter := Waiter.new()
+	waiter.carrying = load("res://data/recipes/coffee.tres")
+	waiter.facing = Vector2(1, 0)
+	assert_eq(_view(waiter).tray_food(), info["tray_food"], "de frente, a medida de frente")
+	waiter.facing = Vector2(0, -1)
+	var back: Array = info.get("tray_food_back", info["tray_food"])
+	assert_eq(_view(waiter).tray_food(), back, "de costas, a medida de costas (DT-084)")
+	assert_eq(back.size(), 3)
+
+
 func test_scene_seats_customer_with_chair_rotation_and_serves_dish_on_table() -> void:
 	var cafe := await spawn_cafe()
 	var table := cafe.layout.place(cafe.catalog.get_definition(&"table_round"), Vector2i(4, 4))

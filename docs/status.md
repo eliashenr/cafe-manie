@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Arte realista em 3D, etapa 1: personagens** (DT-084, só no ramo `arte-3d`; o jogo principal não mudou)
+
+- **O garçom e os 12 clientes agora são pessoas realistas**, montadas em 3D com o MakeHuman (peças livres, licença CC0):
+  - corpo, idade, pele, cabelo e roupa diferentes para cada um (ruiva, loira, senhora de cabelo grisalho, homem careca...);
+  - as camisetas nas cores dos clientes de antes, sem o logotipo que vinha no pacote;
+  - andando (8 passos, de frente e de costas), sentados nas cadeiras (de frente com as 4 expressões, e de costas), e o garçom com a bandeja, com o prato caindo certinho nela.
+- **Ainda desenhados:** os móveis, a cidade, o robô e os retratos. Vêm nas próximas etapas; até lá a arte nova fica no ramo de teste, porque 3D ao lado de desenho fica estranho.
+
 **Redesign "Nova York Futurista" COMPLETO: etapa 7, revisão visual e QA** (DT-083)
 
 - Revisei todas as telas lado a lado com a referência e acertei o que ainda estava no estilo antigo:
@@ -526,6 +534,10 @@
 
 🧪 **TESTADO**
 
+- **Arte 3D, etapa 1 (ramo `arte-3d`): 732 testes automatizados PASSARAM.**
+  - **Novo:** o prato vai para a bandeja certa de frente e de costas.
+  - **Fotos conferidas:** os 13 personagens lado a lado e dentro do café (sentados, na fila e o garçom servindo).
+  - **Cena principal: PASSOU**, zero erros.
 - **Redesign, etapa 7: 731 testes automatizados PASSARAM.**
   - **Novos:** as abas do livro são pílulas escuras como as das coleções; a receita bloqueada é um cartão escuro; Tudo e Limpar são botões "fantasma" na altura certa; a loja diz "Faltam cupons"; o progresso é ciano.
   - **Jornada completa** rodada 3 vezes seguidas, sem falhar.

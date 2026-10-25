@@ -406,13 +406,21 @@ func _direction() -> Array:
 	return [false, true] if facing.y >= 0.0 else [true, false]
 
 
+## Onde vai o prato na bandeja: [x, y, largura] a partir dos pés. De costas, a bandeja da arte 3D aparece em outro
+## lugar da tela (DT-084); sem essa medida, vale a de frente.
+func tray_food() -> Array:
+	var info := ArtSprites.characters()
+	var front: Array = info.get("tray_food", [])
+	return info.get("tray_food_back", front) if _direction()[0] else front
+
+
 ## Prato na bandeja (no espaço já espelhado do corpo).
 func _draw_tray_food() -> void:
 	var waiter := agent as Waiter
 	if waiter == null or waiter.carrying == null:
 		return
 	var food := ArtSprites.food(waiter.carrying.id)
-	var tray: Array = ArtSprites.characters().get("tray_food", [])
+	var tray := tray_food()
 	if food == null or tray.size() < 3:
 		return
 	draw_texture_rect(food.texture, food.rect_at(Vector2(tray[0], tray[1]), tray[2] / ArtSprites.food_width()), false)
