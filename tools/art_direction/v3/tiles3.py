@@ -898,6 +898,30 @@ def wall_sconce(D):
     return f'<g transform="translate({f(bx)},{f(by)}) scale(1.6) translate({f(-bx)},{f(-by)})">{"".join(o)}</g>'
 
 
+def wall_digital_menu(D):
+    """Painel Digital do cardápio (DT-082): tela escura de moldura fina, o título MENU em ciano, três pratos com o
+    preço em dourado e a xícara desenhada em luz; um halo ciano em volta."""
+    x0, y0, w, h = 3.0, -88.0, L - 6.0, 36.0
+    o = [f'<rect x="{f(x0 - 4)}" y="{f(y0 - 4)}" width="{f(w + 8)}" height="{f(h + 8)}" rx="6" '
+         f'fill="{D.rad([(0, "#31d7ff", 0.3), (1, "#31d7ff", 0)])}"/>']
+    o.append(f'<rect x="{f(x0)}" y="{f(y0)}" width="{f(w)}" height="{f(h)}" rx="2.5" fill="#10151f" stroke="{INK3}" stroke-width="1.1"/>')
+    o.append(f'<rect x="{f(x0 + 1.8)}" y="{f(y0 + 1.8)}" width="{f(w - 3.6)}" height="{f(h - 3.6)}" rx="1.4" '
+             f'fill="{D.lin([(0, "#0f3a63"), (1, "#071426")], 0, 0, 0, 1)}"/>')
+    o.append(f'<text x="{f(x0 + 5)}" y="{f(y0 + 9)}" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="6" '
+             f'fill="#31d7ff">MENU</text>')
+    o.append(f'<path d="M{f(x0 + 5)},{f(y0 + 11)} H{f(x0 + w - 5)}" stroke="#31d7ff" stroke-width="0.6" opacity="0.6"/>')
+    for i in range(3):
+        y = y0 + 16 + i * 6.4
+        o.append(f'<path d="M{f(x0 + 5)},{f(y)} H{f(x0 + w * 0.48)}" stroke="#e8f4ff" stroke-width="1.6" stroke-linecap="round"/>')
+        o.append(f'<path d="M{f(x0 + w * 0.56)},{f(y)} H{f(x0 + w * 0.66)}" stroke="#ffbe55" stroke-width="1.6" stroke-linecap="round"/>')
+    cx, cy = x0 + w - 8, y0 + 22
+    o.append(f'<path d="M{f(cx - 4)},{f(cy - 3)} h7 v3.6 a3.5,3.5 0 0,1 -7,0 Z M{f(cx + 3)},{f(cy - 2)} a2,2 0 0,1 0,3.6" '
+             f'fill="none" stroke="#7ff0ff" stroke-width="1"/>')
+    o.append(f'<path d="M{f(cx - 1.6)},{f(cy - 5)} q1.4,-2 0,-3.6 M{f(cx + 1)},{f(cy - 5)} q1.4,-2 0,-3.6" fill="none" '
+             f'stroke="#7ff0ff" stroke-width="0.7" opacity="0.8"/>')
+    return "".join(o)
+
+
 def wall_mirror(D):
     """Espelho oval com moldura dourada trabalhada."""
     cx, cy = L / 2, -66
@@ -947,6 +971,7 @@ DECORATIONS.update({
     "janela_industrial": lambda D, side: wall_window(D, "#4a4d5a"),
     "janelao_frances": lambda D, side: wall_arched_window(D, frame="#2a2a33", box=("#ffe7a0", "#8a6a2e")),
     "arandela": lambda D, side: wall_sconce(D),  # DT-081
+    "painel_digital": lambda D, side: wall_digital_menu(D),  # DT-082
 })
 
 

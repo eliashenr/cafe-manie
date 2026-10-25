@@ -27,6 +27,7 @@ import xml.etree.ElementTree as ElementTree
 
 from furniture3 import *  # noqa: F401,F403
 from people3 import person, TRAY_EMPTY, TRAY_FOOD, WALK_FRAMES
+import robot3  # noqa: E402
 from food3 import food, mood_face
 
 TILE_W = 96.0
@@ -445,10 +446,17 @@ def export_people(sheet, manifest):
             sheet.add(f"{look}_sentado_{expr}", _seated(sheet.D, iso, spec, expr), SEATED_BOUNDS)
         for rotation in (1, 2):
             sheet.add(f"{look}_sentado_costas_r{rotation}", _seated(sheet.D, iso, spec, "feliz", rotation), SEATED_BOUNDS)
+    # Robô Garçom (DT-082): os mesmos quadros do garçom, com a bandeja no mesmo lugar
+    for view, back in (("frente", False), ("costas", True)):
+        for pose in WALK:
+            sheet.add(f"robo_{view}_{pose}", robot3.robot_waiter(sheet.D, 0, 0, PERSON_SCALE, 1, pose, back), STANDING_BOUNDS)
+            sheet.add(f"robo_{view}_{pose}_bandeja", robot3.robot_waiter(sheet.D, 0, 0, PERSON_SCALE, 1, pose, back, TRAY_EMPTY),
+                      STANDING_BOUNDS)
     tray_x, tray_y, tray_w = TRAY_FOOD
     manifest["characters"] = {
         "customers": list(CUSTOMERS),
         "waiter": "garcom",
+        "robot_waiter": "robo",
         # Centro e largura do prato na bandeja, em pixels de mundo, com os pés em (0, 0), olhando para a direita.
         "tray_food": [round(tray_x * PERSON_SCALE * WORLD, 2), round(tray_y * PERSON_SCALE * WORLD, 2),
                       round(tray_w * PERSON_SCALE * WORLD, 2)],

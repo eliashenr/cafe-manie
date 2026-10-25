@@ -1615,6 +1615,30 @@
     251.67
    ]
   },
+  "machine_coffee_smart_r0": {
+   "anchor": [
+    109.67,
+    258.67
+   ]
+  },
+  "machine_coffee_smart_r1": {
+   "anchor": [
+    109.67,
+    258.67
+   ]
+  },
+  "machine_coffee_smart_r2": {
+   "anchor": [
+    109.67,
+    258.67
+   ]
+  },
+  "machine_coffee_smart_r3": {
+   "anchor": [
+    109.67,
+    258.67
+   ]
+  },
   "trophy_bronze_r0": {
    "anchor": [
     87.67,
@@ -4327,6 +4351,222 @@
     205.33
    ]
   },
+  "robo_frente_em_pe": {
+   "anchor": [
+    36.0,
+    209.33
+   ]
+  },
+  "robo_frente_em_pe_bandeja": {
+   "anchor": [
+    36.0,
+    209.33
+   ]
+  },
+  "robo_frente_passo_0": {
+   "anchor": [
+    29.0,
+    209.33
+   ]
+  },
+  "robo_frente_passo_0_bandeja": {
+   "anchor": [
+    29.0,
+    209.33
+   ]
+  },
+  "robo_frente_passo_1": {
+   "anchor": [
+    29.0,
+    211.33
+   ]
+  },
+  "robo_frente_passo_1_bandeja": {
+   "anchor": [
+    29.0,
+    211.33
+   ]
+  },
+  "robo_frente_passo_2": {
+   "anchor": [
+    34.0,
+    212.33
+   ]
+  },
+  "robo_frente_passo_2_bandeja": {
+   "anchor": [
+    34.0,
+    212.33
+   ]
+  },
+  "robo_frente_passo_3": {
+   "anchor": [
+    39.0,
+    211.33
+   ]
+  },
+  "robo_frente_passo_3_bandeja": {
+   "anchor": [
+    39.0,
+    211.33
+   ]
+  },
+  "robo_frente_passo_4": {
+   "anchor": [
+    41.0,
+    209.33
+   ]
+  },
+  "robo_frente_passo_4_bandeja": {
+   "anchor": [
+    41.0,
+    209.33
+   ]
+  },
+  "robo_frente_passo_5": {
+   "anchor": [
+    39.0,
+    207.33
+   ]
+  },
+  "robo_frente_passo_5_bandeja": {
+   "anchor": [
+    39.0,
+    207.33
+   ]
+  },
+  "robo_frente_passo_6": {
+   "anchor": [
+    34.0,
+    206.33
+   ]
+  },
+  "robo_frente_passo_6_bandeja": {
+   "anchor": [
+    34.0,
+    206.33
+   ]
+  },
+  "robo_frente_passo_7": {
+   "anchor": [
+    29.0,
+    207.33
+   ]
+  },
+  "robo_frente_passo_7_bandeja": {
+   "anchor": [
+    29.0,
+    207.33
+   ]
+  },
+  "robo_costas_em_pe": {
+   "anchor": [
+    36.0,
+    209.33
+   ]
+  },
+  "robo_costas_em_pe_bandeja": {
+   "anchor": [
+    36.0,
+    209.33
+   ]
+  },
+  "robo_costas_passo_0": {
+   "anchor": [
+    29.0,
+    209.33
+   ]
+  },
+  "robo_costas_passo_0_bandeja": {
+   "anchor": [
+    29.0,
+    209.33
+   ]
+  },
+  "robo_costas_passo_1": {
+   "anchor": [
+    29.0,
+    211.33
+   ]
+  },
+  "robo_costas_passo_1_bandeja": {
+   "anchor": [
+    29.0,
+    211.33
+   ]
+  },
+  "robo_costas_passo_2": {
+   "anchor": [
+    34.0,
+    212.33
+   ]
+  },
+  "robo_costas_passo_2_bandeja": {
+   "anchor": [
+    34.0,
+    212.33
+   ]
+  },
+  "robo_costas_passo_3": {
+   "anchor": [
+    39.0,
+    211.33
+   ]
+  },
+  "robo_costas_passo_3_bandeja": {
+   "anchor": [
+    39.0,
+    211.33
+   ]
+  },
+  "robo_costas_passo_4": {
+   "anchor": [
+    41.0,
+    209.33
+   ]
+  },
+  "robo_costas_passo_4_bandeja": {
+   "anchor": [
+    41.0,
+    209.33
+   ]
+  },
+  "robo_costas_passo_5": {
+   "anchor": [
+    39.0,
+    207.33
+   ]
+  },
+  "robo_costas_passo_5_bandeja": {
+   "anchor": [
+    39.0,
+    207.33
+   ]
+  },
+  "robo_costas_passo_6": {
+   "anchor": [
+    34.0,
+    206.33
+   ]
+  },
+  "robo_costas_passo_6_bandeja": {
+   "anchor": [
+    34.0,
+    206.33
+   ]
+  },
+  "robo_costas_passo_7": {
+   "anchor": [
+    29.0,
+    207.33
+   ]
+  },
+  "robo_costas_passo_7_bandeja": {
+   "anchor": [
+    29.0,
+    207.33
+   ]
+  },
   "predio_brownstone": {
    "anchor": [
     436.67,
@@ -5712,6 +5952,18 @@
    "anchor": [
     8.48,
     329.33
+   ]
+  },
+  "enfeite_painel_digital_R": {
+   "anchor": [
+    2.48,
+    263.24
+   ]
+  },
+  "enfeite_painel_digital_L": {
+   "anchor": [
+    2.48,
+    327.33
    ]
   },
   "enfeite_porta_R": {
@@ -7280,6 +7532,12 @@
    "2": "machine_juice_r2",
    "3": "machine_juice_r3"
   },
+  "machine_coffee_smart": {
+   "0": "machine_coffee_smart_r0",
+   "1": "machine_coffee_smart_r1",
+   "2": "machine_coffee_smart_r2",
+   "3": "machine_coffee_smart_r3"
+  },
   "trophy_bronze": {
    "0": "trophy_bronze_r0",
    "1": "trophy_bronze_r0",
@@ -7611,6 +7869,7 @@
    "cliente_12"
   ],
   "waiter": "garcom",
+  "robot_waiter": "robo",
   "tray_food": [
    31.63,
    -70.4,

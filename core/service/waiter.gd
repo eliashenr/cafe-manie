@@ -18,6 +18,8 @@ enum State {
 }
 
 var state := State.IDLE
+## Robô Garçom (DT-082): só o visual muda; a CafeSimulation marca na contratação.
+var robot := false
 ## Pedido em andamento (CafeSimulation.Order) ou null.
 var order: RefCounted
 ## Fogão de onde vai buscar o prato pronto (&"" se nenhum).

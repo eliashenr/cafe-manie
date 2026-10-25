@@ -4,6 +4,13 @@
 
 🟢 **CONCLUÍDO**
 
+**Redesign "Nova York Futurista", etapa 6: o toque futurista** (DT-082)
+
+- **Robô Garçom:** do terceiro garçom em diante, quem chega é um robô, com visor e olhos de LED, colete e gravata-borboleta, flutuando. Ele trabalha igual aos outros garçons.
+  - Você tem 2 garçons: **o próximo que contratar já é o robô** (o botão da barra diz "Robô").
+- **Máquina de Café Inteligente** (Cozinha, nível 7): tela de toque ciano e faixa de LED; faz os mesmos cafés.
+- **Painel Digital** de cardápio (Paredes, nível 4): acende em ciano à noite.
+
 **Redesign "Nova York Futurista", etapa 5: o café** (DT-081)
 
 - **Letreiro neon com o nome do seu café**, em cima da parede do fundo. Ele troca quando você troca o nome e brilha mais à noite.
@@ -508,6 +515,10 @@
 
 🧪 **TESTADO**
 
+- **Redesign, etapa 6: 726 testes automatizados PASSARAM.**
+  - **Novos:** do terceiro garçom em diante é robô, com a mesma velocidade; o save traz o robô de volta; ele usa o próprio desenho em todos os quadros; o botão e a pergunta avisam; a máquina inteligente faz café e está na loja; o painel digital acende à noite e está na loja.
+  - **Fotos conferidas:** o robô levando um bolo, a máquina inteligente e o painel digital no café.
+  - **Cena principal: PASSOU**, zero erros.
 - **Redesign, etapa 5: 720 testes automatizados PASSARAM.**
   - **Novos:** o letreiro mostra o nome e acompanha a troca e a expansão; o neon mantém a luz à noite; o acabamento é de madeira escura nas paredes e na mureta; a arandela está no catálogo e na loja, acende à noite, e nenhum item é janela e luz ao mesmo tempo.
   - **Fotos conferidas:** o café de tijolo e madeira, de dia e à noite, com as arandelas, os janelões e o letreiro.

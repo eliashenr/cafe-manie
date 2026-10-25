@@ -48,7 +48,10 @@ func test_drink_data_is_valid_and_every_drink_has_its_machine() -> void:
 	var machines := {}
 	for definition in sim.furniture.all():
 		if definition.category == FurnitureDefinition.Category.MACHINE:
-			machines[definition.machine] = definition
+			# a mais fácil de cada tipo (a Máquina de Café Inteligente, DT-082, faz o mesmo café num nível maior)
+			var known: FurnitureDefinition = machines.get(definition.machine)
+			if known == null or definition.min_level < known.min_level:
+				machines[definition.machine] = definition
 	assert_eq(machines.size(), 3, "máquinas de café, de sucos e de frozen")
 	for drink in sim.drinks.all():
 		assert_true(drink.is_valid(), String(drink.id))

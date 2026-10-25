@@ -44,6 +44,8 @@ O PO mandou duas imagens de referência e um prompt detalhado pedindo a reformul
 
 **O café (DT-081):** letreiro neon ciano com o nome do café e sublinhado rosa em cima da parede do fundo, acabamento de madeira escura (`#7a4b31`) nas paredes e na mureta, itens de parede que acendem à noite (Arandela Industrial, Neon de Xícara).
 
+**Toque futurista (DT-082):** Robô Garçom branco com visor de LED ciano, colete azul-marinho e base flutuante; Máquina de Café Inteligente de vidro escuro com tela ciano; Painel Digital de cardápio. O ciano aparece só nos detalhes de luz.
+
 **Etapas:** ver `docs/roadmap.md` ("Redesign Nova York Futurista").
 
 ## Direção anterior: "Esquina Nostálgica" (30/09/2026)

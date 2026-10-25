@@ -19,6 +19,10 @@ extends CanvasLayer
 const ICON_BUTTON_SIZE := Vector2(84, 74)
 ## Espaço entre os botões da faixa: com 9 ícones, ela cabe entre a carinha da satisfação e a borda direita.
 const ICON_SEPARATION := 6
+## Robô Garçom (DT-082): o nome curto no botão e a pergunta da contratação.
+const ROBOT_WAITER_SHORT := "Robô"
+const ROBOT_WAITER_QUESTION := ("Contratar o Robô Garçom por %s Café Ouro? Ele trabalha igual a um garçom: busca os pratos "
+	+ "prontos nos fogões e serve as mesas.")
 ## Cartões por página da loja: 5 colunas por 3 linhas (DT-077).
 const ITEMS_PER_PAGE := 15
 const SHOP_COLUMNS := 5
@@ -723,12 +727,13 @@ func _add_hire_button() -> void:
 	hire.custom_minimum_size = Vector2(100, ICON_BUTTON_SIZE.y)
 	_updaters.append(func() -> void:
 		var price := simulation.next_waiter_price()
+		var who := ROBOT_WAITER_SHORT if simulation.next_waiter_is_robot() else "Garçom"
 		if price < 0:
 			hire.text = "Garçons\nCompleto"
 		elif simulation.next_waiter_level() > simulation.progression.level:
-			hire.text = "Garçom\nNível %d" % simulation.next_waiter_level()
+			hire.text = "%s\nNível %d" % [who, simulation.next_waiter_level()]
 		else:
-			hire.text = "Garçom\n%s" % UiTheme.thousands(price)
+			hire.text = "%s\n%s" % [who, UiTheme.thousands(price)]
 		hire.disabled = simulation.can_hire_waiter() != ServiceResult.OK)
 
 
@@ -736,6 +741,10 @@ func _add_hire_button() -> void:
 func ask_hire_waiter() -> void:
 	var price := cafe.simulation.next_waiter_price()
 	if price < 0:
+		return
+	if cafe.simulation.next_waiter_is_robot():
+		_ask("Contratar o Robô Garçom?", ROBOT_WAITER_QUESTION % UiTheme.thousands(price), "Contratar",
+			func() -> void: cafe.hire_waiter())
 		return
 	_ask("Contratar garçom?", "Contratar mais um garçom por %s Café Ouro? Ele busca os pratos prontos nos fogões e serve as mesas." % [
 		UiTheme.thousands(price)], "Contratar", func() -> void: cafe.hire_waiter())

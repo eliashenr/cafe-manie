@@ -199,5 +199,35 @@ def juice_machine(D, iso, x, y, front="R"):
     return o
 
 
+def smart_coffee_machine(D, iso, x, y, front="R"):
+    """Máquina de Café Inteligente (DT-082): corpo de vidro escuro sobre o armário branco, a tela de toque ciano com a
+    xícara e a barra do preparo, a faixa de LED no alto e o bico cromado com a xícara embaixo."""
+    k = K(iso)
+    o, (bx, by, w, d, h0) = _cabinet(D, iso, x, y, front, "#e9eef3")
+    mx, my, mw, md, mh = bx + 0.1, by + 0.14, w - 0.2, d - 0.28, 34 * k
+    o += box3(D, iso, mx, my, mw, md, mh, "#1d2433", z=h0, top="#2a3346", gloss=True)
+    o += box3(D, iso, mx, my, mw, md, 2.6 * k, "#31d7ff", z=h0 + mh - 2.6 * k, faces="LR", bevel=False)
+    o += cyl3(D, iso, mx + mw * 0.5, my + md * 0.5, 0.08, h0 + mh, h0 + mh + 5 * k, "#cfd8e2", top="#ffffff", sw=0.8)
+    if front is not None:
+        q = lambda u0, u1, v0, v1: iso.quad(front, mx, my, mw, md, h0, mh, u0, u1, v0, v1)
+        o += P(q(0.12, 0.88, 0.0, 0.07), "#3a3c46", INK3, 0.8)
+        o += P(q(0.16, 0.84, 0.5, 0.9), D.lin([(0, "#0f4a73"), (1, "#081a33")], 0, 0, 0, 1), "#31d7ff", 0.9)
+        cx, cy = iso.face_center(front, mx, my, mw, md, h0, mh, 0.4, 0.74)
+        o += path(f"M{f(cx - 3 * k)},{f(cy - 2.2 * k)} h{f(5 * k)} v{f(2.4 * k)} a{f(2.5 * k)},{f(2.5 * k)} 0 0,1 {f(-5 * k)},0 Z",
+                  "none", "#7ff0ff", 0.8)
+        o += path(f"M{f(cx + 2 * k)},{f(cy - 1.6 * k)} a{f(1.4 * k)},{f(1.4 * k)} 0 0,1 0,{f(2.6 * k)}", "none", "#7ff0ff", 0.7)
+        a = iso.face_center(front, mx, my, mw, md, h0, mh, 0.26, 0.58)
+        b = iso.face_center(front, mx, my, mw, md, h0, mh, 0.74, 0.58)
+        m = iso.face_center(front, mx, my, mw, md, h0, mh, 0.56, 0.58)
+        o += line(a[0], a[1], b[0], b[1], "#1d4f73", 1.6)
+        o += line(a[0], a[1], m[0], m[1], "#31d7ff", 1.6)
+        px, py = iso.face_center(front, mx, my, mw, md, h0, mh, 0.5, 0.42)
+        o += path(f"M{f(px - 2.6 * k)},{f(py)} h{f(5.2 * k)} l{f(-1 * k)},{f(3.4 * k)} h{f(-3.2 * k)} Z", CHROME, INK3, 0.7)
+        ux, uy = iso.face_center(front, mx, my, mw, md, h0, mh, 0.5, 0.08)
+        o += path(f"M{f(ux - 3 * k)},{f(uy - 5 * k)} h{f(6 * k)} l{f(-0.8 * k)},{f(5 * k)} h{f(-4.4 * k)} Z", "#ffffff", INK3, 0.7)
+    return o
+
+
 # Máquinas por id do móvel no jogo.
-MACHINES = {"machine_coffee": coffee_machine, "machine_juice": juice_machine}
+MACHINES = {"machine_coffee": coffee_machine, "machine_juice": juice_machine,
+            "machine_coffee_smart": smart_coffee_machine}

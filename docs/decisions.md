@@ -4,6 +4,25 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-082 — Redesign, etapa 6: o toque futurista
+
+**Problema:**
+- A referência é uma Nova York de um futuro próximo: robôs e painéis digitais no meio do café, sem virar "tudo neon".
+- Nada disso podia mudar as regras: o garçom, as máquinas e os itens de parede já têm mecânicas testadas e balanceadas.
+
+**Decisão:**
+- **Robô Garçom:** do **terceiro garçom em diante**, quem chega é um robô (`robot_waiter_from` em `data/config/economy.tres`).
+  - Ele trabalha igual aos outros (mesma velocidade e as mesmas tarefas); só o visual muda.
+  - O desenho: casco branco, visor escuro com olhos e sorriso de LED ciano, antena, colete azul-marinho de garçom com gravata-borboleta e uma base que flutua com o jato ciano. No andar, o corpo balança e os braços acompanham.
+  - Usa os mesmos quadros do garçom (parado e 8 passos, de frente e de costas, com e sem bandeja), com a bandeja no mesmo lugar: o prato do jogo cai certo.
+  - O botão da barra diz "Robô" e a pergunta da contratação avisa que ele trabalha igual a um garçom.
+  - O save guarda só quantos garçons há; ao carregar, os robôs voltam pela ordem de contratação.
+- **Máquina de Café Inteligente** (Cozinha, coleção Anos 2010, nível 7, 950 de ouro, +12 de beleza): vidro escuro sobre um armário branco, tela de toque ciano com a xícara e a barra do preparo, faixa de LED. Faz os mesmos cafés da máquina clássica.
+- **Painel Digital** (Paredes, coleção Anos 2010, nível 4, 160 de ouro, +6 de beleza): o cardápio numa tela com MENU em ciano, os pratos e os preços em dourado; acende à noite em ciano.
+- **Por que assim:** o futuro aparece aos poucos, conforme o café cresce (o robô chega no nível 5, a máquina no 7), e convive com o tijolo, a madeira e o neon das etapas anteriores, como na referência.
+
+---
+
 ## DT-081 — Redesign, etapa 5: o café no estilo Nova York
 
 **Problema:**
