@@ -4,6 +4,29 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-083 — Redesign, etapa 7: revisão visual e QA
+
+**Problema:**
+- Depois das etapas 1 a 6, faltava olhar todas as telas juntas, comparar com a referência e caçar o que ainda estava no estilo antigo.
+
+**O que a revisão achou e corrigiu:**
+- **Livro de receitas:** as abas eram pílulas brancas e as receitas bloqueadas, cartões claros. Agora as abas usam a mesma pílula escura das coleções da loja (uma função só, `_style_chip`) e a receita bloqueada é um cartão escuro com o texto cinza metálico.
+- **Botões de texto da barra** (Tudo, Limpar, Renovar, entregas): eram blocos azuis esticados até a altura dos ícones. Agora usam os papéis do tema (fantasma para Tudo e Limpar; verde para mandar a entrega e renovar o troféu) e ficam na altura deles.
+- **Loja:** sem cupons, o botão dizia "Indisponível". Agora diz o que falta ("Faltam cupons" ou "Falta ouro").
+- **Barra da missão no HUD:** era verde; agora é ciano como todo progresso (verde fica para o que já terminou).
+- **Letreiro neon:** ficava alto demais e sumia atrás do HUD. Agora fica preso no alto da parede, meio para dentro dela, sem precisar afastar a câmera.
+
+**Conferido sem mudança:** construção, pausa, café fechado, troféu, crítico, bebidas, cupons, evento, a loja em tela larga (20:9) e em tablet (4:3).
+
+**Comparação com a referência:**
+- **Chegou perto:** a interface escura e premium (HUD, loja, janelas), a paleta com uma função por cor, Nova York de tijolo com caixas d'água e escadas de incêndio, táxis, a noite azul com janelas acesas e o café quente, o letreiro neon, o robô e os painéis digitais.
+- **Limite honesto:** as imagens de referência parecem renderização 3D. A arte do Café Manie é vetorial, gerada por código e original; ela segue a atmosfera, as cores, os materiais e a luz, mas não chega ao nível de um render.
+- **Fora de propósito:** o que a referência mostra e não existe no jogo (telefone, estatísticas, "Seja VIP") não ganhou botão sem função.
+
+**QA final:** todos os testes, a jornada completa 3 vezes seguidas sem falha, a cena principal sem erros e o desempenho com o café cheio no tamanho máximo (183 quadros por segundo de dia e 150 à noite, neste PC).
+
+---
+
 ## DT-082 — Redesign, etapa 6: o toque futurista
 
 **Problema:**

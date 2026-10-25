@@ -1,10 +1,10 @@
 class_name NeonSign
 extends Node2D
-## Letreiro neon com o nome do café (DT-081), em pé em cima da parede do fundo da direita: uma placa escura, o nome
+## Letreiro neon com o nome do café (DT-081), preso no alto da parede do fundo da direita: uma placa escura, o nome
 ## em tubos ciano com o miolo branco, um sublinhado rosa e o halo. O neon tem luz própria: à noite ele não escurece
 ## com o resto (a cor vem compensada pelo NightTint) e o halo cresce.
 
-const FONT_SIZE := 30
+const FONT_SIZE := 26
 const TUBE_COLOR := UiTheme.CYAN
 const ACCENT_COLOR := Color("ff5fa8")
 const CORE_COLOR := Color(1, 1, 1, 0.95)
@@ -13,9 +13,9 @@ const BOARD_COLOR := Color(0.03, 0.06, 0.12, 0.88)
 const BOARD_EDGE := Color(0.19, 0.84, 1.0, 0.45)
 const BOARD_PADDING := Vector2(18, 10)
 const BOARD_RADIUS := 8
-## Quanto a placa fica acima do alto da parede (as duas hastes de ferro preenchem o vão).
-const LIFT := 16.0
-const POST_COLOR := Color("2a2c34")
+## A placa fica presa no alto da parede: esta parte dela desce pela parede (o resto fica acima), para caber no
+## enquadramento da câmera sem afastar o café.
+const DROP := 14.0
 ## Halo: camadas, quanto cada uma alarga e a transparência de dia e no meio da noite.
 const HALO_LAYERS := 4
 const HALO_STEP := 4
@@ -72,9 +72,7 @@ func _draw() -> void:
 	var label := shown_text()
 	var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE).x
 	draw_set_transform_matrix(Transform2D(WALL_SLOPE, Vector2(0.0, 1.0), anchor_point()))
-	for x in [-width / 3.0, width / 3.0]:
-		draw_line(Vector2(x, 0.0), Vector2(x, -LIFT), POST_COLOR, 3.0, true)
-	var board := Rect2(-width / 2.0 - BOARD_PADDING.x, -LIFT - FONT_SIZE - BOARD_PADDING.y * 2.0,
+	var board := Rect2(-width / 2.0 - BOARD_PADDING.x, DROP - FONT_SIZE - BOARD_PADDING.y * 2.0,
 		width + BOARD_PADDING.x * 2.0, FONT_SIZE + BOARD_PADDING.y * 2.0)
 	var box := StyleBoxFlat.new()
 	box.bg_color = BOARD_COLOR

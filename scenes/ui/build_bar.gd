@@ -838,6 +838,13 @@ func _add_chip(chip_name: String, text: String, color: Color, active: bool, coll
 	chip.button_pressed = active
 	chip.focus_mode = Control.FOCUS_NONE
 	chip.custom_minimum_size = Vector2(0, 34)
+	_style_chip(chip, color, active)
+	chip.pressed.connect(func() -> void: show_shop_collection(collection))
+	_chips.add_child(chip)
+
+
+## Pílula escura com a borda na cor dela; a escolhida fica cheia, com brilho (coleções da loja e abas do livro).
+func _style_chip(chip: Button, color: Color, active: bool) -> void:
 	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
 		var box := StyleBoxFlat.new()
 		box.bg_color = color if active else (Color(color, 0.22) if state.begins_with("hover") else Color(0, 0, 0, 0.18))
@@ -857,8 +864,6 @@ func _add_chip(chip_name: String, text: String, color: Color, active: bool, coll
 		chip.add_theme_color_override(color_name, Color.WHITE if active else color.lightened(0.5))
 	chip.add_theme_constant_override("outline_size", 0)
 	chip.add_theme_font_size_override("font_size", 14)
-	chip.pressed.connect(func() -> void: show_shop_collection(collection))
-	_chips.add_child(chip)
 
 
 func _add_furniture_item(furniture: FurnitureDefinition) -> void:
@@ -1100,11 +1105,17 @@ func _refresh_detail() -> void:
 	if card.locked_level > 0:
 		_buy_button.text = "Nível %d" % card.locked_level
 	elif card.disabled:
-		_buy_button.text = card.note if not card.note.is_empty() else "Indisponível"
+		_buy_button.text = card.note if not card.note.is_empty() else (_missing_text(card) if not card.affordable
+			else "Indisponível")
 	elif not card.note.is_empty():
 		_buy_button.text = "Colocar no café" if resource is FurnitureDefinition else "Usar"
 	else:
 		_buy_button.text = "Comprar"
+
+
+## O que falta para comprar: cupons (na loja de troca) ou ouro.
+func _missing_text(card: ShopItemButton) -> String:
+	return "Faltam cupons" if card.price_icon == "icone_cupom" else "Falta ouro"
 
 
 ## Para que serve o item e os benefícios dele, tirados dos dados (DT-077).
@@ -1269,7 +1280,7 @@ func _show_delivery_controls() -> void:
 			UiTheme.thousands(order.gold)], func() -> void:
 				var index := simulation.delivery.orders.find(order)
 				if index >= 0:
-					cafe.send_delivery(index))
+					cafe.send_delivery(index), UiTheme.SUCCESS_BUTTON)
 		_updaters.append(func() -> void: button.disabled = simulation.kitchen.servings_of(order.recipe) < order.servings)
 
 
@@ -1311,7 +1322,7 @@ func _show_trophy_controls(trophy_id: StringName) -> void:
 	var simulation := cafe.simulation
 	var definition := cafe.layout.get_placement(trophy_id).definition
 	var renew := _add_text_button("RenewButton", "Renovar · %s ouro" % UiTheme.thousands(definition.renew_price),
-		func() -> void: ask_renew_trophy(trophy_id))
+		func() -> void: ask_renew_trophy(trophy_id), UiTheme.SUCCESS_BUTTON)
 	_updaters.append(func() -> void:
 		renew.disabled = simulation.trophies.charges_left(trophy_id) >= definition.trophy_dishes \
 			or not simulation.wallet.can_afford(Wallet.SOFT, definition.renew_price))
@@ -1473,16 +1484,16 @@ func ask_confirm_paint() -> void:
 		"Reformar", func() -> void: cafe.confirm_paint())
 
 
-func _add_text_button(button_name: String, text: String, action: Callable) -> Button:
+## Botão de texto da barra (DT-083): com o papel do tema (fantasma para Tudo e Limpar, verde para mandar a entrega e
+## renovar o troféu) e da altura dele, sem esticar até a dos ícones.
+func _add_text_button(button_name: String, text: String, action: Callable, role := UiTheme.GHOST_BUTTON) -> Button:
 	var button := Button.new()
 	button.name = button_name
 	button.text = text
 	button.custom_minimum_size = Vector2(96, 52)
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_NONE
-	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
-		button.add_theme_stylebox_override(state, UiTheme.button_box(UiTheme.BLUE.lightened(0.1) if state == "hover" else UiTheme.BLUE,
-			UiTheme.BLUE_DARK))
-	button.add_theme_constant_override("outline_size", 0)
+	UiTheme.role(button, role)
 	button.add_theme_font_size_override("font_size", 17)
 	button.pressed.connect(func() -> void: action.call())
 	_buttons.add_child(button)
@@ -1607,7 +1618,7 @@ func _show_recipe_book(stove_id: StringName) -> HBoxContainer:
 	return cards
 
 
-## Aba do livro: pílula na cor da aba, cheia quando é a aberta.
+## Aba do livro: pílula escura na cor da aba, cheia quando é a aberta (como as coleções da loja).
 func _book_chip(book: RecipeBookDefinition, active: bool) -> Button:
 	var chip := Button.new()
 	chip.name = "Book_" + String(book.id)
@@ -1616,21 +1627,7 @@ func _book_chip(book: RecipeBookDefinition, active: bool) -> Button:
 	chip.button_pressed = active
 	chip.focus_mode = Control.FOCUS_NONE
 	chip.custom_minimum_size = Vector2(92, 32)
-	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
-		var box := StyleBoxFlat.new()
-		box.bg_color = book.color if active else (Color.WHITE if state != "hover" else book.color.lightened(0.85))
-		box.border_color = book.color.darkened(0.2)
-		box.set_border_width_all(2)
-		box.set_corner_radius_all(16)
-		box.content_margin_left = 14
-		box.content_margin_right = 14
-		box.anti_aliasing = true
-		chip.add_theme_stylebox_override(state, box)
-	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
-		chip.add_theme_color_override(color_name, Color.WHITE if active else book.color.darkened(0.35))
-	chip.add_theme_constant_override("outline_size", 3 if active else 0)
-	chip.add_theme_color_override("font_outline_color", book.color.darkened(0.45))
-	chip.add_theme_font_size_override("font_size", 15)
+	_style_chip(chip, book.color, active)
 	return chip
 
 
@@ -1681,10 +1678,10 @@ func _card_button(button_name: String, art: ArtSprites.Sprite, action: Callable,
 	button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	var normal := UiTheme.card_box(12, 6)
 	normal.shadow_size = 2
-	var hover := UiTheme.card_box(12, 6, UiTheme.BLUE)
+	var hover := UiTheme.card_box(12, 6, UiTheme.CYAN)
 	hover.shadow_size = 2
-	var disabled := UiTheme.card_box(12, 6)
-	disabled.bg_color = Color("f1f4f8")
+	var disabled := UiTheme.card_box(12, 6, Color(UiTheme.CARD_EDGE, 0.5))
+	disabled.bg_color = UiTheme.NAVY_DEEP
 	disabled.shadow_size = 0
 	button.add_theme_stylebox_override("normal", normal)
 	button.add_theme_stylebox_override("hover", hover)
@@ -1694,7 +1691,7 @@ func _card_button(button_name: String, art: ArtSprites.Sprite, action: Callable,
 	button.add_theme_stylebox_override("disabled", disabled)
 	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
 		button.add_theme_color_override(color_name, UiTheme.TEXT)
-	button.add_theme_color_override("font_disabled_color", UiTheme.DISABLED)
+	button.add_theme_color_override("font_disabled_color", UiTheme.METAL)
 	button.add_theme_constant_override("outline_size", 0)
 	button.add_theme_font_size_override("font_size", 14)
 	button.pressed.connect(func() -> void: action.call())

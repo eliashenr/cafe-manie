@@ -46,7 +46,9 @@ O PO mandou duas imagens de referência e um prompt detalhado pedindo a reformul
 
 **Toque futurista (DT-082):** Robô Garçom branco com visor de LED ciano, colete azul-marinho e base flutuante; Máquina de Café Inteligente de vidro escuro com tela ciano; Painel Digital de cardápio. O ciano aparece só nos detalhes de luz.
 
-**Etapas:** ver `docs/roadmap.md` ("Redesign Nova York Futurista").
+**Revisão (DT-083):** pílulas escuras com a borda na cor (coleções e abas do livro), cartões bloqueados escuros, botões de texto com os papéis do tema e progresso sempre em ciano (verde só para o que terminou).
+
+**Etapas:** ver `docs/roadmap.md` ("Redesign Nova York Futurista"), as 7 concluídas.
 
 ## Direção anterior: "Esquina Nostálgica" (30/09/2026)
 

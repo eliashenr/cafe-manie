@@ -113,7 +113,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **4. Nova York à noite:** prédios, janelas acesas, táxis amarelos, postes e rua molhada (DT-080).
 - [x] **5. A cafeteria:** letreiro neon com o nome do café, acabamento de madeira, janelas e itens de parede que acendem à noite e a Arandela Industrial nova (DT-081). Tijolo, madeira, janelões e inox seguem como compras da loja.
 - [x] **6. Toque futurista:** robô garçom, máquina de café inteligente e painéis digitais (DT-082).
-- [ ] **7. Revisão visual e QA** comparando com a referência.
+- [x] **7. Revisão visual e QA** comparando com a referência (DT-083).
 
 ## Balanceamento (23/10/2026)
 

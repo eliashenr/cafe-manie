@@ -58,7 +58,7 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 - **No celular de verdade:** a medição foi neste PC. Num celular, espere de 3 a 5 vezes menos quadros por segundo, ainda acima de 30 com o café cheio.
 - **O toque com o dedo de verdade:** os toques foram simulados (como em todos os testes de cena).
 
-## Cobertura atual — 726 testes
+## Cobertura atual — 731 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -135,6 +135,7 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 | `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento (com as paredes) |
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
 | `integration/test_service_scene.gd` | 12 | aviso de nível alto com o ouro; jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
+| `integration/test_visual_review_scene.gd` | 5 | **revisão visual (DT-083):** abas do livro como pílulas escuras; receita bloqueada em cartão escuro; Tudo e Limpar como botões fantasma na altura certa; a loja diz "Faltam cupons"; progresso em ciano |
 | `integration/test_futuristic_scene.gd` | 6 | **toque futurista (DT-082):** do terceiro garçom em diante é o Robô Garçom (mesma velocidade, volta do save, desenho próprio em todos os quadros); botão e pergunta da contratação avisam; Máquina de Café Inteligente faz café e está na loja; Painel Digital acende à noite e está na loja |
 | `integration/test_ny_cafe_scene.gd` | 5 | **o café em Nova York (DT-081):** letreiro neon com o nome (acompanha a troca de nome e a expansão, "Café" sem nome); o neon com luz própria à noite; acabamento de madeira nas paredes e na mureta; Arandela Industrial no catálogo e na loja, acendendo à noite; nenhum item é janela e luz ao mesmo tempo |
 | `integration/test_city_night_scene.gd` | 7 | **Nova York à noite (DT-080):** cor das luzes compensa o NightTint; luzes ligam e desligam com a escuridão; luz do salão cobre o café e acompanha a expansão; todo prédio com a camada das janelas acesas, dentro dele; de dia nada aceso; à noite janelas, salão, postes (com a poça) e faróis acesos; a cidade redesenha em passos |

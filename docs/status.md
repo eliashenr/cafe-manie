@@ -4,6 +4,17 @@
 
 🟢 **CONCLUÍDO**
 
+**Redesign "Nova York Futurista" COMPLETO: etapa 7, revisão visual e QA** (DT-083)
+
+- Revisei todas as telas lado a lado com a referência e acertei o que ainda estava no estilo antigo:
+  - as abas do livro de receitas e as receitas bloqueadas, que ainda eram claras;
+  - os botões Tudo, Limpar, Renovar e os das entregas, que eram blocos azuis grandes;
+  - a loja, que dizia "Indisponível" quando faltavam cupons (agora diz o que falta);
+  - a barra da missão, agora ciano como todo progresso;
+  - o letreiro neon, que ficava atrás do HUD (agora fica preso no alto da parede).
+- **As 7 etapas do redesign estão prontas:** HUD, loja, janelas, Nova York à noite, o café, o toque futurista e esta revisão.
+- **Limite honesto:** a referência parece um render 3D; a nossa arte é vetorial e original. Ela segue as cores, os materiais e a luz, mas não chega ao nível de foto.
+
 **Redesign "Nova York Futurista", etapa 6: o toque futurista** (DT-082)
 
 - **Robô Garçom:** do terceiro garçom em diante, quem chega é um robô, com visor e olhos de LED, colete e gravata-borboleta, flutuando. Ele trabalha igual aos outros garçons.
@@ -515,6 +526,12 @@
 
 🧪 **TESTADO**
 
+- **Redesign, etapa 7: 731 testes automatizados PASSARAM.**
+  - **Novos:** as abas do livro são pílulas escuras como as das coleções; a receita bloqueada é um cartão escuro; Tudo e Limpar são botões "fantasma" na altura certa; a loja diz "Faltam cupons"; o progresso é ciano.
+  - **Jornada completa** rodada 3 vezes seguidas, sem falhar.
+  - **Desempenho:** café cheio no tamanho máximo, 183 quadros por segundo de dia e 150 à noite, neste PC.
+  - **Fotos conferidas:** todas as telas, inclusive celular comprido (20:9) e tablet (4:3).
+  - **Cena principal: PASSOU**, zero erros.
 - **Redesign, etapa 6: 726 testes automatizados PASSARAM.**
   - **Novos:** do terceiro garçom em diante é robô, com a mesma velocidade; o save traz o robô de volta; ele usa o próprio desenho em todos os quadros; o botão e a pergunta avisam; a máquina inteligente faz café e está na loja; o painel digital acende à noite e está na loja.
   - **Fotos conferidas:** o robô levando um bolo, a máquina inteligente e o painel digital no café.

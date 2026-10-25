@@ -664,7 +664,7 @@ func _build_mission_card() -> void:
 	_mission_bar.step = 0.001
 	_mission_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_mission_bar.add_theme_stylebox_override("background", _bar_style(Color(1, 1, 1, 0.1)))
-	_mission_bar.add_theme_stylebox_override("fill", _bar_style(UiTheme.GREEN))
+	_mission_bar.add_theme_stylebox_override("fill", _bar_style(UiTheme.CYAN))  # progresso em ciano (DT-083)
 	progress.add_child(_mission_bar)
 	_mission_count = UiTheme.outlined("", 12, UiTheme.TEXT, Color(0, 0, 0, 0), 0)
 	progress.add_child(_mission_count)
