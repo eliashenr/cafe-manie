@@ -7,7 +7,7 @@
 **Redesign "Nova York Futurista", etapa 6: o toque futurista** (DT-082)
 
 - **Robô Garçom:** do terceiro garçom em diante, quem chega é um robô, com visor e olhos de LED, colete e gravata-borboleta, flutuando. Ele trabalha igual aos outros garçons.
-  - Você tem 2 garçons: **o próximo que contratar já é o robô** (o botão da barra diz "Robô").
+  - Com 2 garçons no café, **o próximo que você contratar já é o robô** (o botão da barra diz "Robô").
 - **Máquina de Café Inteligente** (Cozinha, nível 7): tela de toque ciano e faixa de LED; faz os mesmos cafés.
 - **Painel Digital** de cardápio (Paredes, nível 4): acende em ciano à noite.
 
