@@ -4333,10 +4333,22 @@
     871.0
    ]
   },
+  "predio_brownstone_luz": {
+   "anchor": [
+    377.67,
+    631.0
+   ]
+  },
   "predio_tijolo": {
    "anchor": [
     400.67,
     1203.67
+   ]
+  },
+  "predio_tijolo_luz": {
+   "anchor": [
+    377.67,
+    939.67
    ]
   },
   "predio_deli": {
@@ -4345,10 +4357,22 @@
     807.0
    ]
   },
+  "predio_deli_luz": {
+   "anchor": [
+    252.67,
+    631.0
+   ]
+  },
   "predio_pizza": {
    "anchor": [
     308.67,
     993.67
+   ]
+  },
+  "predio_pizza_luz": {
+   "anchor": [
+    252.67,
+    768.67
    ]
   },
   "predio_azul": {
@@ -4357,16 +4381,34 @@
     1039.0
    ]
   },
+  "predio_azul_luz": {
+   "anchor": [
+    377.67,
+    769.0
+   ]
+  },
   "predio_vidro": {
    "anchor": [
     385.67,
     1185.67
    ]
   },
+  "predio_vidro_luz": {
+   "anchor": [
+    395.67,
+    990.67
+   ]
+  },
   "predio_deco": {
    "anchor": [
     385.67,
     1852.33
+   ]
+  },
+  "predio_deco_luz": {
+   "anchor": [
+    379.67,
+    1644.33
    ]
   },
   "rua_poste": {
@@ -7594,6 +7636,15 @@
     3.0
    ]
   },
+  "building_lights": {
+   "predio_brownstone": "predio_brownstone_luz",
+   "predio_tijolo": "predio_tijolo_luz",
+   "predio_deli": "predio_deli_luz",
+   "predio_pizza": "predio_pizza_luz",
+   "predio_azul": "predio_azul_luz",
+   "predio_vidro": "predio_vidro_luz",
+   "predio_deco": "predio_deco_luz"
+  },
   "props": [
    "rua_poste",
    "rua_hidrante",
@@ -7635,7 +7686,11 @@
    }
   },
   "concrete": "concreto",
-  "concrete_world": 64.0
+  "concrete_world": 64.0,
+  "lamp_head": [
+   29.33,
+   -157.33
+  ]
  },
  "food": {
   "coffee": "prato_coffee",

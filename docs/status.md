@@ -4,6 +4,17 @@
 
 🟢 **CONCLUÍDO**
 
+**Redesign "Nova York Futurista", etapa 4: Nova York à noite** (DT-080)
+
+- **De dia:** calçadas e asfalto em tons de Nova York (cinza-azulado e asfalto escuro), com poças da rua molhada.
+- **À noite, a cidade acende:**
+  - as janelas dos prédios e as vitrines das lojas;
+  - as janelinhas dos arranha-céus ao longe;
+  - os postes, com a poça de luz na calçada;
+  - os faróis dos táxis e carros;
+  - e o **seu café fica com uma luz quente**, contra a rua azulada, como na imagem de referência.
+- O dia e a noite continuam valendo para o jogo (terraço, luminárias e pratos da noite).
+
 **Redesign "Nova York Futurista", etapa 3: as janelas** (DT-079)
 
 - Todas as janelas no mesmo padrão, com **cada botão na cor da função**:
@@ -488,6 +499,11 @@
 
 🧪 **TESTADO**
 
+- **Redesign, etapa 4: 715 testes automatizados PASSARAM.**
+  - **Novos:** a cor das luzes cancela o escuro da noite; as luzes acendem e apagam com a escuridão; a luz do salão cobre o café e acompanha a expansão; todo prédio tem a camada das janelas acesas, dentro dele; de dia nada acende; à noite acendem janelas, salão, postes com a poça e faróis; o entardecer redesenha a cidade em passos.
+  - **Desempenho:** café cheio no tamanho máximo, 193 quadros por segundo de dia e 147 à noite, neste PC.
+  - **Fotos conferidas:** a cidade de dia e à noite.
+  - **Cena principal: PASSOU**, zero erros.
 - **Redesign, etapa 3: 708 testes automatizados PASSARAM.**
   - **Novos:** o papel de cada botão em todas as janelas; o tema define todos os papéis; o café escurece com uma janela aberta e o aviso desce e fica por cima; os cartões do presente marcam hoje e os dias recebidos; só o pacote que rende mais leva o "Melhor valor"; o botão do evento muda de papel a cada quadro.
   - **Fotos conferidas:** moedas, presente diário, conquistas, missões, avatar, filial, vizinhos, evento, nome e pergunta de compra.

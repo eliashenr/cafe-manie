@@ -13,6 +13,13 @@ FLOOR_H = 46.0      # altura de um andar (unidades do desenho)
 GROUND_H = 58.0     # o térreo é mais alto (loja, porta)
 WINDOW = "#9fd2f2"
 WINDOW_LIT = "#ffe7a3"
+# Noite em Nova York (DT-080): a camada "_luz" de cada prédio tem só as janelas acesas, que o jogo mostra à noite.
+# De dia, 18% das janelas aparecem acesas; à noite, as mesmas e mais algumas (o mesmo sorteio, outro limite).
+DAY_LIT = 0.18
+NIGHT_LIT = 0.5
+GLOW = "#ffbf5e"
+GLOW_CORE = "#fff0c2"
+SHOP_GLOW = "#ffd58a"
 
 
 def _q(iso, face, w, d, z, h, u0, u1, v0, v1):
@@ -47,7 +54,8 @@ def _window(D, iso, face, w, d, z, h, u0, u1, v0, v1, frame="#ffffff", lit=False
     return "".join(o)
 
 
-def _windows(D, iso, w, d, z0, floors, floor_h, cols_l, cols_r, frame, lit_seed=3, arch=False, wide=0.56):
+def _windows(D, iso, w, d, z0, floors, floor_h, cols_l, cols_r, frame, lit_seed=3, arch=False, wide=0.56, night=False):
+    """Janelas das duas faces. [param night]: só o brilho das janelas acesas à noite (a camada "_luz")."""
     r = Rng(lit_seed)
     o = []
     for face, cols in (("L", cols_l), ("R", cols_r)):
@@ -55,8 +63,27 @@ def _windows(D, iso, w, d, z0, floors, floor_h, cols_l, cols_r, frame, lit_seed=
             for c in range(cols):
                 u0 = (c + (1 - wide) / 2) / cols
                 u1 = (c + (1 + wide) / 2) / cols
-                o.append(_window(D, iso, face, w, d, z0 + fl * floor_h, floor_h, u0, u1, 0.22, 0.82, frame, r.r() < 0.18, arch))
+                chance = r.r()
+                if night:
+                    if chance < NIGHT_LIT:
+                        o.append(_glow_quad(D, iso, face, w, d, z0 + fl * floor_h, floor_h, u0, u1, 0.22, 0.82))
+                else:
+                    o.append(_window(D, iso, face, w, d, z0 + fl * floor_h, floor_h, u0, u1, 0.22, 0.82, frame,
+                                     chance < DAY_LIT, arch))
     return "".join(o)
+
+
+def _glow_quad(D, iso, face, w, d, z, h, u0, u1, v0, v1, color=GLOW, x0=0.0, y0=0.0):
+    """Janela acesa à noite: clara no meio, laranja quente nas bordas."""
+    q = iso.quad(face, x0, y0, w, d, z, h, u0, u1, v0, v1)
+    return P(q, D.lin([(0, GLOW_CORE), (1, color)], 0, 0, 0, 1), None, 0)
+
+
+def _night_layer(D, glows):
+    """As janelas acesas com um halo desfocado em volta (a luz "vaza" da janela)."""
+    halo = D.raw("brilho_janela", '<filter id="brilho_janela" x="-60%" y="-60%" width="220%" height="220%">'
+                 '<feGaussianBlur stdDeviation="2.6"/></filter>')
+    return f'<g filter="{halo}" opacity="0.9">{glows}</g>{glows}'
 
 
 def _cornice(D, iso, w, d, z, color, h=7.0):
@@ -183,6 +210,54 @@ def building(D, iso, w, d, style):
     return "".join(o)
 
 
+def building_lights(D, iso, w, d, style):
+    """Camada "_luz" do prédio (DT-080): as vitrines da loja e as janelas acesas à noite, nos mesmos lugares."""
+    floors = style["floors"]
+    o = []
+    if style.get("shop"):
+        o.append(_glow_quad(D, iso, "L", w, d, 0, GROUND_H - 8, 0.08, 0.92, 0.05, 0.75, SHOP_GLOW))
+        o.append(_glow_quad(D, iso, "R", w, d, 0, GROUND_H - 8, 0.15, 0.85, 0.05, 0.75, SHOP_GLOW))
+    else:
+        o.append(_windows(D, iso, w, d, 4, 1, GROUND_H - 10, max(1, round(w * 1.2)), max(1, round(d * 1.2)), "", 11,
+                          night=True))
+    o.append(_windows(D, iso, w, d, GROUND_H, floors, FLOOR_H, max(1, round(w * 1.5)), max(1, round(d * 1.5)), "",
+                      style.get("seed", 5), night=True))
+    return _night_layer(D, "".join(o))
+
+
+def glass_tower_lights(D, iso, w, d, floors=10):
+    """Escritórios acesos na torre de vidro: faixas de andar, umas acesas e outras não."""
+    fh = 30.0
+    r = Rng(41)
+    o = []
+    for face, cols in (("L", round(w * 3)), ("R", round(d * 3))):
+        for fl in range(floors):
+            for c in range(cols):
+                if r.r() < 0.42:
+                    o.append(_glow_quad(D, iso, face, w, d, fl * fh, fh, (c + 0.08) / cols, (c + 0.92) / cols, 0.15, 0.85,
+                                        "#ffd98f"))
+    return _night_layer(D, "".join(o))
+
+
+def deco_tower_lights(D, iso, w, d):
+    """Janelas acesas da torre art déco, em cada degrau."""
+    r = Rng(43)
+    o = []
+    z = 0.0
+    for inset, floors in [(0.0, 7), (0.15, 3), (0.28, 2)]:
+        x0, y0 = w * inset, d * inset
+        ww, dd = w * (1 - 2 * inset), d * (1 - 2 * inset)
+        h = floors * FLOOR_H
+        for face, cols in (("L", max(2, round(ww * 2))), ("R", max(2, round(dd * 2)))):
+            for c in range(cols):
+                for fl in range(floors):
+                    if r.r() < NIGHT_LIT:
+                        o.append(_glow_quad(D, iso, face, ww, dd, z + 6 + fl * (h - 10) / floors, (h - 10) / floors,
+                                            (c + 0.3) / cols, (c + 0.7) / cols, 0.12, 0.88, x0=x0, y0=y0))
+        z += h
+    return _night_layer(D, "".join(o))
+
+
 def glass_tower(D, iso, w, d, floors=10, color="#5aa7d8"):
     """Torre moderna de vidro, com um recuo no alto."""
     fh = 30.0
@@ -235,10 +310,11 @@ DECO_HEIGHT = 12 * FLOOR_H + 70
 
 
 def _styled(w, d, style):
-    return ((w, d), building_height(style), lambda D, iso: building(D, iso, w, d, style))
+    return ((w, d), building_height(style), lambda D, iso: building(D, iso, w, d, style),
+            lambda D, iso: building_lights(D, iso, w, d, style))
 
 
-# Prédios da cidade: id -> (pegada em células, altura, desenho).
+# Prédios da cidade: id -> (pegada em células, altura, desenho, camada das janelas acesas à noite).
 BUILDINGS = {
     "predio_brownstone": _styled(3, 2, dict(floors=3, color="#9a5b45", trim="#d9c3a5", stoop=True, arch=True, seed=4,
                                             door="#4a2a1f")),
@@ -248,18 +324,19 @@ BUILDINGS = {
     "predio_pizza": _styled(2, 3, dict(floors=4, color="#7f8fa6", trim="#f1ece2", shop=("PIZZA", "#e8483c"),
                                        fire_escape=True, seed=13)),
     "predio_azul": _styled(3, 2, dict(floors=4, color="#4a6fa5", trim="#f4efe6", brick=True, water_tower=True, seed=17)),
-    "predio_vidro": ((3, 3), GLASS_HEIGHT, lambda D, iso: glass_tower(D, iso, 3, 3, GLASS_FLOORS)),
-    "predio_deco": ((3, 3), DECO_HEIGHT, lambda D, iso: deco_tower(D, iso, 3, 3)),
+    "predio_vidro": ((3, 3), GLASS_HEIGHT, lambda D, iso: glass_tower(D, iso, 3, 3, GLASS_FLOORS),
+                     lambda D, iso: glass_tower_lights(D, iso, 3, 3, GLASS_FLOORS)),
+    "predio_deco": ((3, 3), DECO_HEIGHT, lambda D, iso: deco_tower(D, iso, 3, 3), lambda D, iso: deco_tower_lights(D, iso, 3, 3)),
 }
 
 
 def concrete_tile(D, size):
     """Textura de repetir do chão de concreto da cidade: cinza claro com pintinhas."""
     r = Rng(33)
-    o = [f'<rect x="0" y="0" width="{f(size)}" height="{f(size)}" fill="#d6d2ca"/>']
+    o = [f'<rect x="0" y="0" width="{f(size)}" height="{f(size)}" fill="#cfd4db"/>']  # concreto frio (DT-080)
     for _ in range(int(14 * size * size / 900) + 1):
         x, y, rr = r.u(0, size), r.u(0, size), r.u(0.3, 0.9)
-        c = "#e4e0d8" if r.r() > 0.5 else "#c3beb4"
+        c = "#dfe3e8" if r.r() > 0.5 else "#b8bfc9"
         for dx in (-size, 0, size):
             for dy in (-size, 0, size):
                 o.append(f'<circle cx="{f(x + dx)}" cy="{f(y + dy)}" r="{f(rr)}" fill="{c}"/>')
@@ -267,6 +344,10 @@ def concrete_tile(D, size):
 
 
 # --- Enfeites da calçada (âncora no chão, em (0, 0)) ------------------------------------------
+
+# Lanterna do poste (o ponto que acende à noite, DT-080), em unidades do desenho a partir do pé.
+LAMP_HEAD = (22.0, -118.0)
+
 
 def nyc_lamp(D, iso):
     """Poste de ferro com braço curvo e lanterna."""

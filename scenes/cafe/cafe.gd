@@ -119,6 +119,8 @@ var grid: CafeGrid:
 @onready var sound_board: SoundBoard = $SoundBoard
 ## Escurece o mundo à noite (DT-064).
 var night_tint := NightTint.new()
+## Luz quente do salão à noite, contra a cidade azulada (DT-080).
+var interior_glow: PointLight2D
 
 
 func _ready() -> void:
@@ -129,8 +131,10 @@ func _ready() -> void:
 	if simulation == null:
 		welcome = _load_or_start_game()
 	add_child(night_tint)
-	night_tint.set_amount(simulation.darkness())
 	layout = simulation.layout
+	interior_glow = CityLights.interior_glow(layout.grid.size)
+	add_child(interior_glow)
+	_apply_night()
 	catalog = simulation.furniture
 	world_layer.bind(layout)
 	simulation.payment_received.connect(_on_payment_received)
@@ -192,7 +196,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	simulation.tick(delta)
 	hud.set_dimmed(is_dialog_open())
-	night_tint.set_amount(simulation.darkness())
+	_apply_night()
 	world_layer.refresh(simulation)
 	front_view.set_focus(world_layer.front_focus_points(selected_cell))
 	_since_last_save += delta
@@ -213,6 +217,16 @@ func set_paused(value: bool) -> void:
 	street_view.process_mode = Node.PROCESS_MODE_DISABLED if value else Node.PROCESS_MODE_INHERIT
 	hud.show_pause_state(value)
 	state_changed.emit()
+
+
+## Noite em Nova York (DT-064 e DT-080): o mundo escurece em azul, a cidade acende as janelas, os postes e as poças,
+## e o salão ganha a luz quente.
+func _apply_night() -> void:
+	var darkness := simulation.darkness()
+	night_tint.set_amount(darkness)
+	exterior_view.set_night(darkness, night_tint.color)
+	street_view.set_night(darkness, night_tint.color)
+	CityLights.set_light(interior_glow, darkness, CityLights.INTERIOR_ENERGY)
 
 
 func toggle_pause() -> void:
@@ -839,6 +853,8 @@ func _fit_floor_and_camera() -> void:
 	front_view.entrance = layout.entrance
 	floor_view.terrace = simulation.terrace_cells()  # o terraço acompanha a fileira da frente
 	street_view.configure(layout.grid.size, layout.entrance, street_keep_clear())
+	CityLights.fit_interior_glow(interior_glow, layout.grid.size)
+	_apply_night()
 	var headroom := maxf(furniture_headroom, wall_view.wall_height)
 	var bounds := IsoProjection.grid_bounds(layout.grid.size).grow_individual(0.0, headroom, 0.0, 0.0)
 	camera.set_bounds(bounds.grow(camera_margin))

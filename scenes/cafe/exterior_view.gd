@@ -23,22 +23,37 @@ const ZEBRA_STRIPE := 0.22
 const ZEBRA_STEP := 0.44
 const STOP_LINE := 0.12
 
-const SIDEWALK := Color("efe9df")
-const SIDEWALK_LINE := Color("d3cabd")
-const FAR_SIDEWALK := Color("e6e0d6")
-const CURB_TOP := Color("e6ebf0")
-const CURB_SIDE := Color("c9d0d8")
+## Calçadas de concreto frio, cinza-azulado (Nova York, DT-080).
+const SIDEWALK := Color("e1e5ea")
+const SIDEWALK_LINE := Color("c3c9d2")
+const FAR_SIDEWALK := Color("d6dbe2")
+const CURB_TOP := Color("e8ecf1")
+const CURB_SIDE := Color("b9c1cc")
 const ROAD_YELLOW := Color("ffcf3f")
 const ROAD_WHITE := Color(1, 1, 1, 0.92)
-const PATH_STONE := Color("f4efe6")
-const PATH_LINE := Color("cfc4b4")
+const PATH_STONE := Color("eceff3")
+const PATH_LINE := Color("c3c9d2")
 const ART_INK := Color("33283a")
-## Arranha-céus ao longe, claros como se tivesse névoa: faces e janelas.
-const SKYLINE_LEFT := Color("c3cfe0")
-const SKYLINE_RIGHT := Color("a9b8cf")
-const SKYLINE_TOP := Color("dbe3ee")
+## Arranha-céus ao longe, na névoa azulada: faces e janelas.
+const SKYLINE_LEFT := Color("a9b8d0")
+const SKYLINE_RIGHT := Color("8fa1bd")
+const SKYLINE_TOP := Color("ccd5e3")
 const SKYLINE_WINDOW := Color(1, 1, 1, 0.4)
 const SKYLINE_WINDOW_STEP := 22.0
+## À noite, parte das janelinhas dos arranha-céus acende (o resto fica apagado).
+const SKYLINE_LIT := Color(1.0, 0.82, 0.5)
+const SKYLINE_LIT_CHANCE := 0.4
+const SKYLINE_LIT_SEGMENT := 0.5
+const SKYLINE_SEED := 80
+## Rua molhada (DT-080): poças que refletem o céu, a cada tantos pisos, e o brilho quente delas à noite.
+const PUDDLE_SEED := 81
+const PUDDLE_STEP := 2.6
+const PUDDLE_COLOR := Color(0.84, 0.92, 1.0, 0.2)
+const PUDDLE_SHINE := Color(1, 1, 1, 0.22)
+const PUDDLE_GLINT := Color(1.0, 0.82, 0.55, 0.35)
+const PUDDLE_POINTS := 18
+## Passos da escuridão que redesenham a cidade (a noite muda devagar; redesenhar a cada frame seria à toa).
+const NIGHT_STEPS := 32.0
 ## [canto (vértice, a partir do café), pegada em pisos, altura em pixels de mundo]: atrás das fileiras de prédios.
 const SKYLINE: Array = [
 	[Vector2(-15, -24), Vector2(4, 4), 720.0], [Vector2(-9, -22), Vector2(3, 3), 520.0], [Vector2(-4, -25), Vector2(5, 3), 860.0],
@@ -59,6 +74,9 @@ var entrance := CafeGrid.NO_CELL:
 		queue_redraw()
 
 var plan: CityPlan
+## Escuridão (0 de dia, 1 no meio da noite) e a cor do NightTint: acendem as janelas e o brilho das poças.
+var night := 0.0
+var night_tint := Color.WHITE
 
 
 func _init() -> void:
@@ -86,6 +104,20 @@ func _draw() -> void:
 	_draw_path()
 	_draw_skyline()
 	_draw_buildings()
+
+
+## Noite (DT-080): redesenha só quando a escuridão muda de um passo para outro.
+func set_night(amount: float, tint: Color) -> void:
+	var stepped := roundf(clampf(amount, 0.0, 1.0) * NIGHT_STEPS) / NIGHT_STEPS
+	if is_equal_approx(stepped, night):
+		return
+	night = stepped
+	night_tint = tint
+	queue_redraw()
+
+
+func is_lit() -> bool:
+	return night > CityLights.MIN_NIGHT
 
 
 func _at(point: Vector2, height := 0.0) -> Vector2:
@@ -144,7 +176,8 @@ func _draw_streets() -> void:
 		if asphalt != null:
 			_draw_tiled(_rect(rect), asphalt.texture, float(exterior.get("asphalt_world", 64.0)))
 		else:
-			draw_colored_polygon(_rect(rect), Color("7a818e"))
+			draw_colored_polygon(_rect(rect), Color("5f6673"))
+		_draw_puddles(rect, street == 0)
 	var cross := plan.crossing()
 	for street in 2:
 		var rect := plan.street_rect(street)
@@ -168,6 +201,39 @@ func _draw_streets() -> void:
 		var stop_b := after + gap
 		_band(along_y, edges[0], middle, stop_a - STOP_LINE, stop_a, ROAD_WHITE)
 		_band(along_y, middle, edges[1], stop_b, stop_b + STOP_LINE, ROAD_WHITE)
+
+
+## Poças da rua molhada (DT-080), sempre nos mesmos lugares e fora do cruzamento: a mancha clara do céu refletido, um
+## brilho em cima e, à noite, o reflexo quente das luzes.
+func _draw_puddles(rect: Rect2, along_y: bool) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = PUDDLE_SEED + int(along_y)
+	var length := rect.size.y if along_y else rect.size.x
+	var width := rect.size.x if along_y else rect.size.y
+	var cross := plan.crossing().grow(CROSSWALK_WIDTH + CROSSWALK_GAP + STOP_LINE)
+	var glint := PUDDLE_GLINT * CityLights.glow_modulate(night, night_tint, 1.0)
+	var t := rng.randf_range(0.0, PUDDLE_STEP)
+	while t < length:
+		var along := rng.randf_range(0.35, 0.8)
+		var side := rng.randf_range(0.18, 0.34)
+		var across := rng.randf_range(0.2, 0.8) * width
+		var center := rect.position + (Vector2(across, t) if along_y else Vector2(t, across))
+		var radius := Vector2(side, along) if along_y else Vector2(along, side)
+		if not cross.has_point(center):
+			draw_colored_polygon(_ellipse(center, radius), PUDDLE_COLOR)
+			draw_colored_polygon(_ellipse(center - radius * 0.25, radius * 0.45), PUDDLE_SHINE)
+			if is_lit():
+				draw_colored_polygon(_ellipse(center + radius * 0.15, radius * 0.6), glint)
+		t += rng.randf_range(PUDDLE_STEP * 0.6, PUDDLE_STEP * 1.4)
+
+
+## Elipse deitada no chão (em pisos), já na tela.
+func _ellipse(center: Vector2, radius: Vector2) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	for i in PUDDLE_POINTS:
+		var angle := TAU * i / PUDDLE_POINTS
+		points.append(_at(center + Vector2(cos(angle) * radius.x, sin(angle) * radius.y)))
+	return points
 
 
 ## Linha ao longo da rua: na rua A (ao longo de y), em x = [param fixed], de [param a] a [param b].
@@ -228,6 +294,9 @@ func _draw_skyline() -> void:
 	var towers := SKYLINE.duplicate()
 	towers.sort_custom(func(a: Array, b: Array) -> bool:
 		return (a[0] + a[1]).x + (a[0] + a[1]).y < (b[0] + b[1]).x + (b[0] + b[1]).y)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = SKYLINE_SEED
+	var lit_color := SKYLINE_LIT * CityLights.glow_modulate(night, night_tint)
 	for tower: Array in towers:
 		var origin: Vector2 = tower[0]
 		var size: Vector2 = tower[1]
@@ -245,13 +314,35 @@ func _draw_skyline() -> void:
 		while z < height - SKYLINE_WINDOW_STEP:
 			draw_line(_at(origin + Vector2(0.15, size.y), z), _at(origin + Vector2(size.x - 0.15, size.y), z), SKYLINE_WINDOW, 2.0)
 			draw_line(_at(origin + Vector2(size.x, size.y - 0.15), z), _at(origin + Vector2(size.x, 0.15), z), SKYLINE_WINDOW, 2.0)
+			_draw_skyline_lights(rng, origin, size, z, lit_color)
 			z += SKYLINE_WINDOW_STEP
 
 
-## Prédios atrás do café, do fundo para a frente (o plano já vem nessa ordem).
+## Janelinhas acesas de um andar de arranha-céu à noite (o sorteio é sempre o mesmo: as janelas não piscam).
+func _draw_skyline_lights(rng: RandomNumberGenerator, origin: Vector2, size: Vector2, z: float, color: Color) -> void:
+	for face in 2:
+		var span := size.x if face == 0 else size.y
+		var u := 0.15
+		while u + SKYLINE_LIT_SEGMENT <= span - 0.15:
+			var lit := rng.randf() < SKYLINE_LIT_CHANCE
+			if lit and is_lit():
+				var a := origin + (Vector2(u, size.y) if face == 0 else Vector2(size.x, size.y - u))
+				var b := origin + (Vector2(u + SKYLINE_LIT_SEGMENT * 0.8, size.y) if face == 0
+					else Vector2(size.x, size.y - u - SKYLINE_LIT_SEGMENT * 0.8))
+				draw_line(_at(a, z), _at(b, z), color, 3.0)
+			u += SKYLINE_LIT_SEGMENT
+
+
+## Prédios atrás do café, do fundo para a frente (o plano já vem nessa ordem). À noite, cada um ganha a camada das
+## janelas acesas logo depois dele (assim o prédio da frente cobre as luzes do de trás).
 func _draw_buildings() -> void:
+	var lights: Dictionary = ArtSprites.city().get("building_lights", {})
+	var glow := CityLights.glow_modulate(night, night_tint)
 	for building: Array in plan.buildings:
 		var sprite := ArtSprites.get_sprite(building[0])
 		if sprite != null:
 			var anchor := _at(building[1] + Vector2(building[2]))
 			draw_texture_rect(sprite.texture, Rect2(anchor + sprite.draw_rect().position, sprite.draw_rect().size), false)
+			var lit := ArtSprites.get_sprite(lights.get(building[0], ""))
+			if lit != null and is_lit():
+				draw_texture_rect(lit.texture, Rect2(anchor + lit.draw_rect().position, lit.draw_rect().size), false, glow)

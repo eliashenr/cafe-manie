@@ -595,13 +595,18 @@ def export_city(sheet, manifest):
     iso = Iso(0, 0, TILE_W, TILE_W / 2)
     D = sheet.D
     buildings = {}
-    for name, (fp, height, draw) in city3.BUILDINGS.items():
+    lights = {}
+    for name, (fp, height, draw, night) in city3.BUILDINGS.items():
         left = iso.v(0, fp[1])[0] - MARGIN_X
         right = iso.v(fp[0], 0)[0] + MARGIN_X
         bottom = iso.v(fp[0], fp[1])[1] + MARGIN_BOTTOM
         top = -height - 40.0
-        sheet.add(name, draw(D, iso), (left, top, right - left, bottom - top), iso.v(fp[0], fp[1]))
+        bounds = (left, top, right - left, bottom - top)
+        sheet.add(name, draw(D, iso), bounds, iso.v(fp[0], fp[1]))
+        # janelas acesas à noite (DT-080): mesma caixa e mesma âncora, para cair em cima do prédio
+        sheet.add(name + "_luz", night(D, iso), bounds, iso.v(fp[0], fp[1]))
         buildings[name] = [fp[0], fp[1]]
+        lights[name] = name + "_luz"
     for name, (draw, bounds) in city3.PROPS.items():
         sheet.add(name, draw(D, iso), bounds)
     cars = {}
@@ -612,8 +617,9 @@ def export_city(sheet, manifest):
             sheet.add(name, city3.car(D, iso, direction, body, taxi), city3.CAR_BOUNDS)
             cars[car_id][direction] = name
     sheet.add("concreto", city3.concrete_tile(D, CITY_TEXTURE), (0.0, 0.0, CITY_TEXTURE, CITY_TEXTURE), tile=True)
-    manifest["city"] = {"buildings": buildings, "props": list(city3.PROPS), "cars": cars, "concrete": "concreto",
-                        "concrete_world": round(CITY_TEXTURE * WORLD, 2)}
+    manifest["city"] = {"buildings": buildings, "building_lights": lights, "props": list(city3.PROPS), "cars": cars,
+                        "concrete": "concreto", "concrete_world": round(CITY_TEXTURE * WORLD, 2),
+                        "lamp_head": [round(city3.LAMP_HEAD[0] * WORLD, 2), round(city3.LAMP_HEAD[1] * WORLD, 2)]}
 
 
 # --- Interface -----------------------------------------------------------------------------

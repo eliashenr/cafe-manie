@@ -3,7 +3,9 @@ extends SceneTree
 ## os garçons e o movimento de clientes no máximo, e mede quanto tempo cada quadro leva (sem limite de quadros por
 ## segundo, com o desenho de verdade).
 ##
-##   godot -s res://tools/perf_check.gd -- [segundos medidos] [multiplicador de clientes, para estresse]
+##   godot -s res://tools/perf_check.gd -- [segundos medidos] [multiplicador de clientes, para estresse] [hora local]
+##
+## A hora 23 mede a noite: janelas, postes, faróis e a luz do salão acesos (DT-080).
 
 const WARMUP_FRAMES := 120
 
@@ -22,10 +24,11 @@ func _initialize() -> void:
 	if args.size() > 0:
 		_measure_seconds = float(args[0])
 	var rush := float(args[1]) if args.size() > 1 else 1.0
+	var hour := float(args[2]) if args.size() > 2 else 12.0
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	Engine.max_fps = 0
 	var clock = load("res://core/time/manual_clock.gd").new()
-	clock.time = Time.get_unix_time_from_datetime_string("2026-03-03T12:00:00")
+	clock.time = Time.get_unix_time_from_datetime_string("2026-03-03T00:00:00") + hour * 3600.0 - clock.utc_offset_seconds()
 	_sim = load("res://core/service/cafe_simulation.gd").create_new_game(clock, 7)
 	_sim.progression.add_xp(99999)
 	_sim.wallet.earn(&"soft_currency", 9999999, "desempenho")

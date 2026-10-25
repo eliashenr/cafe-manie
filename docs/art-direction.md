@@ -40,6 +40,8 @@ O PO mandou duas imagens de referência e um prompt detalhado pedindo a reformul
 
 **Janelas (DT-079):** papéis dos botões no tema (azul principal, verde para confirmar, vidro "fantasma" para Fechar e Cancelar, vermelho só para apagar, abas com brilho ciano), fundo escurecido atrás da janela, cartões no presente diário, nas conquistas e nos pacotes de ouro, retratos em palcos de vidro.
 
+**Cidade (DT-080):** de dia, concreto e calçadas cinza-azulados, asfalto escuro e poças da rua molhada; à noite, metade das janelas dos prédios acesa (camada "_luz" de cada prédio), vitrines quentes, janelinhas dos arranha-céus, postes com poça de luz, faróis e a luz quente do salão contra o azul da rua.
+
 **Etapas:** ver `docs/roadmap.md` ("Redesign Nova York Futurista").
 
 ## Direção anterior: "Esquina Nostálgica" (30/09/2026)

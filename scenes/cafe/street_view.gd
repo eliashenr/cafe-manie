@@ -29,10 +29,20 @@ class Figure:
 			draw_texture_rect(sprite.texture, sprite.draw_rect(), false)
 
 
+## O poste da calçada: à noite acende a lanterna e a poça de luz no chão (DT-080).
+const LAMP_PROP := "rua_poste"
+## Faróis dos carros à noite: a mancha de luz no asfalto, à frente do carro (em pisos), o tamanho e a cor.
+const HEADLIGHT_REACH := 0.8
+const HEADLIGHT_SIZE := Vector2(130.0, 44.0)
+const HEADLIGHT_COLOR := Color(1.0, 0.95, 0.82, 0.5)
+
 var plan: CityPlan
 var traffic := TrafficModel.new()
 var _cars: Array[Figure] = []
 var _lights: Array = []  # [rua, Figure]
+var _lamp_lights: Array[PointLight2D] = []
+var _lamp_pools: Array[Sprite2D] = []
+var _headlights: Array[Sprite2D] = []
 
 
 func _init() -> void:
@@ -52,12 +62,17 @@ func configure(grid_size: Vector2i, entrance: Vector2i, keep_clear: Array[Vector
 		child.queue_free()
 	_cars.clear()
 	_lights.clear()
+	_lamp_lights.clear()
+	_lamp_pools.clear()
+	_headlights.clear()
 	traffic = TrafficModel.new()
 	plan = CityPlan.new(grid_size, entrance, ArtSprites.city_footprints(), keep_clear)
 	if not has_art():
 		return
 	for prop: Array in plan.props:
-		_figure("Prop", prop[0], prop[1])
+		var figure := _figure("Prop", prop[0], prop[1])
+		if prop[0] == LAMP_PROP:
+			_add_lamp_glow(figure)
 	for spot: Array in plan.lights:
 		_lights.append([spot[0], _figure("Light", LIGHT_SPRITES[TrafficModel.Light.RED], spot[1])])
 	for at in plan.vents:
@@ -67,8 +82,58 @@ func configure(grid_size: Vector2i, entrance: Vector2i, keep_clear: Array[Vector
 		vent.add_child(steam)
 	plan.fill_traffic(traffic, CAR_MIX.size())
 	for car in traffic.cars:
-		_cars.append(_figure("Car", "", car.point()))
+		var figure := _figure("Car", "", car.point())
+		_cars.append(figure)
+		_headlights.append(_add_headlight(figure))
 	_sync()
+
+
+## Luz da lanterna e a poça de luz no chão embaixo dela (as duas apagadas até a noite).
+func _add_lamp_glow(lamp: Figure) -> void:
+	var head_offset: Array = ArtSprites.city().get("lamp_head", [0.0, 0.0])
+	var head := Vector2(float(head_offset[0]), float(head_offset[1]))
+	var light := CityLights.lamp_light()
+	light.position = head
+	lamp.add_child(light)
+	_lamp_lights.append(light)
+	var pool := Sprite2D.new()
+	pool.name = "LightPool"
+	pool.texture = FxParticles.soft_dot()
+	pool.scale = CityLights.POOL_SIZE / Vector2(FxParticles.soft_dot().get_size())
+	pool.position = Vector2(head.x, 0.0)
+	pool.self_modulate = CityLights.POOL_COLOR
+	pool.show_behind_parent = true
+	pool.visible = false
+	lamp.add_child(pool)
+	_lamp_pools.append(pool)
+
+
+## Mancha dos faróis no asfalto, embaixo do carro (apagada até a noite); o _sync aponta para onde o carro vai.
+func _add_headlight(car: Figure) -> Sprite2D:
+	var beam := Sprite2D.new()
+	beam.name = "Headlights"
+	beam.texture = FxParticles.soft_dot()
+	beam.scale = HEADLIGHT_SIZE / Vector2(FxParticles.soft_dot().get_size())
+	beam.self_modulate = HEADLIGHT_COLOR
+	beam.show_behind_parent = true
+	beam.visible = false
+	car.add_child(beam)
+	return beam
+
+
+## Noite (DT-080): acende os postes e os faróis conforme a escuridão; o que é desenhado (poças de luz e faróis) vem
+## compensado pelo NightTint.
+func set_night(amount: float, tint: Color) -> void:
+	for light in _lamp_lights:
+		CityLights.set_light(light, amount, CityLights.LAMP_ENERGY)
+	var glow := CityLights.glow_modulate(amount, tint, 1.0)
+	for sprite: Sprite2D in _lamp_pools + _headlights:
+		sprite.visible = amount > CityLights.MIN_NIGHT
+		sprite.modulate = glow
+
+
+func lamp_lights() -> Array[PointLight2D]:
+	return _lamp_lights
 
 
 func _figure(kind: String, sprite_name: String, at: Vector2) -> Figure:
@@ -97,6 +162,10 @@ func _sync() -> void:
 		var car: TrafficModel.Car = traffic.cars[i]
 		_cars[i].position = IsoProjection.vertex_to_world(car.point())
 		_cars[i].sprite = ArtSprites.city_car(CAR_MIX[car.kind], car.lane.heading())
+		var ahead := Vector2(0.0, car.lane.direction) if car.lane.street == 0 else Vector2(car.lane.direction, 0.0)
+		var offset := IsoProjection.vertex_to_world(ahead * HEADLIGHT_REACH) - IsoProjection.vertex_to_world(Vector2.ZERO)
+		_headlights[i].position = offset
+		_headlights[i].rotation = offset.angle()
 	for entry: Array in _lights:
 		(entry[1] as Figure).sprite = ArtSprites.get_sprite(LIGHT_SPRITES[traffic.light(entry[0])])
 

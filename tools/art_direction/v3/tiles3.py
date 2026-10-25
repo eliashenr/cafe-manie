@@ -1006,10 +1006,10 @@ def wall_piece(side, flat):
 def lawn_tile(D, size):
     """Quadrado de grama que emenda com ele mesmo (os tufos que passam da borda reaparecem do outro lado)."""
     r = Rng(31)
-    o = [f'<rect x="0" y="0" width="{size}" height="{size}" fill="#78d64a"/>']
+    o = [f'<rect x="0" y="0" width="{size}" height="{size}" fill="#66c24c"/>']  # verde de parque, menos neon (DT-080)
     for _ in range(int(14 * size * size / (60 * 44)) + 1):
         x, y = r.u(0, size), r.u(0, size)
-        c = "#5cc23a" if r.r() > 0.45 else "#a6ee78"
+        c = "#4fa83c" if r.r() > 0.45 else "#8fdc6e"
         for dx in (-size, 0, size):
             for dy in (-size, 0, size):
                 px, py = x + dx, y + dy
@@ -1020,10 +1020,10 @@ def lawn_tile(D, size):
 
 def asphalt_tile(D, size):
     r = Rng(21)
-    o = [f'<rect x="0" y="0" width="{size}" height="{size}" fill="#7a818e"/>']
+    o = [f'<rect x="0" y="0" width="{size}" height="{size}" fill="#5f6673"/>']  # asfalto de Nova York (DT-080)
     for _ in range(int(16 * size * size / 900) + 1):
         x, y, rr = r.u(0, size), r.u(0, size), r.u(0.4, 1.0)
-        c = "#8c93a0" if r.r() > 0.5 else "#6a717d"
+        c = "#717885" if r.r() > 0.5 else "#535a66"
         for dx in (-size, 0, size):
             for dy in (-size, 0, size):
                 o.append(f'<circle cx="{f(x + dx)}" cy="{f(y + dy)}" r="{f(rr)}" fill="{c}"/>')

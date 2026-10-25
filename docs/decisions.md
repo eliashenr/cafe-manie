@@ -4,6 +4,31 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-080 — Redesign, etapa 4: Nova York à noite
+
+**Problema:**
+- A cidade já tinha prédios de tijolo com caixas d'água, escadas de incêndio, táxis e postes, mas:
+  - de dia, as calçadas creme e o asfalto claro davam um ar de cidade de brinquedo;
+  - à noite, o NightTint escurecia tudo por igual: sem janelas acesas, sem luz nos postes e com o salão tão azul quanto a rua.
+- A referência do PO pede luz quente dentro e azulada fora, janelas acesas, rua molhada e táxis.
+
+**Decisão:**
+- **O ciclo de dia e noite continua** (o terraço, as luminárias e os pratos da noite dependem dele). A noite fica bonita e o dia ganha cores mais frias.
+- **De dia:** calçadas e concreto cinza-azulados, asfalto mais escuro, grama de parque menos neon e arranha-céus numa névoa azulada.
+- **Rua molhada:** poças sempre nos mesmos lugares (fora do cruzamento), com o céu refletido e um brilho; à noite, o reflexo quente das luzes.
+- **À noite:**
+  - **janelas acesas:** cada prédio ganhou a camada "_luz" na arte, com metade das janelas acesas (as acesas de dia e mais algumas, pelo mesmo sorteio) e as vitrines das lojas. Ela é desenhada logo depois do prédio, para o da frente cobrir as luzes do de trás;
+  - **arranha-céus ao longe** com parte das janelinhas acesas;
+  - **postes** com a luz da lanterna (PointLight2D) e a poça de luz no chão;
+  - **faróis** dos carros: a mancha de luz no asfalto, à frente de cada carro;
+  - **salão quente:** uma luz quente cobre o café inteiro (e acompanha as expansões), contra a cidade azul;
+  - o azul da noite ficou um pouco mais fundo, para o contraste.
+- **Como a luz não escurece junto:** a cor das luzes desenhadas é dividida pela cor do NightTint, que multiplica de novo (`CityLights.glow_modulate`); a transparência acompanha a escuridão.
+- **Custo:** a cidade só é redesenhada quando a escuridão muda de um passo para outro (32 passos). Com o café cheio no tamanho máximo, neste PC: 193 quadros por segundo de dia e 147 à noite (`tools/perf_check.gd` ganhou a hora como terceiro argumento).
+- **Onde fica:** `scenes/fx/city_lights.gd` (funções prontas, como pede a DT-044); o ExteriorView desenha as janelas, os arranha-céus e as poças; o StreetView acende os postes e os faróis; o café liga tudo em `_apply_night`.
+
+---
+
 ## DT-079 — Redesign, etapa 3: as janelas no mesmo padrão
 
 **Problema:**
