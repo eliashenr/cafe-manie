@@ -4,6 +4,24 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-085 — Arte realista em 3D: os 130 móveis (ramo arte-3d)
+
+**Problema:** com os personagens realistas, os móveis desenhados destoavam.
+
+**Decisão:**
+- **Famílias com os parâmetros da arte 2D** (`tools/render3d/moveis3d.py`): as cadeiras, mesas, fogões e balcões já eram variações de um mesmo desenho (tipo de pé, encosto, toalha, tampo e cores, em `themes3.py`). O 3D lê os mesmos parâmetros e monta cada um, então os 77 móveis dessas famílias saem de uma vez:
+  - cadeiras com encosto de painel, ripas, escada, concha, ovo, palhinha, vime, capitonê e pintado; banquetas;
+  - mesas redondas e quadradas com tampo liso, de madeira, mármore, azulejo, Memphis ou neon, e toalhas xadrez, de confete, de chita ou lisas;
+  - os materiais são feitos no próprio Blender (madeira com veios, mármore, tecidos, palhinha, laca, cromado, vidro e luz), sem baixar texturas.
+- **Um modelo para cada um dos outros 53** (`tools/render3d/enfeites3d.py`): as máquinas de bebida, o Fogão Lua Cheia, os três vagões do trem, o caldeirão, as plantas e árvores de fruta, as luminárias, os brinquedos, os troféus, a estante, a cabine de DJ e o palco.
+- **O que o jogo desenha por cima continua caindo no lugar:** as medidas seguem a arte 2D (altura do tampo das mesas, do balcão, das bocas do fogão e do assento).
+- **Refeitos em 3D também:** os encostos (o que cobre quem senta de costas) e o visor do forno aceso.
+- **O encosto ficou um pouco mais baixo que no desenho,** para quem senta de costas continuar aparecendo.
+- **Enfeites redondos com um "rosto"** (a abóbora, o papagaio) ficam virados para a câmera.
+- **O que ainda é desenho:** as panelas no fogão, os pratos e as comidas (ícones pequenos, ficam para depois), os pisos, as paredes e a cidade.
+
+---
+
 ## DT-084 — Arte realista em 3D: começando pelos personagens (ramo arte-3d)
 
 **Problema:**

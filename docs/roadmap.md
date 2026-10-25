@@ -109,7 +109,9 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 
 - [x] **1. Personagens:** o garçom e os 12 clientes realistas (MakeHuman), andando e sentados, com as camisetas nas cores da arte antiga.
 - [x] **2. Roupa de garçom e óculos:** pacotes livres suits01 e glasses01 (CC0): o garçom de paletó com gravata-borboleta e a cliente 8 de óculos.
-- [ ] **3. Móveis em 3D:** cozinha, salão, enfeites, pisos e paredes.
+- [x] **3. Móveis em 3D:** os 130 móveis (cadeiras, mesas, fogões, balcões, máquinas e enfeites), com os encostos e o forno aceso (DT-085).
+- [ ] **3b. Pisos, paredes, itens de parede, portas e terraço em 3D.**
+- [ ] **3c. Panelas, pratos e comidas em 3D.**
 - [ ] **4. A cidade em 3D:** prédios, carros e calçada.
 - [ ] **5. Robô, crítico, vizinhos e retratos.**
 - [ ] **6. Revisão e junção no jogo principal.**

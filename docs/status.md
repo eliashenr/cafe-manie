@@ -4,6 +4,15 @@
 
 🟢 **CONCLUÍDO**
 
+**Arte realista em 3D, etapa 2: os 130 móveis** (DT-085, só no ramo `arte-3d`; o jogo principal não mudou)
+
+- **Todos os móveis agora são 3D**, com luz, brilho e sombra de verdade:
+  - as 25 cadeiras e banquetas, as 26 mesas (toalhas xadrez, de confete e florida, tampos de madeira, mármore, azulejo e neon), os 18 fogões (inclusive o Lua Cheia, o trem e o caldeirão) e os 13 balcões;
+  - as 4 máquinas de bebida e os 44 enfeites (plantas, árvores com frutas, luminárias, troféus, fliperama, jukebox, estante, cabine de DJ, palco...);
+  - também na loja, que mostra a foto 3D de cada um.
+- **O que o jogo põe por cima continua no lugar:** pratos nas mesas e nos balcões, panelas no fogão e quem senta.
+- **Ainda desenhados:** pisos, paredes, itens de parede, portas, as panelas e comidas, a cidade, o robô e os retratos.
+
 **Arte realista em 3D, etapa 1: personagens** (DT-084, só no ramo `arte-3d`; o jogo principal não mudou)
 
 - **O garçom e os 12 clientes agora são pessoas realistas**, montadas em 3D com o MakeHuman (peças livres, licença CC0):
@@ -534,6 +543,10 @@
 
 🧪 **TESTADO**
 
+- **Arte 3D, etapa 2 (ramo `arte-3d`): 732 testes automatizados PASSARAM.**
+  - O teste que confere se cada móvel fica dentro do seu piso pegou os balcões (a sombra e o tampo passavam), a tampa do vagão e a lâmpada de lava fina demais: corrigidos.
+  - **Fotos conferidas:** os 130 móveis lado a lado, o café de dia e à noite e a loja.
+  - **Cena principal: PASSOU**, zero erros.
 - **Arte 3D, etapa 1 (ramo `arte-3d`): 732 testes automatizados PASSARAM.**
   - **Novo:** o prato vai para a bandeja certa de frente e de costas.
   - **Fotos conferidas:** os 13 personagens lado a lado e dentro do café (sentados, na fila e o garçom servindo).
