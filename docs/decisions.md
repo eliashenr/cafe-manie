@@ -4,6 +4,33 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-079 — Redesign, etapa 3: as janelas no mesmo padrão
+
+**Problema:**
+- Depois das etapas 1 e 2, as janelas já estavam escuras, mas cada uma tinha um jeito: todos os botões azuis (Fechar e Comprar iguais), abas como botões comuns, o presente diário com o dia de hoje amarelo-claro, conquistas em texto corrido e pacotes de ouro como botões azuis.
+
+**Decisão:**
+- **Papéis dos botões** no tema (`UiTheme`), como variações do tema do Godot:
+  - **azul tecnológico** (o padrão): a ação principal, como Próximo e Melhorar;
+  - **verde** (`SuccessButton`): receber, comprar e confirmar;
+  - **fantasma** (`GhostButton`): Fechar, Cancelar e Depois, em vidro com borda que acende em ciano;
+  - **vermelho** (`DangerButton`): só o "Apagar e recomeçar";
+  - **aba** (`TabButton`): a escolhida em azul com brilho ciano, as outras transparentes. Vale para a loja, o avatar e a cidade; as abas das missões seguem o mesmo visual.
+  - O botão com foco (como o Cancelar já selecionado nas perguntas) ganha um anel ciano.
+- **Fundo escurecido** atrás de qualquer janela aberta, numa camada acima do HUD e da barra.
+  - Os avisos ficam por cima do escuro e descem para baixo da tela enquanto a janela está aberta (no alto, a janela cobriria).
+- **Perguntas** com o texto quebrado em linhas (500 px de largura), com os botões perto um do outro.
+- **Cada janela:**
+  - **Presente diário:** cartões com "Hoje" em ciano e brilho, os dias recebidos apagados com o visto, e o desenho do prêmio (moeda, estrela do XP, o móvel ou o presente).
+  - **Conquistas:** um cartão por conquista, com o troféu (apagado antes do primeiro degrau), uma estrela por degrau, a barra do próximo degrau e o prêmio com a moeda; a completa ganha a borda dourada.
+  - **Pacotes de Café Ouro:** cartões com a pilha de moedas maior a cada pacote, o ouro em dourado, o preço e o selo do bônus; o que rende mais por real ganha o selo "Melhor valor" e a borda dourada.
+  - **Missões:** barras em ciano (verde quando conclui) e o prêmio em dourado com a moeda.
+  - **Avatar e evento:** o retrato num palco de vidro com brilho ciano.
+  - **Cidade:** a arte da filial emoldurada e os vizinhos em cartões deitados, 3 por linha. Trocar de aba ajusta o tamanho da janela e a centraliza.
+- **Barra de progresso** do tema em ciano; concluído, em verde.
+
+---
+
 ## DT-078 — Redesign, etapa 2: a loja nova
 
 **Problema:**

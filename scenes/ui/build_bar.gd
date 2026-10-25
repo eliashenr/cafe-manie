@@ -258,6 +258,7 @@ func _ready() -> void:
 	_confirm_dialog.name = "ConfirmDialog"
 	_confirm_dialog.cancel_button_text = "Cancelar"
 	_confirm_dialog.theme = UiTheme.theme()
+	UiTheme.style_dialog(_confirm_dialog, UiTheme.SUCCESS_BUTTON)
 	_confirm_dialog.confirmed.connect(func() -> void:
 		if _pending_confirm.is_valid():
 			_pending_confirm.call())
@@ -761,12 +762,7 @@ func _show_shop() -> void:
 			button.icon = sprite.texture
 		button.add_theme_constant_override("icon_max_width", 32)
 		button.add_theme_constant_override("h_separation", 12)
-		var active: bool = tab == shop_tab
-		for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
-			button.add_theme_stylebox_override(state, _tab_box(active, state == "hover" or state == "hover_pressed"))
-		for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
-			button.add_theme_color_override(color_name, Color.WHITE if active else UiTheme.WHITE_SOFT)
-		button.add_theme_constant_override("outline_size", 0)
+		UiTheme.role(button, UiTheme.TAB_BUTTON)
 		button.add_theme_font_size_override("font_size", 17)
 		button.pressed.connect(func() -> void: show_shop_tab(this_tab))
 		_tabs.add_child(button)
@@ -854,22 +850,6 @@ func _add_chip(chip_name: String, text: String, color: Color, active: bool, coll
 	chip.add_theme_font_size_override("font_size", 14)
 	chip.pressed.connect(func() -> void: show_shop_collection(collection))
 	_chips.add_child(chip)
-
-
-## Aba da loja (DT-077): a ativa em azul tecnológico com brilho; as outras, transparentes, acendendo ao passar.
-func _tab_box(active: bool, hover: bool) -> StyleBoxFlat:
-	var box := StyleBoxFlat.new()
-	box.bg_color = UiTheme.TECH_BLUE if active else (Color(UiTheme.CYAN, 0.1) if hover else Color(0, 0, 0, 0))
-	box.border_color = UiTheme.CYAN if active else (Color(UiTheme.CYAN, 0.5) if hover else Color(1, 1, 1, 0.06))
-	box.set_border_width_all(1)
-	box.set_corner_radius_all(12)
-	box.content_margin_left = 12
-	box.content_margin_right = 10
-	if active:
-		box.shadow_color = Color(UiTheme.CYAN, 0.35)
-		box.shadow_size = 8
-	box.anti_aliasing = true
-	return box
 
 
 func _add_furniture_item(furniture: FurnitureDefinition) -> void:

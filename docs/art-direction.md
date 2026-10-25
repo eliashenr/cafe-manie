@@ -38,6 +38,8 @@ O PO mandou duas imagens de referência e um prompt detalhado pedindo a reformul
 
 **Loja (DT-078):** painel de vidro com as categorias numa coluna à esquerda (a ativa em azul tecnológico com brilho ciano), coleções em pílulas com a borda na cor delas, cartões escuros com o selo da coleção e um painel de detalhes com o botão verde "Comprar".
 
+**Janelas (DT-079):** papéis dos botões no tema (azul principal, verde para confirmar, vidro "fantasma" para Fechar e Cancelar, vermelho só para apagar, abas com brilho ciano), fundo escurecido atrás da janela, cartões no presente diário, nas conquistas e nos pacotes de ouro, retratos em palcos de vidro.
+
 **Etapas:** ver `docs/roadmap.md` ("Redesign Nova York Futurista").
 
 ## Direção anterior: "Esquina Nostálgica" (30/09/2026)

@@ -23,17 +23,22 @@ func _init() -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 14)
 	add_child(row)
+	var stage := PanelContainer.new()
+	stage.add_theme_stylebox_override("panel", UiTheme.glass_box(18, 8, UiTheme.CYAN.darkened(0.3), true))
+	stage.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	row.add_child(stage)
 	_portrait = TextureRect.new()
 	_portrait.custom_minimum_size = PORTRAIT_SIZE
 	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	row.add_child(_portrait)
+	stage.add_child(_portrait)
 	var column := VBoxContainer.new()
 	column.custom_minimum_size = Vector2(TEXT_WIDTH, 0)
 	row.add_child(column)
 	_heading = Label.new()
 	_heading.name = "Heading"
-	_heading.add_theme_font_size_override("font_size", 20)
+	_heading.add_theme_font_size_override("font_size", 22)
+	_heading.add_theme_color_override("font_color", UiTheme.GOLD)
 	column.add_child(_heading)
 	_text = Label.new()
 	_text.name = "Text"
@@ -42,6 +47,7 @@ func _init() -> void:
 	column.add_child(_text)
 	_missions = VBoxContainer.new()
 	_missions.name = "Missions"
+	_missions.add_theme_constant_override("separation", 4)
 	column.add_child(_missions)
 	confirmed.connect(_on_ok)
 
@@ -93,17 +99,20 @@ func _show_page() -> void:
 		_heading.text = event.speaker
 		_text.text = event.story[story_page]
 		ok_button_text = "Próximo" if story_page < event.story.size() - 1 else "Vamos lá!"
+		UiTheme.role(get_ok_button(), &"" if story_page < event.story.size() - 1 else UiTheme.SUCCESS_BUTTON)
 		return
 	var days := simulation.event_days_left()
 	_heading.text = "Termina hoje!" if days == 0 else "Faltam %d dias" % days
 	_text.text = _prize_text(event)
 	ok_button_text = "Fechar"
+	UiTheme.role(get_ok_button(), UiTheme.GHOST_BUTTON)
 	for entry in simulation.event_board.entries():
 		var line := Label.new()
 		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		line.custom_minimum_size = Vector2(TEXT_WIDTH, 0)
 		if entry.done():
 			line.text = "✓ %s" % entry.title()
+			line.add_theme_color_override("font_color", UiTheme.GREEN)
 		else:
 			line.text = "%s  —  %s/%s  (+%s ouro)" % [entry.title(), UiTheme.thousands(entry.progress),
 				UiTheme.thousands(entry.target), UiTheme.thousands(entry.reward_gold)]

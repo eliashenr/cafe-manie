@@ -63,6 +63,20 @@ const DAILY_READY_TITLE := "PRESENTE DIÁRIO"
 const DAILY_READY := "Receber!"
 const PAUSE_TEXT := "JOGO PAUSADO: mexa à vontade. Toque em ▶ para continuar."
 const CLOSED_TEXT := "CAFÉ FECHADO: ninguém novo entra. Toque na porta verde para abrir."
+## Janelas (DT-079): o fundo escurecido atrás delas, numa camada acima do HUD e da barra (os avisos ficam por cima).
+const OVERLAY_LAYER := 2
+const DIM_COLOR := Color(0.016, 0.04, 0.09, 0.62)
+## Onde fica o aviso: no alto; com uma janela aberta, embaixo (a janela cobriria o do alto).
+const TOAST_TOP := 98.0
+const TOAST_BOTTOM_WITH_DIALOG := -62.0
+## Cartões do presente diário, dos pacotes de Café Ouro e o troféu das conquistas.
+const DAY_CARD_SIZE := Vector2(104, 146)
+const DAY_ICON_SIZE := 46.0
+const COIN_PACK_SIZE := Vector2(132, 184)
+const COIN_ART_MIN := 38.0
+const COIN_ART_STEP := 7.0
+const BEST_VALUE_TEXT := "Melhor valor"
+const ACHIEVEMENT_ICON_SIZE := 48.0
 const ENERGY_HELP := ("Energia: cada bebida gasta um pouco. Ela volta sozinha, 1 ponto por minuto, mesmo com o jogo "
 	+ "fechado, e enche quando você sobe de nível. Toque no cliente com o balão verde para servir a bebida.")
 
@@ -114,6 +128,10 @@ var _daily_ready: Label
 var _daily_badge: Control
 var _toast: Label
 var _toast_time := 0.0
+## Camada das janelas (DT-079): o fundo escurecido e, por cima, os avisos.
+var _overlay: CanvasLayer
+var _overlay_root: Control
+var _dim: ColorRect
 var _restart_dialog: ConfirmationDialog
 var _achievements_dialog: AcceptDialog
 var _missions_dialog: MissionsPanel
@@ -156,6 +174,7 @@ func _ready() -> void:
 	_build_side_buttons()
 	_build_medallions()
 	_build_rating()
+	_build_overlay()
 	_build_toast()
 	_build_dialogs()
 	EventBus.message_posted.connect(show_message)
@@ -698,13 +717,52 @@ func _build_toast() -> void:
 	_toast.visible = false
 	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_toast.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_anchored(_toast, Vector2(0.5, 0.0), Vector2(0, 98), Vector2.ZERO)
+	_anchored(_toast, Vector2(0.5, 0.0), Vector2(0, TOAST_TOP), Vector2.ZERO, _overlay_root)
+
+
+## Camada acima do HUD e da barra: o fundo escurecido das janelas e, por cima dele, os avisos (que continuam legíveis
+## com uma janela aberta, como o "Novo visual!" do avatar).
+func _build_overlay() -> void:
+	_overlay = CanvasLayer.new()
+	_overlay.name = "Overlay"
+	_overlay.layer = OVERLAY_LAYER
+	add_child(_overlay)
+	_dim = ColorRect.new()
+	_dim.name = "Dim"
+	_dim.color = DIM_COLOR
+	_dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_dim.visible = false
+	_overlay.add_child(_dim)
+	_overlay_root = Control.new()
+	_overlay_root.name = "OverlayRoot"
+	_overlay_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_overlay_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_overlay_root.theme = UiTheme.theme()
+	_overlay.add_child(_overlay_root)
+
+
+## Escurece o café atrás de uma janela aberta (DT-079), com um esmaecer suave ao entrar.
+func set_dimmed(dimmed: bool) -> void:
+	if dimmed == _dim.visible:
+		return
+	if dimmed:
+		Juice.fade_in(_dim)
+	_dim.visible = dimmed
+	_toast.anchor_top = 1.0 if dimmed else 0.0
+	_toast.anchor_bottom = _toast.anchor_top
+	_toast.offset_top = TOAST_BOTTOM_WITH_DIALOG if dimmed else TOAST_TOP
+	_toast.offset_bottom = _toast.offset_top
+
+
+func is_dimmed() -> bool:
+	return _dim.visible
 
 
 func _build_dialogs() -> void:
 	_build_achievements_dialog()
 	_event_dialog = EventDialog.new()
-	_add_dialog(_event_dialog)
+	_add_dialog(_event_dialog, &"")  # o botão muda de papel a cada quadro (EventDialog)
 	_avatar_dialog = AvatarDialog.new()
 	_add_dialog(_avatar_dialog)
 	_city_dialog = CityDialog.new()
@@ -721,11 +779,14 @@ func _build_dialogs() -> void:
 	_restart_dialog.ok_button_text = "Apagar e recomeçar"
 	_restart_dialog.cancel_button_text = "Cancelar"
 	_restart_dialog.confirmed.connect(func() -> void: restart_requested.emit())
-	_add_dialog(_restart_dialog)
+	_add_dialog(_restart_dialog, UiTheme.DANGER_BUTTON)
 
 
-func _add_dialog(dialog: AcceptDialog) -> void:
+## Janela no padrão (DT-079): [param ok_role] é o papel do botão de OK (fantasma para Fechar, verde para receber e
+## confirmar, vermelho para apagar, &"" para o azul principal).
+func _add_dialog(dialog: AcceptDialog, ok_role := UiTheme.GHOST_BUTTON) -> void:
 	dialog.theme = UiTheme.theme()
+	UiTheme.style_dialog(dialog, ok_role)
 	add_child(dialog)
 
 
@@ -752,13 +813,71 @@ func show_achievements() -> void:
 	var tracker := simulation.achievements
 	_achievements_dialog.title = "Conquistas (%d de %d)" % [tracker.unlocked_total(), tracker.tiers_total()]
 	for achievement in tracker.achievements:
-		var label := Label.new()
-		label.name = "Achievement_" + String(achievement.id)
-		label.text = achievement_text(achievement)
-		label.add_theme_font_size_override("font_size", 16)
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		_achievements_list.add_child(label)
+		_achievements_list.add_child(_achievement_card(achievement))
 	_achievements_dialog.popup_centered()
+
+
+## Cartão da conquista (DT-079): o troféu (apagado antes do primeiro degrau), o título já conquistado, uma estrela por
+## degrau, o próximo degrau com a barra e o prêmio. A dica do cartão traz o texto completo (achievement_text).
+func _achievement_card(achievement: AchievementDefinition) -> Control:
+	var tiers := simulation.achievements.unlocked_tiers(achievement.id)
+	var complete := tiers >= achievement.tier_count()
+	var value := simulation.stats.value(achievement.stat)
+	var card := PanelContainer.new()
+	card.name = "Achievement_" + String(achievement.id)
+	card.tooltip_text = achievement_text(achievement)
+	card.add_theme_stylebox_override("panel", UiTheme.card_box(12, 10, UiTheme.GOLD if complete else UiTheme.CARD_EDGE))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	card.add_child(row)
+	var trophy := UiTheme.art("icone_trofeu", Vector2.ONE * ACHIEVEMENT_ICON_SIZE)
+	trophy.modulate.a = 1.0 if tiers > 0 else 0.3
+	row.add_child(trophy)
+	var column := VBoxContainer.new()
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_theme_constant_override("separation", 4)
+	row.add_child(column)
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 2)
+	column.add_child(head)
+	var title := UiTheme.outlined("Ainda não conquistada" if tiers == 0 else achievement.tier_titles[tiers - 1], 17,
+		UiTheme.GOLD if complete else (UiTheme.WHITE_SOFT if tiers > 0 else UiTheme.TEXT_SOFT), UiTheme.NAVY, 0)
+	title.name = "Title"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(title)
+	for i in achievement.tier_count():
+		head.add_child(UiTheme.art("icone_estrela" if i < tiers else "icone_estrela_vazia", Vector2(18, 18)))
+	var detail := Label.new()
+	detail.name = "Detail"
+	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail.add_theme_font_override("font", UiTheme.font(UiTheme.WEIGHT, true))
+	detail.add_theme_font_size_override("font_size", 14)
+	detail.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
+	column.add_child(detail)
+	if complete:
+		detail.text = "Completa! %d %s" % [value, achievement.description]
+		return card
+	var target: int = achievement.tier_targets[tiers]
+	detail.text = "Próximo: %s — %d/%d %s" % [achievement.tier_titles[tiers], mini(value, target), target,
+		achievement.description]
+	var progress := HBoxContainer.new()
+	progress.add_theme_constant_override("separation", 8)
+	column.add_child(progress)
+	var bar := ProgressBar.new()
+	bar.show_percentage = false
+	bar.custom_minimum_size = Vector2(0, 8)
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	bar.max_value = target
+	bar.value = mini(value, target)
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	progress.add_child(bar)
+	progress.add_child(UiTheme.art("icone_moeda", Vector2(20, 20)))
+	var reward := UiTheme.outlined("+%s" % UiTheme.thousands(achievement.tier_rewards[tiers]), 15, UiTheme.GOLD,
+		UiTheme.NAVY, 0)
+	reward.name = "Reward"
+	progress.add_child(reward)
+	return card
 
 
 ## Duas linhas: o título já conquistado (ou "Ainda não") e o próximo degrau.
@@ -829,7 +948,7 @@ func _build_name_dialog() -> void:
 	column.add_child(rules)
 	_name_dialog.confirmed.connect(func() -> void: name_chosen.emit(_name_edit.text))
 	_name_dialog.canceled.connect(func() -> void: name_skipped.emit())
-	_add_dialog(_name_dialog)
+	_add_dialog(_name_dialog, UiTheme.SUCCESS_BUTTON)
 
 
 ## Pergunta o nome. Na primeira vez, o botão é "Abrir as portas".
@@ -861,12 +980,13 @@ func _build_coin_dialogs() -> void:
 	_coin_note.name = "CoinNote"
 	_coin_note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_coin_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_coin_note.custom_minimum_size = Vector2(560, 0)
-	_coin_note.add_theme_font_size_override("font_size", 16)
+	_coin_note.custom_minimum_size = Vector2(COIN_PACK_SIZE.x * 5, 0)
+	_coin_note.add_theme_font_size_override("font_size", 15)
+	_coin_note.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
 	column.add_child(_coin_note)
 	_coin_packs = HBoxContainer.new()
 	_coin_packs.name = "CoinPacks"
-	_coin_packs.add_theme_constant_override("separation", 8)
+	_coin_packs.add_theme_constant_override("separation", 10)
 	column.add_child(_coin_packs)
 	_coin_dialog.add_child(column)
 	_add_dialog(_coin_dialog)
@@ -876,7 +996,7 @@ func _build_coin_dialogs() -> void:
 	_coin_info_dialog.ok_button_text = "Entendi"
 	_coin_info_dialog.dialog_autowrap = true
 	_coin_info_dialog.dialog_text = COIN_UNAVAILABLE_TEXT
-	_add_dialog(_coin_info_dialog)
+	_add_dialog(_coin_info_dialog, &"")
 
 
 ## Vitrine dos pacotes. [param short_of_gold]: aberta porque faltou ouro numa compra.
@@ -890,25 +1010,70 @@ func show_coin_shop(short_of_gold := false) -> void:
 		note += "\n(Por enquanto só dá para ver os pacotes: a compra é liberada quando o jogo estiver na Play Store.)"
 	_coin_note.text = note
 	var cheapest := shop.packs()[0].gold_per_real() if not shop.packs().is_empty() else 1.0
+	var best := 0.0
 	for pack in shop.packs():
-		var chosen := pack.id
-		var button := Button.new()
-		button.name = "Pack_" + String(pack.id)
+		best = maxf(best, pack.gold_per_real())
+	for i in shop.packs().size():
+		var pack := shop.packs()[i]
 		var bonus := roundi((pack.gold_per_real() / cheapest - 1.0) * 100.0)
-		button.text = "%s\n%s ouro\n%s%s" % [pack.display_name, UiTheme.thousands(pack.gold), pack.price_text(),
-			"\n+%d%%" % bonus if bonus > 0 else "\n"]
-		button.custom_minimum_size = Vector2(118, 120)
-		button.focus_mode = Control.FOCUS_NONE
-		var coin := ArtSprites.get_sprite("icone_moeda")
-		if coin != null:
-			button.icon = coin.texture
-			button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-			button.add_theme_constant_override("icon_max_width", 34)
-		button.add_theme_font_size_override("font_size", 14)
-		button.pressed.connect(func() -> void: coin_pack_chosen.emit(chosen))
-		_coin_packs.add_child(button)
+		_coin_packs.add_child(_coin_pack_card(pack, i, bonus, bonus > 0 and is_equal_approx(pack.gold_per_real(), best)))
 	_coin_dialog.popup_centered()
+
+
+## Cartão de um pacote (DT-079): a pilha de moedas (maior nos pacotes maiores), o nome, o ouro em dourado, o preço e o
+## selo do bônus; o de melhor valor ganha a borda dourada. O texto do botão (não desenhado) guarda tudo numa linha,
+## para quem lê a tela sem a imagem e para os testes.
+func _coin_pack_card(pack: CoinPack, index: int, bonus: int, best_value: bool) -> Button:
+	var chosen := pack.id
+	var button := Button.new()
+	button.name = "Pack_" + String(pack.id)
+	button.text = "%s\n%s ouro\n%s%s" % [pack.display_name, UiTheme.thousands(pack.gold), pack.price_text(),
+		"\n+%d%%" % bonus if bonus > 0 else "\n"]
+	button.clip_text = true
+	button.custom_minimum_size = COIN_PACK_SIZE
+	button.focus_mode = Control.FOCUS_NONE
+	var edge := UiTheme.GOLD if best_value else UiTheme.CARD_EDGE
+	for state in ["normal", "hover", "pressed", "hover_pressed", "disabled", "focus"]:
+		var box := UiTheme.card_box(14, 0, UiTheme.CYAN if state.begins_with("hover") or state == "pressed" else edge)
+		if best_value:
+			box.set_border_width_all(2)
+		button.add_theme_stylebox_override(state, box)
+	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color",
+			"font_disabled_color"]:
+		button.add_theme_color_override(color_name, Color(0, 0, 0, 0))
+	button.pressed.connect(func() -> void: coin_pack_chosen.emit(chosen))
+	var column := VBoxContainer.new()
+	column.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	column.offset_top = 8
+	column.offset_bottom = -10
+	column.alignment = BoxContainer.ALIGNMENT_END
+	column.add_theme_constant_override("separation", 3)
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(column)
+	var ribbon := PanelContainer.new()
+	ribbon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	ribbon.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_SHRINK_BEGIN
+	ribbon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var ribbon_box := UiTheme.bar_box(UiTheme.GOLD if best_value else UiTheme.GREEN, 9)
+	ribbon_box.content_margin_left = 10
+	ribbon_box.content_margin_right = 10
+	ribbon_box.content_margin_top = 1
+	ribbon_box.content_margin_bottom = 1
+	ribbon.add_theme_stylebox_override("panel", ribbon_box)
+	ribbon.modulate.a = 1.0 if bonus > 0 else 0.0
+	var ribbon_text := UiTheme.outlined((BEST_VALUE_TEXT + " · " if best_value else "") + "+%d%%" % bonus, 11,
+		UiTheme.NAVY_DEEP, UiTheme.NAVY, 0)
+	ribbon.add_child(ribbon_text)
+	column.add_child(ribbon)
+	var coin := UiTheme.art("icone_moeda", Vector2.ONE * (COIN_ART_MIN + COIN_ART_STEP * index))
+	coin.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	column.add_child(coin)
+	for line: Array in [[pack.display_name, 13, UiTheme.WHITE_SOFT], [UiTheme.thousands(pack.gold), 24, UiTheme.GOLD],
+			[pack.price_text(), 14, UiTheme.CYAN]]:
+		var label := UiTheme.outlined(line[0], line[1], line[2], UiTheme.NAVY, 0)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		column.add_child(label)
+	return button
 
 
 ## Explica que a compra com dinheiro de verdade ainda não existe neste build (nada foi cobrado).
@@ -932,9 +1097,9 @@ func _build_daily_dialog() -> void:
 	_daily_dialog.ok_button_text = "Receber"
 	_daily_dialog.confirmed.connect(func() -> void: daily_claim_requested.emit())
 	_daily_days = HBoxContainer.new()
-	_daily_days.add_theme_constant_override("separation", 6)
+	_daily_days.add_theme_constant_override("separation", 8)
 	_daily_dialog.add_child(_daily_days)
-	_add_dialog(_daily_dialog)
+	_add_dialog(_daily_dialog, UiTheme.SUCCESS_BUTTON)
 
 
 ## Mostra os dias da sequência, com o de hoje em destaque.
@@ -945,30 +1110,70 @@ func show_daily_reward() -> void:
 	var days := simulation.daily.calendar.days
 	var today := simulation.daily_day_number()
 	for i in days.size():
-		var card := PanelContainer.new()
-		card.name = "Day%d" % (i + 1)
-		card.custom_minimum_size = Vector2(96, 110)
-		var style := UiTheme.card_box(10, 6)
-		style.shadow_size = 0
-		if i + 1 == today:
-			style.bg_color = Color("fff6c2")
-			style.border_color = Color("ffb400")
-			style.set_border_width_all(3)
-		card.add_theme_stylebox_override("panel", style)
-		var label := Label.new()
-		label.text = "Dia %d\n%s" % [i + 1, reward_text(days[i])]
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		# Largura fixa: sem ela o texto quebraria letra a letra e a janela cresceria.
-		label.custom_minimum_size = Vector2(84, 0)
-		label.add_theme_font_size_override("font_size", 14)
-		if i + 1 < today:
-			label.modulate = Color(1, 1, 1, 0.45)
-		card.add_child(label)
-		_daily_days.add_child(card)
+		_daily_days.add_child(_day_card(i + 1, days[i], today))
 	_daily_dialog.reset_size()
 	_daily_dialog.popup_centered()
 	_daily_dialog.get_ok_button().grab_focus()
+
+
+## Cartão de um dia (DT-079): "Hoje" com a borda ciano e o brilho; os dias já recebidos apagados, com o visto.
+func _day_card(day: int, reward: Dictionary, today: int) -> Control:
+	var card := PanelContainer.new()
+	card.name = "Day%d" % day
+	card.custom_minimum_size = DAY_CARD_SIZE
+	var style := UiTheme.card_box(12, 8, UiTheme.CYAN if day == today else UiTheme.CARD_EDGE)
+	if day == today:
+		style.set_border_width_all(2)
+		style.bg_color = UiTheme.CARD_SOFT
+		style.shadow_color = Color(UiTheme.CYAN, 0.4)
+		style.shadow_size = 10
+		style.shadow_offset = Vector2.ZERO
+	card.add_theme_stylebox_override("panel", style)
+	var column := VBoxContainer.new()
+	column.alignment = BoxContainer.ALIGNMENT_CENTER
+	column.add_theme_constant_override("separation", 4)
+	card.add_child(column)
+	var caption := UiTheme.caption("Hoje" if day == today else ("✓ Dia %d" % day if day < today else "Dia %d" % day),
+		UiTheme.CYAN if day == today else (UiTheme.GREEN if day < today else UiTheme.TEXT_SOFT), 12)
+	caption.name = "Caption"
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(caption)
+	var icon := TextureRect.new()
+	icon.texture = _reward_art(reward)
+	icon.custom_minimum_size = Vector2.ONE * DAY_ICON_SIZE
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	column.add_child(icon)
+	var label := Label.new()
+	label.name = "Reward"
+	label.text = reward_text(reward)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# Largura fixa: sem ela o texto quebraria letra a letra e a janela cresceria.
+	label.custom_minimum_size = Vector2(DAY_CARD_SIZE.x - 16, 0)
+	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_color_override("font_color", UiTheme.GOLD if int(reward.get("gold", 0)) > 0 else UiTheme.WHITE_SOFT)
+	column.add_child(label)
+	if day < today:
+		card.modulate.a = 0.5
+	return card
+
+
+## Desenho do prêmio do dia: o móvel ou o revestimento que vem de presente; senão a moeda, a estrela do XP ou o
+## presente.
+func _reward_art(reward: Dictionary) -> Texture2D:
+	var furniture := simulation.furniture.get_definition(StringName(reward.get("furniture", &"")))
+	var sprite: ArtSprites.Sprite = null
+	if furniture != null:
+		sprite = ArtSprites.furniture(furniture.id, 3)
+	elif int(reward.get("gold", 0)) > 0:
+		sprite = ArtSprites.get_sprite("icone_moeda")
+	elif int(reward.get("xp", 0)) > 0:
+		sprite = ArtSprites.get_sprite("icone_estrela")
+	else:
+		sprite = ArtSprites.get_sprite("icone_presente")
+	return sprite.texture if sprite != null else null
 
 
 ## "50 ouro", "20 XP", "Vaso de flores"... (uma linha por parte da recompensa).

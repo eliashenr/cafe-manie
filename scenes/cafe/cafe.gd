@@ -191,6 +191,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	simulation.tick(delta)
+	hud.set_dimmed(is_dialog_open())
 	night_tint.set_amount(simulation.darkness())
 	world_layer.refresh(simulation)
 	front_view.set_focus(world_layer.front_focus_points(selected_cell))

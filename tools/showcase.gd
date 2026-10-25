@@ -14,7 +14,8 @@ extends SceneTree
 ## luminárias acesas e o Fogão Lua Cheia), pomar (os pés de fruta maduros e a máquina de frozen), diversao (atrações
 ## com ouro e o show no palco), bebidas (as duas máquinas, um cliente pedindo bebida e a energia) ou
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio)
-## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30).
+## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30). Janelas: diario (o presente no dia 4),
+## conquistas, nome (a pergunta do nome na primeira vez) e pergunta (a confirmação de contratar um garçom).
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -291,6 +292,33 @@ func _set_panel() -> void:
 			if _panel.get_slice(":", 1) == "missoes":
 				_cafe.simulation.mark_event_story_seen()
 			_cafe.hud.show_event()
+		"diario":
+			_keep_window = "DailyDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			var sim = _cafe.simulation
+			sim.daily.streak = 3  # recebeu três dias seguidos: hoje é o dia 4
+			sim.daily.last_claim_day = sim.clock.local_day() - 1
+			_cafe.hud.show_daily_reward()
+		"conquistas":
+			_keep_window = "AchievementsDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			var sim = _cafe.simulation
+			sim.stats.add(PlayerStats.CUSTOMERS_SERVED, 62)
+			sim.stats.add(PlayerStats.DISHES_COOKED, 14)
+			sim.stats.add(PlayerStats.EXPANSIONS, 4)
+			_cafe.hud.show_achievements()
+		"nome":
+			_keep_window = "NameDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			_cafe.hud.ask_cafe_name(true)
+		"pergunta":
+			_keep_window = "ConfirmDialog"
+			for window: Window in _cafe.find_children("*", "Window", true, false):
+				window.hide()
+			_cafe.build_bar.ask_hire_waiter()
 		"missoes":
 			_keep_window = "MissionsDialog"
 			for window: Window in _cafe.find_children("*", "Window", true, false):

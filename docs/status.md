@@ -4,6 +4,19 @@
 
 🟢 **CONCLUÍDO**
 
+**Redesign "Nova York Futurista", etapa 3: as janelas** (DT-079)
+
+- Todas as janelas no mesmo padrão, com **cada botão na cor da função**:
+  - **verde** para receber, comprar e confirmar;
+  - **"vidro"** para Fechar e Cancelar;
+  - **vermelho** só para apagar o progresso;
+  - **abas** iguais às da loja (no avatar, na cidade e nas missões).
+- **O café escurece atrás da janela aberta**, e os avisos continuam à vista.
+- **Presente diário** em cartões: "Hoje" brilhando, os dias recebidos com o visto e o desenho de cada prêmio.
+- **Conquistas** em cartões com o troféu, as estrelas dos degraus, a barra e o prêmio.
+- **Pacotes de Café Ouro** em cartões, com o selo do bônus e o "Melhor valor".
+- **Vizinhos** em cartões mais compactos (a janela cabia mal na tela).
+
 **Redesign "Nova York Futurista", etapa 2: a loja nova** (DT-078)
 
 - A loja virou um **painel grande e escuro**, como na referência:
@@ -475,6 +488,10 @@
 
 🧪 **TESTADO**
 
+- **Redesign, etapa 3: 708 testes automatizados PASSARAM.**
+  - **Novos:** o papel de cada botão em todas as janelas; o tema define todos os papéis; o café escurece com uma janela aberta e o aviso desce e fica por cima; os cartões do presente marcam hoje e os dias recebidos; só o pacote que rende mais leva o "Melhor valor"; o botão do evento muda de papel a cada quadro.
+  - **Fotos conferidas:** moedas, presente diário, conquistas, missões, avatar, filial, vizinhos, evento, nome e pergunta de compra.
+  - **Cena principal: PASSOU**, zero erros.
 - **Redesign, etapa 2: 702 testes automatizados PASSARAM.**
   - **Corrigido no caminho:** uma falha rara do teste da jornada (um garçom podia levar a porção da entrega no meio do teste; o passo agora roda com o jogo pausado).
   - **Novos:** o primeiro item aparece ao abrir; o primeiro toque escolhe e o segundo compra; Comprar leva o item do painel; o fogão bloqueado mostra o nível e libera ao subir de nível; benefícios do fogão, do troféu, do terraço e do piso iguais aos dados; o menu lateral sai com a loja aberta.

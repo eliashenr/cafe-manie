@@ -37,11 +37,13 @@ func test_achievements_panel_lists_progress() -> void:
 	assert_true(dialog.visible)
 	var total := cafe.simulation.achievements.tiers_total()
 	assert_eq(dialog.title, "Conquistas (1 de %d)" % total)
-	var row := _find(dialog, "Achievement_a01_customers") as Label
-	assert_true(row.text.contains("Primeiro Cliente  (degrau 1 de 3)"), row.text)
-	assert_true(row.text.contains("Próximo: Anfitrião — 12/50 clientes servidos (+50 ouro)"), row.text)
-	var dishes := _find(dialog, "Achievement_a02_dishes") as Label
-	assert_true(dishes.text.contains("Ainda não conquistada"), dishes.text)
+	var row := _find(dialog, "Achievement_a01_customers") as Control
+	assert_eq(_label(row, "Title"), "Primeiro Cliente", "o título já conquistado")
+	assert_true(_label(row, "Detail").contains("Próximo: Anfitrião — 12/50 clientes servidos"), _label(row, "Detail"))
+	assert_eq(_label(row, "Reward"), "+50", "o prêmio do próximo degrau, ao lado da moeda")
+	assert_true(row.tooltip_text.contains("Primeiro Cliente  (degrau 1 de 3)"), "a dica traz o texto completo")
+	var dishes := _find(dialog, "Achievement_a02_dishes") as Control
+	assert_eq(_label(dishes, "Title"), "Ainda não conquistada")
 
 
 func test_completed_achievement_says_so() -> void:
@@ -75,6 +77,10 @@ func _find(root: Node, node_name: String) -> Node:
 	return root.find_child(node_name, true, false)
 
 
+func _label(root: Node, node_name: String) -> String:
+	return (root.find_child(node_name, true, false) as Label).text
+
+
 # --- Recompensa diária ---------------------------------------------------------
 
 func _cafe_with_daily() -> Cafe:
@@ -87,7 +93,7 @@ func test_daily_reward_pops_up_on_start_and_pays() -> void:
 	var cafe := await _cafe_with_daily()
 	var dialog := cafe.hud.daily_dialog()
 	assert_true(dialog.visible, "aparece ao abrir o jogo")
-	var today := _find(dialog, "Day1").get_child(0) as Label
+	var today := _find(dialog, "Day1").find_child("Reward", true, false) as Label
 	assert_true(today.text.contains("50 ouro"), today.text)
 	dialog.get_ok_button().pressed.emit()
 	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 250)
@@ -108,7 +114,7 @@ func test_next_day_shows_while_the_game_stays_open() -> void:
 	clock.advance(86400.0)
 	cafe._notification(Node.NOTIFICATION_APPLICATION_FOCUS_IN)
 	assert_true(cafe.hud.daily_dialog().visible, "voltar ao jogo no dia seguinte oferece o dia 2")
-	var day2 := _find(cafe.hud.daily_dialog(), "Day2").get_child(0) as Label
+	var day2 := _find(cafe.hud.daily_dialog(), "Day2").find_child("Reward", true, false) as Label
 	assert_true(day2.text.contains("20 XP"), day2.text)
 
 

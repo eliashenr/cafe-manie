@@ -109,7 +109,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 
 - [x] **1. Sistema de design e HUD:** paleta, painéis de vidro, perfil com o retrato do chef, contadores, menus laterais, botões, satisfação e barra de baixo.
 - [x] **2. Loja nova:** categorias à esquerda, grade de itens e painel de detalhes com "Comprar" (DT-078).
-- [ ] **3. Janelas no mesmo padrão:** avatar, cidade, missões, conquistas, presente, moedas, evento e perguntas.
+- [x] **3. Janelas no mesmo padrão:** avatar, cidade, missões, conquistas, presente, moedas, evento e perguntas (DT-079).
 - [ ] **4. Nova York à noite:** prédios, janelas acesas, táxis amarelos, postes e rua molhada.
 - [ ] **5. A cafeteria:** tijolo, madeira, janelões, luminárias pendentes, letreiro neon e cozinha de inox.
 - [ ] **6. Toque futurista:** robô garçom, máquina de café inteligente e painéis digitais.

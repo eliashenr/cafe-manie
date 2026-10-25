@@ -8,8 +8,8 @@ extends AcceptDialog
 const ART_SIZE := Vector2(300, 196)
 const TEXT_WIDTH := 380.0
 const TAB_NAMES := {&"branch": "Filial na praia", &"neighbors": "Vizinhos"}
-const NEIGHBOR_COLUMNS := 4
-const NEIGHBOR_PORTRAIT := Vector2(82, 86)
+const NEIGHBOR_COLUMNS := 3
+const NEIGHBOR_PORTRAIT := Vector2(66, 70)
 
 var simulation: CafeSimulation
 ## Aba na tela: &"branch" ou &"neighbors".
@@ -40,6 +40,7 @@ func _init() -> void:
 	root.add_theme_constant_override("separation", 10)
 	add_child(root)
 	_tabs = HBoxContainer.new()
+	_tabs.add_theme_constant_override("separation", 8)
 	root.add_child(_tabs)
 	for tab_id: StringName in TAB_NAMES:
 		var tab_button := Button.new()
@@ -47,6 +48,8 @@ func _init() -> void:
 		tab_button.text = TAB_NAMES[tab_id]
 		tab_button.toggle_mode = true
 		tab_button.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
+		tab_button.focus_mode = Control.FOCUS_NONE
+		UiTheme.role(tab_button, UiTheme.TAB_BUTTON)
 		tab_button.pressed.connect(show_tab.bind(tab_id))
 		_tabs.add_child(tab_button)
 	var row := HBoxContainer.new()
@@ -66,31 +69,37 @@ func _init() -> void:
 	_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	var art := ArtSprites.get_sprite("filial_praia")
 	_art.texture = art.texture if art != null else null
-	row.add_child(_art)
+	var frame := PanelContainer.new()
+	frame.add_theme_stylebox_override("panel", UiTheme.card_box(14, 6))
+	frame.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	frame.add_child(_art)
+	row.add_child(frame)
 	var column := VBoxContainer.new()
 	column.custom_minimum_size = Vector2(TEXT_WIDTH, 0)
 	column.add_theme_constant_override("separation", 8)
 	row.add_child(column)
 	_heading = Label.new()
 	_heading.name = "Heading"
-	_heading.add_theme_font_size_override("font_size", 20)
+	_heading.add_theme_font_size_override("font_size", 22)
 	column.add_child(_heading)
 	_info = _wrapped("Info", column)
 	_menu = _wrapped("Menu", column)
+	_menu.add_theme_color_override("font_color", UiTheme.CYAN)
 	var buttons := HBoxContainer.new()
 	buttons.add_theme_constant_override("separation", 8)
 	column.add_child(buttons)
-	_collect = _button("CollectBranch", buttons, collect)
+	_collect = UiTheme.role(_button("CollectBranch", buttons, collect), UiTheme.SUCCESS_BUTTON)
 	_action = _button("BranchAction", buttons, ask_action)
 	_confirm_row = HBoxContainer.new()
 	_confirm_row.name = "ConfirmRow"
+	_confirm_row.add_theme_constant_override("separation", 10)
 	_confirm_row.visible = false
 	column.add_child(_confirm_row)
 	_confirm_label = _wrapped("ConfirmText", _confirm_row)
 	_confirm_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_cancel = _button("BranchCancel", _confirm_row, cancel)
+	_cancel = UiTheme.role(_button("BranchCancel", _confirm_row, cancel), UiTheme.GHOST_BUTTON)
 	_cancel.text = "Cancelar"
-	_confirm = _button("BranchConfirm", _confirm_row, confirm)
+	_confirm = UiTheme.role(_button("BranchConfirm", _confirm_row, confirm), UiTheme.SUCCESS_BUTTON)
 
 
 func show_for(new_simulation: CafeSimulation) -> void:
@@ -105,6 +114,9 @@ func show_tab(tab_id: StringName) -> void:
 	tab = tab_id
 	pending = &""
 	_refresh()
+	if visible:  # as abas têm tamanhos diferentes: a janela se ajusta e volta para o meio
+		reset_size()
+		move_to_center()
 
 
 ## Visita o vizinho e ajuda no café dele: o aviso conta o que o jogador fez e quanto ganhou.
@@ -239,32 +251,44 @@ func _refresh_neighbors() -> void:
 		return
 	var config := simulation.neighbors_config
 	for neighbor: NeighborDefinition in simulation.neighbors.all():
+		var frame := PanelContainer.new()
+		frame.name = "Neighbor_" + String(neighbor.id)
+		frame.add_theme_stylebox_override("panel", UiTheme.card_box(14, 8))
+		# cartão deitado (DT-079): o retrato à esquerda, o nome, a amizade e o botão à direita
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		frame.add_child(row)
 		var card := VBoxContainer.new()
-		card.name = "Neighbor_" + String(neighbor.id)
 		card.alignment = BoxContainer.ALIGNMENT_CENTER
+		card.add_theme_constant_override("separation", 2)
 		var portrait := TextureRect.new()
 		portrait.custom_minimum_size = NEIGHBOR_PORTRAIT
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		var art := ArtSprites.get_sprite("vizinho_" + neighbor.art)
 		portrait.texture = art.texture if art != null else null
-		card.add_child(portrait)
+		portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(portrait)
+		row.add_child(card)
 		var title := Label.new()
 		title.text = "%s · nível %d" % [neighbor.display_name, neighbor.level]
-		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		title.add_theme_font_size_override("font_size", 15)
 		card.add_child(title)
 		var friendship := Label.new()
 		friendship.name = "Friendship"
 		friendship.text = "Amizade %d/%d" % [simulation.neighbor_visits.friendship(neighbor.id), config.max_friendship]
-		friendship.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		friendship.add_theme_font_size_override("font_size", 13)
 		friendship.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
 		card.add_child(friendship)
 		var can_visit := simulation.can_visit_neighbor(neighbor.id)
-		var button := _button("Visit_" + String(neighbor.id), card, visit.bind(neighbor.id))
+		var button := UiTheme.role(_button("Visit_" + String(neighbor.id), card, visit.bind(neighbor.id)),
+			UiTheme.SUCCESS_BUTTON)
 		button.text = "Ajudar · +%s ouro" % UiTheme.thousands(simulation.neighbor_reward(neighbor.id)) if can_visit \
 			else "Visitado hoje"
 		button.disabled = not can_visit
-		_neighbors.add_child(card)
+		button.custom_minimum_size = Vector2(0, 40)
+		button.add_theme_font_size_override("font_size", 14)
+		_neighbors.add_child(frame)
 
 
 func _wrapped(label_name: String, parent: Control) -> Label:

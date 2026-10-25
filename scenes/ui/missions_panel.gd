@@ -7,10 +7,10 @@ extends AcceptDialog
 const LIST_SIZE := Vector2(620, 380)
 const ROW_TITLE_SIZE := 15
 const REFRESH_SECONDS := 1.0
-const DONE_COLOR := Color("2f9e44")
-const LOCKED_COLOR := Color("8a8f99")
-const BAR_BACK := Color("dce8f7")
-const BAR_FILL := Color("3cc04e")
+const DONE_COLOR := UiTheme.GREEN
+const LOCKED_COLOR := UiTheme.METAL
+const BAR_BACK := Color(1, 1, 1, 0.08)
+const BAR_FILL := UiTheme.CYAN
 const TAB_DAILY := 0
 const TAB_WEEKLY := 1
 const TAB_START := 2
@@ -28,7 +28,7 @@ func _init() -> void:
 	ok_button_text = "Fechar"
 	_tabs = TabContainer.new()
 	_tabs.name = "MissionTabs"
-	_tabs.add_theme_stylebox_override("panel", UiTheme.card_box(10, 10))  # fundo claro: o texto escuro aparece
+	_tabs.add_theme_font_size_override("font_size", 15)
 	add_child(_tabs)
 	for tab_name in ["Daily", "Weekly", "Start"]:
 		var column := VBoxContainer.new()
@@ -38,6 +38,7 @@ func _init() -> void:
 		var header := Label.new()
 		header.name = "Header"
 		header.add_theme_font_size_override("font_size", 14)
+		header.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
 		column.add_child(header)
 		var scroll := ScrollContainer.new()
 		scroll.custom_minimum_size = LIST_SIZE
@@ -110,7 +111,8 @@ func _row(id: String, text: String, progress: int, target: int, gold: int, xp: i
 		min_level: int, spice := "") -> Control:
 	var panel := PanelContainer.new()
 	panel.name = "Mission_" + id
-	panel.add_theme_stylebox_override("panel", UiTheme.card_box(10, 8))
+	panel.add_theme_stylebox_override("panel", UiTheme.card_box(12, 10, DONE_COLOR.darkened(0.2) if state == "done"
+		else UiTheme.CARD_EDGE))
 	var line := HBoxContainer.new()
 	line.add_theme_constant_override("separation", 12)
 	panel.add_child(line)
@@ -126,6 +128,7 @@ func _row(id: String, text: String, progress: int, target: int, gold: int, xp: i
 		heading.add_theme_color_override("font_color", DONE_COLOR)
 	column.add_child(heading)
 	var progress_line := HBoxContainer.new()
+	progress_line.add_theme_constant_override("separation", 10)
 	column.add_child(progress_line)
 	var bar := ProgressBar.new()
 	bar.show_percentage = false
@@ -135,16 +138,20 @@ func _row(id: String, text: String, progress: int, target: int, gold: int, xp: i
 	bar.step = 0.001
 	bar.value = float(progress) / maxf(target, 1)
 	bar.add_theme_stylebox_override("background", _bar_style(BAR_BACK))
-	bar.add_theme_stylebox_override("fill", _bar_style(BAR_FILL))
+	bar.add_theme_stylebox_override("fill", _bar_style(DONE_COLOR if state == "done" else BAR_FILL))
 	progress_line.add_child(bar)
 	var count := Label.new()
 	count.name = "Count"
+	count.add_theme_font_size_override("font_size", 13)
+	count.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
 	count.text = "Libera no nível %d" % min_level if state == "locked" else "%s/%s" % [UiTheme.thousands(progress),
 		UiTheme.thousands(target)]
 	progress_line.add_child(count)
+	line.add_child(UiTheme.art("icone_moeda", Vector2(24, 24)))
 	var reward := Label.new()
 	reward.name = "Reward"
 	reward.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	reward.add_theme_color_override("font_color", UiTheme.GOLD)
 	reward.text = "+%s ouro" % UiTheme.thousands(gold) + ("\n+%d XP" % xp if xp > 0 else "") \
 		+ ("\n" + spice if not spice.is_empty() else "")
 	line.add_child(reward)

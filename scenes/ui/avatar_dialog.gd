@@ -36,14 +36,21 @@ func _init() -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
 	add_child(row)
+	# o retrato num palco de vidro com o brilho ciano (DT-079)
+	var stage := PanelContainer.new()
+	stage.name = "Stage"
+	stage.add_theme_stylebox_override("panel", UiTheme.glass_box(18, 12, UiTheme.CYAN.darkened(0.3), true))
+	stage.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(stage)
 	_portrait = AvatarPortrait.new()
 	_portrait.name = "Portrait"
 	_portrait.custom_minimum_size = PORTRAIT_SIZE
-	row.add_child(_portrait)
+	stage.add_child(_portrait)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 10)
 	row.add_child(column)
 	_tabs = HBoxContainer.new()
+	_tabs.add_theme_constant_override("separation", 8)
 	column.add_child(_tabs)
 	for tab_slot: AvatarPartDefinition.Slot in TAB_NAMES:
 		var tab := Button.new()
@@ -51,6 +58,8 @@ func _init() -> void:
 		tab.text = TAB_NAMES[tab_slot]
 		tab.toggle_mode = true
 		tab.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
+		tab.focus_mode = Control.FOCUS_NONE
+		UiTheme.role(tab, UiTheme.TAB_BUTTON)
 		tab.pressed.connect(show_slot.bind(tab_slot))
 		_tabs.add_child(tab)
 	_grid = GridContainer.new()
@@ -60,6 +69,7 @@ func _init() -> void:
 	column.add_child(_grid)
 	_confirm_row = HBoxContainer.new()
 	_confirm_row.name = "ConfirmRow"
+	_confirm_row.add_theme_constant_override("separation", 10)
 	_confirm_row.visible = false
 	column.add_child(_confirm_row)
 	_confirm_label = Label.new()
@@ -69,12 +79,14 @@ func _init() -> void:
 	_cancel.name = "AvatarCancel"
 	_cancel.text = "Cancelar"
 	_cancel.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
+	UiTheme.role(_cancel, UiTheme.GHOST_BUTTON)
 	_cancel.pressed.connect(cancel_try)
 	_confirm_row.add_child(_cancel)
 	_buy = Button.new()
 	_buy.name = "AvatarBuy"
 	_buy.text = "Comprar"
 	_buy.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
+	UiTheme.role(_buy, UiTheme.SUCCESS_BUTTON)
 	_buy.pressed.connect(buy_trying)
 	_confirm_row.add_child(_buy)
 
