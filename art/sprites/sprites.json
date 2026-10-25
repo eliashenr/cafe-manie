@@ -5702,6 +5702,18 @@
     327.33
    ]
   },
+  "enfeite_arandela_R": {
+   "anchor": [
+    8.48,
+    266.24
+   ]
+  },
+  "enfeite_arandela_L": {
+   "anchor": [
+    8.48,
+    329.33
+   ]
+  },
   "enfeite_porta_R": {
    "anchor": [
     11.48,

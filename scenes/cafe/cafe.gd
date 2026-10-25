@@ -121,6 +121,8 @@ var grid: CafeGrid:
 var night_tint := NightTint.new()
 ## Luz quente do salão à noite, contra a cidade azulada (DT-080).
 var interior_glow: PointLight2D
+## Letreiro neon com o nome do café, em cima da parede do fundo (DT-081).
+var neon_sign := NeonSign.new()
 
 
 func _ready() -> void:
@@ -134,6 +136,10 @@ func _ready() -> void:
 	layout = simulation.layout
 	interior_glow = CityLights.interior_glow(layout.grid.size)
 	add_child(interior_glow)
+	neon_sign.name = "NeonSign"
+	wall_view.add_child(neon_sign)
+	neon_sign.text = simulation.cafe_name
+	simulation.cafe_name_changed.connect(func(new_name: String) -> void: neon_sign.text = new_name)
 	_apply_night()
 	catalog = simulation.furniture
 	world_layer.bind(layout)
@@ -226,6 +232,8 @@ func _apply_night() -> void:
 	night_tint.set_amount(darkness)
 	exterior_view.set_night(darkness, night_tint.color)
 	street_view.set_night(darkness, night_tint.color)
+	wall_view.set_night(darkness, night_tint.color)
+	neon_sign.set_night(darkness, night_tint.color)
 	CityLights.set_light(interior_glow, darkness, CityLights.INTERIOR_ENERGY)
 
 
@@ -854,6 +862,8 @@ func _fit_floor_and_camera() -> void:
 	floor_view.terrace = simulation.terrace_cells()  # o terraço acompanha a fileira da frente
 	street_view.configure(layout.grid.size, layout.entrance, street_keep_clear())
 	CityLights.fit_interior_glow(interior_glow, layout.grid.size)
+	neon_sign.wall_height = wall_view.wall_height
+	neon_sign.grid_size = layout.grid.size
 	_apply_night()
 	var headroom := maxf(furniture_headroom, wall_view.wall_height)
 	var bounds := IsoProjection.grid_bounds(layout.grid.size).grow_individual(0.0, headroom, 0.0, 0.0)

@@ -4,6 +4,15 @@
 
 🟢 **CONCLUÍDO**
 
+**Redesign "Nova York Futurista", etapa 5: o café** (DT-081)
+
+- **Letreiro neon com o nome do seu café**, em cima da parede do fundo. Ele troca quando você troca o nome e brilha mais à noite.
+- **Acabamento de madeira escura** no alto das paredes e da mureta.
+- **À noite**, a luz do sol pelas janelas some, e os itens de parede luminosos acendem.
+- **Item novo na loja:** a **Arandela Industrial** (Paredes, coleção Anos 2010, nível 3, 120 de ouro). O Neon de Xícara também passou a acender.
+- **Para deixar o seu café com a cara da referência:** Tijolinho na parede e Piso de Madeira (ambos baratos, no nível 1), Janelão, a arandela e o Fogão e o Balcão de Inox.
+- **Não mudei** o começo do jogo novo nem o fogão e o balcão iniciais: isso mexia no balanceamento e no valor das compras (detalhes na DT-081).
+
 **Redesign "Nova York Futurista", etapa 4: Nova York à noite** (DT-080)
 
 - **De dia:** calçadas e asfalto em tons de Nova York (cinza-azulado e asfalto escuro), com poças da rua molhada.
@@ -499,6 +508,10 @@
 
 🧪 **TESTADO**
 
+- **Redesign, etapa 5: 720 testes automatizados PASSARAM.**
+  - **Novos:** o letreiro mostra o nome e acompanha a troca e a expansão; o neon mantém a luz à noite; o acabamento é de madeira escura nas paredes e na mureta; a arandela está no catálogo e na loja, acende à noite, e nenhum item é janela e luz ao mesmo tempo.
+  - **Fotos conferidas:** o café de tijolo e madeira, de dia e à noite, com as arandelas, os janelões e o letreiro.
+  - **Cena principal: PASSOU**, zero erros.
 - **Redesign, etapa 4: 715 testes automatizados PASSARAM.**
   - **Novos:** a cor das luzes cancela o escuro da noite; as luzes acendem e apagam com a escuridão; a luz do salão cobre o café e acompanha a expansão; todo prédio tem a camada das janelas acesas, dentro dele; de dia nada acende; à noite acendem janelas, salão, postes com a poça e faróis; o entardecer redesenha a cidade em passos.
   - **Desempenho:** café cheio no tamanho máximo, 193 quadros por segundo de dia e 147 à noite, neste PC.

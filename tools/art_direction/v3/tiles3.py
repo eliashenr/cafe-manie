@@ -877,6 +877,27 @@ def wall_neon(D):
     return "".join(o)
 
 
+def wall_sconce(D):
+    """Arandela industrial (DT-081): plaquinha de ferro na parede, braço curvo e a lâmpada de filamento acesa
+    numa gaiola de arame, com um brilho quente em volta. A lâmpada fica no meio da célula (onde o jogo acende a luz
+    à noite)."""
+    bx, by = L / 2, -71
+    cx, cy = bx - 10, by + 1
+    o = [f'<circle cx="{f(bx)}" cy="{f(by)}" r="15" fill="{D.rad([(0, "#ffcf7a", 0.45), (1, "#ffcf7a", 0)])}"/>']
+    o.append(f'<rect x="{f(cx - 3.5)}" y="{f(cy - 3)}" width="7" height="11" rx="1.6" fill="#2a2c34" stroke="{INK3}" stroke-width="0.9"/>')
+    o.append(f'<path d="M{f(cx)},{f(cy - 1)} C{f(cx)},{f(cy - 15)} {f(bx)},{f(cy - 17)} {f(bx)},{f(cy - 10)}" fill="none" '
+             f'stroke="#2a2c34" stroke-width="2.4" stroke-linecap="round"/>')
+    o.append(f'<rect x="{f(bx - 2.6)}" y="{f(cy - 11)}" width="5.2" height="4.4" rx="0.8" fill="#3a3c46" stroke="{INK3}" stroke-width="0.7"/>')
+    o.append(f'<ellipse cx="{f(bx)}" cy="{f(by)}" rx="4.3" ry="5.6" fill="{D.rad([(0, "#fffbe6"), (0.55, "#ffd77a"), (1, "#f0a640")])}" '
+             f'stroke="{INK3}" stroke-width="0.7"/>')
+    o.append(f'<path d="M{f(bx - 1.2)},{f(by + 2)} q1.2,-5 2.4,0" fill="none" stroke="#ff8a2a" stroke-width="0.7"/>')
+    for dx in (-3.2, 0.0, 3.2):  # gaiola de arame
+        o.append(f'<path d="M{f(bx + dx * 0.6)},{f(by - 5.6)} Q{f(bx + dx * 1.5)},{f(by)} {f(bx + dx * 0.5)},{f(by + 6.2)}" '
+                 f'fill="none" stroke="#2a2c34" stroke-width="0.7"/>')
+    o.append(f'<ellipse cx="{f(bx)}" cy="{f(by)}" rx="4.9" ry="1.4" fill="none" stroke="#2a2c34" stroke-width="0.7"/>')
+    return f'<g transform="translate({f(bx)},{f(by)}) scale(1.6) translate({f(-bx)},{f(-by)})">{"".join(o)}</g>'
+
+
 def wall_mirror(D):
     """Espelho oval com moldura dourada trabalhada."""
     cx, cy = L / 2, -66
@@ -925,6 +946,7 @@ DECORATIONS.update({
     "janelao_brasileiro": lambda D, side: wall_arched_window(D, frame="#2fae3a", box=("#ffd23f", "#2f6fd9")),
     "janela_industrial": lambda D, side: wall_window(D, "#4a4d5a"),
     "janelao_frances": lambda D, side: wall_arched_window(D, frame="#2a2a33", box=("#ffe7a0", "#8a6a2e")),
+    "arandela": lambda D, side: wall_sconce(D),  # DT-081
 })
 
 

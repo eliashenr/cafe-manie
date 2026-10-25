@@ -12,6 +12,11 @@ extends Resource
 @export var collection: StringName = &"classico"
 ## Janela: a luz dela entra no chão.
 @export var lets_light_in := false
+## Acende à noite (DT-081): neon e luminárias de parede ganham um halo na parede e uma mancha de luz no chão.
+@export var glows_at_night := false
+@export var glow_color := Color(1.0, 0.8, 0.5)
+## Altura da luz, em fração da altura da parede (0 = chão, 1 = alto da parede).
+@export_range(0.0, 1.0) var glow_height := 0.6
 
 @export_group("Balanceamento")
 @export var price := 0

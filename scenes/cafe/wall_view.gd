@@ -46,10 +46,11 @@ var item_preview_segments: Array[String] = []
 
 ## Espessura da parede vista de cima (em pisos) e cores do acabamento da arte v3.
 const CAP_DEPTH := 0.16
-const CAP_RIGHT := Color("ffffff")
-const CAP_LEFT := Color("f3f6fa")
-const END_RIGHT := Color("e6ebf2")
-const END_LEFT := Color("dfe5ee")
+## Acabamento de madeira escura no alto e nas pontas das paredes (DT-081).
+const CAP_RIGHT := Color("7a4b31")
+const CAP_LEFT := Color("6b4129")
+const END_RIGHT := Color("5a3622")
+const END_LEFT := Color("4e2f1d")
 const ART_INK := Color("33283a")
 ## Sombra no chão junto às paredes: até onde vai (em pisos) e a cor no pé da parede.
 const FLOOR_SHADOW_REACH := 0.45
@@ -58,6 +59,30 @@ const FLOOR_SHADOW := Color(0.227, 0.165, 0.102, 0.21)
 const WINDOW_LIGHT := Color(1.0, 0.984, 0.878, 0.35)
 const WINDOW_LIGHT_REACH := 2.6
 const WINDOW_LIGHT_SHIFT := 1.8
+## Itens que acendem à noite (DT-081): o halo na parede e a mancha de luz no chão, na frente do trecho (em pisos).
+const ITEM_GLOW_SIZE := Vector2(150.0, 150.0)
+const ITEM_GLOW_ALPHA := 0.7
+## O miolo aceso (a lâmpada ou o tubo de neon), por cima do halo.
+const ITEM_CORE_SIZE := Vector2(30.0, 30.0)
+const ITEM_CORE_ALPHA := 0.9
+const ITEM_POOL_SIZE := Vector2(150.0, 70.0)
+const ITEM_POOL_ALPHA := 0.35
+const ITEM_POOL_REACH := 0.55
+
+
+## Escuridão (DT-080): a luz do sol pelas janelas some à noite e os itens que acendem brilham.
+var night := 0.0
+var night_tint := Color.WHITE
+
+
+## Noite: redesenha só quando a escuridão muda de um passo para outro.
+func set_night(amount: float, tint: Color) -> void:
+	var stepped := roundf(clampf(amount, 0.0, 1.0) * ExteriorView.NIGHT_STEPS) / ExteriorView.NIGHT_STEPS
+	if is_equal_approx(stepped, night):
+		return
+	night = stepped
+	night_tint = tint
+	queue_redraw()
 
 
 func _init() -> void:
@@ -184,7 +209,33 @@ func _draw_art_walls() -> void:
 		var outline := segment_polygon(wall_segment)
 		outline.append(outline[0])
 		draw_polyline(outline, FloorView.COLOR_PAINT_LINE, 2.5, true)
+	_draw_item_glows()
 	_draw_caps()
+
+
+## Neon e luminárias de parede acesos à noite: o halo em volta e a mancha de luz no chão, na frente do trecho.
+func _draw_item_glows() -> void:
+	if night <= CityLights.MIN_NIGHT:
+		return
+	var glow := CityLights.glow_modulate(night, night_tint, 1.0)
+	var dot := FxParticles.soft_dot()
+	for wall_segment: String in CafeStyle.back_wall_segments(grid_size):
+		var item := item_at(wall_segment)
+		if item == null or not item.glows_at_night:
+			continue
+		var outline := segment_polygon(wall_segment)
+		var base := (outline[0] + outline[1]) / 2.0
+		var top := (outline[2] + outline[3]) / 2.0
+		var light := base.lerp(top, item.glow_height)
+		draw_texture_rect(dot, Rect2(light - ITEM_GLOW_SIZE / 2.0, ITEM_GLOW_SIZE), false,
+			Color(item.glow_color, ITEM_GLOW_ALPHA) * glow)
+		draw_texture_rect(dot, Rect2(light - ITEM_CORE_SIZE / 2.0, ITEM_CORE_SIZE), false,
+			Color(item.glow_color.lightened(0.6), ITEM_CORE_ALPHA) * glow)
+		var into_room := Vector2(0.0, ITEM_POOL_REACH) if wall_segment.begins_with(CafeStyle.EDGE_TOP) \
+			else Vector2(ITEM_POOL_REACH, 0.0)
+		var floor_spot := base + IsoProjection.vertex_to_world(into_room) - IsoProjection.vertex_to_world(Vector2.ZERO)
+		draw_texture_rect(dot, Rect2(floor_spot - ITEM_POOL_SIZE / 2.0, ITEM_POOL_SIZE), false,
+			Color(item.glow_color, ITEM_POOL_ALPHA) * glow)
 
 
 ## Ponta de baixo à esquerda (na tela) do painel da célula [param y] da parede da esquerda.
@@ -237,10 +288,10 @@ func _draw_light(points: PackedVector2Array, n: Vector2) -> void:
 	var world := PackedVector2Array()
 	for point in points:
 		world.append(_at(Vector2(minf(point.x, n.x), minf(point.y, n.y))))
-	draw_colored_polygon(world, WINDOW_LIGHT)
+	draw_colored_polygon(world, Color(WINDOW_LIGHT, WINDOW_LIGHT.a * (1.0 - night)))  # o sol não entra à noite
 
 
-## Espessura branca no alto das paredes e as duas pontas da frente.
+## Espessura de madeira escura no alto das paredes e as duas pontas da frente (DT-081).
 func _draw_caps() -> void:
 	var n := Vector2(grid_size)
 	var h := wall_height

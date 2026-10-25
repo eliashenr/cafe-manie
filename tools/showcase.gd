@@ -16,6 +16,7 @@ extends SceneTree
 ## livro:<aba>[:<página>[:<nível>]] (o livro de receitas aberto no fogão, no nível 13 se não disser outro, com estrelas de domínio)
 ## ou japones (o livro na aba Japão, aberto no Fogão Japonês, no nível 30). Janelas: diario (o presente no dia 4),
 ## conquistas, nome (a pergunta do nome na primeira vez) e pergunta (a confirmação de contratar um garçom).
+## cafe (ou cafe:noite): o café no estilo Nova York, com tijolo, madeira, janelões, arandelas e o letreiro neon.
 ##
 ## Monta uma cafeteria com o relógio parado e gente em cada situação: comendo
 ## (prato na mesa), esperando o pedido, pedindo, andando nas quatro direções,
@@ -45,7 +46,7 @@ func _initialize() -> void:
 	if japanese:
 		_panel = "livro:japao:1:30"
 	var clock = load("res://core/time/manual_clock.gd").new()
-	if _panel == "noite":
+	if _panel == "noite" or _panel == "cafe:noite":
 		clock.time = Time.get_unix_time_from_datetime_string("2026-10-25T23:00:00") - clock.utc_offset_seconds()
 	if _panel.begins_with("evento"):
 		clock.time = Time.get_unix_time_from_datetime_string("2026-10-25T12:00:00")  # durante o Halloween
@@ -292,6 +293,17 @@ func _set_panel() -> void:
 			if _panel.get_slice(":", 1) == "missoes":
 				_cafe.simulation.mark_event_story_seen()
 			_cafe.hud.show_event()
+		"cafe":
+			# O café no estilo Nova York (DT-081): tijolo, madeira, janelões, arandelas, o neon e o letreiro com o nome.
+			var sim = _cafe.simulation
+			for surface_id in [&"wall_brick", &"floor_wood"]:
+				var surface = sim.surfaces.get_definition(surface_id)
+				sim.style.own(surface.id)
+				sim.style.apply(surface)
+			for spot in [["top:1", &"arandela"], ["top:3", &"janelao"], ["top:6", &"arandela"], ["left:2", &"janelao"],
+					["left:5", &"neon_xicara"]]:
+				sim.style.hang([spot[0]] as Array[String], spot[1])
+			sim.set_cafe_name("Café Manie")
 		"diario":
 			_keep_window = "DailyDialog"
 			for window: Window in _cafe.find_children("*", "Window", true, false):

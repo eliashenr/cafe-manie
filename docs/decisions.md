@@ -4,6 +4,27 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-081 — Redesign, etapa 5: o café no estilo Nova York
+
+**Problema:**
+- A referência mostra uma cafeteria de tijolo e madeira, com janelões, luminárias, letreiro neon e cozinha de inox.
+- O café do jogador é montado por ele (revestimentos, itens de parede e móveis que ele compra). O que muda para todo mundo tem de vir da estrutura do café, sem tirar o valor do que se compra na loja.
+
+**Decisão:**
+- **Para todos os cafés:**
+  - **letreiro neon com o nome do café**, em pé no alto da parede do fundo da direita: placa escura, o nome em tubos ciano com o miolo branco, um sublinhado rosa e o halo. O neon tem luz própria: à noite não escurece e o halo cresce. Acompanha o nome (quando o jogador troca) e o meio da parede (quando o café cresce). Sem nome ainda, diz "Café";
+  - **acabamento de madeira escura** no alto e nas pontas das paredes e no alto da mureta (antes branco);
+  - **a luz do sol pelas janelas some à noite**;
+  - **itens de parede que acendem à noite** (`glows_at_night`, com a cor e a altura da luz no `.tres`): o halo na parede, o miolo aceso e a mancha de luz no chão. O Neon de Xícara passou a acender.
+- **Item novo:** a **Arandela Industrial** (luminária de parede com lâmpada de filamento numa gaiola), na coleção Anos 2010 (a industrial), por 120 de ouro, nível 3, +5 de beleza. Acende à noite.
+- **O que ficou de fora, e por quê:**
+  - **jogo novo já com tijolo e madeira:** testado e desfeito. A beleza inicial subia e o jogador ganhava a primeira conquista de beleza logo de cara, mudando o começo que acabamos de balancear. O Tijolinho e o Piso de Madeira continuam na loja, no nível 1 e baratos;
+  - **cozinha de inox no fogão e no balcão iniciais:** o Fogão Inox Industrial e o Balcão de Inox já são itens da loja (coleção Anos 2010). Pintar os iniciais de inox tiraria o valor dessa compra;
+  - **luminárias pendentes:** o café é visto em corte, sem teto, e uma luminária pendurada no nada ficaria estranha. No lugar, a arandela na parede e o letreiro neon.
+- **Onde fica:** `scenes/cafe/neon_sign.gd` (filho do WallView, para os móveis passarem na frente); a luz dos itens no `WallView`; o café liga tudo em `_apply_night`.
+
+---
+
 ## DT-080 — Redesign, etapa 4: Nova York à noite
 
 **Problema:**

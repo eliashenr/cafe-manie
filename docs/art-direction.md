@@ -42,6 +42,8 @@ O PO mandou duas imagens de referência e um prompt detalhado pedindo a reformul
 
 **Cidade (DT-080):** de dia, concreto e calçadas cinza-azulados, asfalto escuro e poças da rua molhada; à noite, metade das janelas dos prédios acesa (camada "_luz" de cada prédio), vitrines quentes, janelinhas dos arranha-céus, postes com poça de luz, faróis e a luz quente do salão contra o azul da rua.
 
+**O café (DT-081):** letreiro neon ciano com o nome do café e sublinhado rosa em cima da parede do fundo, acabamento de madeira escura (`#7a4b31`) nas paredes e na mureta, itens de parede que acendem à noite (Arandela Industrial, Neon de Xícara).
+
 **Etapas:** ver `docs/roadmap.md` ("Redesign Nova York Futurista").
 
 ## Direção anterior: "Esquina Nostálgica" (30/09/2026)

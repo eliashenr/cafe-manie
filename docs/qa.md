@@ -58,7 +58,7 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 - **No celular de verdade:** a medição foi neste PC. Num celular, espere de 3 a 5 vezes menos quadros por segundo, ainda acima de 30 com o café cheio.
 - **O toque com o dedo de verdade:** os toques foram simulados (como em todos os testes de cena).
 
-## Cobertura atual — 715 testes
+## Cobertura atual — 720 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -135,6 +135,7 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 | `integration/test_cafe_scene.gd` | 11 | câmera, seleção, arrasto, zoom, pinça, enquadramento (com as paredes) |
 | `integration/test_build_mode.gd` | 14 | construir, recusar com motivo, mover, girar, guardar, teclado, abas da loja |
 | `integration/test_service_scene.gd` | 12 | aviso de nível alto com o ouro; jogo novo, HUD, painel do fogão, coleta por toque, personagens, aviso de nível, textos flutuantes |
+| `integration/test_ny_cafe_scene.gd` | 5 | **o café em Nova York (DT-081):** letreiro neon com o nome (acompanha a troca de nome e a expansão, "Café" sem nome); o neon com luz própria à noite; acabamento de madeira nas paredes e na mureta; Arandela Industrial no catálogo e na loja, acendendo à noite; nenhum item é janela e luz ao mesmo tempo |
 | `integration/test_city_night_scene.gd` | 7 | **Nova York à noite (DT-080):** cor das luzes compensa o NightTint; luzes ligam e desligam com a escuridão; luz do salão cobre o café e acompanha a expansão; todo prédio com a camada das janelas acesas, dentro dele; de dia nada aceso; à noite janelas, salão, postes (com a poça) e faróis acesos; a cidade redesenha em passos |
 | `integration/test_dialog_style_scene.gd` | 6 | **janelas no padrão (DT-079):** papel de cada botão (verde, fantasma, vermelho, aba) em todas as janelas e na loja; o tema define os papéis; fundo escurecido com janela aberta e o aviso por cima dele, embaixo; cartões do presente diário (hoje e dias recebidos); "Melhor valor" só no pacote que rende mais; botão do evento muda de papel por quadro |
 | `integration/test_shop_detail_scene.gd` | 6 | **loja nova (DT-078):** primeiro item no painel ao abrir, primeiro toque escolhe e o segundo compra, Comprar leva o item do painel, bloqueio com o nível, benefícios iguais aos dados (fogão, troféu, terraço, piso), menu lateral sai com a loja aberta e o aviso vai para dentro dela |
