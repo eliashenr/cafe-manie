@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Arte realista em 3D, etapa 3: chão, paredes, portas e a cidade** (DT-086 e DT-087, só no ramo `arte-3d`)
+
+- **Pisos e paredes em 3D**, sem emenda entre um trecho e outro: os 17 pisos e as 16 paredes da loja.
+- **Itens de parede em 3D:** as janelas com o céu, os janelões com floreira, o espelho, a lousa, o painel digital, o neon, a arandela, a TV, o rádio, o relógio e os quadros.
+- **As 13 portas** com o toldo e a plaquinha ABERTO ou FECHADO, o terraço e o capacho da entrada.
+- **A cidade em 3D:** os 7 prédios de Nova York (com as janelas e vitrines acesas à noite), postes, árvores, bancos, carrinho de cachorro-quente, semáforos e os táxis e carros.
+- **O que ainda é desenho:** o chão da rua, os arranha-céus ao longe, as panelas, os pratos e comidas, o robô e os retratos.
+
 **Arte realista em 3D, etapa 2: os 130 móveis** (DT-085, só no ramo `arte-3d`; o jogo principal não mudou)
 
 - **Todos os móveis agora são 3D**, com luz, brilho e sombra de verdade:
@@ -543,6 +551,9 @@
 
 🧪 **TESTADO**
 
+- **Arte 3D, etapa 3 (ramo `arte-3d`): 732 testes automatizados PASSARAM.**
+  - **Conferido nas fotos:** pisos e paredes repetidos lado a lado (sem emenda), itens e portas sobre a parede, as janelas acesas caindo nas janelas dos prédios, o café inteiro de dia e à noite.
+  - **Cena principal: PASSOU**, zero erros.
 - **Arte 3D, etapa 2 (ramo `arte-3d`): 732 testes automatizados PASSARAM.**
   - O teste que confere se cada móvel fica dentro do seu piso pegou os balcões (a sombra e o tampo passavam), a tampa do vagão e a lâmpada de lava fina demais: corrigidos.
   - **Fotos conferidas:** os 130 móveis lado a lado, o café de dia e à noite e a loja.

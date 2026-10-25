@@ -224,6 +224,7 @@ def _finish(obj, mat, bevel=0.0, segments=3, smooth=True):
         mod.width = bevel
         mod.segments = segments
         mod.limit_method = "ANGLE"
+        mod.harden_normals = True   # as faces planas continuam planas; só a quina fica arredondada
     if smooth:
         for poly in obj.data.polygons:
             poly.use_smooth = True
@@ -235,7 +236,8 @@ def box(size, center, mat, bevel=0.008):
     obj = bpy.context.active_object
     obj.scale = size
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-    return _finish(obj, mat, bevel)
+    # sem chanfro, a caixa tem faces planas (o sombreamento suave misturaria a frente com as laterais)
+    return _finish(obj, mat, bevel, smooth=bevel > 0.0)
 
 
 def cylinder(radius, z0, z1, mat, center=(0.0, 0.0), bevel=0.004, vertices=48):

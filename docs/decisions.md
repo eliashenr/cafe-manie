@@ -4,6 +4,36 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-087 — Arte realista em 3D: a cidade (ramo arte-3d)
+
+**Decisão (`tools/render3d/cidade3d.py`):**
+- **Os 7 prédios em 3D**, com os estilos da arte 2D: o brownstone com a escadinha e as janelas em arco, os de tijolo com escada de incêndio e caixa d'água, a delicatéssen e a pizzaria com o toldo, a vitrine e o letreiro, a torre de vidro e a torre art déco em degraus.
+- **A camada das janelas acesas à noite** (DT-080) sai do mesmo modelo: na segunda foto, só os vidros acesos aparecem; o resto do prédio vira recorte (holdout), então as luzes caem exatamente nas janelas. As acesas de dia continuam um subconjunto das acesas à noite (o mesmo sorteio), e as vitrines das lojas acendem.
+- **O vidro da janela fica à frente da fachada**, com o vão escuro logo atrás: dentro da parede, a câmera do alto não via o vidro.
+- **Os enfeites da calçada** (poste com a lanterna, hidrante, árvore com a grade, banco, carrinho de cachorro-quente, lixeira, caixa de correio, floreira, bueiro e os semáforos nas três cores) e **os 4 carros** (táxi com a placa no teto, vermelho, branco e azul), nas quatro direções.
+- **A lanterna do poste** é medida no 3D e vai para o `sprites.json` (`lamp_head`), onde o jogo acende a luz à noite.
+- **Continua desenho:** o chão da rua (asfalto, calçadas, faixas, poças) e os arranha-céus ao longe, que o jogo já desenha com cores e luz por conta própria.
+
+---
+
+## DT-086 — Arte realista em 3D: pisos, paredes, itens de parede, portas e terraço (ramo arte-3d)
+
+**Problema:** com pessoas e móveis em 3D, o chão e as paredes desenhados destoavam.
+
+**Decisão (`tools/render3d/superficies3d.py`):**
+- **17 pisos e 16 paredes em 3D**, com os mesmos nomes e encaixes da arte 2D:
+  - pisos de lajota, azulejo, mármore, tábuas, parquê em cesto, tatame, granilite, confete, LED, o calçadão de Copacabana e os círculos dos anos 70;
+  - paredes com o lambri, o rodameio e o rodapé em relevo, ou de tijolo, toras, azulejo de metrô, shoji e neon de cima a baixo.
+- **Sem emenda:** todo padrão tem o período de uma célula, então o piso e o trecho vizinhos continuam o desenho. Cada trecho tem uma pequena sobra dos lados, que o vizinho cobre.
+- **Luz só direcional nas superfícies que se repetem:** a luz de área (de um ponto) iluminava cada trecho de um jeito, e a emenda aparecia.
+- **Faces planas nas caixas sem chanfro:** o sombreamento suave misturava a inclinação da frente com a das laterais e a parede parecia curva. Nas caixas com chanfro, as faces continuam planas e só a quina fica suave (vale também para os móveis, que foram refeitos com isso).
+- **27 itens de parede em 3D,** presos na parede, que recebe a sombra deles (a parede invisível só guarda a sombra): janelas com o céu, janelas redondas e em arco com floreira, espelho, lousa, painel digital, neon, arandela, planta pendurada, prateleira, quadros, rádio, relógio e TV.
+- **As 13 portas** (aberta e fechada): batente, toldo listrado e a plaquinha ABERTO ou FECHADO com a letra do jogo (Fredoka). Sem a sombra na parede, porque a porta não tem parede atrás.
+- **O terraço** (deque e cerca de jardim com floreira) e o **capacho da entrada**.
+- **Continua desenho:** as manchas do chão sujo e a luz das janelas no chão (desenhadas pelo jogo por cima).
+
+---
+
 ## DT-085 — Arte realista em 3D: os 130 móveis (ramo arte-3d)
 
 **Problema:** com os personagens realistas, os móveis desenhados destoavam.
