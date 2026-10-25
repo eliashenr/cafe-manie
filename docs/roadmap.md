@@ -108,7 +108,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 ## Arte realista em 3D (25/10/2026, DT-084, ramo arte-3d)
 
 - [x] **1. Personagens:** o garçom e os 12 clientes realistas (MakeHuman), andando e sentados, com as camisetas nas cores da arte antiga.
-- [ ] **2. Roupa de garçom e óculos:** pacotes livres suits01 e glasses01 (esperando a autorização do download).
+- [x] **2. Roupa de garçom e óculos:** pacotes livres suits01 e glasses01 (CC0): o garçom de paletó com gravata-borboleta e a cliente 8 de óculos.
 - [ ] **3. Móveis em 3D:** cozinha, salão, enfeites, pisos e paredes.
 - [ ] **4. A cidade em 3D:** prédios, carros e calçada.
 - [ ] **5. Robô, crítico, vizinhos e retratos.**

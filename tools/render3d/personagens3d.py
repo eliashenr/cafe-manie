@@ -69,12 +69,12 @@ EXPRESSIONS = {
     "comendo": {"mouth/mouth-angles-up": 0.5},
 }
 
-# Quem é quem. gender 1 = homem; race = mistura (africana, asiática, europeia); tint = cor do cabelo
+# Quem é quem (roupas do pacote do sistema e dos pacotes livres suits01 e glasses01). gender 1 = homem; race = mistura (africana, asiática, europeia); tint = cor do cabelo
 # ("tipo:cor", tipo multiply para cabelo claro ou color para trocar o tom guardando a luz).
 MALE_BROWS, FEMALE_BROWS = "eyebrow001", "eyebrow006"
 CHARACTERS = {
     "garcom": dict(gender=1.0, age=0.45, muscle=0.6, weight=0.45, race=(0.3, 0.25, 0.45), skin="young_caucasian_male2",
-                   hair="short02", outfit=["male_elegantsuit01", "shoes03"], height=1.0, tray=True),
+                   hair="short02", outfit=["toigo_suit_with_jacket_and_bowtie", "shoes03"], height=1.0, tray=True),
     "cliente_01": dict(top="#ff4d6d", gender=0.0, age=0.4, weight=0.45, race=(0.0, 0.1, 0.9), skin="young_caucasian_female",
                        hair="ponytail01", outfit=["female_casualsuit01", "shoes06"], height=0.96),
     "cliente_02": dict(top="#2fae4e", gender=1.0, age=0.42, muscle=0.55, weight=0.5, race=(0.55, 0.1, 0.35), skin="young_african_male",
@@ -90,7 +90,8 @@ CHARACTERS = {
     "cliente_07": dict(gender=1.0, age=0.6, muscle=0.5, weight=0.6, race=(0.15, 0.1, 0.75), skin="middleage_caucasian_male",
                        hair="short03", outfit=["male_casualsuit03", "shoes01"], height=1.0),
     "cliente_08": dict(gender=0.0, age=0.92, weight=0.55, race=(0.0, 0.0, 1.0), skin="old_caucasian_female",
-                       hair="bob02", hair_tint="multiply:#b9b6b2", outfit=["female_elegantsuit01", "shoes04"], height=0.93),
+                       hair="bob02", hair_tint="multiply:#b9b6b2",
+                       outfit=["female_elegantsuit01", "shoes04", "spamrakuen_tbm_glasses_frames_01"], height=0.93),
     "cliente_09": dict(gender=1.0, age=0.66, muscle=0.55, weight=0.65, race=(0.85, 0.0, 0.15), skin="middleage_african_male",
                        hair=None, outfit=["male_casualsuit05", "shoes01"], height=1.0),
     "cliente_10": dict(top="#2b2b38", gender=1.0, age=0.36, muscle=0.6, weight=0.4, race=(0.0, 0.05, 0.95), skin="young_caucasian_male",

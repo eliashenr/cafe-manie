@@ -22,6 +22,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - os mesmos quadros e âncoras da arte 2D: em pé e 8 passos de frente e de costas (o garçom também com a bandeja), sentado de frente com as 4 expressões e sentado de costas nas rotações 1 e 2 da cadeira;
   - as poses apontam cada osso para uma direção (braços soltos, passada com o joelho dobrando na volta, o quadril girando um pouco, sentado com as mãos no colo);
   - as expressões usam as formas do próprio MakeHuman (cantos da boca e sobrancelhas), sem pacote extra;
+  - o garçom de paletó com gravata-borboleta e a cliente 8 de óculos, dos pacotes livres suits01 e glasses01 (CC0, baixados com a autorização do PO);
   - o lugar do prato na bandeja é medido no 3D e vai para o `sprites.json`; de costas a bandeja aparece em outro ponto da tela, então há uma medida própria (`tray_food_back`), que o jogo usa quando o garçom está de costas.
 
 ---
