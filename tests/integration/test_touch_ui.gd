@@ -18,11 +18,7 @@ func test_tapping_a_shop_button_with_a_finger_works() -> void:
 	var button := cafe.build_bar.find_button("Build_table_round")
 	_tap_control(button)
 	await settle()
-	assert_eq(cafe.mode, Cafe.Mode.VIEW, "o primeiro toque escolhe o item (DT-078)")
-	assert_true((button as ShopItemButton).selected)
-	_tap_control(button)
-	await settle()
-	assert_eq(cafe.mode, Cafe.Mode.BUILD, "o segundo toque no mesmo item começou a construção")
+	assert_eq(cafe.mode, Cafe.Mode.BUILD, "o toque no botão da loja começou a construção (DT-088: um toque só)")
 	assert_eq(cafe.session.target, CafeGrid.NO_CELL, "o toque não vazou para o piso atrás do botão")
 
 

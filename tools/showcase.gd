@@ -305,18 +305,10 @@ func _set_panel() -> void:
 				sim.style.hang([spot[0]] as Array[String], spot[1])
 			sim.set_cafe_name("Café Manie")
 		"futuro":
-			# O toque futurista (DT-082): o Robô Garçom com a bandeja, a Máquina de Café Inteligente e o Painel Digital.
+			# O toque futurista (DT-082): a Máquina de Café Inteligente e o Painel Digital (o robô saiu, DT-088).
 			var sim = _cafe.simulation
 			sim.progression.add_xp(99999)
 			sim.wallet.earn(&"soft_currency", 99999, "vitrine")
-			while not sim.next_waiter_is_robot():
-				sim.hire_waiter()
-			sim.hire_waiter()
-			var robot = sim.waiters[-1]
-			robot.position = Vector2(6.5, 4.4)
-			robot.facing = Vector2(-1, 0)
-			robot.carrying = sim.recipes.get_definition(&"carrot_cake")
-			robot.speed = 0.0
 			_cafe.layout.place(_cafe.catalog.get_definition(&"machine_coffee_smart"), Vector2i(7, 0))
 			for spot in [["top:4", &"painel_digital"], ["left:3", &"painel_digital"]]:
 				sim.style.hang([spot[0]] as Array[String], spot[1])

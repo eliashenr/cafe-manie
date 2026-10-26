@@ -4,6 +4,14 @@
 
 🟢 **CONCLUÍDO**
 
+**Ajustes pedidos pelo PO depois de jogar** (DT-088)
+
+- **A loja voltou a ser a barra fixa embaixo**, no visual escuro: as abas, as coleções e os cartões, com as setas para passar as páginas.
+  - **No celular, dá para arrastar o dedo para o lado** na fileira de cartões e trocar a página.
+  - Um toque no item já põe ele no café (como antes). Enquanto você posiciona, o aviso conta para que ele serve e os benefícios.
+  - O café continua à vista em cima.
+- **Todos os garçons são humanos:** o robô saiu do jogo.
+- **As máquinas agora se explicam:** toque numa máquina no café e o aviso diz as bebidas que ela faz e como servir.
 **Arte realista em 3D, etapa 3: chão, paredes, portas e a cidade** (DT-086 e DT-087, só no ramo `arte-3d`)
 
 - **Pisos e paredes em 3D**, sem emenda entre um trecho e outro: os 17 pisos e as 16 paredes da loja.
@@ -551,6 +559,9 @@
 
 🧪 **TESTADO**
 
+- **Ajustes do PO: 726 testes automatizados PASSARAM.**
+  - **Novos:** a loja é uma barra embaixo e o café continua à vista; os cartões por página seguem a largura da tela; arrastar para o lado troca a página sem comprar; um toque põe o item no café e o aviso explica o que ele faz; a máquina no café conta as bebidas e como servir; todos os garçons são humanos.
+  - **Fotos conferidas:** a loja na tela 16:9, no celular comprido e no tablet.
 - **Arte 3D, etapa 3 (ramo `arte-3d`): 732 testes automatizados PASSARAM.**
   - **Conferido nas fotos:** pisos e paredes repetidos lado a lado (sem emenda), itens e portas sobre a parede, as janelas acesas caindo nas janelas dos prédios, o café inteiro de dia e à noite.
   - **Cena principal: PASSOU**, zero erros.

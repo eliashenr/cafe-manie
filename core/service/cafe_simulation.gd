@@ -1330,11 +1330,6 @@ func can_hire_waiter() -> int:
 
 
 ## Contrata mais um garçom, cobrando o preço. Ele chega pela entrada.
-## O próximo garçom contratado será o Robô Garçom (DT-082)?
-func next_waiter_is_robot() -> bool:
-	return waiters.size() >= economy.robot_waiter_from
-
-
 func hire_waiter() -> int:
 	var result := can_hire_waiter()
 	if result != ServiceResult.OK:
@@ -2511,7 +2506,6 @@ func _nearest_free_cell(from: Vector2i) -> Vector2i:
 
 func _hire_waiter() -> void:
 	var waiter := Waiter.new()
-	waiter.robot = next_waiter_is_robot()
 	waiter.serial = _take_serial()
 	waiter.speed = config.waiter_walk_speed
 	waiter.position = Vector2(layout.entrance)

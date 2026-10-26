@@ -1,7 +1,7 @@
 class_name ShopItemButton
 extends Button
 ## Cartão da loja (DT-077): o desenho do item num cartão de vidro escuro, o nome, a etiqueta de preço com a moeda e
-## o selo da coleção embaixo. Escolhido, fica com a borda ciano. Bloqueado, mostra o cadeado com "Nível N". No lugar
+## o selo da coleção embaixo. Ao passar o mouse, a borda acende. Bloqueado, mostra o cadeado com "Nível N". No lugar
 ## do preço pode vir um aviso ("1 guardado", "Em uso", "Na entrada").
 ##
 ## O texto do botão (Button.text) guarda as mesmas informações em uma linha só, para quem lê a tela sem a imagem (e
@@ -32,12 +32,6 @@ var affordable := true
 ## Selo da coleção embaixo do cartão ("" = sem selo) e a cor dela.
 var tag_text := ""
 var tag_color := UiTheme.METAL
-## Escolhido na loja (o painel de detalhes mostra este).
-var selected := false:
-	set(value):
-		if value != selected:
-			selected = value
-			queue_redraw()
 
 
 func _init() -> void:
@@ -76,14 +70,8 @@ func show_state(new_price: int, new_locked_level: int, new_note: String, new_aff
 
 func _draw() -> void:
 	var card := Rect2(Vector2.ZERO, size)
-	var edge := UiTheme.CYAN if selected else (UiTheme.BLUE_LIGHT if is_hovered() and not disabled else UiTheme.CARD_EDGE)
-	var box := UiTheme.card_box(12, 0, edge)
-	if selected:
-		box.set_border_width_all(2)
-		box.shadow_color = Color(UiTheme.CYAN, 0.35)
-		box.shadow_size = 8
-		box.shadow_offset = Vector2.ZERO
-	draw_style_box(box, card)
+	var edge := UiTheme.CYAN if is_hovered() and not disabled else UiTheme.CARD_EDGE
+	draw_style_box(UiTheme.card_box(12, 0, edge), card)
 	var art_area := Rect2(Vector2(ART_MARGIN, ART_MARGIN), size - Vector2(ART_MARGIN * 2.0, ART_MARGIN + ART_BOTTOM))
 	draw_style_box(_soft_box(), art_area)
 	if art != null:
