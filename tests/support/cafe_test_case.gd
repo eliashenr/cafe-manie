@@ -99,10 +99,9 @@ func all_messages(cafe: Cafe) -> String:
 	return "\n".join([cafe.hud.toast_text()] + cafe.hud.queued_messages())
 
 
-## Toca no cartão da loja e em "Comprar" (DT-078: o primeiro toque escolhe o item e mostra os detalhes).
-func buy_in_shop(cafe: Cafe, card: Button) -> void:
+## Toca no cartão da loja: um toque faz a ação (pôr no café, pintar ou perguntar), DT-088.
+func buy_in_shop(_cafe: Cafe, card: Button) -> void:
 	card.pressed.emit()
-	cafe.build_bar.find_button("BuyButton").pressed.emit()
 
 
 ## Espera a barra de construção se reconstruir (ela reconstrói no fim do frame).

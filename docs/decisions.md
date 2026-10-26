@@ -4,6 +4,26 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-088 — Loja de volta à barra de baixo (celular), sem o robô e as máquinas explicadas
+
+**Problema (o PO jogou a versão nova):**
+- A loja de tela inteira (DT-078) tampava o café e ficaria ruim no celular. O PO pediu a barra fixa embaixo de antes, passando para o lado para ver mais.
+- O PO não queria o Robô Garçom (DT-082) e escolheu que todos os garçons sejam humanos.
+- O PO perguntou o que a máquina de café e as outras fazem: o jogo não explicava bem.
+
+**Decisão:**
+- **Loja na barra de baixo**, no lugar da faixa de ícones, no visual escuro:
+  - as abas no alto (com o ícone e fundo de vidro escuro, para aparecerem por cima do café), as coleções numa fileira que rola para o lado e uma fileira de cartões com as setas e a página;
+  - **arrastar o dedo para o lado** na fileira troca a página; o toque que vira arrasto não compra o cartão onde começou;
+  - os cartões por página dependem da largura da tela (`BuildBar.cards_for_width`, de 3 a 8). Como a tela do jogo tem pelo menos 1280 de largura (o celular comprido e o tablet só aumentam a outra medida), cabem 8;
+  - **um toque no cartão faz a ação**, como antes: põe o móvel para posicionar, começa a reforma ou pergunta (porta, terraço, item de parede, troca por cupons). O painel de detalhes saiu;
+  - **o que o item faz aparece enquanto ele é posicionado**: a segunda linha do aviso traz a descrição e os benefícios (beleza, perfil do fogão, troféu, terraço);
+  - com a loja aberta, só a satisfação sai (ela ficaria embaixo da barra); o menu lateral e os botões ficam.
+- **Robô Garçom removido:** a regra, o desenho (36 quadros), a ferramenta de arte e os testes. A Máquina de Café Inteligente e o Painel Digital continuam.
+- **Máquinas explicadas no jogo:** tocando numa máquina no café, o aviso diz as bebidas que ela faz (as bloqueadas com o nível) e como servir: "Quem quer bebida mostra o balão verde: toque no cliente para servir na hora (gasta energia)". Ao posicionar, a descrição diz o mesmo.
+
+---
+
 ## DT-083 — Redesign, etapa 7: revisão visual e QA
 
 **Problema:**

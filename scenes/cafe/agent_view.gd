@@ -390,8 +390,7 @@ func _draw_overlay() -> void:
 func _look() -> String:
 	var info := ArtSprites.characters()
 	if agent is Waiter:
-		var robot: String = info.get("robot_waiter", "") if (agent as Waiter).robot else ""
-		return robot if not robot.is_empty() else info.get("waiter", "")
+		return info.get("waiter", "")
 	var looks: Array = info.get("customers", [])
 	return "" if looks.is_empty() else looks[posmod(agent.serial, looks.size())]
 

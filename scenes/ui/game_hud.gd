@@ -118,7 +118,7 @@ var _level_label: Label
 var _beauty_bar: StripedBar
 var _rating_label: Label
 var _rating_card: Control
-## Camada do menu lateral, dos botões da direita, da missão e da satisfação: some com a loja aberta (DT-077).
+## Camada do menu lateral, dos botões da direita, da missão e da satisfação.
 var _side_layer: Control
 var _stars: Array[TextureRect] = []
 var _daily_title: Label
@@ -1252,10 +1252,10 @@ func restart_dialog() -> ConfirmationDialog:
 	return _restart_dialog
 
 
-## Loja aberta (DT-077): o painel dela ocupa a tela, então o menu lateral, os botões da direita, a missão e a
-## satisfação saem e voltam quando ela fecha. O perfil e os contadores ficam.
+## Loja aberta (DT-088): ela é uma barra embaixo, então só a satisfação (que ficaria embaixo dela) sai e volta quando a
+## loja fecha.
 func set_shop_open(open: bool) -> void:
-	_side_layer.visible = not open
+	_rating_card.visible = not open
 
 
 func is_rating_visible() -> bool:

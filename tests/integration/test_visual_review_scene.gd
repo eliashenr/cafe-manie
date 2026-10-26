@@ -1,6 +1,6 @@
 extends CafeTestCase
 ## Revisão visual do redesign (DT-083): o que ainda estava no estilo claro antigo ficou no padrão escuro (abas do livro
-## de receitas, receitas bloqueadas, botões de texto da barra), o botão da loja diz o que falta e o progresso é ciano.
+## de receitas, receitas bloqueadas, botões de texto da barra) e o progresso é ciano.
 
 
 func _stove_cafe() -> Cafe:
@@ -53,19 +53,6 @@ func test_bar_text_buttons_use_theme_roles_and_keep_their_height() -> void:
 	assert_eq(all.theme_type_variation, UiTheme.GHOST_BUTTON, "Tudo e Limpar são botões fantasma")
 	assert_eq(cafe.build_bar.find_button("PaintClearButton").theme_type_variation, UiTheme.GHOST_BUTTON)
 	assert_eq(all.size_flags_vertical, Control.SIZE_SHRINK_CENTER, "sem esticar até a altura dos ícones")
-
-
-func test_the_shop_button_says_what_is_missing() -> void:
-	var simulation := quiet_simulation()
-	var cafe := await spawn_cafe(simulation)
-	cafe.build_bar.open_shop(BuildBar.ShopTab.COUPONS)
-	await settle()
-	var item := cafe.simulation.coupon_shop_items()[0]
-	cafe.build_bar.find_button("Build_" + String(item.id)).pressed.emit()
-	await settle()
-	var buy := cafe.build_bar.find_button("BuyButton")
-	assert_true(buy.disabled)
-	assert_eq(buy.text, "Faltam cupons", "sem cupons, o botão diz o que falta (antes: Indisponível)")
 
 
 func test_progress_bars_are_cyan() -> void:

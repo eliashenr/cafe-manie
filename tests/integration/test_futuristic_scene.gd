@@ -1,6 +1,6 @@
 extends CafeTestCase
-## O toque futurista (DT-082): o Robô Garçom (do terceiro garçom em diante, só o visual muda), a Máquina de Café
-## Inteligente e o Painel Digital.
+## O toque futurista (DT-082): a Máquina de Café Inteligente e o Painel Digital. O Robô Garçom saiu a pedido do PO
+## (DT-088): todos os garçons são humanos.
 
 
 func _rich_cafe() -> Cafe:
@@ -12,69 +12,21 @@ func _rich_cafe() -> Cafe:
 	return cafe
 
 
-func test_from_the_third_hire_on_the_waiter_is_a_robot() -> void:
+func test_every_waiter_is_a_person() -> void:
 	var cafe := await _rich_cafe()
 	var sim := cafe.simulation
-	var from := sim.economy.robot_waiter_from
-	assert_eq(from, 2, "o terceiro garçom (data/config/economy.tres)")
 	while sim.waiters.size() < sim.economy.max_waiters():
-		var robot_expected := sim.waiters.size() >= from
-		assert_eq(sim.next_waiter_is_robot(), robot_expected)
 		assert_eq(sim.hire_waiter(), ServiceResult.OK)
-		assert_eq(sim.waiters[-1].robot, robot_expected, "garçom %d" % sim.waiters.size())
-	for i in sim.waiters.size():
-		assert_eq(sim.waiters[i].robot, i >= from)
-
-
-func test_robots_work_like_waiters_and_come_back_after_loading() -> void:
-	var cafe := await _rich_cafe()
-	var sim := cafe.simulation
-	while sim.waiters.size() < 3:
-		sim.hire_waiter()
-	assert_eq(sim.waiters[2].speed, sim.waiters[0].speed, "o robô anda na mesma velocidade")
-	var data := SaveCodec.encode(sim)
-	var loaded := SaveCodec.decode(data, clock)
-	assert_eq(loaded.simulation.waiters.size(), 3)
-	assert_true(loaded.simulation.waiters[2].robot and not loaded.simulation.waiters[1].robot, "o save traz o robô de volta")
-
-
-func test_the_robot_is_drawn_with_its_own_art() -> void:
-	var cafe := await _rich_cafe()
-	var sim := cafe.simulation
-	while sim.waiters.size() < 3:
-		sim.hire_waiter()
 	await settle()
-	var robot_view: AgentView = null
-	var human_view: AgentView = null
+	var waiter_look: String = ArtSprites.characters()["waiter"]
+	var views := 0
 	for child in cafe.world_layer.get_children():
 		if child is AgentView and child.agent is Waiter:
-			if (child.agent as Waiter).robot:
-				robot_view = child
-			else:
-				human_view = child
-	assert_true(robot_view != null and human_view != null)
-	assert_true(String(robot_view.pose()[0]).begins_with("robo_"), robot_view.pose()[0])
-	assert_true(String(human_view.pose()[0]).begins_with("garcom_"), human_view.pose()[0])
-	assert_true(ArtSprites.get_sprite(robot_view.pose()[0]) != null, "o desenho do quadro existe")
-	for view in ["frente", "costas"]:
-		for pose in ["em_pe", "passo_0", "passo_7"]:
-			for tray in ["", "_bandeja"]:
-				assert_true(ArtSprites.get_sprite("robo_%s_%s%s" % [view, pose, tray]) != null, "robo_%s_%s%s" % [view, pose, tray])
-
-
-func test_hire_button_and_question_announce_the_robot() -> void:
-	var cafe := await _rich_cafe()
-	var sim := cafe.simulation
-	while not sim.next_waiter_is_robot():
-		sim.hire_waiter()
-	await settle()
-	assert_true(cafe.build_bar.find_button("HireButton").text.begins_with(BuildBar.ROBOT_WAITER_SHORT), "o botão diz Robô")
-	cafe.build_bar.ask_hire_waiter()
-	var dialog := cafe.build_bar.confirm_dialog()
-	assert_true(dialog.visible and dialog.title.contains("Robô"), dialog.title)
-	assert_true(dialog.dialog_text.contains("igual a um garçom"), "avisa que ele trabalha igual")
-	dialog.get_ok_button().pressed.emit()
-	assert_true(sim.waiters[-1].robot)
+			assert_true(String(child.pose()[0]).begins_with(waiter_look + "_"), child.pose()[0])
+			views += 1
+	assert_eq(views, sim.economy.max_waiters(), "todos os garçons na tela, todos com o desenho do garçom")
+	assert_false(ArtSprites.characters().has("robot_waiter"), "o desenho do robô saiu do jogo")
+	assert_true(cafe.build_bar.find_button("HireButton").text.begins_with("Garçons"), "a equipe completa")
 
 
 func test_smart_coffee_machine_serves_coffee() -> void:

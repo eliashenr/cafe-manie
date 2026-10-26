@@ -166,7 +166,8 @@ static func _tab_variation() -> void:
 	for state in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
 		var active: bool = state == "pressed" or state == "hover_pressed"
 		var box := StyleBoxFlat.new()
-		box.bg_color = TECH_BLUE if active else (Color(CYAN, 0.1) if state == "hover" else Color(0, 0, 0, 0.2))
+		# as fechadas em vidro escuro: na loja elas ficam por cima do café e precisam aparecer (DT-088)
+		box.bg_color = TECH_BLUE if active else (PANEL_RAISED if state == "hover" else PANEL)
 		box.border_color = CYAN if active else (Color(CYAN, 0.55) if state == "hover" else Color(PANEL_EDGE, 0.9))
 		box.set_border_width_all(1)
 		box.set_corner_radius_all(RADIUS_CARD)

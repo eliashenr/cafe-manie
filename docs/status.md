@@ -4,6 +4,15 @@
 
 🟢 **CONCLUÍDO**
 
+**Ajustes pedidos pelo PO depois de jogar** (DT-088)
+
+- **A loja voltou a ser a barra fixa embaixo**, no visual escuro: as abas, as coleções e os cartões, com as setas para passar as páginas.
+  - **No celular, dá para arrastar o dedo para o lado** na fileira de cartões e trocar a página.
+  - Um toque no item já põe ele no café (como antes). Enquanto você posiciona, o aviso conta para que ele serve e os benefícios.
+  - O café continua à vista em cima.
+- **Todos os garçons são humanos:** o robô saiu do jogo.
+- **As máquinas agora se explicam:** toque numa máquina no café e o aviso diz as bebidas que ela faz e como servir.
+
 **Redesign "Nova York Futurista" COMPLETO: etapa 7, revisão visual e QA** (DT-083)
 
 - Revisei todas as telas lado a lado com a referência e acertei o que ainda estava no estilo antigo:
@@ -526,6 +535,10 @@
 
 🧪 **TESTADO**
 
+- **Ajustes do PO: 726 testes automatizados PASSARAM.**
+  - **Novos:** a loja é uma barra embaixo e o café continua à vista; os cartões por página seguem a largura da tela; arrastar para o lado troca a página sem comprar; um toque põe o item no café e o aviso explica o que ele faz; a máquina no café conta as bebidas e como servir; todos os garçons são humanos.
+  - **Fotos conferidas:** a loja na tela 16:9, no celular comprido e no tablet.
+  - **Cena principal: PASSOU**, zero erros.
 - **Redesign, etapa 7: 731 testes automatizados PASSARAM.**
   - **Novos:** as abas do livro são pílulas escuras como as das coleções; a receita bloqueada é um cartão escuro; Tudo e Limpar são botões "fantasma" na altura certa; a loja diz "Faltam cupons"; o progresso é ciano.
   - **Jornada completa** rodada 3 vezes seguidas, sem falhar.
