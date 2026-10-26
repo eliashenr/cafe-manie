@@ -47,6 +47,33 @@ Referência: seções 25–31 e 84–86 do master prompt.
 | Listras menta | parede | 180 | 2 | 15 |
 | Azul-marinho | parede | 250 | 4 | 20 |
 
+Pisos novos (DT-089). O preço por piso pintado é cerca de 1/16 do preço da compra.
+
+| Piso | Coleção | Preço | Por piso | Nível | Beleza |
+|---|---|---|---|---|---|
+| Carvalho Claro | Clássico | 130 | 8 | 2 | 13 |
+| Carpete Laranja 70 | Anos 70 | 170 | 11 | 3 | 16 |
+| Pedra de Fazenda | Country | 200 | 13 | 4 | 19 |
+| Xadrez Pastel | Festa | 210 | 13 | 4 | 19 |
+| Xadrez Vermelho | Americano | 210 | 13 | 4 | 20 |
+| Ladrilho Clássico | Clássico | 240 | 15 | 4 | 21 |
+| Cotto Toscano | Italiano | 250 | 16 | 5 | 22 |
+| Azulejo Talavera | Mexicano | 290 | 18 | 6 | 25 |
+| Porcelanato Branco | Clássico | 300 | 19 | 6 | 24 |
+| Madeira Hinoki | Japonês | 340 | 21 | 7 | 27 |
+| Parquê Escuro | Clássico | 360 | 23 | 7 | 28 |
+| Grade Neon | Anos 80 | 360 | 23 | 7 | 28 |
+| Ladrilho Hidráulico | Brasileiro | 400 | 25 | 8 | 30 |
+| Madeira de Demolição | Anos 2010 | 440 | 28 | 9 | 31 |
+| Ladrilho Parisiense | Francês | 460 | 29 | 9 | 32 |
+| Piso Espelhado | Balada | 500 | 32 | 10 | 34 |
+| Mármore Negro | Clássico | 520 | 33 | 10 | 34 |
+| Granilite Rosa | Italiano | 560 | 35 | 11 | 35 |
+| Mosaico Dourado | Clássico | 640 | 40 | 12 | 36 |
+| Chevron Preto e Branco | Anos 2010 | 700 | 44 | 13 | 37 |
+| Ônix Verde | Clássico | 760 | 48 | 14 | 38 |
+| Pista Galáxia | Balada | 900 | 56 | 16 | 40 |
+
 ### Outras entradas e saídas
 
 - **Venda de móveis:** devolve 50% do preço. O último fogão e o último balcão não podem ser vendidos.

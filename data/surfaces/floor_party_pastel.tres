@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"floor_party_pastel"
+display_name = "Xadrez Pastel"
+kind = 0
+collection = &"festa"
+is_default = false
+price = 210
+tile_price = 13
+min_level = 4
+beauty = 19
+pattern = 0
+color_a = Color(1.000, 0.839, 0.910, 1)
+color_b = Color(0.839, 0.941, 1.000, 1)

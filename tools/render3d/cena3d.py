@@ -35,11 +35,12 @@ def linear(hex_color, alpha=1.0):
     return (*out, alpha)
 
 
-def setup(samples, size, shadow_center=(0.0, 0.0), shadow_size=3.0, tiling=False):
+def setup(samples, size, shadow_center=(0.0, 0.0), shadow_size=3.0, tiling=False, sun=3.4):
     """Cena vazia com a luz do jogo: sol quente de cima (a sombra cai curta, para trás), preenchimento frio e
     contorno; o chão invisível recebe a sombra. [shadow_size] é o lado do chão, ou (largura, fundo) para a sombra
     não passar da pegada do móvel. [tiling]: pisos e paredes, que se repetem lado a lado: só luz direcional (a luz
-    de área ilumina cada trecho de um jeito e o desenho mostraria a emenda)."""
+    de área ilumina cada trecho de um jeito e o desenho mostraria a emenda). [sun]: força do sol (o chão, que recebe o sol
+    de frente, usa menos, senão as cores claras estouram)."""
     for obj in list(bpy.data.objects):
         bpy.data.objects.remove(obj, do_unlink=True)
     scene = bpy.context.scene
@@ -60,7 +61,7 @@ def setup(samples, size, shadow_center=(0.0, 0.0), shadow_size=3.0, tiling=False
     background = world.node_tree.nodes.get("Background")
     background.inputs["Color"].default_value = (0.62, 0.68, 0.78, 1.0)
     background.inputs["Strength"].default_value = 0.6
-    _light("Sol", "SUN", 3.4, (1.0, 0.92, 0.8), direction=Vector((-0.12, 0.35, -0.93)), angle=18.0)
+    _light("Sol", "SUN", sun, (1.0, 0.92, 0.8), direction=Vector((-0.12, 0.35, -0.93)), angle=18.0)
     if tiling:
         _light("Preenchimento", "SUN", 0.9, (0.78, 0.86, 1.0), direction=Vector((-4.0, 4.0, -3.0)), angle=40.0)
         _light("Contorno", "SUN", 0.4, (1.0, 1.0, 1.0), direction=Vector((2.5, -2.5, -3.0)), angle=40.0)

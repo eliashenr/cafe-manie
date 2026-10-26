@@ -28,6 +28,17 @@ func test_surface_data_has_one_default_per_kind() -> void:
 		assert_true(catalog.all(kind).size() >= 3, "opções para escolher")
 
 
+func test_every_level_up_to_14_unlocks_a_new_floor() -> void:
+	var floors := SurfaceCatalog.load_from().all(SurfaceDefinition.Kind.FLOOR)
+	assert_true(floors.size() >= 39, "muitos modelos de piso (DT-089): %d" % floors.size())
+	var levels := {}
+	for surface: SurfaceDefinition in floors:
+		levels[surface.min_level] = true
+	for level in range(1, 15):
+		assert_true(levels.has(level), "piso novo no nível %d" % level)
+	assert_true(levels.keys().max() >= 16, "e pisos para quem já está longe")
+
+
 # --- Comprar e aplicar ---------------------------------------------------------
 
 func test_new_cafe_starts_with_default_surfaces_owned_and_applied() -> void:

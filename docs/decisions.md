@@ -4,6 +4,22 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-089 — 22 pisos novos e a luz do chão (ramo arte-3d)
+
+**Problema:** o PO achou que havia "pouquíssimos modelos" de piso: eram 17, e o último aparecia no nível 8.
+
+**Decisão:**
+- **22 pisos novos, de 39 no total** (`data/surfaces/`), um em cada nível do 2 ao 14 e o último no 16, espalhados pelas coleções:
+  - Clássico: carvalho claro, ladrilho com os quadradinhos nos cantos, porcelanato, parquê escuro, mármore negro, mosaico dourado e ônix verde;
+  - um ou dois em cada coleção temática: carpete laranja e grade neon (anos 70 e 80), xadrez pastel e xadrez vermelho (festa e americano), pedra de fazenda, cotto toscano e granilite rosa, azulejo talavera, madeira hinoki, ladrilho hidráulico, ladrilho parisiense, madeira de demolição e chevron, piso espelhado e pista galáxia (balada).
+  - O preço segue o nível e a beleza dos pisos que já existiam (de 130 a 900 de ouro; beleza de 13 a 40). Na maioria das coleções, o piso novo é mais caro e mais bonito que o que ela já tinha; o Cotto Toscano é a opção mais barata do Italiano.
+- **Novos desenhos no 3D** (`superficies3d.py`): xadrez reto, losangos (o xadrez girado) e o ladrilho com o quadradinho nos cantos, todos com o período de uma célula (sem emenda, DT-086). As pedras de mármore aceitam cores (mármore negro, ônix).
+- **A ferramenta põe os pisos novos no `sprites.json`** sozinha, com os nomes `piso_<id>_<n>`.
+- **Luz do chão mais fraca que a dos móveis** (`FLOOR_SUN`): o chão recebe o sol de frente, e com a luz dos móveis as cores claras estouravam (o porcelanato e o xadrez pastel viravam branco). O padrão brilha menos (sem verniz), e os pisos escuros perdem o brilho forte, que refletia o céu e deixava o piso cinza.
+- Todos os 39 pisos, o capacho e o deque do terraço foram refeitos com a luz nova.
+
+---
+
 ## DT-088 — Loja de volta à barra de baixo (celular), sem o robô e as máquinas explicadas
 
 **Problema (o PO jogou a versão nova):**
@@ -21,6 +37,9 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - com a loja aberta, só a satisfação sai (ela ficaria embaixo da barra); o menu lateral e os botões ficam.
 - **Robô Garçom removido:** a regra, o desenho (36 quadros), a ferramenta de arte e os testes. A Máquina de Café Inteligente e o Painel Digital continuam.
 - **Máquinas explicadas no jogo:** tocando numa máquina no café, o aviso diz as bebidas que ela faz (as bloqueadas com o nível) e como servir: "Quem quer bebida mostra o balão verde: toque no cliente para servir na hora (gasta energia)". Ao posicionar, a descrição diz o mesmo.
+
+---
+
 ## DT-087 — Arte realista em 3D: a cidade (ramo arte-3d)
 
 **Decisão (`tools/render3d/cidade3d.py`):**

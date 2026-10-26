@@ -58,7 +58,7 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 - **No celular de verdade:** a medição foi neste PC. Num celular, espere de 3 a 5 vezes menos quadros por segundo, ainda acima de 30 com o café cheio.
 - **O toque com o dedo de verdade:** os toques foram simulados (como em todos os testes de cena).
 
-## Cobertura atual — 727 testes
+## Cobertura atual — 728 testes
 
 | Arquivo | Testes | O que garante |
 |---|---|---|
@@ -100,7 +100,7 @@ Testador independente: não assumir que o código está certo e tentar quebrar o
 | `integration/test_staff_and_queue.gd` | 3 | botão Garçom (nível, preço, confirmação com Cancelar selecionado, garçom novo aparece); fila na calçada e quem desiste sai andando por ela; bolinha de pedidos no painel do fogão |
 | `unit/test_save_service.gd` | 7 | primeiro acesso, gravar e ler, `.bak`, save danificado, save de versão mais nova protegido, apagar |
 | `unit/test_shop_and_missions.gd` | 23 | ouro dos níveis altos, garçons 5 e 6; compra, inventário, expansão, missões; **venda** (metade do preço, em uso, último fogão/balcão) |
-| `unit/test_style_and_beauty.gd` | 24 | revestimentos (um inicial por tipo, bloqueios); **pintura por célula** (cobra só o que muda, recusa sem mudar nada, pintar com a base apaga); beleza pela média das células e dos itens de parede; **itens de parede** (dados, enfeites de sempre no jogo novo, pendurar cobra por trecho, tirar é grátis, bloqueio); mureta pintável sem a porta; save da pintura e dos itens, migração das versões 5 e 6 |
+| `unit/test_style_and_beauty.gd` | 25 | revestimentos (um inicial por tipo, bloqueios); **um piso novo a cada nível até o 14**, 39 pisos (DT-089); **pintura por célula** (cobra só o que muda, recusa sem mudar nada, pintar com a base apaga); beleza pela média das células e dos itens de parede; **itens de parede** (dados, enfeites de sempre no jogo novo, pendurar cobra por trecho, tirar é grátis, bloqueio); mureta pintável sem a porta; save da pintura e dos itens, migração das versões 5 e 6 |
 | `unit/test_coin_shop.gd` | 4 | pacotes de Café Ouro válidos e em ordem, taxa melhor nos maiores; este build nunca entrega ouro; ouro só com o pagamento confirmado (cancelado ou recusado não muda nada) |
 | `unit/test_mission_boards.gd` | 14 | **missões diárias e semanais:** 10 e 20 válidas; metas e recompensas pelo nível, em número redondo, limitadas às receitas liberadas; o quadro congela a meta e recomeça no período seguinte; concluir avisa uma vez; cadeado; pratos diferentes, categoria da compra e popularidade; save; cada evento do jogo que conta; recompensa e diária contando para a semanal; pedido do cardápio só quando o prato não estava no balcão; dia novo e segunda-feira |
 | `unit/test_recipe_book.gd` | 7 | **livro de receitas:** abas válidas e na ordem, cada receita com a sua; uma receita nova a cada nível até o 30; receitas de cada aba por nível; receita sem aba recusada; desenho de prato e panela de todas; todas cabem num balcão; equilíbrio (demorado rende mais por fornada e dá mais XP, rápido rende mais por minuto) |

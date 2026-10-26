@@ -29,6 +29,7 @@ import enfeites3d as E  # noqa: E402
 
 WORK = os.path.join(cena3d.ROOT, "tools", "render3d", "out_superficies")
 FONT = os.path.join(cena3d.ROOT, "art", "fonts", "Fredoka-Variable.ttf")
+FLOOR_SUN = 1.5            # o chão recebe o sol de frente: com o sol dos móveis, as cores claras estouravam (DT-089)
 WALL_Z = 152.38 / (128.0 / math.sqrt(2.0) * math.cos(math.radians(30.0)))   # altura da parede do jogo, em unidades
 BLEED = 0.012              # sobra dos lados: o trecho vizinho cobre a emenda
 DESIGN_W, DESIGN_H = 42.0, 100.0   # medidas do painel na arte 2D (u para a direita, v para cima)
@@ -180,6 +181,18 @@ def pattern(kind, colors, scale, extra=0.0, emit=0.0, plane="XY", rough=0.35):
         elif kind == "zigzag":        # anos 80: zigue-zague
             tri = math_node("ABSOLUTE", math_node("SUBTRACT", math_node("FRACT", math_node("MULTIPLY", u, float(scale))), 0.5))
             fac = math_node("FRACT", math_node("MULTIPLY", math_node("ADD", v, math_node("MULTIPLY", tri, 0.25)), 3.0))
+        elif kind == "checker":       # xadrez reto, [scale] casas por lado de célula
+            a = math_node("FLOOR", math_node("MULTIPLY", u, float(scale)))
+            b = math_node("FLOOR", math_node("MULTIPLY", v, float(scale)))
+            fac = math_node("MULTIPLY", math_node("FLOORED_MODULO", math_node("ADD", a, b), 2.0), 0.5)
+        elif kind == "diamond":       # losangos (azulejo talavera, ladrilho hidráulico): xadrez girado 45°
+            a = math_node("FLOOR", math_node("MULTIPLY", math_node("ADD", u, v), float(scale)))
+            b = math_node("FLOOR", math_node("MULTIPLY", math_node("SUBTRACT", u, v), float(scale)))
+            fac = math_node("MULTIPLY", math_node("FLOORED_MODULO", math_node("ADD", a, b), 2.0), 0.5)
+        elif kind == "cabochon":      # ladrilho com o quadradinho nos cantos (o piso clássico de bistrô)
+            du = math_node("ABSOLUTE", math_node("SUBTRACT", math_node("FRACT", math_node("MULTIPLY", u, float(scale))), 0.5))
+            dv = math_node("ABSOLUTE", math_node("SUBTRACT", math_node("FRACT", math_node("MULTIPLY", v, float(scale))), 0.5))
+            fac = math_node("MULTIPLY", math_node("ADD", du, dv), 0.99)
         else:                         # "weave": palhinha de tatame (listras finas na direção de X)
             fac = math_node("FRACT", math_node("MULTIPLY", v, float(scale)))
         ramp = nodes.new("ShaderNodeValToRGB")
@@ -196,7 +209,7 @@ def pattern(kind, colors, scale, extra=0.0, emit=0.0, plane="XY", rough=0.35):
             links.new(ramp.outputs["Color"], bsdf.inputs["Emission Color"])
             bsdf.inputs["Emission Strength"].default_value = emit
         bsdf.inputs["Roughness"].default_value = rough
-        bsdf.inputs["Coat Weight"].default_value = 0.3
+        bsdf.inputs["Specular IOR Level"].default_value = 0.3
     return _mat(("pattern", kind, tuple(colors), scale, extra, emit, plane), build)
 
 
@@ -283,10 +296,52 @@ def floor_material(surface_id, variant):
     if surface_id == "floor_club":
         sets = (("#ff4dd2", "#31d7ff"), ("#ffd23f", "#b06bff"), ("#31d7ff", "#2fae4e"))[v]
         return led_tiles(*sets)
+    if surface_id in NEW_FLOORS:
+        return NEW_FLOORS[surface_id][1](v)
     raise KeyError(surface_id)
 
 
-def marble_tile(v):
+def matte(material, specular=0.12, roughness=0.4):
+    """Tira o brilho forte de um piso escuro: visto de lado, o brilho refletia o céu e o piso ficava cinza."""
+    bsdf = material.node_tree.nodes.get("Principled BSDF")
+    bsdf.inputs["Specular IOR Level"].default_value = specular
+    bsdf.inputs["Coat Weight"].default_value = 0.0
+    bsdf.inputs["Roughness"].default_value = roughness
+    return material
+
+
+# Pisos novos (DT-089): id -> (variações, material da variação). Os padrões têm o período de uma célula.
+NEW_FLOORS = {
+    "floor_oak_light": (3, lambda v: planks("#d9b07a", 6, offset=v * 0.29)),
+    "floor_70s_carpet": (1, lambda v: matte(pattern("circles", ["#c9621e", "#b8561a", "#d9702a", "#b8561a"], 2), 0.05, 0.95)),
+    "floor_party_pastel": (1, lambda v: pattern("checker", ["#f4a6c6", "#9fd4f0"], 2, rough=0.3)),
+    "floor_diner_red": (1, lambda v: pattern("checker", ["#b81e2c", "#ecebe8"], 2, rough=0.25)),
+    "floor_country_stone": (2, lambda v: grid_tiles(("#b8a890", "#a89a82")[v], "#6a5a48", 0, brick_w=0.5, brick_h=0.33,
+                                                    row_offset=0.5, variation=0.12, rough=0.85, coat=0.0)),
+    "floor_cabochon": (1, lambda v: pattern("cabochon", ["#f2efe8"] * 4 + ["#2a2a30"], 2, rough=0.15)),
+    "floor_italian_cotto": (2, lambda v: grid_tiles(("#c9683a", "#bd6034")[v], "#e2cfb8", 0, brick_w=0.5, brick_h=0.25, row_offset=0.5,
+                                                    variation=0.1, rough=0.6, coat=0.2)),
+    "floor_porcelain": (1, lambda v: grid_tiles("#dedbd5", "#a8aaad", 1, variation=0.02, rough=0.15, coat=0.6)),
+    "floor_talavera": (1, lambda v: pattern("diamond", ["#f4f0e6", "#2f6fd9"], 2, rough=0.12)),
+    "floor_dark_parquet": (1, lambda v: pattern("basket", ["#6b4426", "#8a5a32"], 4, rough=0.35)),
+    "floor_80s_grid": (1, lambda v: matte(grid_tiles("#1d0f30", "#ff4dd2", 2, variation=0.04, rough=0.2))),
+    "floor_hinoki": (3, lambda v: planks("#e8cf9e", 5, offset=v * 0.33, dark=0.15)),
+    "floor_hydraulic": (1, lambda v: pattern("diamond", ["#f2e6c8", "#2f8a3a"], 4, rough=0.3)),
+    "floor_paris_cabochon": (1, lambda v: pattern("cabochon", ["#f4efe6"] * 4 + ["#2f6a5a"], 2, rough=0.12)),
+    "floor_reclaimed_wood": (3, lambda v: planks(("#8a6a4a", "#7a5a3c", "#96765a")[v], 7, offset=v * 0.41, long=0.33, dark=0.35)),
+    "floor_black_marble": (3, lambda v: matte(marble_tile(v, "#1d1d22", "#b8b4ac", "#3a3a40"), 0.25, 0.3)),
+    "floor_mirror": (1, lambda v: matte(grid_tiles("#15121f", "#5a3a8a", 2, variation=0.03), 0.35, 0.2)),
+    "floor_rose_terrazzo": (3, lambda v: speckles("#e2aea6", ["#9a5a4e", "#f8f0ee", "#7a4a40", "#c8786a"], 40.0, extra=v * 1.3,
+                                                  size=(0.3, 0.36))),
+    "floor_gold_mosaic": (1, lambda v: grid_tiles("#e8b830", "#f4e6c0", 6, colors2="#c9952a", variation=0.0, rough=0.2, coat=0.9)),
+    "floor_chevron": (1, lambda v: pattern("zigzag", ["#f4f4f2", "#2a2a30", "#f4f4f2"], 2, rough=0.2)),
+    "floor_onyx": (3, lambda v: matte(marble_tile(v, "#2a5e48", "#cfe0d4", "#1d3a2e"), 0.25, 0.3)),
+    "floor_galaxy": (3, lambda v: matte(speckles("#120a24", ["#b06bff", "#31d7ff", "#ffffff", "#ff4dd2"], 30.0, extra=v * 2.1,
+                                                 size=(0.1, 0.14)))),
+}
+
+
+def marble_tile(v, light="#f4f2ee", vein="#b8b2a8", grout="#9a948a"):
     def build(nodes, links, bsdf):
         vector = _vector(nodes, (v * 1.7, v * 0.9, 0.0))
         noise = nodes.new("ShaderNodeTexNoise")
@@ -294,21 +349,21 @@ def marble_tile(v):
         noise.inputs["Detail"].default_value = 6.0
         noise.inputs["Distortion"].default_value = 4.0
         links.new(vector, noise.inputs["Vector"])
-        veins = M._ramp(nodes, links, noise.outputs["Fac"], "#f4f2ee", "#b8b2a8", (0.6, 0.63))
+        veins = M._ramp(nodes, links, noise.outputs["Fac"], light, vein, (0.6, 0.63))
         brick = nodes.new("ShaderNodeTexBrick")
         brick.offset = 0.0
         brick.inputs["Scale"].default_value = 1.0
         brick.inputs["Brick Width"].default_value = 1.0
         brick.inputs["Row Height"].default_value = 1.0
         brick.inputs["Mortar Size"].default_value = 0.006
-        brick.inputs["Mortar"].default_value = linear("#9a948a")
+        brick.inputs["Mortar"].default_value = linear(grout)
         links.new(_vector(nodes), brick.inputs["Vector"])
         links.new(veins, brick.inputs["Color1"])
         links.new(veins, brick.inputs["Color2"])
         links.new(brick.outputs["Color"], bsdf.inputs["Base Color"])
         bsdf.inputs["Roughness"].default_value = 0.08
         bsdf.inputs["Coat Weight"].default_value = 0.9
-    return _mat(("marble_tile", v), build)
+    return _mat(("marble_tile", v, light, vein, grout), build)
 
 
 def tatami_rotated():
@@ -762,13 +817,13 @@ def render_group(group, wanted, samples, manifest, anchors):
         for surface_id, info in manifest["floors"].items():
             for name in info["sprites"]:
                 if want(name):
-                    cena3d.setup(samples, (300, 220), shadow_size=0.01, tiling=True)
+                    cena3d.setup(samples, (300, 220), shadow_size=0.01, tiling=True, sun=FLOOR_SUN)
                     variant = name.rsplit("_", 1)[1]
                     floor_cell(floor_material(surface_id, int(variant) if variant.isdigit() else variant))
                     aim_camera((0.5, -0.5, 0.0))
                     anchors[name] = cena3d.shoot(name, (0.0, 0.0, 0.0), WORK)
         if want(manifest["floor_entrance"]):
-            cena3d.setup(samples, (300, 220), shadow_size=(1.0, 1.0), shadow_center=(0.5, -0.5), tiling=True)
+            cena3d.setup(samples, (300, 220), shadow_size=(1.0, 1.0), shadow_center=(0.5, -0.5), tiling=True, sun=FLOOR_SUN)
             objects = entrance_mat()
             aim_camera((0.5, -0.5, 0.0))
             anchors[manifest["floor_entrance"]] = cena3d.shoot(manifest["floor_entrance"], (0.0, 0.0, 0.0), WORK)
@@ -795,7 +850,7 @@ def render_group(group, wanted, samples, manifest, anchors):
     elif group == "terraco":
         for i, name in enumerate(manifest["terrace"]["floor"]):
             if want(name):
-                cena3d.setup(samples, (300, 220), shadow_size=0.01, tiling=True)
+                cena3d.setup(samples, (300, 220), shadow_size=0.01, tiling=True, sun=FLOOR_SUN)
                 floor_cell(deck(i))
                 aim_camera((0.5, -0.5, 0.0))
                 anchors[name] = cena3d.shoot(name, (0.0, 0.0, 0.0), WORK)
@@ -813,11 +868,16 @@ def main():
     wanted = {a for a in args if a != "rascunho"}
     with open(os.path.join(cena3d.SPRITES, "sprites.json"), encoding="utf-8") as source:
         manifest = json.load(source)
+    for surface_id, (variants, _) in NEW_FLOORS.items():
+        manifest["floors"][surface_id] = {"mode": "variantes",
+                                          "sprites": [f"piso_{surface_id}_{n}" for n in range(variants)]}
     anchors = {}
     for group in ("pisos", "paredes", "itens", "portas", "terraco"):
         render_group(group, wanted, samples, manifest, anchors)
         print("PRONTO", group, flush=True)
-    cena3d.update_manifest(anchors)
+    def floors(saved):
+        saved["floors"].update({k: manifest["floors"][k] for k in NEW_FLOORS})
+    cena3d.update_manifest(anchors, floors)
     print("SUPERFICIES OK", len(anchors), flush=True)
 
 

@@ -4,6 +4,13 @@
 
 🟢 **CONCLUÍDO**
 
+**22 pisos novos** (DT-089, no ramo `arte-3d`)
+
+- **Agora são 39 pisos**, e a cada nível do 2 ao 14 aparece um piso novo na loja (o último, a Pista Galáxia, no 16):
+  - madeiras (carvalho claro, parquê escuro, hinoki, demolição), pedras (mármore negro, ônix verde, pedra de fazenda, granilite rosa), ladrilhos (clássico, parisiense, hidráulico, talavera, cotto), xadrez pastel e vermelho, porcelanato, carpete dos anos 70, grade neon, mosaico dourado, chevron, piso espelhado e pista galáxia;
+  - cada coleção temática ganhou um ou dois.
+- **O chão ficou com a cor certa:** os pisos claros estavam estourando para o branco e os escuros ficavam cinza. Todos os pisos foram refeitos com uma luz própria.
+
 **Ajustes pedidos pelo PO depois de jogar** (DT-088)
 
 - **A loja voltou a ser a barra fixa embaixo**, no visual escuro: as abas, as coleções e os cartões, com as setas para passar as páginas.
@@ -12,13 +19,14 @@
   - O café continua à vista em cima.
 - **Todos os garçons são humanos:** o robô saiu do jogo.
 - **As máquinas agora se explicam:** toque numa máquina no café e o aviso diz as bebidas que ela faz e como servir.
+
 **Arte realista em 3D, etapa 3: chão, paredes, portas e a cidade** (DT-086 e DT-087, só no ramo `arte-3d`)
 
 - **Pisos e paredes em 3D**, sem emenda entre um trecho e outro: os 17 pisos e as 16 paredes da loja.
 - **Itens de parede em 3D:** as janelas com o céu, os janelões com floreira, o espelho, a lousa, o painel digital, o neon, a arandela, a TV, o rádio, o relógio e os quadros.
 - **As 13 portas** com o toldo e a plaquinha ABERTO ou FECHADO, o terraço e o capacho da entrada.
 - **A cidade em 3D:** os 7 prédios de Nova York (com as janelas e vitrines acesas à noite), postes, árvores, bancos, carrinho de cachorro-quente, semáforos e os táxis e carros.
-- **O que ainda é desenho:** o chão da rua, os arranha-céus ao longe, as panelas, os pratos e comidas, o robô e os retratos.
+- **O que ainda é desenho:** o chão da rua, os arranha-céus ao longe, as panelas, os pratos e comidas e os retratos.
 
 **Arte realista em 3D, etapa 2: os 130 móveis** (DT-085, só no ramo `arte-3d`; o jogo principal não mudou)
 
@@ -559,6 +567,10 @@
 
 🧪 **TESTADO**
 
+- **Pisos novos (ramo `arte-3d`): 728 testes automatizados PASSARAM.**
+  - **Novo:** há um piso novo a cada nível até o 14, e 39 pisos no total. O teste da arte confere que todo piso tem desenho.
+  - **Conferido nas fotos:** os 39 pisos repetidos lado a lado (sem emenda) e as cores perto da cor escolhida.
+  - **Cena principal: PASSOU**, zero erros.
 - **Ajustes do PO: 726 testes automatizados PASSARAM.**
   - **Novos:** a loja é uma barra embaixo e o café continua à vista; os cartões por página seguem a largura da tela; arrastar para o lado troca a página sem comprar; um toque põe o item no café e o aviso explica o que ele faz; a máquina no café conta as bebidas e como servir; todos os garçons são humanos.
   - **Fotos conferidas:** a loja na tela 16:9, no celular comprido e no tablet.

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"floor_70s_carpet"
+display_name = "Carpete Laranja 70"
+kind = 0
+collection = &"anos70"
+is_default = false
+price = 170
+tile_price = 11
+min_level = 3
+beauty = 16
+pattern = 3
+color_a = Color(0.878, 0.478, 0.180, 1)
+color_b = Color(0.788, 0.416, 0.141, 1)

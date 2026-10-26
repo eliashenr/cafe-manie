@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"floor_rose_terrazzo"
+display_name = "Granilite Rosa"
+kind = 0
+collection = &"italiano"
+is_default = false
+price = 560
+tile_price = 35
+min_level = 11
+beauty = 35
+pattern = 3
+color_a = Color(0.941, 0.831, 0.816, 1)
+color_b = Color(0.722, 0.471, 0.416, 1)

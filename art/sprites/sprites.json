@@ -6725,6 +6725,234 @@
     50.0,
     225.84
    ]
+  },
+  "piso_floor_oak_light_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_oak_light_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_oak_light_2": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_70s_carpet_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_party_pastel_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_diner_red_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_country_stone_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_country_stone_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_cabochon_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_italian_cotto_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_italian_cotto_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_porcelain_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_talavera_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_dark_parquet_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_80s_grid_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_hinoki_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_hinoki_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_hinoki_2": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_hydraulic_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_paris_cabochon_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_reclaimed_wood_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_reclaimed_wood_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_reclaimed_wood_2": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_black_marble_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_black_marble_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_black_marble_2": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_mirror_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_rose_terrazzo_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_rose_terrazzo_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_rose_terrazzo_2": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_gold_mosaic_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_chevron_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_onyx_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_onyx_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_onyx_2": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_galaxy_0": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_galaxy_1": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
+  },
+  "piso_floor_galaxy_2": {
+   "anchor": [
+    135.0,
+    6.0
+   ]
   }
  },
  "furniture": {
@@ -7997,6 +8225,154 @@
     "piso_floor_club_0",
     "piso_floor_club_1",
     "piso_floor_club_2"
+   ]
+  },
+  "floor_oak_light": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_oak_light_0",
+    "piso_floor_oak_light_1",
+    "piso_floor_oak_light_2"
+   ]
+  },
+  "floor_70s_carpet": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_70s_carpet_0"
+   ]
+  },
+  "floor_party_pastel": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_party_pastel_0"
+   ]
+  },
+  "floor_diner_red": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_diner_red_0"
+   ]
+  },
+  "floor_country_stone": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_country_stone_0",
+    "piso_floor_country_stone_1"
+   ]
+  },
+  "floor_cabochon": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_cabochon_0"
+   ]
+  },
+  "floor_italian_cotto": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_italian_cotto_0",
+    "piso_floor_italian_cotto_1"
+   ]
+  },
+  "floor_porcelain": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_porcelain_0"
+   ]
+  },
+  "floor_talavera": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_talavera_0"
+   ]
+  },
+  "floor_dark_parquet": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_dark_parquet_0"
+   ]
+  },
+  "floor_80s_grid": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_80s_grid_0"
+   ]
+  },
+  "floor_hinoki": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_hinoki_0",
+    "piso_floor_hinoki_1",
+    "piso_floor_hinoki_2"
+   ]
+  },
+  "floor_hydraulic": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_hydraulic_0"
+   ]
+  },
+  "floor_paris_cabochon": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_paris_cabochon_0"
+   ]
+  },
+  "floor_reclaimed_wood": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_reclaimed_wood_0",
+    "piso_floor_reclaimed_wood_1",
+    "piso_floor_reclaimed_wood_2"
+   ]
+  },
+  "floor_black_marble": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_black_marble_0",
+    "piso_floor_black_marble_1",
+    "piso_floor_black_marble_2"
+   ]
+  },
+  "floor_mirror": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_mirror_0"
+   ]
+  },
+  "floor_rose_terrazzo": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_rose_terrazzo_0",
+    "piso_floor_rose_terrazzo_1",
+    "piso_floor_rose_terrazzo_2"
+   ]
+  },
+  "floor_gold_mosaic": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_gold_mosaic_0"
+   ]
+  },
+  "floor_chevron": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_chevron_0"
+   ]
+  },
+  "floor_onyx": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_onyx_0",
+    "piso_floor_onyx_1",
+    "piso_floor_onyx_2"
+   ]
+  },
+  "floor_galaxy": {
+   "mode": "variantes",
+   "sprites": [
+    "piso_floor_galaxy_0",
+    "piso_floor_galaxy_1",
+    "piso_floor_galaxy_2"
    ]
   }
  },

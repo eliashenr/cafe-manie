@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"floor_oak_light"
+display_name = "Carvalho Claro"
+kind = 0
+collection = &"classico"
+is_default = false
+price = 130
+tile_price = 8
+min_level = 2
+beauty = 13
+pattern = 1
+color_a = Color(0.851, 0.690, 0.478, 1)
+color_b = Color(0.769, 0.584, 0.376, 1)

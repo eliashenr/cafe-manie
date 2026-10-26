@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SurfaceDefinition" format=3]
+
+[ext_resource type="Script" path="res://core/cafe/surface_definition.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"floor_paris_cabochon"
+display_name = "Ladrilho Parisiense"
+kind = 0
+collection = &"frances"
+is_default = false
+price = 460
+tile_price = 29
+min_level = 9
+beauty = 32
+pattern = 2
+color_a = Color(0.957, 0.937, 0.902, 1)
+color_b = Color(0.184, 0.416, 0.353, 1)
