@@ -1,8 +1,15 @@
 # Status
 
-## CAFÉ MANIE — STATUS (18/10/2026)
+## CAFÉ MANIE — STATUS (30/10/2026)
 
 🟢 **CONCLUÍDO**
+
+**Projeto no PC novo do PO** (30/10/2026)
+
+- **Godot 4.7.2 instalada** em `C:\Godot`, baixada do GitHub oficial e conferida pela soma SHA-512.
+- **Conferido neste PC:** na `main`, 726 testes passaram; no ramo `arte-3d`, 728. A cena principal subiu sem erros nos dois.
+- **Ainda não instalados aqui:** os export templates, o Java e o Android SDK (só fazem falta para gerar o `.exe` e o APK) e o Blender com o MakeHuman (só faz falta para gerar arte 3D nova).
+- **O save do PO não veio junto:** ele fica só no computador antigo e precisa ser copiado de lá.
 
 **22 pisos novos** (DT-089, no ramo `arte-3d`)
 
