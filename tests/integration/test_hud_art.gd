@@ -1,5 +1,5 @@
 extends CafeTestCase
-## Interface da v3: contadores, nível, estrelas da satisfação, presente diário com
+## Interface da v3: contadores, nível, estrelas da popularidade, presente diário com
 ## cronômetro, botões de zoom, medalhões e a faixa de ícones de baixo.
 
 
@@ -24,13 +24,46 @@ func test_rating_lights_stars_by_popularity() -> void:
 	var cafe := await spawn_cafe()
 	cafe.simulation.restore_popularity(80.0)
 	await settle()
-	assert_eq((_find(cafe, "RatingValue") as Label).text, "80%")
+	assert_eq((_find(cafe, "RatingValue") as Label).text, "80/100")
 	var lit := 0
 	var full := ArtSprites.get_sprite("icone_estrela").texture
 	for star in _find(cafe, "Rating").find_children("*", "TextureRect", true, false):
 		if (star as TextureRect).texture == full:
 			lit += 1
-	assert_eq(lit, 4, "80% acende 4 de 5 estrelas")
+	assert_eq(lit, 4, "80/100 acende 4 de 5 estrelas")
+
+
+## A popularidade sobe e desce com o atendimento: não pode parecer a parte dos clientes que saiu satisfeita (DT-090).
+func test_popularity_is_named_for_what_it_measures() -> void:
+	var cafe := await spawn_cafe()
+	await settle()
+	var rating := _find(cafe, "Rating")
+	assert_eq((_find(cafe, "RatingCaption") as Label).text, "Popularidade")
+	for label in rating.find_children("*", "Label", true, false):
+		var text: String = (label as Label).text
+		assert_false(text.contains("%") or text.contains("Satisfeit"), "sem cara de percentual de satisfeitos: " + text)
+	assert_true(cafe.hud.stats_text().contains("Popularidade: 50/100"), cafe.hud.stats_text())
+
+
+## A barra da beleza enche junto com o bônus, que vai até beauty_for_max_bonus, e não num 100 fixo (DT-090).
+func test_beauty_bar_follows_the_real_bonus() -> void:
+	var cafe := await spawn_cafe()
+	await settle()
+	cafe.layout.place(cafe.catalog.get_definition(&"plant_pot"), Vector2i(0, 7))
+	await settle()
+	assert_almost_eq((_find(cafe, "BeautyBar") as StripedBar).value, cafe.simulation.beauty_factor(), 0.001)
+
+
+## Cada função só tem um lugar, e continua alcançável com a loja aberta (DT-090).
+func test_menus_are_not_repeated_and_stay_reachable() -> void:
+	var cafe := await spawn_cafe()
+	await settle()
+	for repeated in ["MissionsBarButton", "GiftsBarButton", "AchievementsBarButton", "GiftButton"]:
+		assert_true(_find(cafe, repeated) == null, "sem o botão repetido " + repeated)
+	cafe.build_bar.open_shop()
+	await settle()
+	for reachable in ["MissionsButton", "AchievementsButton", "DailyButton"]:
+		assert_true((_find(cafe, reachable) as Control).is_visible_in_tree(), reachable + " continua à vista com a loja aberta")
 
 
 func test_daily_panel_offers_the_gift_then_counts_down() -> void:
@@ -76,10 +109,6 @@ func test_mission_card_hides_on_tap_and_the_medallion_opens_the_missions() -> vo
 	await settle()
 	assert_true(cafe.hud.missions_dialog().visible, "o medalhão abre as missões")
 	assert_true(card.visible, "e o cartão volta")
-	cafe.hud.missions_dialog().hide()
-	(_find(cafe, "MissionsBarButton") as Button).pressed.emit()
-	await settle()
-	assert_true(cafe.hud.missions_dialog().visible, "o ícone de baixo também abre")
 
 
 func test_icon_bar_opens_the_shop_and_the_achievements() -> void:
@@ -90,7 +119,7 @@ func test_icon_bar_opens_the_shop_and_the_achievements() -> void:
 	assert_true(cafe.build_bar.shop_open and cafe.build_bar.shop_tab == BuildBar.ShopTab.FLOOR, "Reformar abre os pisos")
 	cafe.build_bar.close_shop()
 	await settle()
-	cafe.build_bar.find_button("AchievementsBarButton").pressed.emit()
+	(_find(cafe, "AchievementsButton") as Button).pressed.emit()
 	assert_true(cafe.hud.achievements_dialog().visible, "Conquistas abre a lista")
 
 

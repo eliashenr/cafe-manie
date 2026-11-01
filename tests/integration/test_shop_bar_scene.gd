@@ -23,7 +23,7 @@ func test_the_shop_is_a_bar_at_the_bottom() -> void:
 	var rect := shop.get_global_rect()
 	assert_true(rect.end.y > screen.y - 40.0, "colada embaixo: %s em %s" % [rect, screen])
 	assert_true(rect.size.y < screen.y * 0.45, "o café continua à vista em cima (altura %d de %d)" % [rect.size.y, screen.y])
-	assert_false(cafe.hud.is_rating_visible(), "a satisfação, que ficaria embaixo da barra, sai")
+	assert_false(cafe.hud.is_rating_visible(), "a popularidade, que ficaria embaixo da barra, sai")
 	var missions := cafe.hud.find_child("MissionsButton", true, false) as Control
 	assert_true(missions.is_visible_in_tree(), "o menu lateral continua")
 	cafe.build_bar.close_shop()

@@ -7,7 +7,7 @@ func test_shop_tabs_split_furniture_and_decor() -> void:
 	assert_true(cafe.hud.is_rating_visible())
 	cafe.build_bar.open_shop()
 	await settle()
-	assert_false(cafe.hud.is_rating_visible(), "com a loja aberta, a satisfação sai (a loja cobria só metade dela)")
+	assert_false(cafe.hud.is_rating_visible(), "com a loja aberta, a popularidade sai (a loja cobria só metade dela)")
 	assert_true(cafe.build_bar.find_button("Build_table_round") != null, "Salão é a aba inicial")
 	assert_true(cafe.build_bar.find_button("Build_stove_basic") == null, "fogão fica em Cozinha")
 	assert_true(cafe.build_bar.find_button("Build_plant_pot") == null, "planta fica em Decoração")

@@ -281,8 +281,9 @@ def half_shell(size, center, mat, keep_back=True, thickness=0.025):
 
 # --- Cadeiras ------------------------------------------------------------------------------------------------
 
-def chair(seat="#ff4d5e", legs="chrome", leg_color=CHROME, back="panel", back_color=None, back_h=30):
+def chair(seat="#ff4d5e", legs="chrome", leg_color=CHROME, back="panel", back_color=None, back_h=30, all_wood=False):
     """Cadeira: pés ('chrome', 'wood' ou 'pedestal'), assento estofado e o encosto no lado +Y (o de trás).
+    all_wood: armação e encosto de madeira e assento de couro fosco, sem o brilho de vinil (direção A, DT-090).
     Devolve (peças, peças do encosto)."""
     back_color = back_color or seat
     leg_mat = chrome(leg_color) if legs in ("chrome", "pedestal") and leg_color in (CHROME, "#c9d3de") else (
@@ -313,12 +314,12 @@ def chair(seat="#ff4d5e", legs="chrome", leg_color=CHROME, back="panel", back_co
         parts.append(cylinder(0.25, SEAT_FRAME, SEAT_FRAME + 0.035, chrome(), bevel=0.01))
         parts.append(cylinder(0.24, SEAT_FRAME + 0.03, SEAT_TOP, lacquer(seat), bevel=0.03))
         return parts, back_parts
-    parts.append(box((2 * s, 2 * s, 0.04), (0.0, 0.0, SEAT_FRAME + 0.02), solid(_shade(seat, 0.3)), 0.006))
+    parts.append(box((2 * s, 2 * s, 0.04), (0.0, 0.0, SEAT_FRAME + 0.02), wood(leg_color) if all_wood else solid(_shade(seat, 0.3)), 0.006))
     parts.append(box((2 * s - 0.01, 2 * s - 0.01, SEAT_TOP - SEAT_FRAME - 0.035), (0.0, -0.005, (SEAT_FRAME + 0.035 + SEAT_TOP) / 2),
-                     lacquer(seat), 0.03))
+                     solid(seat, 0.62, 0.0, 0.08) if all_wood else lacquer(seat), 0.03))
     height = back_h * PX * 0.66   # um pouco mais baixo que o desenho, para quem senta de costas aparecer
     z0 = SEAT_TOP + 0.02
-    bmat = lacquer(back_color)
+    bmat = wood(back_color) if all_wood else lacquer(back_color)
     y = s - 0.02
     post_mat = leg_mat if legs != "pedestal" else solid(_shade(back_color, 0.2))
     if back not in ("egg", "shell"):
@@ -424,12 +425,14 @@ def _rect_ring(w, d, z, mat, t=0.012):
 
 # --- Fogões --------------------------------------------------------------------------------------------------
 
-def stove(enamel="#e33a42", top_color="#ffffff", panel=None, knob="#1d1e23", door=None, handle="#f4f7fa"):
+def stove(enamel="#e33a42", top_color="#ffffff", panel=None, knob="#1d1e23", door=None, handle="#f4f7fa", satin=False):
     """Fogão: corpo esmaltado, tampo de vidro preto com 4 bocas (no lugar das da arte 2D, onde o jogo põe a panela),
-    painel com os botões, porta do forno com o visor e o puxador. A frente é o lado -Y."""
+    painel com os botões, porta do forno com o visor e o puxador. A frente é o lado -Y.
+    satin: metal escovado simples, sem o brilho do esmalte (direção A, DT-090)."""
     h = STOVE_HEIGHT
     w = STOVE_SIZE
-    body = lacquer(enamel)
+    finish = (lambda color: solid(color, 0.46, 0.65)) if satin else lacquer
+    body = finish(enamel)
     parts = [box((w, w, h - 0.03), (0.0, 0.0, (h - 0.03) / 2 + 0.03), body, 0.03)]
     parts.append(box((w - 0.02, w - 0.02, 0.012), (0.0, 0.0, h - 0.004), solid(top_color, 0.3, 0.0, 0.5), 0.004))
     parts.append(box((w - 0.08, w - 0.08, 0.012), (0.0, 0.0, h + 0.004), solid("#15161b", 0.12, 0.0, 0.8), 0.004))
@@ -445,7 +448,7 @@ def stove(enamel="#e33a42", top_color="#ffffff", panel=None, knob="#1d1e23", doo
                                             rotation=(math.radians(90), 0, 0), vertices=24)
         parts.append(_finish(bpy.context.active_object, solid(knob, 0.35), 0.004))
     door_color = (door or (enamel, enamel))[0]
-    parts.append(box((w - 0.14, 0.02, h * 0.52), (0.0, front - 0.006, h * 0.36), lacquer(door_color), 0.012))
+    parts.append(box((w - 0.14, 0.02, h * 0.52), (0.0, front - 0.006, h * 0.36), finish(door_color), 0.012))
     parts.append(box((w * 0.5, 0.02, h * 0.2), (0.0, front - 0.013, h * 0.4), solid("#141a24", 0.06, 0.0, 1.0), 0.008))
     parts.append(tube((-0.25, front - 0.05, h * 0.6), (0.25, front - 0.05, h * 0.6), 0.011, chrome(handle) if handle in ("#f4f7fa", "#c9d3de") else lacquer(handle)))
     for sx in (-1, 1):
@@ -463,20 +466,23 @@ def _burner(x, y, z, mat):
 def oven_window(rotation):
     """O visor do forno aceso (o jogo desenha por cima do fogão que cozinha): só o vidro, brilhando."""
     h = STOVE_HEIGHT
-    return [box((STOVE_SIZE * 0.5, 0.004, h * 0.2), (0.0, -STOVE_SIZE / 2 - 0.024, h * 0.4), emission("#ffab40", 3.0), 0.004)]
+    return [box((STOVE_SIZE * 0.5, 0.004, h * 0.2), (0.0, -STOVE_SIZE / 2 - 0.024, h * 0.4), emission("#ff9a3c", 1.3), 0.004)]
 
 
 # --- Balcões -------------------------------------------------------------------------------------------------
 
 def counter(body="#2ec4b6", top="#ffffff", face="panels", rim="#e8edf2", veins=True):
-    """Balcão: corpo colorido (frente com frisos, tábuas ou lisa), tampo de mármore ou da cor pedida, borda."""
+    """Balcão: corpo colorido (frente com frisos, frisos de madeira, tábuas ou lisa), tampo de mármore ou da cor pedida, borda."""
     h = COUNTER_HEIGHT
     w, d = 0.86, 0.88
-    body_mat = wood(body) if face == "planks" else (chrome(body) if body in ("#b9c3cf",) else lacquer(body))
+    body_mat = wood(body) if face in ("planks", "wood_panels") else (chrome(body) if body in ("#b9c3cf",) else lacquer(body))
     parts = [box((w, d, h - 0.04), (0.0, 0.0, (h - 0.04) / 2 + 0.04), body_mat, 0.012)]
     parts.append(box((w - 0.04, d - 0.04, 0.04), (0.0, 0.0, 0.02), solid(_shade(body, 0.45), 0.6), 0.004))
     front = -d / 2
-    if face == "panels":
+    if face == "wood_panels":
+        for u in (-0.21, 0.21):
+            parts.append(box((0.32, 0.02, h * 0.6), (u, front - 0.006, h * 0.5), wood(_shade(body, 0.14)), 0.012))
+    elif face == "panels":
         for u in (-0.21, 0.21):
             parts.append(box((0.32, 0.02, h * 0.6), (u, front - 0.006, h * 0.5), lacquer(_tint(body, 0.12)), 0.015))
     elif face == "plain":
@@ -492,12 +498,14 @@ def counter(body="#2ec4b6", top="#ffffff", face="panels", rim="#e8edf2", veins=T
 def catalog():
     import themes3
     items = {
-        "chair_wood": ("chair", dict(seat="#e0343f", legs="chrome", back="panel")),
-        "table_round": ("table", dict(shape="round", cloth=("gingham", "#e2343c"), base="pedestal", height=34)),
+        # Os móveis iniciais seguem a direção A com acabamento modesto (DT-090): madeira, couro fosco e metal simples.
+        "chair_wood": ("chair", dict(seat="#7a2f2e", legs="wood", leg_color="#6a4128", back="slats", back_color="#6a4128", all_wood=True)),
+        "table_round": ("table", dict(shape="round", top=("wood", "#8a5a35"), edge="#5a3520", base="pedestal", base_color="#26272c",
+                                      flower=("#d9a441", "#f2e6c8"), height=34)),
         "table_long": ("table", dict(shape="square", top=("solid", "#ffffff"), edge="#e0343f", base="pedestal", height=32,
                                      vase=False, width=2.0)),
-        "stove_basic": ("stove", {}),
-        "counter_basic": ("counter", {}),
+        "stove_basic": ("stove", dict(enamel="#a5a8a8", top_color="#d9dcdc", door=("#8d9091", "#8d9091"), satin=True)),
+        "counter_basic": ("counter", dict(body="#7d4f2d", top="#efe6d3", face="wood_panels", rim="#5a3520")),
     }
     for item_id, params in themes3.CHAIRS.items():
         items[item_id] = ("chair", {k: (CHROME if v == "#c9d3de" else v) for k, v in params.items()})
@@ -553,7 +561,9 @@ def render_item(item_id, kind, params, rotations, footprint, samples, anchors):
 def render_backrest(item_id, params, rotation, samples, anchors):
     """O encosto sozinho, para o jogo desenhar por cima de quem senta de costas."""
     cena3d.setup(samples, IMAGE_SIZE, shadow_size=0.01)
-    _, back = chair(**params)
+    parts, back = chair(**params)
+    for part in _flatten(parts):   # sem isto, o assento e os pés ficavam soltos na foto e cobriam quem senta (DT-090)
+        bpy.data.objects.remove(part, do_unlink=True)
     anchor, center = assemble(list(_flatten(back)), (1, 1), rotation)
     aim_camera((center[0], center[1], 0.42))
     name = f"encosto_{item_id}_r{rotation}"

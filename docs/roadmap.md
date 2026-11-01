@@ -127,6 +127,15 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **6. Toque futurista:** robô garçom, máquina de café inteligente e painéis digitais (DT-082).
 - [x] **7. Revisão visual e QA** comparando com a referência (DT-083).
 
+## Referência A: "Nova York contemporânea" (31/10/2026, DT-090, ramo `arte-3d`)
+
+- [x] **Marco 1, direção:** referência, implementado e pendente separados em [art-direction.md](art-direction.md).
+- [x] **Marco 2, amostra:** piso, parede, mesa, cadeira, balcão e fogão, com a mesma câmera e o mesmo estado para comparar.
+- [x] **Marco 3, interface:** café maior na tela, sem botões repetidos e popularidade com nome e unidade certos.
+- [x] **Aprovação visual do PO** da amostra.
+- [ ] Refazer os encostos das outras cadeiras (corrige quem fica escondido ao sentar de costas, sem mudar o visual delas).
+- [ ] Levar o acabamento ao resto do catálogo, por etapas, cada uma com revisão visual. O redesign só termina aqui.
+
 ## Balanceamento (23/10/2026)
 
 - [x] **FAÇA BALANCEAMENTO** (DT-075): ritmo de níveis "médio", pedidos do cardápio só de pratos possíveis, preços alinhados; ferramenta `tools/balance_report.gd`.

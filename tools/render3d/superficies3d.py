@@ -262,7 +262,7 @@ def plaster(color):
 def floor_material(surface_id, variant):
     v = variant if isinstance(variant, int) else (0 if variant == "a" else 1)
     if surface_id == "floor_beige":
-        return grid_tiles(("#f7e3bd", "#e8cd98")[v], "#c9ad80", 1)
+        return grid_tiles(("#ecd7ae", "#dfc495")[v], "#a98b62", 2, rough=0.5, variation=0.05, coat=0.15)
     if surface_id == "floor_diner":
         return grid_tiles(("#f4f4f2", "#232329")[v], "#9aa0a8", 1, rough=0.15, coat=0.8)
     if surface_id == "floor_bistro":
@@ -272,7 +272,7 @@ def floor_material(surface_id, variant):
     if surface_id == "floor_marble":
         return marble_tile(v)
     if surface_id == "floor_wood":
-        return planks("#c98a52", 6, offset=v * 0.31)
+        return planks("#bd7a3a", 5, offset=v * 0.31, dark=0.32)
     if surface_id == "floor_70s":
         return pattern("circles", ["#f2d8a6", "#e07a2e", "#9a4a1e", "#f2b33d"], 1)
     if surface_id == "floor_country":
@@ -451,12 +451,12 @@ def wall_parts(upper, wainscot="#ffffff", rail="#ffffff", base="#8a5530", panel=
 def wall_style(surface_id):
     s = surface_id
     if s == "wall_cream":
-        return wall_parts(plaster("#f7e6c4"), "#ffffff", "#ffffff", "#a86d40")
+        return wall_parts(plaster("#f1e0bf"), "#dcc7a4", "#7a4f30", "#5a3a24")
     if s == "wall_mint_stripes":
         return wall_parts(pattern("stripes", ["#bff0dc", "#f4fbf8"], 6, plane="XZ", rough=0.7), "#ffffff", "#ffffff", "#e0303a")
     if s == "wall_brick":
-        return wall_parts(grid_tiles("#b5513d", "#e2d6c6", 0, plane="XZ", brick_w=0.25, brick_h=WALL_Z / 26, row_offset=0.5,
-                                     variation=0.18, rough=0.85, coat=0.0), full=True, base="#3a2a24")
+        return wall_parts(grid_tiles("#a34a36", "#6b5546", 0, plane="XZ", brick_w=0.25, brick_h=WALL_Z / 26, row_offset=0.5,
+                                     variation=0.24, rough=0.85, coat=0.0), full=True, base="#2f221d")
     if s == "wall_navy":
         return wall_parts(plaster("#1f2f5c"), "#ffffff", "#d9b44a", "#1f2f5c")
     if s == "wall_70s":

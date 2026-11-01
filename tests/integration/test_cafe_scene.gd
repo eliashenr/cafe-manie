@@ -17,12 +17,28 @@ func test_camera_frames_the_whole_cafe_between_the_ui_bars() -> void:
 	var cafe := await spawn_cafe()
 	var viewport_size := cafe.camera.get_viewport_rect().size
 	var bounds := IsoProjection.grid_bounds(Vector2i(8, 8))
-	var free_area := Rect2(0.0, cafe.ui_top_inset, viewport_size.x,
+	var free_area := Rect2(cafe.ui_left_inset, cafe.ui_top_inset, viewport_size.x - cafe.ui_left_inset - cafe.ui_right_inset,
 		viewport_size.y - cafe.ui_top_inset - cafe.ui_bottom_inset).grow(1.0)
 	for corner in [bounds.position, bounds.end, Vector2(bounds.position.x, bounds.end.y), Vector2(bounds.end.x, bounds.position.y)]:
 		var on_screen: Vector2 = (corner - cafe.camera.global_position) * cafe.camera.zoom + viewport_size / 2.0
 		assert_true(free_area.has_point(on_screen), "canto %s aparece em %s, fora da área livre %s" % [corner, on_screen, free_area])
 	assert_true(cafe.camera.zoom.x <= 1.0, "o enquadramento inicial não aproxima além de 1x")
+
+
+## Com as margens de cima e de baixo menores, o café ocupa mais da tela do que os 0,57 de antes (DT-090).
+func test_camera_gives_the_cafe_room_at_the_base_resolution() -> void:
+	var cafe := await spawn_cafe()
+	assert_true(cafe.camera.zoom.x >= 0.7, "zoom %.2f" % cafe.camera.zoom.x)
+
+
+func test_frame_centers_between_uneven_side_margins() -> void:
+	var cafe := await spawn_cafe()
+	var viewport_size := cafe.camera.get_viewport_rect().size
+	var bounds := IsoProjection.grid_bounds(Vector2i(8, 8))
+	cafe.camera.set_bounds(Rect2())
+	cafe.camera.frame(bounds, 0.0, 0.0, 200.0, 0.0)
+	var center: Vector2 = (bounds.get_center() - cafe.camera.global_position) * cafe.camera.zoom + viewport_size / 2.0
+	assert_almost_eq(center.x, 200.0 + (viewport_size.x - 200.0) / 2.0, 0.5, "o café fica no meio do que sobra ao lado da margem")
 
 
 func test_frame_shrinks_zoom_when_the_screen_is_short() -> void:

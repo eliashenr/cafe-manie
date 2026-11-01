@@ -3,31 +3,31 @@
  "sprites": {
   "chair_wood_r0": {
    "anchor": [
-    68.0,
-    227.84
+    70.0,
+    229.84
    ]
   },
   "chair_wood_r1": {
    "anchor": [
-    68.0,
-    196.84
+    70.0,
+    197.84
    ]
   },
   "chair_wood_r2": {
    "anchor": [
-    68.0,
-    196.84
+    71.0,
+    197.84
    ]
   },
   "chair_wood_r3": {
    "anchor": [
-    68.0,
-    227.84
+    71.0,
+    229.84
    ]
   },
   "table_round_r0": {
    "anchor": [
-    79.0,
+    77.0,
     197.84
    ]
   },
@@ -45,13 +45,13 @@
   },
   "stove_basic_r0": {
    "anchor": [
-    122.0,
+    121.0,
     241.84
    ]
   },
   "stove_basic_r1": {
    "anchor": [
-    122.0,
+    121.0,
     241.84
    ]
   },
@@ -69,7 +69,7 @@
   },
   "counter_basic_r0": {
    "anchor": [
-    121.0,
+    122.0,
     251.84
    ]
   },
@@ -81,7 +81,7 @@
   },
   "counter_basic_r2": {
    "anchor": [
-    121.0,
+    122.0,
     251.84
    ]
   },
@@ -1911,14 +1911,14 @@
   },
   "encosto_chair_wood_r1": {
    "anchor": [
-    68.0,
-    234.84
+    7.0,
+    197.84
    ]
   },
   "encosto_chair_wood_r2": {
    "anchor": [
-    68.0,
-    234.84
+    71.0,
+    197.84
    ]
   },
   "encosto_chair_70s_r1": {

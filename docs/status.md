@@ -1,14 +1,24 @@
 # Status
 
-## CAFÉ MANIE — STATUS (30/10/2026)
+## CAFÉ MANIE — STATUS (31/10/2026)
 
 🟢 **CONCLUÍDO**
+
+**Referência A, "Nova York contemporânea": primeira amostra, aprovada pelo PO** (DT-090, no ramo `arte-3d`). **O redesign não está concluído:** só a amostra foi aprovada; o resto do catálogo vem em etapas.
+
+- **Amostra:** cadeira, mesa, balcão, fogão, piso e parede iniciais, mais o assoalho e o tijolinho da loja, em madeira, tijolo, creme e metal.
+  - O café inicial segue simples: os mesmos itens, ids, preços, níveis e dimensões.
+- **Interface:** o café aparece maior, os botões repetidos saíram e a popularidade virou "50/100".
+- **Corrigido:** na cadeira inicial, quem senta de costas não fica mais escondido atrás de um assento solto.
+- **Testes:** 737 passaram e a cena principal subiu sem erros, numa pasta de dados separada, sem usar o save do PO.
+- **Blender 5.2.3** instalado em `C:\Blender`, conferido pelo código oficial (só para gerar arte).
+- **Pendente:** o resto do catálogo, os encostos das outras cadeiras e a noite da cidade.
 
 **Projeto no PC novo do PO** (30/10/2026)
 
 - **Godot 4.7.2 instalada** em `C:\Godot`, baixada do GitHub oficial e conferida pela soma SHA-512.
 - **Conferido neste PC:** na `main`, 726 testes passaram; no ramo `arte-3d`, 728. A cena principal subiu sem erros nos dois.
-- **Ainda não instalados aqui:** os export templates, o Java e o Android SDK (só fazem falta para gerar o `.exe` e o APK) e o Blender com o MakeHuman (só faz falta para gerar arte 3D nova).
+- **Ainda não instalados aqui:** os export templates, o Java e o Android SDK (só fazem falta para gerar o `.exe` e o APK) e o MakeHuman (só faz falta para refazer personagens).
 - **O save do PO não veio junto:** ele fica só no computador antigo e precisa ser copiado de lá.
 
 **22 pisos novos** (DT-089, no ramo `arte-3d`)

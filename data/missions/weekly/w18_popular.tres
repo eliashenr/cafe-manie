@@ -6,7 +6,7 @@
 script = ExtResource("1_mission")
 id = &"w18_popular"
 order = 18
-title = "Chegue a %d%% de popularidade"
+title = "Chegue a %d/100 de popularidade"
 hint = "Clientes satisfeitos aumentam a popularidade."
 kind = 17
 target = 80

@@ -3,9 +3,10 @@ extends CanvasLayer
 ## Interface de baixo, no formato da v3 (o do jogo antigo, desenho nosso).
 ##
 ## Mostra, conforme o estado da cafeteria:
-## - nada selecionado: a faixa de ícones (Loja, Reformar, Expandir, Missões,
-##   Presentes, Conquistas); a Loja abre o painel em abas (Salão, Cozinha,
-##   Decoração, Pisos, Paredes) com os quadradinhos dos itens;
+## - nada selecionado: a faixa de ícones (Loja, Reformar, Expandir, Garçom, Chef e
+##   Cidade; Missões e Conquistas ficam no menu lateral e o presente no alto, DT-090);
+##   a Loja abre o painel em abas (Salão, Cozinha, Decoração, Pisos, Paredes) com os
+##   quadradinhos dos itens;
 ## - fogão selecionado: o livro de receitas, em abas (DT-053), com as estrelas de domínio de cada receita (ou o
 ##   tempo que falta), e as ações do móvel;
 ## - balcão selecionado: o que tem nele, e as ações do móvel;
@@ -17,7 +18,7 @@ extends CanvasLayer
 ## nunca se perder porque um cliente pagou no meio dele.
 
 const ICON_BUTTON_SIZE := Vector2(84, 74)
-## Espaço entre os botões da faixa: com 9 ícones, ela cabe entre a carinha da satisfação e a borda direita.
+## Espaço entre os botões da faixa: ela cabe entre o quadro da popularidade e a borda direita.
 const ICON_SEPARATION := 6
 ## Loja na barra de baixo (DT-088): quantos cartões cabem por página depende da largura da tela (no celular estreito,
 ## menos), entre SHOP_MIN_ITEMS e SHOP_MAX_ITEMS.
@@ -595,9 +596,6 @@ func _show_icon_bar() -> void:
 	_add_hire_button()
 	_add_icon(_buttons, "ChefBarButton", "chef", "Chef", func() -> void: cafe.hud.show_avatar())
 	_add_icon(_buttons, "CityBarButton", "cidade", "Cidade", func() -> void: cafe.hud.show_city())
-	_add_icon(_buttons, "MissionsBarButton", "prancheta", "Missões", func() -> void: cafe.hud.show_missions())
-	_add_icon(_buttons, "GiftsBarButton", "presente", "Presentes", func() -> void: cafe.hud.daily_requested.emit())
-	_add_icon(_buttons, "AchievementsBarButton", "trofeu", "Conquistas", func() -> void: cafe.hud.show_achievements())
 
 
 ## Botão da faixa: o ícone da arte em cima e o nome embaixo.

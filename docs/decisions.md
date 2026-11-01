@@ -4,6 +4,32 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-090 — Referência A: amostra visual e interface a serviço do café (ramo arte-3d)
+
+**Problema:**
+- O PO escolheu a opção A ("Nova York contemporânea") como referência de acabamento, sem perder a intenção do jogo: começar simples, melhorar comprando e misturar estilos à vontade.
+- Na tela, a cidade e a interface ocupavam mais que o café (zoom 0,57 em 1280×720), e havia funções repetidas.
+- O quadro dizia "50% Satisfeitos", mas o número é a popularidade, que sobe e desce com o atendimento: não é a parte dos clientes que saiu satisfeita.
+
+**Decisão (amostra aprovada pelo PO; o resto do catálogo vem em etapas):**
+- **Só 8 itens mudam de aparência:** `chair_wood`, `table_round`, `counter_basic`, `stove_basic`, `floor_beige`, `floor_wood`, `wall_cream` e `wall_brick`. Mesmos ids, preços, níveis, beleza e pegadas; `new_game.tres` não mudou. O café inicial ganhou acabamento, não itens.
+- **Sem mudar a luz comum:** a amostra muda materiais e formas. Uma luz própria faria ela destoar dos outros itens, e os estilos precisam conviver.
+- **Fogão inicial de metal simples:** escovado e sem brilho, para continuar abaixo do Inox Industrial, que é compra.
+- **O visor do forno aceso ficou mais suave e laranja** (`fogao_aceso`): era um retângulo amarelo chapado. Esse sprite é único, então **todos os fogões** mudam nesse detalhe.
+- **Defeito antigo corrigido no gerador:** a foto do encosto trazia a cadeira inteira, fora do lugar, e o assento cobria quem senta de costas. Só a `chair_wood` foi refeita; as outras cadeiras com encosto continuam com o defeito até refazer as fotos dos encostos.
+- **Câmera:** `CafeCamera.frame` aceita margens laterais. As margens viraram 68 em cima, 150 embaixo, 100 à esquerda e 70 à direita, e o café passa de zoom 0,57 para 0,76 em 1280×720.
+- **Sem botões repetidos:**
+  - Missões e Conquistas ficam só no menu lateral, que continua à vista com a loja aberta;
+  - o presente fica só no painel do alto, que já diz "Receber!". Saíram os três ícones da barra de baixo, o bloco Presentes e a bolinha dele.
+- **Popularidade:** o quadro diz "Popularidade" e "50/100", com as estrelas. A fórmula não mudou. O título da missão semanal `w18_popular` acompanhou ("Chegue a 80/100 de popularidade"); a meta e o prêmio são os mesmos.
+- **Barra da Beleza:** enchia em 100, mas o bônus vai até `beauty_for_max_bonus` (200). Agora ela mostra `beauty_factor()`. O número e a fórmula não mudaram.
+
+**Como foi conferido:**
+- `tools/art_sample.gd` monta as fotos em memória, sem save, e `fixa` trava a câmera para comparar duas versões do jogo.
+- `tests/integration/test_art_sample.gd` trava o contrato dos itens e testa comprar, aplicar e reabrir num save de teste.
+
+---
+
 ## DT-089 — 22 pisos novos e a luz do chão (ramo arte-3d)
 
 **Problema:** o PO achou que havia "pouquíssimos modelos" de piso: eram 17, e o último aparecia no nível 8.

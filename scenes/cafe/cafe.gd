@@ -45,10 +45,15 @@ const SPOILED_MESSAGE := "O prato de %s estragou de tanto esperar no fogão. Toq
 ## Folga, em pixels de mundo, que a câmera pode passar da borda do grid.
 ## Folga da câmera em volta do café (pixels de mundo): dá para ver a rua e os prédios em volta.
 @export var camera_margin := 360.0
-## Altura, em pixels de tela, ocupada pelo painel de cima (a câmera enquadra abaixo dele).
-@export var ui_top_inset := 140.0
-## Altura, em pixels de tela, ocupada pela barra de baixo.
-@export var ui_bottom_inset := 200.0
+## Margens, em pixels de tela, que a câmera deixa livres para a interface ao enquadrar o café (DT-090).
+## Em cima, só os contadores (o perfil e o presente ficam nos cantos, longe do fundo do café).
+@export var ui_top_inset := 68.0
+## A barra de baixo.
+@export var ui_bottom_inset := 150.0
+## O menu lateral.
+@export var ui_left_inset := 100.0
+## Os botões da direita.
+@export var ui_right_inset := 70.0
 ## Espaço acima do grid reservado para a altura dos móveis da fileira de trás
 ## (as paredes podem pedir mais; vale o maior).
 @export var furniture_headroom := 60.0
@@ -868,7 +873,7 @@ func _fit_floor_and_camera() -> void:
 	var headroom := maxf(furniture_headroom, wall_view.wall_height)
 	var bounds := IsoProjection.grid_bounds(layout.grid.size).grow_individual(0.0, headroom, 0.0, 0.0)
 	camera.set_bounds(bounds.grow(camera_margin))
-	camera.frame(bounds, ui_top_inset, ui_bottom_inset)
+	camera.frame(bounds, ui_top_inset, ui_bottom_inset, ui_left_inset, ui_right_inset)
 
 
 ## Pontos da calçada (vértices do grid) onde a rua não põe enfeite: o caminho da porta até a calçada,

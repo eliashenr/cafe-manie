@@ -39,17 +39,18 @@ func set_bounds(rect: Rect2) -> void:
 	_clamp_position()
 
 
-## Enquadra [param rect] na área da tela livre de interface: entre
-## [param top_inset] e [param bottom_inset] pixels das bordas. Nunca aproxima
-## além do zoom 1 (numa tela grande a cafeteria não fica gigante).
-func frame(rect: Rect2, top_inset: float, bottom_inset: float) -> void:
+## Enquadra [param rect] na área da tela livre de interface: dentro destas margens, em
+## pixels, de cada borda. Nunca aproxima além do zoom 1 (numa tela grande a cafeteria
+## não fica gigante).
+func frame(rect: Rect2, top_inset: float, bottom_inset: float, left_inset := 0.0, right_inset := 0.0) -> void:
 	var viewport_size := get_viewport_rect().size
-	var available := Vector2(viewport_size.x, maxf(viewport_size.y - top_inset - bottom_inset, 1.0))
+	var available := Vector2(maxf(viewport_size.x - left_inset - right_inset, 1.0),
+		maxf(viewport_size.y - top_inset - bottom_inset, 1.0))
 	var fit := minf(available.x / rect.size.x, available.y / rect.size.y)
 	var z := clampf(minf(fit, 1.0), min_zoom, max_zoom)
 	zoom = Vector2(z, z)
-	# O centro da área livre fica deslocado do centro da tela quando as faixas têm alturas diferentes.
-	global_position = rect.get_center() - Vector2(0.0, (top_inset - bottom_inset) / 2.0) / z
+	# O centro da área livre fica deslocado do centro da tela quando as margens opostas são diferentes.
+	global_position = rect.get_center() - Vector2(left_inset - right_inset, top_inset - bottom_inset) / 2.0 / z
 	_clamp_position()
 
 

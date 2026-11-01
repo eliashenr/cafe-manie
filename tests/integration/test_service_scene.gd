@@ -38,7 +38,7 @@ func test_hud_follows_gold_xp_and_popularity() -> void:
 	var stats := cafe.hud.stats_text()
 	assert_true(stats.contains("Café Ouro: 255"), stats)
 	assert_true(stats.contains("10 / 30 XP"), stats)
-	assert_true(stats.contains("Popularidade: 50%"), stats)
+	assert_true(stats.contains("Popularidade: 50/100"), stats)
 
 
 func test_tapping_idle_stove_shows_recipes_with_locks() -> void:

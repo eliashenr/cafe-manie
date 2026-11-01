@@ -2,7 +2,38 @@
 
 Referência: seções 5, 43, 77, 78, 130–132 do master prompt. Documento vivo: vai ser completado com as impressões do PO sobre as capturas do jogo antigo.
 
-## Direção atual: "Nova York Futurista" (24/10/2026, DT-077)
+## Direção atual: referência A, "Nova York contemporânea" (31/10/2026, DT-090)
+
+O PO escolheu a opção A de duas imagens conceituais como **referência de acabamento**. A imagem é um conceito, não uma tela a copiar: ela não entra no repositório e não vira o café inicial.
+
+**A intenção do jogo vem primeiro:**
+- o jogador começa com um café simples e o melhora comprando pisos, paredes, móveis e decoração;
+- ele continua livre para transformar e misturar estilos, inclusive os nostálgicos. Não existe seleção fixa de tema;
+- o café inicial não vem equipado como o conceito: o neon, o tijolo, o assoalho e o terraço continuam sendo conquistas.
+
+**Onde a consistência mora:** não é em todos os itens terem o mesmo estilo, e sim em estas regras valerem para todos:
+
+| Regra | Medida |
+|---|---|
+| Perspectiva | isométrica 2:1, câmera ortográfica (60°, 0, 45°), piso de 128×64 |
+| Escala | 1 unidade do 3D = 1 piso; densidade 2 das texturas; parede de 152,38 px |
+| Encaixe | âncoras e alturas do `sprites.json` (tampo da mesa 45,33; do balcão 62,67), pelo contrato de `scenes/cafe/art_sprites.gd` |
+| Luz | a mesma para todos, em `tools/render3d/cena3d.py`; mudar a luz só de alguns itens faz eles destoarem |
+| Materiais | madeira com veio, tijolo fosco, reboco creme, metal escovado e couro fosco, sem brilho de plástico |
+
+| Situação | O que é |
+|---|---|
+| **Referência A (o alvo)** | Madeira, tijolo, creme e metal; luz quente dentro e azulada fora; neon com moderação; materiais ricos e sóbrios |
+| **Implementado na amostra (aprovada pelo PO)** | Cadeira, mesa, balcão e fogão iniciais; piso e parede iniciais; assoalho e tijolinho da loja. Café maior na tela e interface sem botões repetidos |
+| **Pendente** | Os outros móveis, pisos, paredes, itens de parede e portas, que seguem com o acabamento anterior, mais saturado; o encosto das outras cadeiras (DT-090); a rua e a cidade à noite, ainda azul-lavanda, mais claras que na referência; panelas, comidas e retratos, ainda desenhados |
+
+**Fica de fora nesta direção:** o que o conceito mostra e o jogo não tem. Os garçons continuam humanos e a loja continua na barra de baixo (DT-088).
+
+**Como conferir:** `tools/art_sample.gd` monta o mesmo café em memória, sem save, com piso e parede que já existem na loja e uma mistura de estilos. Com `fixa`, a câmera não depende da versão do jogo.
+
+## Direção anterior: "Nova York Futurista" (24/10/2026, DT-077)
+
+A interface escura e o sistema de cores abaixo continuam valendo. O robô e o "futurista" saíram (DT-088), e a arte vetorial citada foi trocada pela 3D no ramo `arte-3d` (DT-084 a DT-087).
 
 O PO mandou duas imagens de referência e um prompt detalhado pedindo a reformulação de **todo o jogo**. A direção nova substitui a "Esquina Nostálgica" (abaixo, que fica como histórico).
 
@@ -116,10 +147,6 @@ O PO achou a v2 **apagada** ("não dá vontade de continuar no jogo") e mandou m
 
 O gerador v3 está em `tools/art_direction/v3/` (ver o README de lá).
 
-## Onde estamos
-
-Tudo o que aparece na tela hoje é **placeholder desenhado por código** (caixas coloridas, piso e parede com padrões simples, bonequinhos básicos). Isso é proposital: as regras de jogo ainda estão mudando, e arte final feita agora teria de ser refeita.
-
 ## O que vale desde já
 
 - **Estilo:** 2D cartoon sofisticado, "realidade divertida" (seções 43 e 77). Cafeteria reconhecível, pessoas reconhecíveis, móveis plausíveis, sem realismo fotográfico.
@@ -142,10 +169,10 @@ Para cada captura, anotar em palavras (não copiar):
 | Item | Medida atual | Observação |
 |---|---|---|
 | Piso isométrico | 128 × 64 px (proporção 2:1) | `IsoProjection.TILE_SIZE`. Mudar a escala muda tudo |
-| Parede | 110 px de altura | `WallView.wall_height` |
-| Móveis | 1×1, 2×1; giram em 4 direções | Precisam de desenho em pelo menos 2 vistas (as outras 2 podem ser espelhadas) |
-| Personagens | ~40 px de altura | Animação mínima: parado, andando (4 direções), sentado comendo |
-| Resolução base | 1280 × 720, ampliando para telas maiores | Desenhar em 2× para ficar nítido em celulares de alta densidade |
+| Parede | 152,38 px de altura | `wall_height` no `sprites.json` |
+| Móveis | 1×1, 2×1; giram em 4 direções | Foto 3D de cada rotação; a cadeira também tem o encosto de quem senta de costas (rotações 1 e 2) |
+| Personagens | Foto 3D nos quadros do `sprites.json` | Em pé, andando, sentado de frente e de costas |
+| Resolução base | 1280 × 720, ampliando para telas maiores | Texturas com densidade 2, nítidas em celulares de alta densidade |
 
 ## Como produzir a arte final (decisão para antes da Fase 8)
 
@@ -159,4 +186,4 @@ Para cada captura, anotar em palavras (não copiar):
 
 ## Próximo passo
 
-O PO envia as capturas e o que lembra com carinho do jogo antigo. A partir disso, este documento ganha uma paleta de cores original, uma folha de referência de estilo e 2 ou 3 direções para escolher.
+O PO aprovou a amostra da referência A. O acabamento se estende ao resto do catálogo em etapas, cada uma com revisão visual, começando pelos encostos das outras cadeiras.

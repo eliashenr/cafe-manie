@@ -5,9 +5,9 @@ extends CanvasLayer
 ## - no meio, a barra de XP listrada com a estrela do chef e o nível em número grande,
 ##   e a barra de beleza com a flor;
 ## - no alto à direita, o cronômetro do presente diário;
-## - na lateral esquerda, os medalhões de Missões (com o cartão da missão atual),
-##   Presente e Conquistas; na direita, botões quadrados de zoom e som;
-## - embaixo à esquerda, a satisfação dos clientes (popularidade) e o nome da cafeteria;
+## - na lateral esquerda, os medalhões de Missões (com o cartão da missão atual)
+##   e Conquistas; na direita, botões quadrados de zoom e som;
+## - embaixo à esquerda, a popularidade do café (0 a 100, não é uma contagem de clientes satisfeitos, DT-090);
 ## - um aviso no alto para mensagens curtas (subiu de nível, missão concluída...).
 ##
 ## Os nomes exibidos das moedas ficam aqui, na interface; o código do jogo
@@ -51,7 +51,8 @@ const STARS := 5
 const PROFILE_SIZE := Vector2(340, 86)
 const AVATAR_SIZE := 70.0
 const CITY_TEXT := "Nova York"
-const RATING_CAPTION := "Popularidade do café"
+const RATING_CAPTION := "Popularidade"
+const RATING_FORMAT := "%d/100"
 ## Menu lateral e botões quadrados da direita.
 const SIDE_TILE_SIZE := Vector2(80, 80)
 const SIDE_TILE_GAP := 10.0
@@ -118,14 +119,13 @@ var _level_label: Label
 var _beauty_bar: StripedBar
 var _rating_label: Label
 var _rating_card: Control
-## Camada do menu lateral, dos botões da direita, da missão e da satisfação.
+## Camada do menu lateral, dos botões da direita, da missão e da popularidade.
 var _side_layer: Control
 var _stars: Array[TextureRect] = []
 var _daily_title: Label
 var _daily_digits: Array[Label] = []
 var _daily_boxes: Control
 var _daily_ready: Label
-var _daily_badge: Control
 var _toast: Label
 var _toast_time := 0.0
 ## Camada das janelas (DT-079): o fundo escurecido e, por cima, os avisos.
@@ -579,7 +579,8 @@ func _side_tile(button_name: String, icon: String, label: String, top: float, ac
 	button.pressed.connect(action)
 	_anchored(button, Vector2.ZERO, Vector2(12, top), SIDE_TILE_SIZE, _side_layer)
 	_place(button, UiTheme.art(icon, Vector2(46, 46)), Vector2((SIDE_TILE_SIZE.x - 46) / 2.0, 6))
-	var text := UiTheme.caption(label, UiTheme.WHITE_SOFT, 11)
+	var text := UiTheme.caption(label, UiTheme.WHITE_SOFT, 10)
+	text.clip_text = true  # sem isto, o rótulo comprido alargava além do bloco e saía do centro
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(button, text, Vector2(0, SIDE_TILE_SIZE.y - 22), Vector2(SIDE_TILE_SIZE.x, 16))
 	return button
@@ -588,10 +589,6 @@ func _side_tile(button_name: String, icon: String, label: String, top: float, ac
 func _build_medallions() -> void:
 	var top := SIDE_TILES_TOP
 	_side_tile("MissionsButton", "icone_prancheta", "Missões", top, show_missions)
-	top += SIDE_TILE_SIZE.y + SIDE_TILE_GAP
-	var gift := _side_tile("GiftButton", "icone_presente", "Presentes", top, func() -> void: daily_requested.emit())
-	_daily_badge = _badge("1")
-	_place(gift, _daily_badge, Vector2(SIDE_TILE_SIZE.x - 18, -6), Vector2(24, 24))
 	top += SIDE_TILE_SIZE.y + SIDE_TILE_GAP
 	_side_tile("AchievementsButton", "icone_trofeu", "Conquistas", top, show_achievements)
 	top += SIDE_TILE_SIZE.y + SIDE_TILE_GAP
@@ -682,7 +679,8 @@ func _build_mission_card() -> void:
 	column.add_child(_mission_hint)
 
 
-## Satisfação dos clientes (DT-077): a carinha, o percentual, "Satisfeitos", as estrelas e o que ela mede.
+## Popularidade do café (DT-090): o nome, o valor de 0 a 100 e as estrelas. Ela sobe e desce com o atendimento; não é
+## a parte dos clientes que saiu satisfeita, por isso nem "%" nem "Satisfeitos".
 func _build_rating() -> void:
 	var card := Panel.new()
 	card.name = "Rating"
@@ -691,17 +689,16 @@ func _build_rating() -> void:
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_anchored(card, Vector2(0.0, 1.0), Vector2(12, -86), Vector2(196, 74), _side_layer)
 	_place(card, UiTheme.art("icone_sorriso", Vector2(46, 46)), Vector2(7, 14))
-	_rating_label = UiTheme.outlined("0%", 23, UiTheme.WHITE_SOFT, UiTheme.NAVY, 3)
+	var caption := UiTheme.outlined(RATING_CAPTION, 12, UiTheme.CYAN, Color(0, 0, 0, 0), 0)
+	caption.name = "RatingCaption"
+	_place(card, caption, Vector2(58, 6), Vector2(136, 16))
+	_rating_label = UiTheme.outlined(RATING_FORMAT % 0, 21, UiTheme.WHITE_SOFT, UiTheme.NAVY, 3)
 	_rating_label.name = "RatingValue"
-	_place(card, _rating_label, Vector2(58, 4), Vector2(62, 30))
-	_place(card, UiTheme.outlined("Satisfeitos", 12, UiTheme.CYAN, Color(0, 0, 0, 0), 0), Vector2(116, 11), Vector2(78, 18))
+	_place(card, _rating_label, Vector2(58, 22), Vector2(136, 28))
 	for i in STARS:
 		var star := UiTheme.art("icone_estrela", Vector2(17, 17))
-		_place(card, star, Vector2(58 + i * 18, 34))
+		_place(card, star, Vector2(58 + i * 18, 51))
 		_stars.append(star)
-	var caption := UiTheme.outlined(RATING_CAPTION, 11, UiTheme.TEXT_SOFT, Color(0, 0, 0, 0), 0)
-	caption.name = "RatingCaption"
-	_place(card, caption, Vector2(58, 53), Vector2(136, 16))
 
 
 func _build_toast() -> void:
@@ -1291,8 +1288,7 @@ func refresh() -> void:
 		Juice.bump(_gold_label)  # ouro entrando: o número quica
 	_shown_gold = gold
 	_gold_label.text = UiTheme.thousands(gold)
-	var popularity := roundi(simulation.popularity)
-	_rating_label.text = "%d%%" % popularity
+	_rating_label.text = RATING_FORMAT % roundi(simulation.popularity)
 	var lit := roundi(simulation.popularity / 100.0 * STARS)
 	for i in _stars.size():
 		var sprite := ArtSprites.get_sprite("icone_estrela" if i < lit else "icone_estrela_vazia")
@@ -1300,7 +1296,7 @@ func refresh() -> void:
 			_stars[i].texture = sprite.texture
 	var beauty := simulation.beauty()
 	_beauty_bar.text = "Beleza %d" % beauty
-	_beauty_bar.value = beauty / 100.0
+	_beauty_bar.value = simulation.beauty_factor()  # a barra enche junto com o bônus da beleza (DT-090)
 	_refresh_portrait()
 	_refresh_energy()
 	_refresh_coupons()
@@ -1338,7 +1334,6 @@ func is_energy_visible() -> bool:
 
 func _refresh_daily() -> void:
 	var ready := simulation.can_claim_daily()
-	_daily_badge.visible = ready
 	_daily_ready.visible = ready
 	_daily_boxes.visible = not ready
 	_daily_title.text = DAILY_READY_TITLE if ready else DAILY_TITLE
@@ -1408,8 +1403,8 @@ func stats_text() -> String:
 	var progression := simulation.progression
 	var xp := "%d XP (nível máximo)" % progression.xp if progression.is_max_level() \
 		else "%d / %d XP" % [progression.xp, progression.table.xp_for_next(progression.level)]
-	return "Nível %d | %s | %s: %d | Popularidade: %d%% | Beleza: %d" % [progression.level, xp, SOFT_CURRENCY_NAME,
-		simulation.wallet.balance(Wallet.SOFT), roundi(simulation.popularity), simulation.beauty()]
+	return "Nível %d | %s | %s: %d | Popularidade: %s | Beleza: %d" % [progression.level, xp, SOFT_CURRENCY_NAME,
+		simulation.wallet.balance(Wallet.SOFT), RATING_FORMAT % roundi(simulation.popularity), simulation.beauty()]
 
 
 func _bar_style(color: Color) -> StyleBoxFlat:
