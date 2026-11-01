@@ -4,6 +4,21 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-094 — Referência A: fogões e balcões da loja em modelos novos (ramo amostra-a-2, aprovada pelo PO)
+
+**Problema:** ao lado do fogão e do balcão iniciais refeitos, os outros móveis de trabalho ainda tinham a arte antiga. O PO liberou esta etapa.
+
+**Decisão:**
+- **Um arquivo para os dois:** `tools/render3d/cozinha_a3d.py` tem a mesma estrutura do fogão e do balcão da amostra, com uma receita por item. As receitas seguem o nome e a coleção do item.
+- **Janela do forno igual em todos:** o forno aceso é uma foto só, desenhada por cima de qualquer fogão. Por isso, a janela fica no mesmo lugar em todos, e a altura e as bocas também não mudam, para a panela cair certa.
+- **Balcão do tamanho do piso:** lado a lado, formam um só, como o inicial. A face é a mesma nos quatro lados, porque o balcão gira.
+- **Fogão Lua Cheia entra aqui,** porque é um fogão normal. O trem e o caldeirão, de evento, ficam com os enfeites: têm forma própria.
+- **Um dono por foto:** `moveis3d.py` só refaz o que receber por id, e o `stove_moon` saiu de `enfeites3d.py`.
+
+**Testes sem atrapalhar o PO:** as fotos rodam em janela oculta, e a janela de revisão abre minimizada, uma vez só, no fim da etapa.
+
+---
+
 ## DT-093 — Referência A: cadeiras e mesas da loja em modelos novos (ramo amostra-a-2, aprovada pelo PO)
 
 **Problema:** os móveis ao lado dos clientes eram o maior contraste entre a linguagem aprovada e a antiga: cadeiras pequenas e finas, em outra luz. O PO liberou esta etapa.

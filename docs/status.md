@@ -4,9 +4,16 @@
 
 🟡 **AGUARDANDO O PO**
 
-- **Próxima etapa:** o resto do catálogo ainda não foi liberado. A recomendação é seguir com os fogões e balcões da loja, que ficam ao lado da cozinha já refeita.
+- **Próxima etapa:** o resto do catálogo ainda não foi liberado. A recomendação é seguir com os enfeites e as máquinas.
 
 🟢 **CONCLUÍDO**
+
+**Referência A: fogões e balcões, aprovados pelo PO** (DT-094, no ramo `amostra-a-2`). Nenhum id, preço, nível, pegada ou save mudou.
+
+- **13 fogões e 12 balcões com modelo novo**, cada um mantendo o caráter do nome e da coleção: os retrô arredondados com relógio, o de cobre, o a lenha com chaminé, o Fliperama com tela, o Discoteca com globo, o Talavera com azulejos e a Lua Cheia; balcões de inox, tábuas, bambu, azulejos, vinil com cromo e neon.
+- **Encaixes preservados:** a panela, o forno aceso e as pilhas de pratos caem nos mesmos lugares, e balcões lado a lado continuam formando um só.
+- **Testes:** 739 passaram e a cena principal subiu sem erros, numa pasta de dados separada, sem usar o save do PO.
+- **Pendente:** enfeites e máquinas (com os fogões de evento trem e caldeirão), pisos, paredes, itens de parede e portas; panelas, comidas e retratos.
 
 **Referência A: cadeiras e mesas, aprovadas pelo PO** (DT-093, no ramo `amostra-a-2`). Nenhum id, preço, nível, pegada ou save mudou.
 
@@ -15,7 +22,6 @@
 - **Ajustes depois da primeira revisão do PO:** assentos mais estreitos, encostos mais largos, cascas mais baixas para o cliente aparecer, estofado fosco, azulejos de Talavera de verdade e espelho mais legível.
 - **Encaixes preservados:** a altura de cada tampo é a mesma, então os pratos continuam no lugar, e todos os assentos têm a altura da cadeira nova.
 - **Testes:** 739 passaram e a cena principal subiu sem erros, numa pasta de dados separada, sem usar o save do PO.
-- **Pendente:** fogões, balcões e enfeites da loja, pisos, paredes, itens de parede e portas; panelas, comidas e retratos.
 
 **Referência A: todos os clientes na nova proporção, aprovados pelo PO** (DT-092, no ramo `amostra-a-2`). Nenhum item, preço ou save mudou.
 

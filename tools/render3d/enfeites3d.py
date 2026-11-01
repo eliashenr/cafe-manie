@@ -193,19 +193,6 @@ def machine_frozen():
     return parts
 
 
-def stove_moon():
-    parts = M.stove(enamel="#1d2a5a", top_color="#2a3a6e", panel=("#e8edf2", "#d9b44a", "#8a6a2e"), knob="#d9b44a",
-                    door=("#2a3a6e", "#121a3a"), handle="#d9b44a")
-    h = M.STOVE_HEIGHT
-    parts.append(tube((0.3, 0.3, h), (0.3, 0.3, h + 0.28), 0.008, chrome("#d9b44a")))
-    moon = solid("#ffd76a", 0.4)
-    parts.append(sphere(0.09, (0.3, 0.3, h + 0.36), moon))
-    parts.append(sphere(0.085, (0.34, 0.26, h + 0.39), lacquer("#1d2a5a")))
-    for (x, y, z) in ((0.18, 0.36, h + 0.42), (0.38, 0.2, h + 0.5), (0.12, 0.2, h + 0.3)):
-        parts.append(sphere(0.014, (x, y, z), emission("#fff6c2", 8.0)))
-    return parts
-
-
 def _wheels(color="#1d1d24", rim="#d9b44a"):
     out = []
     for x in (-0.28, 0.28):
@@ -788,7 +775,7 @@ def trophy_gold():
 # --- Catálogo e fotos -------------------------------------------------------------------------------------------
 
 BUILDERS = {name: obj for name, obj in globals().items() if callable(obj) and name in {
-    "machine_coffee", "machine_coffee_smart", "machine_frozen", "machine_juice", "stove_moon", "train_dining", "train_locomotive",
+    "machine_coffee", "machine_coffee_smart", "machine_frozen", "machine_juice", "train_dining", "train_locomotive",
     "train_wagon", "witch_cauldron", "arcade", "balloons", "banana_tree", "bonsai", "bookshelf", "boombox", "cactus",
     "chocolate_fountain", "claw_machine", "critic_statue", "cupcake_tree", "delivery_counter", "disco_ball", "dj_booth",
     "edison_lamp", "eiffel", "floor_lamp", "flower_vase", "giant_pumpkin", "hay_bale", "jukebox", "lava_lamp", "macrame_plant",

@@ -4,8 +4,8 @@ da arte 2D (tools/art_direction/v3/themes3.py), modeladas e fotografadas no âng
 Uso (na pasta do projeto):
     C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/moveis3d.py -- [ids...] [rascunho]
 
-Sem ids, faz os fogões e balcões que ainda não foram refeitos na direção A. As cadeiras e mesas estão em assentos_a3d.py,
-e o fogão e o balcão iniciais em amostra_a3d.py: passar um desses ids aqui devolve a arte antiga.
+Não há mais móvel novo saindo daqui: as cadeiras e mesas estão em assentos_a3d.py, os fogões e balcões em cozinha_a3d.py e
+os iniciais em amostra_a3d.py. Passar um id aqui devolve a arte antiga. O arquivo segue como a base das peças e materiais.
 
 As medidas seguem a arte 2D, para o que o jogo desenha por cima cair no lugar: a altura do tampo das mesas
 (table_tops), do tampo dos balcões (pratos), das bocas do fogão (panelas) e do assento (quem senta).
@@ -39,7 +39,6 @@ STOVE_SIZE, STOVE_INSET, STOVE_HEIGHT = 0.9, 0.05, 44 * PX
 STOVE_BURNERS = [(0.3, 0.3), (0.72, 0.3), (0.3, 0.72), (0.72, 0.72)]
 COUNTER_HEIGHT, COUNTER_TOP = 42 * PX, 5 * PX
 SHADOW_MARGIN = 0.08       # a sombra vai só um pouco além da pegada (o móvel não invade o piso do vizinho)
-REDONE_IN_A = ("stove_basic", "counter_basic")   # ficam em amostra_a3d.py; sem ids, este script não os sobrescreve
 
 _materials = {}
 
@@ -585,7 +584,7 @@ def main():
     args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     samples = 24 if "rascunho" in args else 80
     items = catalog()
-    wanted = [a for a in args if a in items] or [i for i in items if i not in REDONE_IN_A and items[i][0] not in ("chair", "table")]
+    wanted = [a for a in args if a in items]
     with open(os.path.join(cena3d.SPRITES, "sprites.json"), encoding="utf-8") as source:
         manifest = json.load(source)
     footprints = {"table_long": (2, 1)}

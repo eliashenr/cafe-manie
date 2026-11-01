@@ -113,6 +113,8 @@ func _dress(simulation, variant: String) -> void:
 					place.call(group[3], group[1] + Vector2i.RIGHT, 1)
 					_showcase_seats.append_array([group[1] + Vector2i.LEFT, group[1] + Vector2i.RIGHT])
 				_showcase_seats.append_array([Vector2i(4, 6), Vector2i(6, 6)])
+				place.call(&"stove_copper", Vector2i(2, 0))
+				place.call(&"counter_red", Vector2i(7, 0))
 			var showcase: bool = variant == "mostruario"
 			wear.call(&"floor_wood")
 			# Tijolo na parede da cozinha e reboco na do salão, como na referência.
@@ -125,7 +127,7 @@ func _dress(simulation, variant: String) -> void:
 				style.own(spot[1])
 				style.hang([spot[0]] as Array[String], spot[1])
 			place.call(&"counter_basic", Vector2i(4, 0))
-			place.call(&"counter_basic", Vector2i(6, 0))
+			place.call(&"counter_tile" if showcase else &"counter_basic", Vector2i(6, 0))
 			place.call(&"table_club" if showcase else &"table_round", Vector2i(5, 6))
 			place.call(&"chair_club" if showcase else &"chair_wood", Vector2i(4, 6), 3)
 			place.call(&"chair_french_red" if showcase else &"chair_wood", Vector2i(6, 6), 1)
