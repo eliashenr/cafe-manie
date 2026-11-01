@@ -4,6 +4,17 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-095 — Referência A: enfeites e máquinas em modelos novos (ramo amostra-a-2, aprovados pelo PO em 01/11/2026)
+
+**Problema:** os enfeites já eram 3D, mas com peças simples e na luz antiga. Trocar só a luz repetiria o erro da primeira amostra. O PO liberou esta etapa.
+
+**Decisão:**
+- **Um modelo novo por item** em `tools/render3d/enfeites_a3d.py`, seguindo o nome e a coleção. `enfeites3d.py` ficou só com as peças comuns, para ninguém refazer a arte antiga sem querer.
+- **Alinhados ao piso:** os enfeites de uma foto só ficam na mesma perspectiva dos móveis. Girá-los de frente para a câmera achatava as caixas. Só a abóbora e o papagaio, que têm rosto, continuam virados.
+- **Trem e caldeirão** usam o fogão de `cozinha_a3d.py`, para a panela e o forno aceso caírem certos; os detalhes de cada um ficam no espelho e nas laterais.
+
+---
+
 ## DT-094 — Referência A: fogões e balcões da loja em modelos novos (ramo amostra-a-2, aprovada pelo PO)
 
 **Problema:** ao lado do fogão e do balcão iniciais refeitos, os outros móveis de trabalho ainda tinham a arte antiga. O PO liberou esta etapa.
@@ -13,7 +24,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Janela do forno igual em todos:** o forno aceso é uma foto só, desenhada por cima de qualquer fogão. Por isso, a janela fica no mesmo lugar em todos, e a altura e as bocas também não mudam, para a panela cair certa.
 - **Balcão do tamanho do piso:** lado a lado, formam um só, como o inicial. A face é a mesma nos quatro lados, porque o balcão gira.
 - **Fogão Lua Cheia entra aqui,** porque é um fogão normal. O trem e o caldeirão, de evento, ficam com os enfeites: têm forma própria.
-- **Um dono por foto:** `moveis3d.py` só refaz o que receber por id, e o `stove_moon` saiu de `enfeites3d.py`.
+- **Um dono por foto:** `moveis3d.py` só refaz o que receber por id.
 
 **Testes sem atrapalhar o PO:** as fotos rodam em janela oculta, e a janela de revisão abre minimizada, uma vez só, no fim da etapa.
 

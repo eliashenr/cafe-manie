@@ -2,18 +2,25 @@
 
 ## CAFÉ MANIE — STATUS (01/11/2026)
 
-🟡 **AGUARDANDO O PO**
-
-- **Próxima etapa:** o resto do catálogo ainda não foi liberado. A recomendação é seguir com os enfeites e as máquinas.
-
 🟢 **CONCLUÍDO**
+
+**Referência A: enfeites e máquinas, aprovados pelo PO** (DT-095, no ramo `amostra-a-2`). Nenhum id, preço, nível, pegada ou save mudou.
+
+- **52 itens com modelo novo:**
+  - plantas e árvores de fruta com folhas soltas e vasos torneados;
+  - luminárias, a placa neon e o relógio da estação;
+  - fliperama, máquina de garra, jukebox, cabine de DJ, palco e carrinho de pipoca;
+  - bolo, piñata, abóbora, fardo, barril, Torre Eiffel, papagaio e troféus;
+  - as 4 máquinas de bebida, os 3 vagões do trem, o caldeirão e o balcão de entregas.
+- **Encaixes preservados:** nos vagões e no caldeirão, a panela e o forno aceso caem nos mesmos lugares dos outros fogões.
+- **Testes:** 739 passaram e a cena principal subiu sem erros, numa pasta de dados separada, sem usar o save do PO.
+- **Pendente:** pisos, paredes, itens de parede e portas; panelas, comidas e retratos.
 
 **Referência A: fogões e balcões, aprovados pelo PO** (DT-094, no ramo `amostra-a-2`). Nenhum id, preço, nível, pegada ou save mudou.
 
 - **13 fogões e 12 balcões com modelo novo**, cada um mantendo o caráter do nome e da coleção: os retrô arredondados com relógio, o de cobre, o a lenha com chaminé, o Fliperama com tela, o Discoteca com globo, o Talavera com azulejos e a Lua Cheia; balcões de inox, tábuas, bambu, azulejos, vinil com cromo e neon.
 - **Encaixes preservados:** a panela, o forno aceso e as pilhas de pratos caem nos mesmos lugares, e balcões lado a lado continuam formando um só.
 - **Testes:** 739 passaram e a cena principal subiu sem erros, numa pasta de dados separada, sem usar o save do PO.
-- **Pendente:** enfeites e máquinas (com os fogões de evento trem e caldeirão), pisos, paredes, itens de parede e portas; panelas, comidas e retratos.
 
 **Referência A: cadeiras e mesas, aprovadas pelo PO** (DT-093, no ramo `amostra-a-2`). Nenhum id, preço, nível, pegada ou save mudou.
 

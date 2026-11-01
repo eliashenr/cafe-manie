@@ -93,44 +93,44 @@
   },
   "bookshelf_r0": {
    "anchor": [
-    212.0,
-    328.2
+    225.0,
+    389.87
    ]
   },
   "bookshelf_r1": {
    "anchor": [
-    101.0,
-    328.2
+    118.0,
+    389.87
    ]
   },
   "bookshelf_r2": {
    "anchor": [
-    212.0,
-    328.2
+    225.0,
+    389.87
    ]
   },
   "bookshelf_r3": {
    "anchor": [
-    89.0,
-    328.2
+    118.0,
+    389.87
    ]
   },
   "plant_pot_r0": {
    "anchor": [
-    44.0,
-    191.2
+    87.0,
+    193.87
    ]
   },
   "flower_vase_r0": {
    "anchor": [
-    27.0,
-    225.2
+    48.0,
+    227.87
    ]
   },
   "floor_lamp_r0": {
    "anchor": [
-    35.0,
-    281.2
+    41.0,
+    298.87
    ]
   },
   "chair_70s_r0": {
@@ -855,140 +855,140 @@
   },
   "lava_lamp_r0": {
    "anchor": [
-    48.0,
-    210.2
+    34.0,
+    234.87
    ]
   },
   "macrame_plant_r0": {
    "anchor": [
-    52.0,
-    265.2
+    64.0,
+    277.87
    ]
   },
   "hay_bale_r0": {
    "anchor": [
-    92.0,
-    176.2
+    99.0,
+    235.87
    ]
   },
   "wagon_wheel_r0": {
    "anchor": [
-    86.0,
-    210.2
+    98.0,
+    221.87
    ]
   },
   "balloons_r0": {
    "anchor": [
-    48.0,
-    289.2
+    70.0,
+    310.87
    ]
   },
   "party_cake_r0": {
    "anchor": [
-    59.0,
-    198.2
+    70.0,
+    220.87
    ]
   },
   "jukebox_r0": {
    "anchor": [
-    68.0,
-    294.2
+    89.0,
+    287.87
    ]
   },
   "neon_diner_r0": {
    "anchor": [
-    38.0,
-    257.2
+    58.0,
+    283.87
    ]
   },
   "cactus_r0": {
    "anchor": [
-    34.0,
-    199.2
+    48.0,
+    225.87
    ]
   },
   "pinata_r0": {
    "anchor": [
-    43.0,
-    282.2
+    58.0,
+    314.87
    ]
   },
   "arcade_r0": {
    "anchor": [
-    93.0,
-    316.2
+    100.0,
+    344.87
    ]
   },
   "boombox_r0": {
    "anchor": [
-    78.0,
-    205.2
+    82.0,
+    202.87
    ]
   },
   "wine_barrel_r0": {
    "anchor": [
-    68.0,
-    215.2
+    76.0,
+    229.87
    ]
   },
   "olive_tree_r0": {
    "anchor": [
-    48.0,
-    239.2
+    65.0,
+    263.87
    ]
   },
   "bonsai_r0": {
    "anchor": [
-    57.0,
-    183.2
+    79.0,
+    195.87
    ]
   },
   "paper_lantern_r0": {
    "anchor": [
-    27.0,
-    290.2
+    46.0,
+    299.87
    ]
   },
   "eiffel_r0": {
    "anchor": [
-    50.0,
-    234.2
+    81.0,
+    325.87
    ]
   },
   "paris_lamp_r0": {
    "anchor": [
-    40.0,
-    315.2
+    48.0,
+    317.87
    ]
   },
   "banana_tree_r0": {
    "anchor": [
-    88.0,
-    249.2
+    124.0,
+    294.87
    ]
   },
   "parrot_r0": {
    "anchor": [
-    32.0,
-    263.2
+    53.0,
+    278.87
    ]
   },
   "edison_lamp_r0": {
    "anchor": [
-    29.0,
-    282.2
+    34.0,
+    276.87
    ]
   },
   "succulents_r0": {
    "anchor": [
-    77.0,
-    143.2
+    89.0,
+    154.87
    ]
   },
   "disco_ball_r0": {
    "anchor": [
-    27.0,
-    274.2
+    36.0,
+    286.87
    ]
   },
   "stove_steel_r0": {
@@ -1569,224 +1569,224 @@
   },
   "machine_coffee_r0": {
    "anchor": [
-    117.0,
-    247.2
+    128.0,
+    266.87
    ]
   },
   "machine_coffee_r1": {
    "anchor": [
-    117.0,
-    245.2
+    128.0,
+    263.87
    ]
   },
   "machine_coffee_r2": {
    "anchor": [
-    117.0,
-    245.2
+    127.0,
+    263.87
    ]
   },
   "machine_coffee_r3": {
    "anchor": [
-    117.0,
-    247.2
+    127.0,
+    266.87
    ]
   },
   "machine_juice_r0": {
    "anchor": [
-    117.0,
-    252.2
+    128.0,
+    259.87
    ]
   },
   "machine_juice_r1": {
    "anchor": [
-    116.0,
-    247.2
+    128.0,
+    254.87
    ]
   },
   "machine_juice_r2": {
    "anchor": [
-    117.0,
-    247.2
+    127.0,
+    254.87
    ]
   },
   "machine_juice_r3": {
    "anchor": [
-    117.0,
-    252.2
+    127.0,
+    259.87
    ]
   },
   "machine_coffee_smart_r0": {
    "anchor": [
-    112.0,
-    261.2
+    127.0,
+    305.87
    ]
   },
   "machine_coffee_smart_r1": {
    "anchor": [
-    112.0,
-    259.2
+    128.0,
+    295.87
    ]
   },
   "machine_coffee_smart_r2": {
    "anchor": [
-    112.0,
-    259.2
+    128.0,
+    295.87
    ]
   },
   "machine_coffee_smart_r3": {
    "anchor": [
-    112.0,
-    261.2
+    127.0,
+    305.87
    ]
   },
   "trophy_bronze_r0": {
    "anchor": [
-    55.0,
-    204.2
+    63.0,
+    239.87
    ]
   },
   "trophy_silver_r0": {
    "anchor": [
-    55.0,
-    204.2
+    63.0,
+    239.87
    ]
   },
   "trophy_gold_r0": {
    "anchor": [
-    55.0,
-    204.2
+    63.0,
+    239.87
    ]
   },
   "train_locomotive_r0": {
    "anchor": [
-    123.0,
-    271.2
+    136.0,
+    298.87
    ]
   },
   "train_locomotive_r1": {
    "anchor": [
-    120.0,
-    251.2
+    136.0,
+    248.87
    ]
   },
   "train_locomotive_r2": {
    "anchor": [
-    123.0,
-    271.2
+    129.0,
+    300.87
    ]
   },
   "train_locomotive_r3": {
    "anchor": [
-    120.0,
-    303.2
+    133.0,
+    347.87
    ]
   },
   "train_wagon_r0": {
    "anchor": [
-    123.0,
-    251.2
+    128.0,
+    298.87
    ]
   },
   "train_wagon_r1": {
    "anchor": [
-    120.0,
-    251.2
+    133.0,
+    248.87
    ]
   },
   "train_wagon_r2": {
    "anchor": [
-    123.0,
-    251.2
+    129.0,
+    248.87
    ]
   },
   "train_wagon_r3": {
    "anchor": [
-    120.0,
-    251.2
+    133.0,
+    298.87
    ]
   },
   "train_dining_r0": {
    "anchor": [
-    123.0,
-    285.2
+    128.0,
+    298.87
    ]
   },
   "train_dining_r1": {
    "anchor": [
-    120.0,
-    251.2
+    133.0,
+    248.87
    ]
   },
   "train_dining_r2": {
    "anchor": [
-    123.0,
-    251.2
+    129.0,
+    248.87
    ]
   },
   "train_dining_r3": {
    "anchor": [
-    120.0,
-    285.2
+    133.0,
+    298.87
    ]
   },
   "station_clock_r0": {
    "anchor": [
-    28.0,
-    276.2
+    43.0,
+    302.87
    ]
   },
   "critic_statue_r0": {
    "anchor": [
-    58.0,
-    211.2
+    76.0,
+    249.87
    ]
   },
   "chocolate_fountain_r0": {
    "anchor": [
-    48.0,
-    195.2
+    66.0,
+    221.87
    ]
   },
   "cupcake_tree_r0": {
    "anchor": [
-    52.0,
-    212.2
+    63.0,
+    230.87
    ]
   },
   "popcorn_cart_r0": {
    "anchor": [
-    83.0,
-    266.2
+    90.0,
+    290.87
    ]
   },
   "witch_cauldron_r0": {
    "anchor": [
-    123.0,
-    316.2
+    128.0,
+    341.87
    ]
   },
   "witch_cauldron_r1": {
    "anchor": [
-    123.0,
-    277.2
+    128.0,
+    291.87
    ]
   },
   "witch_cauldron_r2": {
    "anchor": [
-    123.0,
-    245.2
+    129.0,
+    284.87
    ]
   },
   "witch_cauldron_r3": {
    "anchor": [
-    123.0,
-    284.2
+    129.0,
+    333.87
    ]
   },
   "giant_pumpkin_r0": {
    "anchor": [
-    89.0,
-    162.2
+    102.0,
+    218.87
    ]
   },
   "stove_moon_r0": {
@@ -1815,98 +1815,98 @@
   },
   "tree_strawberry_r0": {
    "anchor": [
-    68.0,
-    253.2
+    75.0,
+    270.87
    ]
   },
   "tree_mango_r0": {
    "anchor": [
-    70.0,
-    253.2
+    76.0,
+    271.87
    ]
   },
   "tree_blueberry_r0": {
    "anchor": [
-    68.0,
-    253.2
+    78.0,
+    270.87
    ]
   },
   "machine_frozen_r0": {
    "anchor": [
-    115.0,
-    264.2
+    127.0,
+    287.87
    ]
   },
   "machine_frozen_r1": {
    "anchor": [
-    115.0,
-    256.2
+    128.0,
+    277.87
    ]
   },
   "machine_frozen_r2": {
    "anchor": [
-    115.0,
-    256.2
+    127.0,
+    277.87
    ]
   },
   "machine_frozen_r3": {
    "anchor": [
-    115.0,
-    264.2
+    127.0,
+    287.87
    ]
   },
   "claw_machine_r0": {
    "anchor": [
-    96.0,
-    276.2
+    109.0,
+    323.87
    ]
   },
   "ring_toss_r0": {
    "anchor": [
-    100.0,
-    208.2
+    112.0,
+    339.87
    ]
   },
   "stage_r0": {
    "anchor": [
-    254.0,
-    331.2
+    259.0,
+    508.87
    ]
   },
   "delivery_counter_r0": {
    "anchor": [
-    121.0,
-    272.2
+    139.0,
+    273.87
    ]
   },
   "delivery_counter_r1": {
    "anchor": [
-    121.0,
-    251.2
+    139.0,
+    313.87
    ]
   },
   "delivery_counter_r2": {
    "anchor": [
-    121.0,
-    272.2
+    139.0,
+    264.87
    ]
   },
   "delivery_counter_r3": {
    "anchor": [
-    121.0,
-    310.2
+    139.0,
+    294.87
    ]
   },
   "dj_booth_r0": {
    "anchor": [
-    229.0,
-    272.2
+    237.0,
+    302.87
    ]
   },
   "dj_booth_r1": {
    "anchor": [
-    96.0,
-    272.2
+    109.0,
+    302.87
    ]
   },
   "encosto_chair_wood_r1": {

@@ -115,6 +115,10 @@ func _dress(simulation, variant: String) -> void:
 				_showcase_seats.append_array([Vector2i(4, 6), Vector2i(6, 6)])
 				place.call(&"stove_copper", Vector2i(2, 0))
 				place.call(&"counter_red", Vector2i(7, 0))
+				place.call(&"jukebox", Vector2i(7, 2))
+				place.call(&"floor_lamp", Vector2i(0, 5))
+				place.call(&"olive_tree", Vector2i(2, 4))
+				place.call(&"machine_coffee", Vector2i(6, 4))
 			var showcase: bool = variant == "mostruario"
 			wear.call(&"floor_wood")
 			# Tijolo na parede da cozinha e reboco na do salão, como na referência.

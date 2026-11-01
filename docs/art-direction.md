@@ -29,7 +29,8 @@ O PO escolheu a opção A de duas imagens conceituais como **referência de acab
 | **Personagens (DT-092, aprovados pelo PO)** | Os 12 clientes na nova proporção; encostos das outras cadeiras corrigidos |
 | **Cadeiras e mesas (DT-093, aprovadas pelo PO)** | 24 cadeiras e banquetas e 25 mesas com modelo novo, na proporção e na luz da amostra, mantendo o caráter de cada coleção |
 | **Fogões e balcões (DT-094, aprovados pelo PO)** | 13 fogões e 12 balcões com modelo novo, com a panela, o forno aceso e os pratos nos mesmos lugares |
-| **Pendente** | Enfeites e máquinas (com o trem e o caldeirão), pisos, paredes, itens de parede e portas; panelas, comidas e retratos, ainda desenhados |
+| **Enfeites e máquinas (DT-095, aprovados pelo PO)** | 52 itens com modelo novo, incluindo as máquinas de bebida, o trem, o caldeirão e o balcão de entregas |
+| **Pendente** | Pisos, paredes, itens de parede e portas; panelas, comidas e retratos, ainda desenhados |
 
 **Fica de fora nesta direção:** o que o conceito mostra e o jogo não tem. Os garçons continuam humanos e a loja continua na barra de baixo (DT-088).
 
@@ -190,4 +191,4 @@ Para cada captura, anotar em palavras (não copiar):
 
 ## Próximo passo
 
-O PO aprovou a linguagem da 2ª amostra, os personagens, as cadeiras e mesas e os fogões e balcões. O resto do catálogo vem por etapas, cada uma com revisão visual, depois da liberação do PO.
+O PO aprovou a linguagem da 2ª amostra, os personagens, as cadeiras e mesas e os fogões e balcões, e revisa no jogo os enfeites e as máquinas. O resto do catálogo vem por etapas, cada uma com revisão visual, depois da liberação do PO.
