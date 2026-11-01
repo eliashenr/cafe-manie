@@ -6,7 +6,8 @@ extends SceneTree
 ##   godot --resolution 1280x720 -s res://tools/art_sample.gd -- <saida.png> <variante> [dia|noite] [fixa|revisao]
 ##
 ## Variantes: inicial (jogo novo), madeira_tijolo, nostalgica, mistura (estilos diferentes no mesmo café) e reformado (o
-## café depois de o jogador comprar os itens da amostra: mostra para onde a evolução leva).
+## café depois de o jogador comprar os itens da amostra: mostra para onde a evolução leva) e mostruario (o reformado, com
+## cadeiras e mesas de coleções diferentes e gente comendo).
 ## "fixa" trava a câmera num enquadramento que não depende da versão do jogo: é o que permite comparar a arte de duas
 ## versões. Sem ela, vale o enquadramento do próprio jogo.
 ## "revisao" deixa o jogo aberto e rodando, com clientes chegando, para o PO mexer. A tecla N troca entre dia e noite.
@@ -23,6 +24,9 @@ const FIXED_LIFT := 60.0
 const HALF_DAY := 43200.0
 ## Quantos quadros o modo de revisão esconde as janelas de abertura (presente do dia, nome do café).
 const REVIEW_HIDE_FRAMES := 30
+## Só em memória, na revisão: ouro e experiência para comprar qualquer item da loja.
+const REVIEW_GOLD := 50000
+const REVIEW_XP := 100000000
 
 var _cafe: Node
 var _clock
@@ -30,6 +34,8 @@ var _output := ""
 var _fixed_camera := false
 var _review := false
 var _frames := 20
+## Cadeiras do mostruário que já começam com gente comendo.
+var _showcase_seats: Array[Vector2i] = []
 
 
 func _initialize() -> void:
@@ -48,7 +54,8 @@ func _initialize() -> void:
 	var simulation = load("res://core/service/cafe_simulation.gd").create_new_game(_clock, 7)
 	simulation.set_cafe_name("Café Manie")
 	if _review:
-		simulation.wallet.earn(&"soft_currency", 2000, "revisão da amostra")
+		simulation.wallet.earn(&"soft_currency", REVIEW_GOLD, "revisão da amostra")
+		simulation.progression.restore_xp(REVIEW_XP)  # toda a loja liberada, para o PO testar qualquer item
 	else:
 		simulation.customer_types.clear()  # ninguém chega sozinho: a foto fica parada
 	_dress(simulation, variant)
@@ -97,7 +104,16 @@ func _dress(simulation, variant: String) -> void:
 			place.call(&"table_country_round", Vector2i(5, 6))
 			place.call(&"chair_french_red", Vector2i(4, 6), 3)
 			place.call(&"chair_tulip", Vector2i(6, 6), 1)
-		"reformado":
+		"reformado", "mostruario":
+			if variant == "mostruario":
+				for group in [[&"table_italian", Vector2i(1, 2), &"chair_italian", &"chair_tuscan"],
+						[&"table_diner_round", Vector2i(5, 2), &"chair_diner", &"stool_diner"]]:
+					place.call(group[0], group[1])
+					place.call(group[2], group[1] + Vector2i.LEFT, 3)
+					place.call(group[3], group[1] + Vector2i.RIGHT, 1)
+					_showcase_seats.append_array([group[1] + Vector2i.LEFT, group[1] + Vector2i.RIGHT])
+				_showcase_seats.append_array([Vector2i(4, 6), Vector2i(6, 6)])
+			var showcase: bool = variant == "mostruario"
 			wear.call(&"floor_wood")
 			# Tijolo na parede da cozinha e reboco na do salão, como na referência.
 			var kitchen_wall: Array[String] = []
@@ -110,9 +126,9 @@ func _dress(simulation, variant: String) -> void:
 				style.hang([spot[0]] as Array[String], spot[1])
 			place.call(&"counter_basic", Vector2i(4, 0))
 			place.call(&"counter_basic", Vector2i(6, 0))
-			place.call(&"table_round", Vector2i(5, 6))
-			place.call(&"chair_wood", Vector2i(4, 6), 3)
-			place.call(&"chair_wood", Vector2i(6, 6), 1)
+			place.call(&"table_club" if showcase else &"table_round", Vector2i(5, 6))
+			place.call(&"chair_club" if showcase else &"chair_wood", Vector2i(4, 6), 3)
+			place.call(&"chair_french_red" if showcase else &"chair_wood", Vector2i(6, 6), 1)
 			place.call(&"plant_pot", Vector2i(7, 7))
 
 
@@ -143,6 +159,8 @@ func _populate(simulation) -> void:
 	seat.call(Vector2i(3, 4), 10, 3, &"coxinha", 1.0)  # comendo
 	seat.call(Vector2i(5, 4), 11, 2, &"lasagna", 0.6)  # esperando o prato
 	seat.call(Vector2i(1, 6), 12, 2, &"coffee", 0.3)   # esperando, já preocupado
+	for i in _showcase_seats.size():
+		seat.call(_showcase_seats[i], 13 + i, 3, &"coxinha", 1.0)
 	if _review:
 		return
 	var waiter = simulation.waiters[0]

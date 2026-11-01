@@ -137,7 +137,9 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **Revisão visual do PO** da nova amostra, no jogo: aprovada como caminho (01/11/2026).
 - [x] **Os outros 9 clientes e os encostos das outras cadeiras** (DT-092).
 - [x] **Revisão visual do PO** dessa etapa, no jogo: aprovada (01/11/2026).
-- [ ] Refazer o resto do catálogo, por etapas, cada uma com revisão visual. Depende da liberação do PO; a recomendação é começar pelas cadeiras e mesas.
+- [x] **Cadeiras e mesas da loja** (DT-093, liberadas pelo PO em 01/11/2026).
+- [x] **Revisão visual do PO** das cadeiras e mesas, no jogo: aprovadas depois de uma rodada de ajustes (01/11/2026).
+- [ ] Refazer o resto do catálogo (fogões, balcões, enfeites, pisos, paredes, itens de parede e portas), por etapas, cada uma com revisão visual e liberação do PO.
 
 ## Balanceamento (23/10/2026)
 

@@ -4,13 +4,32 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-093 — Referência A: cadeiras e mesas da loja em modelos novos (ramo amostra-a-2, aprovada pelo PO)
+
+**Problema:** os móveis ao lado dos clientes eram o maior contraste entre a linguagem aprovada e a antiga: cadeiras pequenas e finas, em outra luz. O PO liberou esta etapa.
+
+**Decisão:**
+- **Um arquivo só para os dois:** `tools/render3d/assentos_a3d.py` tem peças comuns (torneado, casca moldada, toalha com dobras, encosto curvo) e uma receita por item. As receitas seguem o nome e a coleção do item, sem trocar a cultura ou a época dele por um único estilo. O jogador continua livre para misturar.
+- **Medidas fixas:** a altura de cada tampo sai do `table_tops` do manifesto, que não mudou. Todo assento fica na altura da cadeira nova (0,41), onde o cliente foi feito para sentar. As banquetas ficaram estreitas, porque largas pareciam mesinhas.
+- **Depois da primeira revisão do PO** (pediu ajustes em formas, materiais e clientes, sem citar itens; os ajustes abaixo foram escolha da engenharia):
+  - assento mais estreito (0,27) e encosto mais largo;
+  - cascas mais baixas, para quem senta de costas continuar aparecendo;
+  - estofado fosco e cores menos saturadas nas cadeiras de cor forte, que pareciam plástico;
+  - azulejos de Talavera modelados um a um e espelho com faixas claras.
+- **Veio de madeira próprio para área grande** (`grain_wood`): as faixas de `rich_wood` ficam listradas num tampo. A mesa inicial também mudou para ele, e esse é o único ajuste num item já aprovado.
+- **Um dono por foto:** `moveis3d.py` sem ids não refaz mais cadeiras, mesas, o fogão e o balcão iniciais nem o forno aceso, que já têm a arte nova em outros arquivos.
+
+**Revisão:** a variante `mostruario` de `tools/art_sample.gd` junta coleções diferentes no mesmo café, com gente comendo.
+
+---
+
 ## DT-092 — Referência A: os 12 clientes na nova proporção e os encostos corrigidos (ramo amostra-a-2, aprovada pelo PO)
 
 **Problema:** o PO aprovou a linguagem da DT-091. No jogo normal, porém, 9 clientes ainda tinham a proporção antiga ao lado de 3 novos, e os encostos das outras cadeiras traziam o assento solto que cobria quem senta de costas.
 
 **Decisão:**
 - **Clientes:** os outros 9 refeitos com a altura, a cabeça, a luz e o assento da DT-091. A ferramenta de amostra não precisa mais limitar quais clientes aparecem.
-- **Encostos:** `moveis3d.py encostos` refaz só os encostos, sem tocar nas fotos das cadeiras, para o catálogo não mudar nesta etapa. A `chair_wood` fica de fora, porque é da amostra.
+- **Encostos:** refeitos sem tocar nas fotos das cadeiras, para o catálogo não mudar nesta etapa. A `chair_wood` ficou de fora, porque é da amostra.
 - **Cadeiras antigas seguem como estão:** o assento delas é 5,5 cm mais alto que o da cadeira nova, e conferi nas fotos do jogo que o cliente continua assentado sem parecer afundado. Por isso, não criei correção de altura por cadeira no código.
 
 ---

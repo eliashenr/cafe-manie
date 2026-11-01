@@ -27,7 +27,8 @@ O PO escolheu a opção A de duas imagens conceituais como **referência de acab
 | **1ª amostra (DT-090)** | O PO aceitou os ajustes funcionais, mas não o visual: ela trocava cores e texturas e mantinha a linguagem anterior |
 | **2ª amostra (DT-091, aprovada pelo PO como caminho)** | Modelos novos da cadeira, mesa, balcão e fogão iniciais; piso, parede e itens de parede do café inicial; assoalho, tijolinho e arandela; pilares e vigas; luz do salão; garçom e 3 clientes em nova proporção |
 | **Personagens (DT-092, aprovados pelo PO)** | Os 12 clientes na nova proporção; encostos das outras cadeiras corrigidos |
-| **Pendente** | Os outros móveis, pisos, paredes, itens de parede e portas; panelas, comidas e retratos, ainda desenhados |
+| **Cadeiras e mesas (DT-093, aprovadas pelo PO)** | 24 cadeiras e banquetas e 25 mesas com modelo novo, na proporção e na luz da amostra, mantendo o caráter de cada coleção |
+| **Pendente** | Fogões, balcões e enfeites da loja, pisos, paredes, itens de parede e portas; panelas, comidas e retratos, ainda desenhados |
 
 **Fica de fora nesta direção:** o que o conceito mostra e o jogo não tem. Os garçons continuam humanos e a loja continua na barra de baixo (DT-088).
 
@@ -188,4 +189,4 @@ Para cada captura, anotar em palavras (não copiar):
 
 ## Próximo passo
 
-O PO aprovou a linguagem da 2ª amostra e os personagens. O resto do catálogo vem por etapas, cada uma com revisão visual, depois da liberação do PO.
+O PO aprovou a linguagem da 2ª amostra, os personagens e as cadeiras e mesas. O resto do catálogo vem por etapas, cada uma com revisão visual, depois da liberação do PO.

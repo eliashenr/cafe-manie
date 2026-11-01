@@ -4,9 +4,18 @@
 
 🟡 **AGUARDANDO O PO**
 
-- **Próxima etapa:** o resto do catálogo ainda não foi liberado. A recomendação é começar pelas cadeiras e mesas, onde os clientes sentam.
+- **Próxima etapa:** o resto do catálogo ainda não foi liberado. A recomendação é seguir com os fogões e balcões da loja, que ficam ao lado da cozinha já refeita.
 
 🟢 **CONCLUÍDO**
+
+**Referência A: cadeiras e mesas, aprovadas pelo PO** (DT-093, no ramo `amostra-a-2`). Nenhum id, preço, nível, pegada ou save mudou.
+
+- **24 cadeiras e banquetas e 25 mesas com modelo novo**, cada uma mantendo o caráter do seu nome e coleção: a Cadeira Ovo com casca moldada, a de Bambu com os nós, a Equipal em barril de couro, a de Vime abraçando quem senta, a mesa da cantina com garrafa e vela, toalhas caindo em dobras e tampos grossos.
+- **Materiais:** madeira de veio fino, mármore de veios, couro, veludo, rattan, ferro e cromo, na luz quente do salão. A mesa inicial ganhou o mesmo veio fino.
+- **Ajustes depois da primeira revisão do PO:** assentos mais estreitos, encostos mais largos, cascas mais baixas para o cliente aparecer, estofado fosco, azulejos de Talavera de verdade e espelho mais legível.
+- **Encaixes preservados:** a altura de cada tampo é a mesma, então os pratos continuam no lugar, e todos os assentos têm a altura da cadeira nova.
+- **Testes:** 739 passaram e a cena principal subiu sem erros, numa pasta de dados separada, sem usar o save do PO.
+- **Pendente:** fogões, balcões e enfeites da loja, pisos, paredes, itens de parede e portas; panelas, comidas e retratos.
 
 **Referência A: todos os clientes na nova proporção, aprovados pelo PO** (DT-092, no ramo `amostra-a-2`). Nenhum item, preço ou save mudou.
 
@@ -14,7 +23,6 @@
 - **Encostos das 20 outras cadeiras com encosto** corrigidos: quem senta de costas não fica mais atrás de um assento solto. As fotos das próprias cadeiras não mudaram.
 - **Testes:** 739 passaram e a cena principal subiu sem erros, numa pasta de dados separada, sem usar o save do PO. Conferi nas fotos do jogo as cadeiras com clientes sentados de frente e de costas.
 - **Instalado neste PC, com a autorização do PO:** o pacote livre `glasses01` (CC0), só com os óculos da cliente 8.
-- **Pendente:** móveis, pisos, paredes, itens de parede e portas do resto do catálogo; panelas, comidas e retratos.
 
 **Referência A: segunda amostra, aprovada pelo PO como caminho** (DT-091, no ramo `amostra-a-2`). O catálogo não foi ampliado.
 

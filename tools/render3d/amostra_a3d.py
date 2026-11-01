@@ -77,6 +77,32 @@ def rich_wood(color, scale=6.0, gloss=0.55):
     return M._materials[key]
 
 
+def grain_wood(color, gloss=0.75):
+    """Tampo de madeira: veio fino e comprido, sem as listras regulares que as faixas fazem numa área grande."""
+    key = ("grain_wood", color, gloss)
+    if key not in M._materials:
+        mat, nodes, links, bsdf = M._principled("Tampo_" + color)
+        coords = nodes.new("ShaderNodeTexCoord")
+        mapping = nodes.new("ShaderNodeMapping")
+        mapping.inputs["Scale"].default_value = (1.2, 22.0, 4.0)
+        links.new(coords.outputs["Object"], mapping.inputs["Vector"])
+        noise = nodes.new("ShaderNodeTexNoise")
+        noise.inputs["Scale"].default_value = 1.0
+        noise.inputs["Detail"].default_value = 7.0
+        noise.inputs["Distortion"].default_value = 0.6
+        links.new(mapping.outputs["Vector"], noise.inputs["Vector"])
+        links.new(M._ramp(nodes, links, noise.outputs["Fac"], M._shade(color, 0.2), M._tint(color, 0.06), (0.32, 0.68)), bsdf.inputs["Base Color"])
+        bump = nodes.new("ShaderNodeBump")
+        bump.inputs["Strength"].default_value = 0.1
+        links.new(noise.outputs["Fac"], bump.inputs["Height"])
+        links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+        bsdf.inputs["Roughness"].default_value = 0.36
+        bsdf.inputs["Coat Weight"].default_value = gloss
+        bsdf.inputs["Coat Roughness"].default_value = 0.18
+        M._materials[key] = mat
+    return M._materials[key]
+
+
 def leather(color):
     """Couro estofado: poros finos e brilho macio."""
     key = ("leather", color)
@@ -212,7 +238,7 @@ def table_a():
     """Mesa redonda de bistrô: tampo grosso de madeira com borda torneada e pé de ferro fundido com três pernas curvas."""
     h = TABLE_TOP_Z
     iron = cast_iron()
-    top = rich_wood(HONEY, 5.0, 0.8)
+    top = grain_wood(HONEY, 0.8)
     parts = [cylinder(0.47, h - 0.05, h, top, bevel=0.016, vertices=72),
              cylinder(0.43, h - 0.085, h - 0.05, rich_wood(WALNUT, 5.0, 0.4), bevel=0.012, vertices=72),
              cylinder(0.05, 0.11, h - 0.08, iron, bevel=0.006),
