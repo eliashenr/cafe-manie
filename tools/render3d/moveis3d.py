@@ -2,10 +2,10 @@
 da arte 2D (tools/art_direction/v3/themes3.py), modeladas e fotografadas no ângulo do jogo, gravadas em art/sprites.
 
 Uso (na pasta do projeto):
-    C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/moveis3d.py -- [ids...] [rascunho]
+    C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/moveis3d.py -- [ids...] [rascunho] [encostos]
 
 Sem ids, faz todos os móveis das quatro famílias. Também refaz os encostos (o que cobre quem senta de costas) e o
-forno aceso.
+forno aceso. "encostos" refaz só os encostos das cadeiras, sem as cadeiras.
 
 As medidas seguem a arte 2D, para o que o jogo desenha por cima cair no lugar: a altura do tampo das mesas
 (table_tops), do tampo dos balcões (pratos), das bocas do fogão (panelas) e do assento (quem senta).
@@ -570,6 +570,17 @@ def render_backrest(item_id, params, rotation, samples, anchors):
     anchors[name] = cena3d.shoot(name, anchor, WORK)
 
 
+def render_backrests_only(items, manifest, samples, anchors):
+    """Refaz só os encostos, sem tocar na foto das cadeiras. A chair_wood fica de fora: é da amostra A (amostra_a3d.py)."""
+    for item_id, names in manifest["chair_backrests"].items():
+        if item_id == "chair_wood":
+            continue
+        for rotation, name in names.items():
+            if name:   # banquetas não têm encosto
+                render_backrest(item_id, items[item_id][1], int(rotation), samples, anchors)
+        print("PRONTO", item_id, flush=True)
+
+
 def render_oven_glow(samples, anchors):
     for rotation in (0, 3):
         cena3d.setup(samples, IMAGE_SIZE, shadow_size=0.01)
@@ -589,6 +600,11 @@ def main():
         manifest = json.load(source)
     footprints = {"table_long": (2, 1)}
     anchors = {}
+    if "encostos" in args:
+        render_backrests_only(items, manifest, samples, anchors)
+        cena3d.update_manifest(anchors)
+        print("ENCOSTOS OK", len(anchors), flush=True)
+        return
     for item_id in wanted:
         kind, params = items[item_id]
         names = sorted(set(manifest["furniture"][item_id].values()))

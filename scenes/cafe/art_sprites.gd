@@ -173,6 +173,12 @@ static func wall_panel(surface_id: StringName, side: String) -> Sprite:
 	return null if sprite_name.is_empty() else get_sprite(sprite_name)
 
 
+## Pilar da parede, no lado pedido ("R" ou "L"), ou null se a arte não tem (DT-091).
+static func wall_pilaster(side: String) -> Sprite:
+	var sprite_name: String = _load_manifest().get("wall_pilaster", {}).get(side, "")
+	return null if sprite_name.is_empty() else get_sprite(sprite_name)
+
+
 ## Nome do enfeite da célula [param index] da parede (contando do canto do fundo),
 ## ou "" se ela fica lisa. Ex.: "janela", "relogio".
 static func wall_decoration_name(side: String, index: int) -> String:

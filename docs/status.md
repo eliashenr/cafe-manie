@@ -1,10 +1,31 @@
 # Status
 
-## CAFÉ MANIE — STATUS (31/10/2026)
+## CAFÉ MANIE — STATUS (01/11/2026)
+
+🟡 **AGUARDANDO O PO**
+
+- **Próxima etapa:** o resto do catálogo ainda não foi liberado. A recomendação é começar pelas cadeiras e mesas, onde os clientes sentam.
 
 🟢 **CONCLUÍDO**
 
-**Referência A, "Nova York contemporânea": primeira amostra, aprovada pelo PO** (DT-090, no ramo `arte-3d`). **O redesign não está concluído:** só a amostra foi aprovada; o resto do catálogo vem em etapas.
+**Referência A: todos os clientes na nova proporção, aprovados pelo PO** (DT-092, no ramo `amostra-a-2`). Nenhum item, preço ou save mudou.
+
+- **Os 12 clientes** agora têm a mesma proporção e a mesma luz do garçom.
+- **Encostos das 20 outras cadeiras com encosto** corrigidos: quem senta de costas não fica mais atrás de um assento solto. As fotos das próprias cadeiras não mudaram.
+- **Testes:** 739 passaram e a cena principal subiu sem erros, numa pasta de dados separada, sem usar o save do PO. Conferi nas fotos do jogo as cadeiras com clientes sentados de frente e de costas.
+- **Instalado neste PC, com a autorização do PO:** o pacote livre `glasses01` (CC0), só com os óculos da cliente 8.
+- **Pendente:** móveis, pisos, paredes, itens de parede e portas do resto do catálogo; panelas, comidas e retratos.
+
+**Referência A: segunda amostra, aprovada pelo PO como caminho** (DT-091, no ramo `amostra-a-2`). O catálogo não foi ampliado.
+
+- **Retorno do PO sobre a primeira amostra:** os ajustes funcionais valem, mas o objetivo visual não foi atingido, porque o resultado continuava perto da linguagem anterior.
+- **Formas e proporções:** modelos novos da cadeira de encosto curvo, da mesa de tampo grosso, do balcão de painéis e do fogão com grelhas; paredes com pilares e vigas.
+- **Materiais:** madeira envernizada, couro, ferro e aço escovado.
+- **Iluminação:** luz quente nas fotos dos itens; à noite, poças de luz no salão, arandelas que iluminam de verdade e rua azul-marinho; de dia, rua mais baixa e salão em destaque.
+- **Personagem:** o garçom e 3 clientes refeitos, com cabeça maior, corpo mais baixo e a mesma luz do salão.
+- **Preservado:** ids, preços, níveis, dimensões, economia e formato do save.
+
+**Referência A, "Nova York contemporânea": primeira amostra** (DT-090, no ramo `arte-3d`). **O PO reconheceu os ajustes funcionais, mas não o objetivo visual** (ver DT-091).
 
 - **Amostra:** cadeira, mesa, balcão, fogão, piso e parede iniciais, mais o assoalho e o tijolinho da loja, em madeira, tijolo, creme e metal.
   - O café inicial segue simples: os mesmos itens, ids, preços, níveis e dimensões.

@@ -41,38 +41,42 @@ var items: Dictionary = {}:
 	set(value):
 		items = value
 		queue_redraw()
+		_refit_item_lights.call_deferred()
 var item_preview: WallItemDefinition
 var item_preview_segments: Array[String] = []
 
 ## Espessura da parede vista de cima (em pisos) e cores do acabamento da arte v3.
-const CAP_DEPTH := 0.16
-## Acabamento de madeira escura no alto e nas pontas das paredes (DT-081).
-const CAP_RIGHT := Color("7a4b31")
-const CAP_LEFT := Color("6b4129")
-const END_RIGHT := Color("5a3622")
-const END_LEFT := Color("4e2f1d")
-const ART_INK := Color("33283a")
+const CAP_DEPTH := 0.26
+## Acabamento de madeira escura no alto e nas pontas das paredes (DT-081); a parede grossa da referência A (DT-091).
+const CAP_RIGHT := Color("3f2716")
+const CAP_LEFT := Color("321e11")
+const END_RIGHT := Color("2b1a0e")
+const END_LEFT := Color("22140b")
+const ART_INK := Color("170d07")
+## De quantos em quantos trechos vem um pilar (DT-091).
+const PILASTER_EVERY := 2
 ## Sombra no chão junto às paredes: até onde vai (em pisos) e a cor no pé da parede.
-const FLOOR_SHADOW_REACH := 0.45
-const FLOOR_SHADOW := Color(0.227, 0.165, 0.102, 0.21)
+const FLOOR_SHADOW_REACH := 1.1
+const FLOOR_SHADOW := Color(0.11, 0.06, 0.03, 0.46)
 ## Luz de cada janela no chão (como no canvas): cor, até onde entra e quanto escorrega (em pisos).
-const WINDOW_LIGHT := Color(1.0, 0.984, 0.878, 0.35)
+const WINDOW_LIGHT := Color(1.0, 0.86, 0.62, 0.14)
 const WINDOW_LIGHT_REACH := 2.6
 const WINDOW_LIGHT_SHIFT := 1.8
 ## Itens que acendem à noite (DT-081): o halo na parede e a mancha de luz no chão, na frente do trecho (em pisos).
-const ITEM_GLOW_SIZE := Vector2(150.0, 150.0)
-const ITEM_GLOW_ALPHA := 0.7
+const ITEM_GLOW_SIZE := Vector2(90.0, 90.0)
+const ITEM_GLOW_ALPHA := 0.32
 ## O miolo aceso (a lâmpada ou o tubo de neon), por cima do halo.
 const ITEM_CORE_SIZE := Vector2(30.0, 30.0)
 const ITEM_CORE_ALPHA := 0.9
-const ITEM_POOL_SIZE := Vector2(150.0, 70.0)
-const ITEM_POOL_ALPHA := 0.35
-const ITEM_POOL_REACH := 0.55
+const ITEM_POOL_SIZE := Vector2(300.0, 150.0)
+const ITEM_POOL_ALPHA := 0.5
+const ITEM_POOL_REACH := 0.75
 
 
 ## Escuridão (DT-080): a luz do sol pelas janelas some à noite e os itens que acendem brilham.
 var night := 0.0
 var night_tint := Color.WHITE
+var _item_lights: Array[PointLight2D] = []
 
 
 ## Noite: redesenha só quando a escuridão muda de um passo para outro.
@@ -83,6 +87,27 @@ func set_night(amount: float, tint: Color) -> void:
 	night = stepped
 	night_tint = tint
 	queue_redraw()
+	_refit_item_lights()
+
+
+## Uma luz de verdade para cada item aceso: ilumina a parede e o chão em volta (DT-091).
+func _refit_item_lights() -> void:
+	for light in _item_lights:
+		remove_child(light)
+		light.queue_free()
+	_item_lights.clear()
+	if night <= CityLights.MIN_NIGHT:
+		return
+	for wall_segment: String in CafeStyle.back_wall_segments(grid_size):
+		var item: WallItemDefinition = items.get(wall_segment)
+		if item == null or not item.glows_at_night:
+			continue
+		var outline := segment_polygon(wall_segment)
+		var base := (outline[0] + outline[1]) / 2.0
+		var light := CityLights.item_light(item.glow_color, base.lerp((outline[2] + outline[3]) / 2.0, item.glow_height))
+		CityLights.set_light(light, night, CityLights.ITEM_LIGHT_ENERGY)
+		add_child(light)
+		_item_lights.append(light)
 
 
 func _init() -> void:
@@ -209,8 +234,21 @@ func _draw_art_walls() -> void:
 		var outline := segment_polygon(wall_segment)
 		outline.append(outline[0])
 		draw_polyline(outline, FloorView.COLOR_PAINT_LINE, 2.5, true)
+	_draw_pilasters()
 	_draw_item_glows()
 	_draw_caps()
+
+
+## Pilares na parede, de dois em dois trechos: só desenho, não ocupam trecho nem mudam o que se pendura ali (DT-091).
+func _draw_pilasters() -> void:
+	var left := ArtSprites.wall_pilaster("L")
+	var right := ArtSprites.wall_pilaster("R")
+	if left == null or right == null:
+		return
+	for y in range(PILASTER_EVERY, grid_size.y, PILASTER_EVERY):
+		draw_texture_rect(left.texture, left.rect_at(_left_anchor(y)), false)
+	for x in range(PILASTER_EVERY, grid_size.x, PILASTER_EVERY):
+		draw_texture_rect(right.texture, right.rect_at(_right_anchor(x)), false)
 
 
 ## Neon e luminárias de parede acesos à noite: o halo em volta e a mancha de luz no chão, na frente do trecho.

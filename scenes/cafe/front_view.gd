@@ -8,9 +8,9 @@ extends Node2D
 ## Altura da mureta, em pixels de mundo: o lambri da parede, sem tampar o salão.
 const FRONT_WALL_HEIGHT := 44.0
 ## Espessura do acabamento de madeira escura no alto da mureta (em pisos, DT-081).
-const CAP_DEPTH := 0.16
-const CAP_TOP := Color("7a4b31")
-const ART_INK := Color("33283a")
+const CAP_DEPTH := 0.22
+const CAP_TOP := Color("3f2716")
+const ART_INK := Color("170d07")
 const PAINT_LINE := Color("ffd23f")
 ## Esmaecimento perto de personagens e do piso escolhido (pixels de mundo) e o quanto sobra.
 const FADE_RADIUS := 80.0

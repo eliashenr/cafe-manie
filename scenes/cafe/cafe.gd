@@ -126,6 +126,8 @@ var grid: CafeGrid:
 var night_tint := NightTint.new()
 ## Luz quente do salão à noite, contra a cidade azulada (DT-080).
 var interior_glow: PointLight2D
+## Luzes de teto do salão à noite: as poças de luz quente da referência A (DT-091).
+var room_lights := Node2D.new()
 ## Letreiro neon com o nome do café, em cima da parede do fundo (DT-081).
 var neon_sign := NeonSign.new()
 
@@ -141,7 +143,13 @@ func _ready() -> void:
 	layout = simulation.layout
 	interior_glow = CityLights.interior_glow(layout.grid.size)
 	add_child(interior_glow)
+	room_lights.name = "RoomLights"
+	add_child(room_lights)
+	CityLights.fit_room_lights(room_lights, layout.grid.size)
+	exterior_view.light_mask = CityLights.STREET_LIGHT_MASK
+	street_view.light_mask = CityLights.STREET_LIGHT_MASK
 	neon_sign.name = "NeonSign"
+	neon_sign.light_mask = 0  # o neon tem luz própria: as luzes do salão só o estourariam (DT-091)
 	wall_view.add_child(neon_sign)
 	neon_sign.text = simulation.cafe_name
 	simulation.cafe_name_changed.connect(func(new_name: String) -> void: neon_sign.text = new_name)
@@ -240,6 +248,12 @@ func _apply_night() -> void:
 	wall_view.set_night(darkness, night_tint.color)
 	neon_sign.set_night(darkness, night_tint.color)
 	CityLights.set_light(interior_glow, darkness, CityLights.INTERIOR_ENERGY)
+	for light: PointLight2D in room_lights.get_children():
+		light.enabled = true
+		light.energy = lerpf(CityLights.ROOM_LIGHT_DAY_ENERGY, CityLights.ROOM_LIGHT_ENERGY, darkness)
+	var street_tone := CityLights.STREET_DAY_TONE.lerp(Color.WHITE, darkness)
+	exterior_view.modulate = street_tone
+	street_view.modulate = street_tone
 
 
 func toggle_pause() -> void:
@@ -867,6 +881,7 @@ func _fit_floor_and_camera() -> void:
 	floor_view.terrace = simulation.terrace_cells()  # o terraço acompanha a fileira da frente
 	street_view.configure(layout.grid.size, layout.entrance, street_keep_clear())
 	CityLights.fit_interior_glow(interior_glow, layout.grid.size)
+	CityLights.fit_room_lights(room_lights, layout.grid.size)
 	neon_sign.wall_height = wall_view.wall_height
 	neon_sign.grid_size = layout.grid.size
 	_apply_night()

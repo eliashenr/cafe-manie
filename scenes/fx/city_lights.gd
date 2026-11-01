@@ -8,7 +8,7 @@ extends RefCounted
 ## Abaixo disto, a noite ainda não começou (nada aceso).
 const MIN_NIGHT := 0.02
 ## Janelas acesas: quanto aparecem no meio da noite.
-const WINDOW_STRENGTH := 0.95
+const WINDOW_STRENGTH := 0.72
 ## Poste: cor, força e alcance da luz; a poça de luz desenhada no chão embaixo dele.
 const LAMP_COLOR := Color(1.0, 0.76, 0.46)
 const LAMP_ENERGY := 0.75
@@ -16,9 +16,23 @@ const LAMP_RADIUS := 170.0
 const POOL_COLOR := Color(1.0, 0.8, 0.5, 0.42)
 const POOL_SIZE := Vector2(190.0, 84.0)
 ## Luz quente do salão: espalha um pouco pela calçada, como a luz que sai das janelas.
-const INTERIOR_COLOR := Color(1.0, 0.8, 0.55)
-const INTERIOR_ENERGY := 0.75
-const INTERIOR_MARGIN := 1.35
+const INTERIOR_COLOR := Color(1.0, 0.7, 0.42)
+const INTERIOR_ENERGY := 0.55
+const INTERIOR_MARGIN := 1.2
+## Poças de luz quente no salão (DT-091): uma luz de teto a cada ROOM_LIGHT_STEP pisos, com contraste entre elas. De dia
+## ficam fracas, só para o salão não parecer apagado contra a rua.
+const ROOM_LIGHT_COLOR := Color(1.0, 0.68, 0.38)
+const ROOM_LIGHT_ENERGY := 0.4
+const ROOM_LIGHT_DAY_ENERGY := 0.3
+const ROOM_LIGHT_RADIUS := 320.0
+const ROOM_LIGHT_STEP := 4
+## Luz de cada item de parede aceso: ilumina a parede e o chão em volta (DT-091).
+const ITEM_LIGHT_ENERGY := 0.7
+const ITEM_LIGHT_RADIUS := 240.0
+## De dia, a rua fica um pouco mais baixa e quente: o café é o destaque, como na referência A (DT-091).
+const STREET_DAY_TONE := Color(0.8, 0.76, 0.7)
+## A cidade não recebe as luzes de dentro do café: elas ficam só no salão, e a rua continua azul.
+const STREET_LIGHT_MASK := 2
 
 
 ## Cor para desenhar uma luz com a escuridão [param night] e o NightTint de cor [param tint]: a cor dividida pela
@@ -34,6 +48,18 @@ static func lamp_light() -> PointLight2D:
 	light.texture = FxParticles.soft_dot()
 	light.texture_scale = LAMP_RADIUS / (FxParticles.soft_dot().get_width() / 2.0)
 	light.color = LAMP_COLOR
+	light.range_item_cull_mask = 1 | STREET_LIGHT_MASK
+	light.enabled = false
+	return light
+
+
+## Luz de um item de parede aceso.
+static func item_light(color: Color, position: Vector2) -> PointLight2D:
+	var light := PointLight2D.new()
+	light.texture = FxParticles.soft_dot()
+	light.texture_scale = ITEM_LIGHT_RADIUS / (FxParticles.soft_dot().get_width() / 2.0)
+	light.color = color
+	light.position = position
 	light.enabled = false
 	return light
 
@@ -54,6 +80,24 @@ static func fit_interior_glow(light: PointLight2D, grid_size: Vector2i) -> void:
 	var bounds := IsoProjection.grid_bounds(grid_size)
 	light.position = bounds.get_center()
 	light.texture_scale = bounds.size.x * INTERIOR_MARGIN / FxParticles.soft_dot().get_width()
+
+
+## Refaz as luzes de teto do salão em [param parent] para o café de [param grid_size] pisos (desligadas até a noite).
+static func fit_room_lights(parent: Node2D, grid_size: Vector2i) -> void:
+	for child in parent.get_children():
+		parent.remove_child(child)
+		child.queue_free()
+	var half := ROOM_LIGHT_STEP / 2
+	for x in range(half, maxi(grid_size.x, half + 1), ROOM_LIGHT_STEP):
+		for y in range(half, maxi(grid_size.y, half + 1), ROOM_LIGHT_STEP):
+			var light := PointLight2D.new()
+			light.name = "RoomLight_%d_%d" % [x, y]
+			light.texture = FxParticles.soft_dot()
+			light.texture_scale = ROOM_LIGHT_RADIUS / (FxParticles.soft_dot().get_width() / 2.0)
+			light.color = ROOM_LIGHT_COLOR
+			light.position = IsoProjection.vertex_to_world(Vector2(x, y))
+			light.enabled = false
+			parent.add_child(light)
 
 
 ## Liga, desliga e ajusta a força de uma luz conforme a escuridão.

@@ -35,12 +35,13 @@ def linear(hex_color, alpha=1.0):
     return (*out, alpha)
 
 
-def setup(samples, size, shadow_center=(0.0, 0.0), shadow_size=3.0, tiling=False, sun=3.4):
+def setup(samples, size, shadow_center=(0.0, 0.0), shadow_size=3.0, tiling=False, sun=3.4, rig="dia"):
     """Cena vazia com a luz do jogo: sol quente de cima (a sombra cai curta, para trás), preenchimento frio e
     contorno; o chão invisível recebe a sombra. [shadow_size] é o lado do chão, ou (largura, fundo) para a sombra
     não passar da pegada do móvel. [tiling]: pisos e paredes, que se repetem lado a lado: só luz direcional (a luz
     de área ilumina cada trecho de um jeito e o desenho mostraria a emenda). [sun]: força do sol (o chão, que recebe o sol
-    de frente, usa menos, senão as cores claras estouram)."""
+    de frente, usa menos, senão as cores claras estouram). [rig]: "dia", a luz do catálogo; "a", a luz quente de salão
+    da referência A (DT-091), com mais contraste e sombra de contato."""
     for obj in list(bpy.data.objects):
         bpy.data.objects.remove(obj, do_unlink=True)
     scene = bpy.context.scene
@@ -59,10 +60,23 @@ def setup(samples, size, shadow_center=(0.0, 0.0), shadow_size=3.0, tiling=False
     scene.world = world
     world.use_nodes = True
     background = world.node_tree.nodes.get("Background")
-    background.inputs["Color"].default_value = (0.62, 0.68, 0.78, 1.0)
-    background.inputs["Strength"].default_value = 0.6
-    _light("Sol", "SUN", sun, (1.0, 0.92, 0.8), direction=Vector((-0.12, 0.35, -0.93)), angle=18.0)
-    if tiling:
+    if rig == "a":
+        background.inputs["Color"].default_value = (0.62, 0.42, 0.26, 1.0)
+        background.inputs["Strength"].default_value = 0.42
+        _light("Lustre", "SUN", sun * 0.62, (1.0, 0.76, 0.5), direction=Vector((-0.3, 0.42, -0.86)), angle=26.0)
+        if tiling:
+            _light("Preenchimento", "SUN", 0.35, (1.0, 0.72, 0.48), direction=Vector((-4.0, 4.0, -3.0)), angle=40.0)
+        else:
+            _light("Preenchimento", "AREA", 55.0, (1.0, 0.7, 0.45), location=(4.0, -4.0, 3.0), euler=(60.0, 0.0, 45.0), size=4.0)
+            _light("Contorno", "AREA", 70.0, (0.55, 0.68, 1.0), location=(-2.5, 2.5, 3.0), euler=(-55.0, 0.0, -135.0), size=1.5)
+            _light("Brilho", "POINT", 26.0, (1.0, 0.78, 0.5), location=(2.0, -2.6, 2.4), size=0.25)
+    else:
+        background.inputs["Color"].default_value = (0.62, 0.68, 0.78, 1.0)
+        background.inputs["Strength"].default_value = 0.6
+        _light("Sol", "SUN", sun, (1.0, 0.92, 0.8), direction=Vector((-0.12, 0.35, -0.93)), angle=18.0)
+    if rig == "a":
+        pass
+    elif tiling:
         _light("Preenchimento", "SUN", 0.9, (0.78, 0.86, 1.0), direction=Vector((-4.0, 4.0, -3.0)), angle=40.0)
         _light("Contorno", "SUN", 0.4, (1.0, 1.0, 1.0), direction=Vector((2.5, -2.5, -3.0)), angle=40.0)
     else:
@@ -81,6 +95,8 @@ def _light(name, kind, energy, color, direction=None, location=(0, 0, 0), euler=
     data.color = color
     if kind == "SUN":
         data.angle = math.radians(angle)
+    elif kind == "POINT":
+        data.shadow_soft_size = size
     else:
         data.size = size
     obj = bpy.data.objects.new(name, data)

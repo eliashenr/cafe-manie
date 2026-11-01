@@ -1,7 +1,7 @@
 class_name FloorView
 extends Node2D
 ## Piso da cafeteria com a arte v3 (ArtSprites): uma peça do revestimento por
-## célula, o tapete da entrada e a laje branca nas bordas da frente. Revestimento
+## célula, o tapete da entrada e a laje de pedra nas bordas da frente. Revestimento
 ## sem arte cai no PLACEHOLDER_FLOOR, desenhado por código.
 ##
 ## Só desenha. Não guarda regra de jogo; recebe do dono da cena o tamanho
@@ -22,10 +22,10 @@ const COLOR_PREVIEW_VALID := Color(0.3, 0.8, 0.35, 0.45)
 const COLOR_PREVIEW_INVALID := Color(0.9, 0.25, 0.2, 0.45)
 ## Laje da arte v3: espessura (pixels de mundo) e cores das duas faces da frente.
 const SLAB_THICKNESS := 10.7
-const SLAB_LEFT_TOP := Color("ffffff")
-const SLAB_LEFT_BOTTOM := Color("d7dee8")
-const SLAB_RIGHT_TOP := Color("e8edf4")
-const SLAB_RIGHT_BOTTOM := Color("c3ccd8")
+const SLAB_LEFT_TOP := Color("6d6660")
+const SLAB_LEFT_BOTTOM := Color("4c4743")
+const SLAB_RIGHT_TOP := Color("5b5550")
+const SLAB_RIGHT_BOTTOM := Color("3f3b38")
 const ART_INK := Color("33283a")
 
 var grid_size := Vector2i.ZERO:

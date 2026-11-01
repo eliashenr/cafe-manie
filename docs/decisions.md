@@ -4,6 +4,39 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-092 — Referência A: os 12 clientes na nova proporção e os encostos corrigidos (ramo amostra-a-2, aprovada pelo PO)
+
+**Problema:** o PO aprovou a linguagem da DT-091. No jogo normal, porém, 9 clientes ainda tinham a proporção antiga ao lado de 3 novos, e os encostos das outras cadeiras traziam o assento solto que cobria quem senta de costas.
+
+**Decisão:**
+- **Clientes:** os outros 9 refeitos com a altura, a cabeça, a luz e o assento da DT-091. A ferramenta de amostra não precisa mais limitar quais clientes aparecem.
+- **Encostos:** `moveis3d.py encostos` refaz só os encostos, sem tocar nas fotos das cadeiras, para o catálogo não mudar nesta etapa. A `chair_wood` fica de fora, porque é da amostra.
+- **Cadeiras antigas seguem como estão:** o assento delas é 5,5 cm mais alto que o da cadeira nova, e conferi nas fotos do jogo que o cliente continua assentado sem parecer afundado. Por isso, não criei correção de altura por cadeira no código.
+
+---
+
+## DT-091 — Referência A: segunda amostra, com mudança de linguagem (ramo amostra-a-2, aprovada pelo PO como caminho)
+
+**Problema:** o PO reconheceu os ajustes da DT-090, mas o resultado continuava perto da linguagem anterior. A causa: a DT-090 manteve os modelos e a luz e trocou principalmente cores e texturas. A referência A difere justamente nas formas, nas proporções, na luz e no personagem.
+
+**Decisão:**
+- **Modelos novos, não variações** (`tools/render3d/amostra_a3d.py`): cadeira de encosto curvo estofado e pés torneados, mesa de tampo grosso e pé de ferro com três pernas, balcão de painéis almofadados e fogão com grelhas e espelho.
+- **Proporções:** os móveis ocupam mais do piso (o assento passou de 0,5 para 0,6 do piso), e dois balcões lado a lado viram um só. Pegadas e pontos de encaixe não mudaram.
+- **Parede com peso:** viga, rodapé alto, pilar a cada dois trechos (só desenho, não ocupa o trecho) e acabamento mais grosso. Isso vale para todas as paredes, porque é estrutura e não item.
+- **Luz separada do catálogo:** esta decisão revê a da DT-090, de manter a luz comum. Os itens novos usam a `rig="a"` de `cena3d.py`, e os antigos seguem com a `rig="dia"` até a aprovação. Por isso, itens antigos e novos destoam no mesmo café durante a amostra.
+- **Luz no jogo:**
+  - à noite, rua azul-marinho, luzes de teto no salão e uma luz real por item aceso;
+  - as luzes de dentro não passam para a rua (`STREET_LIGHT_MASK`);
+  - de dia, rua mais baixa e quente (`STREET_DAY_TONE`) e luz de teto fraca;
+  - balões e selos não recebem a luz nem a noite, para continuarem legíveis.
+- **Personagem:** altura de 1,35 para 1,25 e cabeça 1,5 vez maior, com a luz do salão e o assento mais baixo. Só o garçom e os clientes 1, 5 e 10 foram refeitos; os outros 9 continuam antigos até a aprovação.
+- **Itens de parede do café inicial** (janela, quadros, prateleira, relógio), a arandela e a porta clássica foram refeitos para não quebrar a composição. O piso e a parede iniciais continuam simples, sem pilar de luz nem tijolo: isso segue sendo compra.
+- **Mantidos da DT-090:** a câmera, os menus sem repetição e a popularidade 0 a 100.
+
+**Revisão:** `tools/art_sample.gd` com `revisao` abre o jogo de verdade, em memória, sem save, com clientes chegando; a tecla N troca entre dia e noite.
+
+---
+
 ## DT-090 — Referência A: amostra visual e interface a serviço do café (ramo arte-3d)
 
 **Problema:**

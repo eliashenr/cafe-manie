@@ -86,11 +86,42 @@ func test_sample_art_keeps_the_sprite_contract() -> void:
 
 
 ## O encosto cobre só o encosto: se a foto dele trouxer a cadeira inteira, o assento cobre quem senta de costas.
-func test_chair_backrest_is_smaller_than_the_chair() -> void:
-	for rotation in [1, 2]:
-		var backrest := ArtSprites.chair_backrest(&"chair_wood", rotation).world_size()
-		var chair := ArtSprites.furniture(&"chair_wood", rotation).world_size()
-		assert_true(backrest.y < chair.y * 0.75, "encosto %s, cadeira %s" % [backrest, chair])
+func test_chair_backrests_are_smaller_than_the_chairs() -> void:
+	var checked := 0
+	for item: FurnitureDefinition in FurnitureCatalog.load_from().all():
+		for rotation in [1, 2]:
+			var backrest := ArtSprites.chair_backrest(item.id, rotation)
+			if backrest == null:
+				continue  # banquetas não têm encosto
+			var chair := ArtSprites.furniture(item.id, rotation).world_size()
+			assert_true(backrest.world_size().y < chair.y * 0.75, "%s r%d: encosto %s, cadeira %s" % [item.id, rotation, backrest.world_size(), chair])
+			checked += 1
+	assert_eq(checked, 42, "21 cadeiras com encosto, em 2 rotações")
+
+
+## A segunda amostra (DT-091): a parede tem pilar, e a luz do salão fica no salão, com balões e selos legíveis.
+func test_room_lighting_stays_inside_and_keeps_balloons_readable() -> void:
+	assert_true(ArtSprites.wall_pilaster("R") != null and ArtSprites.wall_pilaster("L") != null, "pilares nos dois lados")
+	var cafe := await spawn_cafe()
+	await settle()
+	assert_true(cafe.room_lights.get_child_count() > 0, "luzes de teto no salão")
+	for light: PointLight2D in cafe.room_lights.get_children():
+		assert_true(light.enabled, "fracas de dia, mas acesas")
+		assert_eq(light.range_item_cull_mask & CityLights.STREET_LIGHT_MASK, 0, "não alcançam a rua")
+	assert_eq(cafe.exterior_view.light_mask, CityLights.STREET_LIGHT_MASK)
+	assert_eq(cafe.street_view.light_mask, CityLights.STREET_LIGHT_MASK)
+	var lamp := CityLights.lamp_light()
+	assert_true(lamp.range_item_cull_mask & CityLights.STREET_LIGHT_MASK != 0, "o poste continua iluminando a rua")
+	lamp.free()
+
+
+func test_room_lights_follow_an_expansion() -> void:
+	var parent := Node2D.new()
+	add_to_tree(parent)
+	CityLights.fit_room_lights(parent, Vector2i(8, 8))
+	var small := parent.get_child_count()
+	CityLights.fit_room_lights(parent, Vector2i(16, 16))
+	assert_true(parent.get_child_count() > small, "café maior, mais luzes")
 
 
 func test_buying_and_applying_survive_a_reopen() -> void:

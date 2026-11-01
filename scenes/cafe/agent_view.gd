@@ -122,6 +122,9 @@ func _init() -> void:
 	modulate.a = 0.0  # aparece aos poucos (advance)
 	_overlay.name = "Overlay"
 	_overlay.z_index = OVERLAY_Z
+	_overlay.add_to_group(NightTint.OVERLAY_GROUP)
+	_overlay.modulate = NightTint.ui_compensation
+	_overlay.light_mask = 0  # o balão não recebe as luzes do salão: a cor dele é sempre a mesma (DT-091)
 	_overlay.draw.connect(_draw_overlay)
 	add_child(_overlay)
 	_xray.name = "XRay"

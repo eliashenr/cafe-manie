@@ -18,14 +18,16 @@ O PO escolheu a opção A de duas imagens conceituais como **referência de acab
 | Perspectiva | isométrica 2:1, câmera ortográfica (60°, 0, 45°), piso de 128×64 |
 | Escala | 1 unidade do 3D = 1 piso; densidade 2 das texturas; parede de 152,38 px |
 | Encaixe | âncoras e alturas do `sprites.json` (tampo da mesa 45,33; do balcão 62,67), pelo contrato de `scenes/cafe/art_sprites.gd` |
-| Luz | a mesma para todos, em `tools/render3d/cena3d.py`; mudar a luz só de alguns itens faz eles destoarem |
-| Materiais | madeira com veio, tijolo fosco, reboco creme, metal escovado e couro fosco, sem brilho de plástico |
+| Luz | a mesma para todos no fim: a `rig="a"` de `tools/render3d/cena3d.py`. Durante a amostra, só os itens dela a usam, e os antigos destoam até serem refeitos (DT-091) |
+| Materiais | madeira envernizada, tijolo em relevo, reboco creme, aço escovado, ferro e couro, sem brilho de plástico |
 
 | Situação | O que é |
 |---|---|
 | **Referência A (o alvo)** | Madeira, tijolo, creme e metal; luz quente dentro e azulada fora; neon com moderação; materiais ricos e sóbrios |
-| **Implementado na amostra (aprovada pelo PO)** | Cadeira, mesa, balcão e fogão iniciais; piso e parede iniciais; assoalho e tijolinho da loja. Café maior na tela e interface sem botões repetidos |
-| **Pendente** | Os outros móveis, pisos, paredes, itens de parede e portas, que seguem com o acabamento anterior, mais saturado; o encosto das outras cadeiras (DT-090); a rua e a cidade à noite, ainda azul-lavanda, mais claras que na referência; panelas, comidas e retratos, ainda desenhados |
+| **1ª amostra (DT-090)** | O PO aceitou os ajustes funcionais, mas não o visual: ela trocava cores e texturas e mantinha a linguagem anterior |
+| **2ª amostra (DT-091, aprovada pelo PO como caminho)** | Modelos novos da cadeira, mesa, balcão e fogão iniciais; piso, parede e itens de parede do café inicial; assoalho, tijolinho e arandela; pilares e vigas; luz do salão; garçom e 3 clientes em nova proporção |
+| **Personagens (DT-092, aprovados pelo PO)** | Os 12 clientes na nova proporção; encostos das outras cadeiras corrigidos |
+| **Pendente** | Os outros móveis, pisos, paredes, itens de parede e portas; panelas, comidas e retratos, ainda desenhados |
 
 **Fica de fora nesta direção:** o que o conceito mostra e o jogo não tem. Os garçons continuam humanos e a loja continua na barra de baixo (DT-088).
 
@@ -186,4 +188,4 @@ Para cada captura, anotar em palavras (não copiar):
 
 ## Próximo passo
 
-O PO aprovou a amostra da referência A. O acabamento se estende ao resto do catálogo em etapas, cada uma com revisão visual, começando pelos encostos das outras cadeiras.
+O PO aprovou a linguagem da 2ª amostra e os personagens. O resto do catálogo vem por etapas, cada uma com revisão visual, depois da liberação do PO.

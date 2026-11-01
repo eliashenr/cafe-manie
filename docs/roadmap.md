@@ -132,9 +132,12 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **Marco 1, direção:** referência, implementado e pendente separados em [art-direction.md](art-direction.md).
 - [x] **Marco 2, amostra:** piso, parede, mesa, cadeira, balcão e fogão, com a mesma câmera e o mesmo estado para comparar.
 - [x] **Marco 3, interface:** café maior na tela, sem botões repetidos e popularidade com nome e unidade certos.
-- [x] **Aprovação visual do PO** da amostra.
-- [ ] Refazer os encostos das outras cadeiras (corrige quem fica escondido ao sentar de costas, sem mudar o visual delas).
-- [ ] Levar o acabamento ao resto do catálogo, por etapas, cada uma com revisão visual. O redesign só termina aqui.
+- [x] **Revisão da 1ª amostra:** os ajustes funcionais valem, mas o objetivo visual não foi atingido.
+- [x] **Marco 2, nova amostra** (DT-091, ramo `amostra-a-2`): formas, proporções, materiais, iluminação e personagem.
+- [x] **Revisão visual do PO** da nova amostra, no jogo: aprovada como caminho (01/11/2026).
+- [x] **Os outros 9 clientes e os encostos das outras cadeiras** (DT-092).
+- [x] **Revisão visual do PO** dessa etapa, no jogo: aprovada (01/11/2026).
+- [ ] Refazer o resto do catálogo, por etapas, cada uma com revisão visual. Depende da liberação do PO; a recomendação é começar pelas cadeiras e mesas.
 
 ## Balanceamento (23/10/2026)
 

@@ -33,8 +33,9 @@ SYSTEM = os.path.join(bpy.utils.user_resource("EXTENSIONS"), "user_default", "mp
 
 IMAGE_SIZE = (360, 420)
 
-PERSON_HEIGHT = 1.35        # altura da pessoa (unidades), a mesma da arte 2D
-SEAT_Z = 0.44               # altura do assento das cadeiras (23 + 3 px da arte 2D)
+PERSON_HEIGHT = 1.25        # direção A (DT-091): mais baixa que a pessoa antiga (1,35), perto do tamanho dos móveis
+HEAD_SCALE = 1.5            # cabeça maior, como na referência: o rosto e o humor leem de longe
+SEAT_Z = 0.385              # altura do assento da cadeira nova (amostra_a3d.SEAT_TOP, menos o afundar da almofada)
 SEAT_CENTER = (-0.5, 0.5)   # centro da cadeira do piso (-1, -1) do jogo, cujo vértice da frente é a origem
 SEAT_BACK = 0.1             # o quadril fica um pouco atrás do meio do assento
 THIGH_THICKNESS = 0.07      # do osso do quadril até a parte de baixo da coxa
@@ -272,6 +273,7 @@ def reset(rig):
         pose_bone.rotation_mode = "QUATERNION"
         pose_bone.rotation_quaternion = Quaternion()
         pose_bone.location = (0.0, 0.0, 0.0)
+    rig.pose.bones["head"].scale = (HEAD_SCALE, HEAD_SCALE, HEAD_SCALE)
 
 
 def relax_hands(rig, skip=()):
@@ -383,12 +385,13 @@ def shoot(name, anchor_point):
     return cena3d.shoot(name, anchor_point, WORK)
 
 
-def render_character(look, spec, anchors, extras):
+def render_character(look, spec, anchors, extras, proof=False):
+    """[proof]: só em pé e sentado, para conferir a proporção antes de fazer todos os quadros."""
     basemesh, rig = build(spec)
     aim_camera((0.0, 0.0, PERSON_HEIGHT * 0.48))
     tray_obj = make_tray() if spec.get("tray") else None
     for view, facing in FACING.items():
-        for pose in ["em_pe"] + [f"passo_{i}" for i in range(WALK_FRAMES)]:
+        for pose in ["em_pe"] + ([] if proof else [f"passo_{i}" for i in range(WALK_FRAMES)]):
             for tray in ((False, True) if tray_obj else (False,)):
                 drop = pose_walk(rig, int(pose[6:]), tray) if pose != "em_pe" else (pose_stand(rig, tray) or 0.0)
                 rig.rotation_euler = (0.0, 0.0, math.radians(facing))
@@ -451,16 +454,16 @@ def main():
     looks = [a for a in args if a in CHARACTERS] or list(CHARACTERS)
     os.makedirs(WORK, exist_ok=True)
     anchors, extras = {}, {}
-    for look in looks:
-        cena3d.setup(32 if draft else 96, IMAGE_SIZE)
-        render_character(look, CHARACTERS[look], anchors, extras)
-        print("PRONTO", look, flush=True)
 
     def tray(manifest):
         width = manifest["characters"]["tray_food"][2]
         for key, offset in extras.items():
             manifest["characters"][key] = offset + [width]
-    cena3d.update_manifest(anchors, tray)
+    for look in looks:
+        cena3d.setup(32 if draft else 64, IMAGE_SIZE, rig="a")
+        render_character(look, CHARACTERS[look], anchors, extras, "prova" in args)
+        cena3d.update_manifest(anchors, tray)   # a cada pessoa: se a próxima falhar, as fotos prontas não perdem a âncora
+        print("PRONTO", look, flush=True)
     print("PERSONAGENS OK", len(anchors), flush=True)
 
 
