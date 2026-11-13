@@ -69,16 +69,11 @@ Medidas que nunca mudam (o jogo depende delas): altura da parede (`S.WALL_Z`), t
 
 ### Estado do git
 
-- Ramo `amostra-a-2`. Último commit, já no GitHub: `9594a88` (enfeites e máquinas).
-- **Sem commit**, neste PC:
-  - `tools/render3d/superficies_a3d.py` (novo): todos os modelos da etapa;
-  - `tools/render3d/cena3d.py`: gravação atômica do `sprites.json`;
-  - `tools/revisao/` (novo): scripts de teste, foto, folha e revisão;
-  - `docs/revisao-geral.md` e `docs/continuar.md` (novos);
-  - cerca de 190 fotos em `art/sprites/` e o `sprites.json`: **fotos finais** (80 amostras) de 37 pisos, 14 paredes, 21 itens de parede, 12 portas (aberta e fechada) e o terraço.
-- `data/` e `core/` não mudaram. Confirme com `git status --short -- data core` (tem de vir vazio).
+- Ramo `amostra-a-2`. Último commit de arte, já no GitHub: `fe416d4` (pisos, paredes, itens de parede, portas e terraço, mais a revisão geral, este guia e `tools/revisao/`).
+- Nada pendente neste PC depois do envio de 13/11. `main` continua em `bb843d6`, sem o redesenho.
+- Há três logins no `gh`: `eliashenr` (o único permitido), `eliasboncourage` e `Chiebao`. Confira qual está ativo antes de qualquer envio.
 
-### Etapa em andamento: pisos, paredes, itens de parede, portas e terraço (DT-096)
+### Etapa concluída: pisos, paredes, itens de parede, portas e terraço (DT-096)
 
 | Passo | Situação |
 |---|---|
@@ -90,7 +85,7 @@ Medidas que nunca mudam (o jogo depende delas): altura da parede (`S.WALL_Z`), t
 | Testes com as fotos finais | Feito em 13/11: 739 aprovados, cena principal com saída 0 |
 | Conferência das fotos finais no jogo | Feita por fotos: todos os pisos e paredes de dia (lotes 0 a 4 ainda no rascunho; 5 a 9 já finais), o lote 0 à noite, os 27 itens de parede pendurados e as portas francesa e mexicana. **Falta:** as outras 10 portas no café, as portas fechadas e o terraço montado |
 | Documentos (status, roadmap, DT-096, art-direction) | Feitos em 13/11 |
-| Revisão do PO | **Aprovados em 13/11/2026.** Falta só o PO dizer "Pode enviar" para o commit e o envio |
+| Revisão do PO | **Aprovados em 13/11/2026** e enviados ao GitHub no commit `fe416d4` |
 
 ### Como conferir o que falta (comandos prontos)
 
@@ -154,7 +149,7 @@ Seguir o plano da seção 5 de [revisao-geral.md](revisao-geral.md), sempre com 
    - um grupo inteiro: `... -- pisos` (ou `paredes`, `itens`, `portas`, `terraco`)
 3. Rodar `tools/revisao/testes.ps1`, tirar as fotos de conferência e reabrir a revisão.
 
-### Quando o PO disser "Pode enviar"
+### Modelo de envio (usado em 13/11; repetir nas próximas etapas)
 
 ```bash
 gh auth status                       # a conta ativa tem de ser eliashenr
@@ -165,3 +160,7 @@ git -C C:/Projetos/cafe-manie push origin amostra-a-2
 ```
 
 Os documentos já registram a aprovação (feito em 13/11).
+
+### Próximo passo
+
+A etapa de arte está fechada. O próximo trabalho precisa da liberação do PO e segue a seção 5 de [revisao-geral.md](revisao-geral.md): primeiro o teste de sanidade da arte, e em paralelo o APK para o teste no celular. Os pontos fracos aceitos nesta etapa (TV, Piso Espelhado, Azulejo azul à noite) e a pergunta da "Janela com Cortina" continuam anotados acima.
