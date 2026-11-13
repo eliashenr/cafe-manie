@@ -5206,7 +5206,7 @@
   },
   "cerca_jardim_R": {
    "anchor": [
-    26.0,
+    23.0,
     85.38
    ]
   },
@@ -5248,14 +5248,14 @@
   },
   "parede_wall_mint_stripes_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_mint_stripes_L": {
    "anchor": [
     11.0,
-    376.38
+    374.38
    ]
   },
   "parede_wall_brick_R": {
@@ -5272,115 +5272,115 @@
   },
   "parede_wall_navy_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_navy_L": {
    "anchor": [
     11.0,
-    376.38
+    374.38
    ]
   },
   "parede_wall_70s_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_70s_L": {
    "anchor": [
     11.0,
-    376.38
+    374.38
    ]
   },
   "parede_wall_country_R": {
    "anchor": [
-    10.0,
-    312.38
+    22.0,
+    311.38
    ]
   },
   "parede_wall_country_L": {
    "anchor": [
-    11.0,
-    376.38
+    22.0,
+    375.38
    ]
   },
   "parede_wall_party_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_party_L": {
    "anchor": [
     11.0,
-    376.38
+    374.38
    ]
   },
   "parede_wall_diner_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_diner_L": {
    "anchor": [
     11.0,
-    376.38
+    374.38
    ]
   },
   "parede_wall_mexican_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_mexican_L": {
    "anchor": [
-    11.0,
-    376.38
+    9.0,
+    374.38
    ]
   },
   "parede_wall_80s_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_80s_L": {
    "anchor": [
     11.0,
-    376.38
+    374.38
    ]
   },
   "parede_wall_italian_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_italian_L": {
    "anchor": [
-    11.0,
-    376.38
+    10.0,
+    374.38
    ]
   },
   "parede_wall_japanese_R": {
    "anchor": [
-    11.0,
-    312.38
+    15.0,
+    313.38
    ]
   },
   "parede_wall_japanese_L": {
    "anchor": [
-    11.0,
-    376.38
+    10.0,
+    377.38
    ]
   },
   "parede_wall_french_R": {
    "anchor": [
-    12.0,
+    15.0,
     312.38
    ]
   },
@@ -5392,38 +5392,38 @@
   },
   "parede_wall_brazil_R": {
    "anchor": [
-    12.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_brazil_L": {
    "anchor": [
     11.0,
-    376.38
+    374.38
    ]
   },
   "parede_wall_2010s_R": {
    "anchor": [
-    10.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_2010s_L": {
    "anchor": [
-    11.0,
-    376.38
+    8.0,
+    374.38
    ]
   },
   "parede_wall_club_R": {
    "anchor": [
-    10.0,
-    312.38
+    15.0,
+    310.38
    ]
   },
   "parede_wall_club_L": {
    "anchor": [
-    11.0,
-    376.38
+    8.0,
+    374.38
    ]
   },
   "enfeite_janela_R": {
@@ -5488,188 +5488,188 @@
   },
   "enfeite_tv_R": {
    "anchor": [
-    -1.0,
-    233.38
+    3.0,
+    235.38
    ]
   },
   "enfeite_tv_L": {
    "anchor": [
-    -3.0,
-    298.38
+    -0.0,
+    300.38
    ]
   },
   "enfeite_radio_R": {
    "anchor": [
-    7.0,
-    197.38
+    18.0,
+    200.38
    ]
   },
   "enfeite_radio_L": {
    "anchor": [
-    -7.0,
-    263.38
+    -5.0,
+    266.38
    ]
   },
   "enfeite_janela_redonda_R": {
    "anchor": [
-    -6.0,
-    243.38
-   ]
-  },
-  "enfeite_janela_redonda_L": {
-   "anchor": [
-    -12.0,
-    307.38
-   ]
-  },
-  "enfeite_janelao_R": {
-   "anchor": [
     -2.0,
-    256.38
-   ]
-  },
-  "enfeite_janelao_L": {
-   "anchor": [
-    -17.0,
-    320.38
-   ]
-  },
-  "enfeite_lousa_R": {
-   "anchor": [
-    -4.0,
-    240.38
-   ]
-  },
-  "enfeite_lousa_L": {
-   "anchor": [
-    -6.0,
-    305.38
-   ]
-  },
-  "enfeite_neon_xicara_R": {
-   "anchor": [
-    -17.0,
-    248.38
-   ]
-  },
-  "enfeite_neon_xicara_L": {
-   "anchor": [
-    -18.0,
-    312.38
-   ]
-  },
-  "enfeite_espelho_R": {
-   "anchor": [
-    -12.0,
-    235.38
-   ]
-  },
-  "enfeite_espelho_L": {
-   "anchor": [
-    -17.0,
-    299.38
-   ]
-  },
-  "enfeite_planta_pendurada_R": {
-   "anchor": [
-    10.0,
-    255.38
-   ]
-  },
-  "enfeite_planta_pendurada_L": {
-   "anchor": [
-    -30.0,
-    319.38
-   ]
-  },
-  "enfeite_janela_diner_R": {
-   "anchor": [
-    -6.0,
-    243.38
-   ]
-  },
-  "enfeite_janela_diner_L": {
-   "anchor": [
-    -11.0,
-    307.38
-   ]
-  },
-  "enfeite_janela_neon_R": {
-   "anchor": [
-    -6.0,
-    243.38
-   ]
-  },
-  "enfeite_janela_neon_L": {
-   "anchor": [
-    -12.0,
-    307.38
-   ]
-  },
-  "enfeite_janela_country_R": {
-   "anchor": [
-    -4.0,
-    263.38
-   ]
-  },
-  "enfeite_janela_country_L": {
-   "anchor": [
-    -14.0,
-    328.38
-   ]
-  },
-  "enfeite_janela_festa_R": {
-   "anchor": [
-    -4.0,
-    263.38
-   ]
-  },
-  "enfeite_janela_festa_L": {
-   "anchor": [
-    -18.0,
-    328.38
-   ]
-  },
-  "enfeite_janelao_italiano_R": {
-   "anchor": [
-    -2.0,
-    259.38
-   ]
-  },
-  "enfeite_janelao_italiano_L": {
-   "anchor": [
-    -15.0,
-    323.38
-   ]
-  },
-  "enfeite_janela_shoji_R": {
-   "anchor": [
-    -6.0,
     245.38
    ]
   },
-  "enfeite_janela_shoji_L": {
+  "enfeite_janela_redonda_L": {
    "anchor": [
     -8.0,
     310.38
    ]
   },
-  "enfeite_janelao_mexicano_R": {
+  "enfeite_janelao_R": {
+   "anchor": [
+    3.0,
+    239.38
+   ]
+  },
+  "enfeite_janelao_L": {
+   "anchor": [
+    -10.0,
+    303.38
+   ]
+  },
+  "enfeite_lousa_R": {
+   "anchor": [
+    -1.0,
+    248.38
+   ]
+  },
+  "enfeite_lousa_L": {
+   "anchor": [
+    -4.0,
+    312.38
+   ]
+  },
+  "enfeite_neon_xicara_R": {
+   "anchor": [
+    -14.0,
+    252.38
+   ]
+  },
+  "enfeite_neon_xicara_L": {
+   "anchor": [
+    -15.0,
+    316.38
+   ]
+  },
+  "enfeite_espelho_R": {
+   "anchor": [
+    -12.0,
+    247.38
+   ]
+  },
+  "enfeite_espelho_L": {
+   "anchor": [
+    -16.0,
+    312.38
+   ]
+  },
+  "enfeite_planta_pendurada_R": {
+   "anchor": [
+    11.0,
+    272.38
+   ]
+  },
+  "enfeite_planta_pendurada_L": {
+   "anchor": [
+    -25.0,
+    336.38
+   ]
+  },
+  "enfeite_janela_diner_R": {
    "anchor": [
     -2.0,
-    257.38
+    243.38
+   ]
+  },
+  "enfeite_janela_diner_L": {
+   "anchor": [
+    -9.0,
+    308.38
+   ]
+  },
+  "enfeite_janela_neon_R": {
+   "anchor": [
+    -2.0,
+    246.38
+   ]
+  },
+  "enfeite_janela_neon_L": {
+   "anchor": [
+    -7.0,
+    311.38
+   ]
+  },
+  "enfeite_janela_country_R": {
+   "anchor": [
+    -2.0,
+    266.38
+   ]
+  },
+  "enfeite_janela_country_L": {
+   "anchor": [
+    -17.0,
+    331.38
+   ]
+  },
+  "enfeite_janela_festa_R": {
+   "anchor": [
+    -0.0,
+    267.38
+   ]
+  },
+  "enfeite_janela_festa_L": {
+   "anchor": [
+    -10.0,
+    331.38
+   ]
+  },
+  "enfeite_janelao_italiano_R": {
+   "anchor": [
+    3.0,
+    242.38
+   ]
+  },
+  "enfeite_janelao_italiano_L": {
+   "anchor": [
+    -0.0,
+    307.38
+   ]
+  },
+  "enfeite_janela_shoji_R": {
+   "anchor": [
+    -2.0,
+    246.38
+   ]
+  },
+  "enfeite_janela_shoji_L": {
+   "anchor": [
+    -7.0,
+    311.38
+   ]
+  },
+  "enfeite_janelao_mexicano_R": {
+   "anchor": [
+    3.0,
+    240.38
    ]
   },
   "enfeite_janelao_mexicano_L": {
    "anchor": [
-    -15.0,
-    321.38
+    -12.0,
+    305.38
    ]
   },
   "enfeite_janela_groovy_R": {
    "anchor": [
-    -6.0,
-    243.38
+    -2.0,
+    242.38
    ]
   },
   "enfeite_janela_groovy_L": {
@@ -5680,50 +5680,50 @@
   },
   "enfeite_janela_arcade_R": {
    "anchor": [
-    -6.0,
-    243.38
+    -2.0,
+    246.38
    ]
   },
   "enfeite_janela_arcade_L": {
    "anchor": [
-    -12.0,
-    307.38
+    -7.0,
+    311.38
    ]
   },
   "enfeite_janelao_brasileiro_R": {
    "anchor": [
-    -2.0,
-    258.38
+    3.0,
+    241.38
    ]
   },
   "enfeite_janelao_brasileiro_L": {
    "anchor": [
-    -15.0,
-    323.38
+    -0.0,
+    307.38
    ]
   },
   "enfeite_janela_industrial_R": {
    "anchor": [
-    -4.0,
-    263.38
+    6.0,
+    273.38
    ]
   },
   "enfeite_janela_industrial_L": {
    "anchor": [
-    -12.0,
-    328.38
+    -5.0,
+    338.38
    ]
   },
   "enfeite_janelao_frances_R": {
    "anchor": [
-    -2.0,
-    260.38
+    9.0,
+    243.38
    ]
   },
   "enfeite_janelao_frances_L": {
    "anchor": [
-    -15.0,
-    324.38
+    -11.0,
+    308.38
    ]
   },
   "enfeite_arandela_R": {
@@ -5740,8 +5740,8 @@
   },
   "enfeite_painel_digital_R": {
    "anchor": [
-    -0.0,
-    262.38
+    1.0,
+    263.38
    ]
   },
   "enfeite_painel_digital_L": {
@@ -5776,290 +5776,290 @@
   },
   "enfeite_porta_frances_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_frances_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_frances_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_frances_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_japones_R": {
    "anchor": [
-    50.0,
-    257.38
+    56.0,
+    276.38
    ]
   },
   "enfeite_porta_japones_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    340.38
    ]
   },
   "enfeite_porta_japones_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    56.0,
+    276.38
    ]
   },
   "enfeite_porta_japones_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    340.38
    ]
   },
   "enfeite_porta_italiano_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_italiano_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_italiano_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_italiano_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_anos70_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_anos70_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_anos70_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_anos70_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_americano_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_americano_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_americano_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_americano_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_anos2010_R": {
    "anchor": [
-    50.0,
-    257.38
+    66.0,
+    288.38
    ]
   },
   "enfeite_porta_anos2010_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    352.38
    ]
   },
   "enfeite_porta_anos2010_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    66.0,
+    288.38
    ]
   },
   "enfeite_porta_anos2010_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    352.38
    ]
   },
   "enfeite_porta_festa_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_festa_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_festa_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_festa_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_anos80_R": {
    "anchor": [
-    50.0,
-    257.38
+    67.0,
+    268.38
    ]
   },
   "enfeite_porta_anos80_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_anos80_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    67.0,
+    268.38
    ]
   },
   "enfeite_porta_anos80_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_balada_R": {
    "anchor": [
-    50.0,
-    257.38
+    41.0,
+    268.38
    ]
   },
   "enfeite_porta_balada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_balada_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    41.0,
+    268.38
    ]
   },
   "enfeite_porta_balada_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_brasileiro_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_brasileiro_L": {
    "anchor": [
-    12.0,
-    321.38
+    32.0,
+    332.38
    ]
   },
   "enfeite_porta_brasileiro_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    58.0,
+    268.38
    ]
   },
   "enfeite_porta_brasileiro_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    32.0,
+    332.38
    ]
   },
   "enfeite_porta_country_R": {
    "anchor": [
-    50.0,
-    257.38
+    67.0,
+    268.38
    ]
   },
   "enfeite_porta_country_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_country_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    67.0,
+    268.38
    ]
   },
   "enfeite_porta_country_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    18.0,
+    332.38
    ]
   },
   "enfeite_porta_mexicano_R": {
    "anchor": [
-    50.0,
-    257.38
+    56.0,
+    276.38
    ]
   },
   "enfeite_porta_mexicano_L": {
    "anchor": [
-    12.0,
-    321.38
+    20.0,
+    340.38
    ]
   },
   "enfeite_porta_mexicano_fechada_R": {
    "anchor": [
-    50.0,
-    257.38
+    56.0,
+    276.38
    ]
   },
   "enfeite_porta_mexicano_fechada_L": {
    "anchor": [
-    12.0,
-    321.38
+    20.0,
+    340.38
    ]
   },
   "gramado": {

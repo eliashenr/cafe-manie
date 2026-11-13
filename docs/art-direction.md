@@ -30,7 +30,8 @@ O PO escolheu a opção A de duas imagens conceituais como **referência de acab
 | **Cadeiras e mesas (DT-093, aprovadas pelo PO)** | 24 cadeiras e banquetas e 25 mesas com modelo novo, na proporção e na luz da amostra, mantendo o caráter de cada coleção |
 | **Fogões e balcões (DT-094, aprovados pelo PO)** | 13 fogões e 12 balcões com modelo novo, com a panela, o forno aceso e os pratos nos mesmos lugares |
 | **Enfeites e máquinas (DT-095, aprovados pelo PO)** | 52 itens com modelo novo, incluindo as máquinas de bebida, o trem, o caldeirão e o balcão de entregas |
-| **Pendente** | Pisos, paredes, itens de parede e portas; panelas, comidas e retratos, ainda desenhados |
+| **Pisos, paredes, itens de parede, portas e terraço (DT-096, aprovados pelo PO)** | 37 pisos e 14 paredes com texturas sem emenda; 21 itens de parede, 12 portas e o terraço com modelo novo |
+| **Pendente** | Panelas, comidas e retratos, ainda desenhados; a cidade com a luz antiga |
 
 **Fica de fora nesta direção:** o que o conceito mostra e o jogo não tem. Os garçons continuam humanos e a loja continua na barra de baixo (DT-088).
 

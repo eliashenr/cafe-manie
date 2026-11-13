@@ -7,7 +7,9 @@ Instruções para qualquer sessão do Claude (Claude Code ou chat) que trabalhe 
 - [docs/master-prompt.md](docs/master-prompt.md) é o contrato principal do projeto. Siga-o.
 - O dono do repositório é o **Product Owner**. Ele define visão e prioridades; você define a engenharia (seção 103).
 - Comandos do PO (seções 162–167): **CONTINUE**, **TESTE**, **FAÇA QA**, **FAÇA CODE REVIEW**, **FAÇA BALANCEAMENTO**, **PREPARE RELEASE**.
-- Em **CONTINUE**, comece lendo [docs/status.md](docs/status.md) e [docs/roadmap.md](docs/roadmap.md). Não recomece o projeto.
+- Em **CONTINUE**, comece lendo [docs/continuar.md](docs/continuar.md) (onde o trabalho parou e os comandos prontos), depois [docs/status.md](docs/status.md) e [docs/roadmap.md](docs/roadmap.md). Não recomece o projeto.
+- Ao terminar uma sessão, reescreva a seção "Onde paramos" de [docs/continuar.md](docs/continuar.md).
+- O plano geral (código, arte, jogabilidade e processo) está em [docs/revisao-geral.md](docs/revisao-geral.md).
 - **Primeira sessão no PC do PO?** Leia antes [docs/passagem.md](docs/passagem.md): o que veio da conversa na nuvem e o que muda no Windows.
 - O PO não usa terminal. Toda instrução para ele explica o que cada passo faz e por quê.
 

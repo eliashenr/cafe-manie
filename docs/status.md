@@ -1,8 +1,20 @@
 # Status
 
-## CAFÉ MANIE — STATUS (01/11/2026)
+## CAFÉ MANIE — STATUS (13/11/2026)
 
 🟢 **CONCLUÍDO**
+
+**Referência A: pisos, paredes, itens de parede, portas e terraço, aprovados pelo PO** (DT-096, no ramo `amostra-a-2`). Nenhum id, preço, nível ou save mudou.
+
+- **Material novo em 37 pisos e 14 paredes**, com texturas que continuam de um piso para o outro sem emenda: espinha de peixe, parquê, granilite, calçadão de pedrinhas, tatame, pista de LED, mármores, ladrilho hidráulico e Talavera.
+- **21 itens de parede e 12 portas com modelo novo:** janelas redondas, janelões com floreira e veneziana, espelho, lousa, neon, rádio, TV; portas com toldo, telhadinho, neon ou alpendre, todas com o mesmo vão e a mesma plaquinha.
+- **Terraço** (deque e cerca) na mesma luz do salão.
+- **Testes:** 739 passaram e a cena principal subiu sem erros, com dados separados do save do PO.
+- **Conferido no jogo, por fotos:** todos os pisos e paredes de dia, um lote à noite, os itens de parede pendurados e duas portas.
+- **Não conferido:** as outras 10 portas colocadas no café (só em folha), as portas fechadas e o terraço montado.
+- **Pontos fracos conhecidos:** a imagem da TV é pouco legível; o Piso Espelhado parece um vidro escuro; o Azulejo azul fica acinzentado à noite.
+
+**Revisão geral do projeto** ([revisao-geral.md](revisao-geral.md), 11/11/2026): achados de código, arte e jogabilidade, e o plano em ordem. O guia para retomar o trabalho está em [continuar.md](continuar.md).
 
 **Referência A: enfeites e máquinas, aprovados pelo PO** (DT-095, no ramo `amostra-a-2`). Nenhum id, preço, nível, pegada ou save mudou.
 

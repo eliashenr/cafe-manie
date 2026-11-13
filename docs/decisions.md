@@ -4,6 +4,26 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-096 — Referência A: pisos, paredes, itens de parede, portas e terraço (ramo amostra-a-2, aprovados pelo PO em 13/11/2026)
+
+**Problema:** pisos, paredes, itens de parede e portas eram o que mais destoava dos móveis novos. Os padrões antigos vinham de texturas do Blender, que só fecham sem emenda em desenhos geométricos. O PO liberou esta etapa.
+
+**Decisão:**
+- **Texturas pintadas por código, com período exato de uma célula** (`tools/render3d/superficies_a3d.py`). O ruído é filtrado na frequência e dá a volta na borda, então pedra, granilite e calçada portuguesa continuam no piso vizinho sem emenda.
+- **Variações que casam:** nos pisos com mais de uma foto, o que cruza a borda da célula é igual em todas as variações. Só o miolo muda.
+- **Paredes com volume:** viga e rodapé iguais aos da amostra em todos os estilos; toras, lambri de ripas, boiserie e treliça do shoji são peças, e não desenho.
+- **Portas com o mesmo vão e a mesma plaquinha** da porta clássica aprovada; muda o que dá caráter (toldo, telhadinho, neon, alpendre).
+- **O terraço entrou junto**, por decisão da engenharia, para não ficar com a luz antiga ao lado do salão.
+- **Itens da amostra não foram refeitos:** piso bege, assoalho, parede creme, tijolinho, janela, quadros, prateleira, relógio, arandela e porta clássica.
+
+**Defeitos achados e corrigidos no caminho:**
+- **Pisos pretos:** definir o espaço de cor da imagem depois de gravar os pixels faz o Blender recriar a imagem vazia. O espaço de cor agora vem antes.
+- **Manifesto lido pela metade:** dois processos do Blender ao mesmo tempo disputavam o `sprites.json`. A gravação passou a ser atômica (`cena3d.update_manifest`), e a regra é um processo por vez.
+
+**Consequência:** ids, preços, níveis, economia e saves não mudaram; `data/` e `core/` ficaram intactos. Falta um teste automático que reprove foto vazia ou preta (ver [revisao-geral.md](revisao-geral.md), achado C4).
+
+---
+
 ## DT-095 — Referência A: enfeites e máquinas em modelos novos (ramo amostra-a-2, aprovados pelo PO em 01/11/2026)
 
 **Problema:** os enfeites já eram 3D, mas com peças simples e na luz antiga. Trocar só a luz repetiria o erro da primeira amostra. O PO liberou esta etapa.

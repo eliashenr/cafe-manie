@@ -143,7 +143,10 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **Revisão visual do PO** dos fogões e balcões, no jogo: aprovados (01/11/2026).
 - [x] **Enfeites e máquinas da loja** (DT-095, liberados pelo PO em 01/11/2026).
 - [x] **Revisão visual do PO** dos enfeites e máquinas, no jogo: aprovados (01/11/2026).
-- [ ] Refazer o resto do catálogo (pisos, paredes, itens de parede e portas), por etapas, cada uma com revisão visual e liberação do PO.
+- [x] **Pisos, paredes, itens de parede, portas e terraço** (DT-096, liberados pelo PO em 01/11/2026).
+- [x] **Revisão visual do PO** dos pisos, paredes, itens de parede e portas, no jogo: aprovados (13/11/2026).
+- [ ] Panelas, pratos e retratos, por etapas, cada uma com revisão visual e liberação do PO.
+- [ ] Plano da [revisão geral](revisao-geral.md) de 11/11/2026 (seção 5), na ordem combinada com o PO.
 
 ## Balanceamento (23/10/2026)
 

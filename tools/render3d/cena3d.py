@@ -166,7 +166,9 @@ def crop_into_game(path, name, anchor):
 
 
 def update_manifest(anchors, change=None):
-    """Grava as âncoras novas no sprites.json (e o que [change] mudar no manifesto), com fim de linha LF."""
+    """Grava as âncoras novas no sprites.json (e o que [change] mudar no manifesto), com fim de linha LF.
+    A gravação é atômica (arquivo temporário e troca), para o jogo ou outro processo nunca ler o arquivo pela metade.
+    Mesmo assim, rode um processo do Blender por vez: dois ao mesmo tempo podem perder âncoras um do outro."""
     path = os.path.join(SPRITES, "sprites.json")
     with open(path, encoding="utf-8") as source:
         manifest = json.load(source)
@@ -174,6 +176,8 @@ def update_manifest(anchors, change=None):
         manifest["sprites"].setdefault(name, {})["anchor"] = anchor
     if change is not None:
         change(manifest)
-    with open(path, "w", encoding="utf-8", newline="\n") as out:
+    temp = path + ".tmp"
+    with open(temp, "w", encoding="utf-8", newline="\n") as out:
         json.dump(manifest, out, ensure_ascii=False, indent=1)
         out.write("\n")
+    os.replace(temp, path)
