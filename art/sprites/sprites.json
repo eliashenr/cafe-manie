@@ -2163,236 +2163,236 @@
   },
   "panela_coffee": {
    "anchor": [
-    46.67,
-    305.67
+    31.0,
+    257.22
    ]
   },
   "panela_cheese_bread": {
    "anchor": [
-    73.67,
-    278.67
+    71.0,
+    230.22
    ]
   },
   "panela_toasted_sandwich": {
    "anchor": [
-    78.67,
-    265.67
+    71.0,
+    230.22
    ]
   },
   "panela_carrot_cake": {
    "anchor": [
-    37.67,
-    202.67
+    55.0,
+    244.22
    ]
   },
   "panela_coxinha": {
    "anchor": [
-    41.67,
-    278.67
+    64.0,
+    256.22
    ]
   },
   "panela_lasagna": {
    "anchor": [
-    60.67,
-    273.67
+    65.0,
+    242.22
    ]
   },
   "panela_brigadeiro": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_pastel": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_pizza": {
    "anchor": [
-    39.67,
-    262.67
+    55.0,
+    225.22
    ]
   },
   "panela_pancakes": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_feijoada": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_sushi": {
    "anchor": [
-    60.67,
-    194.67
+    68.0,
+    229.22
    ]
   },
   "panela_cheesecake": {
    "anchor": [
-    39.67,
-    262.67
+    55.0,
+    232.22
    ]
   },
   "panela_moqueca": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_burger": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_croissant": {
    "anchor": [
-    62.67,
-    268.67
+    65.0,
+    242.22
    ]
   },
   "panela_escondidinho": {
    "anchor": [
-    62.67,
-    268.67
+    65.0,
+    242.22
    ]
   },
   "panela_tacos": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_acai": {
    "anchor": [
-    39.67,
-    262.67
+    55.0,
+    230.22
    ]
   },
   "panela_ramen": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_pudding": {
    "anchor": [
-    39.67,
-    262.67
+    55.0,
+    236.22
    ]
   },
   "panela_bobo": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_waffles": {
    "anchor": [
-    62.67,
-    268.67
+    65.0,
+    242.22
    ]
   },
   "panela_paella": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_lemon_pie": {
    "anchor": [
-    39.67,
-    262.67
+    55.0,
+    230.22
    ]
   },
   "panela_picanha": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_eggs_benedict": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_curry": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_black_forest": {
    "anchor": [
-    39.67,
-    262.67
+    55.0,
+    235.22
    ]
   },
   "panela_barbecue": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_lobster": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_mochi": {
    "anchor": [
-    60.67,
-    194.67
+    68.0,
+    229.22
    ]
   },
   "panela_misso_soup": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_yakisoba": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_tempura": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_petit_gateau": {
    "anchor": [
-    62.67,
-    268.67
+    65.0,
+    242.22
    ]
   },
   "panela_caldo_verde": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "panela_mushroom_risotto": {
    "anchor": [
-    41.67,
-    262.67
+    57.0,
+    230.22
    ]
   },
   "panela_fondue": {
    "anchor": [
-    67.67,
-    289.67
+    64.0,
+    256.22
    ]
   },
   "fogao_aceso_r0": {
@@ -4612,236 +4612,236 @@
   },
   "prato_coffee": {
    "anchor": [
-    46.8,
-    57.48
+    50.0,
+    26.0
    ]
   },
   "prato_cheese_bread": {
    "anchor": [
-    52.8,
-    25.48
+    53.0,
+    23.0
    ]
   },
   "prato_toasted_sandwich": {
    "anchor": [
-    55.8,
-    47.48
+    53.0,
+    13.0
    ]
   },
   "prato_carrot_cake": {
    "anchor": [
-    52.8,
-    36.48
+    53.0,
+    28.0
    ]
   },
   "prato_coxinha": {
    "anchor": [
-    52.8,
-    37.48
+    53.0,
+    26.0
    ]
   },
   "prato_lasagna": {
    "anchor": [
-    52.8,
-    62.48
+    53.0,
+    25.0
    ]
   },
   "prato_brigadeiro": {
    "anchor": [
-    52.8,
-    20.48
+    53.0,
+    22.0
    ]
   },
   "prato_pastel": {
    "anchor": [
-    52.8,
-    3.48
+    53.0,
+    10.0
    ]
   },
   "prato_pizza": {
    "anchor": [
-    52.8,
-    5.48
+    59.0,
+    9.0
    ]
   },
   "prato_pancakes": {
    "anchor": [
-    52.8,
-    18.48
+    53.0,
+    18.0
    ]
   },
   "prato_feijoada": {
    "anchor": [
-    52.8,
-    55.48
+    53.0,
+    23.0
    ]
   },
   "prato_sushi": {
    "anchor": [
-    52.8,
-    5.48
+    65.0,
+    18.0
    ]
   },
   "prato_cheesecake": {
    "anchor": [
-    52.8,
-    15.48
+    53.0,
+    22.0
    ]
   },
   "prato_moqueca": {
    "anchor": [
-    57.8,
-    55.48
+    61.0,
+    27.0
    ]
   },
   "prato_burger": {
    "anchor": [
-    52.8,
-    23.48
+    53.0,
+    26.0
    ]
   },
   "prato_croissant": {
    "anchor": [
-    52.8,
-    25.48
+    53.0,
+    10.0
    ]
   },
   "prato_escondidinho": {
    "anchor": [
-    52.8,
-    61.48
+    58.0,
+    26.0
    ]
   },
   "prato_tacos": {
    "anchor": [
-    52.8,
-    16.48
+    53.0,
+    30.0
    ]
   },
   "prato_acai": {
    "anchor": [
-    41.8,
-    32.48
+    48.0,
+    29.0
    ]
   },
   "prato_ramen": {
    "anchor": [
-    41.8,
-    55.48
+    50.0,
+    32.0
    ]
   },
   "prato_pudding": {
    "anchor": [
-    52.8,
-    28.48
+    53.0,
+    20.0
    ]
   },
   "prato_bobo": {
    "anchor": [
-    52.8,
-    53.48
+    53.0,
+    21.0
    ]
   },
   "prato_waffles": {
    "anchor": [
-    52.8,
-    12.48
+    53.0,
+    10.0
    ]
   },
   "prato_paella": {
    "anchor": [
-    63.8,
-    16.48
+    68.0,
+    17.0
    ]
   },
   "prato_lemon_pie": {
    "anchor": [
-    52.8,
-    31.48
+    53.0,
+    31.0
    ]
   },
   "prato_picanha": {
    "anchor": [
-    52.8,
-    23.48
+    68.0,
+    24.0
    ]
   },
   "prato_eggs_benedict": {
    "anchor": [
-    52.8,
-    2.48
+    53.0,
+    11.0
    ]
   },
   "prato_curry": {
    "anchor": [
-    52.8,
-    39.48
+    53.0,
+    10.0
    ]
   },
   "prato_black_forest": {
    "anchor": [
-    52.8,
-    42.48
+    53.0,
+    41.0
    ]
   },
   "prato_barbecue": {
    "anchor": [
-    52.8,
-    12.48
+    68.0,
+    18.0
    ]
   },
   "prato_lobster": {
    "anchor": [
-    52.8,
-    38.48
+    56.0,
+    10.0
    ]
   },
   "prato_mochi": {
    "anchor": [
-    52.8,
-    16.48
+    53.0,
+    10.0
    ]
   },
   "prato_misso_soup": {
    "anchor": [
-    39.8,
-    53.48
+    44.0,
+    27.0
    ]
   },
   "prato_yakisoba": {
    "anchor": [
-    52.8,
-    39.48
+    53.0,
+    10.0
    ]
   },
   "prato_tempura": {
    "anchor": [
-    52.8,
-    12.48
+    53.0,
+    38.0
    ]
   },
   "prato_petit_gateau": {
    "anchor": [
-    52.8,
-    24.48
+    53.0,
+    17.0
    ]
   },
   "prato_caldo_verde": {
    "anchor": [
-    39.8,
-    58.48
+    46.0,
+    25.0
    ]
   },
   "prato_mushroom_risotto": {
    "anchor": [
-    52.8,
-    -6.52
+    53.0,
+    10.0
    ]
   },
   "prato_fondue": {
    "anchor": [
-    40.8,
-    53.48
+    59.0,
+    78.0
    ]
   },
   "humor_feliz": {
@@ -6216,8 +6216,8 @@
   },
   "icone_chef": {
    "anchor": [
-    58.0,
-    54.0
+    44.54,
+    61.24
    ]
   },
   "icone_cidade": {
@@ -6432,213 +6432,248 @@
   },
   "avatar_cabeca_clara_curto_castanho": {
    "anchor": [
-    50.0,
-    53.0
-   ]
+    107.51,
+    138.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_clara_rabo_preto": {
    "anchor": [
-    50.0,
-    47.0
-   ]
+    95.51,
+    131.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_clara_chanel_ruivo": {
    "anchor": [
-    51.0,
-    52.0
-   ]
+    113.51,
+    132.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_clara_coque_loiro": {
    "anchor": [
-    50.0,
-    77.0
-   ]
+    95.51,
+    239.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_clara_topete_azul": {
    "anchor": [
-    50.0,
-    74.0
-   ]
+    116.51,
+    201.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_clara_longo_rosa": {
    "anchor": [
-    50.0,
-    47.0
-   ]
+    114.51,
+    133.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_morena_clara_curto_castanho": {
    "anchor": [
-    50.0,
-    53.0
-   ]
+    107.51,
+    138.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_morena_clara_rabo_preto": {
    "anchor": [
-    50.0,
-    47.0
-   ]
+    95.51,
+    131.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_morena_clara_chanel_ruivo": {
    "anchor": [
-    51.0,
-    52.0
-   ]
+    113.51,
+    132.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_morena_clara_coque_loiro": {
    "anchor": [
-    50.0,
-    77.0
-   ]
+    95.51,
+    239.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_morena_clara_topete_azul": {
    "anchor": [
-    50.0,
-    74.0
-   ]
+    116.51,
+    201.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_morena_clara_longo_rosa": {
    "anchor": [
-    50.0,
-    47.0
-   ]
+    114.51,
+    133.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_parda_curto_castanho": {
    "anchor": [
-    50.0,
-    53.0
-   ]
+    107.51,
+    138.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_parda_rabo_preto": {
    "anchor": [
-    50.0,
-    47.0
-   ]
+    95.51,
+    131.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_parda_chanel_ruivo": {
    "anchor": [
-    51.0,
-    52.0
-   ]
+    113.51,
+    132.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_parda_coque_loiro": {
    "anchor": [
-    50.0,
-    77.0
-   ]
+    95.51,
+    239.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_parda_topete_azul": {
    "anchor": [
-    50.0,
-    74.0
-   ]
+    116.51,
+    201.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_parda_longo_rosa": {
    "anchor": [
-    50.0,
-    47.0
-   ]
+    114.51,
+    133.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_negra_curto_castanho": {
    "anchor": [
-    50.0,
-    53.0
-   ]
+    107.51,
+    138.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_negra_rabo_preto": {
    "anchor": [
-    50.0,
-    47.0
-   ]
+    95.51,
+    131.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_negra_chanel_ruivo": {
    "anchor": [
-    51.0,
-    52.0
-   ]
+    113.51,
+    132.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_negra_coque_loiro": {
    "anchor": [
-    50.0,
-    77.0
-   ]
+    95.51,
+    239.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_negra_topete_azul": {
    "anchor": [
-    50.0,
-    74.0
-   ]
+    116.51,
+    201.96
+   ],
+   "density": 4.0
   },
   "avatar_cabeca_negra_longo_rosa": {
    "anchor": [
-    50.0,
-    47.0
-   ]
+    114.51,
+    133.96
+   ],
+   "density": 4.0
   },
   "avatar_chapeu_toque": {
    "anchor": [
-    43.0,
-    85.0
-   ]
+    145.51,
+    313.96
+   ],
+   "density": 4.0
   },
   "avatar_chapeu_toque_alto": {
    "anchor": [
-    43.0,
-    119.0
-   ]
+    123.51,
+    393.96
+   ],
+   "density": 4.0
   },
   "avatar_chapeu_boina": {
    "anchor": [
-    50.0,
-    70.0
-   ]
+    124.51,
+    200.96
+   ],
+   "density": 4.0
   },
   "avatar_chapeu_bandana": {
    "anchor": [
-    43.0,
-    21.0
-   ]
+    119.51,
+    174.96
+   ],
+   "density": 4.0
   },
   "avatar_chapeu_coroa": {
    "anchor": [
-    45.0,
-    73.0
-   ]
+    128.51,
+    260.96
+   ],
+   "density": 4.0
   },
   "avatar_roupa_branca": {
    "anchor": [
-    101.0,
-    -43.0
-   ]
+    225.51,
+    -141.04
+   ],
+   "density": 4.0
   },
   "avatar_roupa_preta": {
    "anchor": [
-    101.0,
-    -43.0
-   ]
+    225.51,
+    -141.04
+   ],
+   "density": 4.0
   },
   "avatar_roupa_vermelha": {
    "anchor": [
-    101.0,
-    -43.0
-   ]
+    225.51,
+    -141.04
+   ],
+   "density": 4.0
   },
   "avatar_roupa_azul": {
    "anchor": [
-    101.0,
-    -43.0
-   ]
+    225.51,
+    -141.04
+   ],
+   "density": 4.0
   },
   "avatar_roupa_rosa": {
    "anchor": [
-    101.0,
-    -43.0
-   ]
+    225.51,
+    -141.04
+   ],
+   "density": 4.0
   },
   "avatar_roupa_dourada": {
    "anchor": [
-    101.0,
-    -43.0
-   ]
+    225.51,
+    -141.04
+   ],
+   "density": 4.0
   },
   "fita_missoes": {
    "anchor": [

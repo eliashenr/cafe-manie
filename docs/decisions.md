@@ -4,6 +4,39 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-098 — Pratos e panelas em 3D (ramo amostra-a-2, aprovados pelo PO em 16/11/2026)
+
+**Problema:** os pratos e as panelas eram desenhados a traço, em cima de mesas e fogões realistas. Era o defeito visual mais visível depois dos pisos (achado G1 da [revisão geral](revisao-geral.md)).
+
+**Decisão:**
+- **Um modelo por receita** em `tools/render3d/pratos_a3d.py`: 39 pratos prontos e 39 panelas, com os mesmos nomes de foto (`prato_<receita>`, `panela_<receita>`). Receitas, preços e save não mudaram.
+- **Pratos montados com peças simples** (louça torneada, fatias em camadas, tigelas, tábuas) e um material de comida com manchas de tom e relevo, para não parecer plástico.
+- **Panelas por tipo:** panela funda, frigideira, travessa, forma, assadeira, tábua e a cafeteira italiana, cada uma com a comida da receita dentro.
+- **Encaixe igual ao da arte antiga:** o prato fica 12 px de mundo abaixo da âncora, porque a mesma foto vai para mesa, balcão, bandeja e balões; a panela fica no meio do tampo do fogão, com a âncora no vértice da frente.
+- **Sem sombra no chão:** o chão que recebe a sombra fica fora da foto, mas continua rebatendo luz. Escondê-lo de vez deixava a comida escura.
+- **O vapor não vem mais desenhado na panela:** o jogo já solta o vapor por partículas.
+
+**Consequência:** bebidas, frutas, temperos e os ícones da interface continuam desenhados a traço.
+
+---
+
+## DT-097 — Retrato do chef em 3D, por camadas (ramo amostra-a-2, aprovado pelo PO em 16/11/2026)
+
+**Problema:** o PO apontou que o personagem da tela inicial estava "xoxo e feio": o retrato do chef (canto de cima e botão Chef) ainda era o desenho a traço, ao lado de um salão realista.
+
+**Decisão:**
+- **A mesma pessoa dos clientes e do garçom** (MakeHuman, no Blender), fotografada de frente em `tools/render3d/retratos_a3d.py`.
+- **As mesmas três camadas do jogo** (roupa, cabeça com cabelo, chapéu), com os mesmos nomes de foto: nenhuma peça do avatar, preço ou save mudou.
+- **Um rosto só nas 4 peles:** o chapéu é uma foto única e precisa servir em todas as cabeças. Muda só a pele.
+- **Encaixe entre camadas:** na camada da cabeça, a roupa entra invisível, e o pescoço acaba exatamente na borda do colarinho. O cabelo que cai por trás do corpo some atrás dele.
+- **O script mede a pessoa pronta** antes de posicionar tudo: as formas do MakeHuman (idade, gênero) mudam a altura, e os vértices do objeto guardam só a forma básica. Sem isso, o chapéu ficava flutuando.
+- **Densidade por foto:** `scenes/cafe/art_sprites.gd` aceita `density` em cada foto do `sprites.json`. Os retratos têm 4 pixels por unidade (as outras fotos têm 2), porque aparecem grandes na janela do avatar.
+- **Ícone do botão Chef** refeito com o chef inicial (`icone_chef`).
+
+**Consequência:** o ícone do botão Garçom e os retratos do crítico, dos vizinhos e da bruxa continuam desenhados a traço.
+
+---
+
 ## DT-096 — Referência A: pisos, paredes, itens de parede, portas e terraço (ramo amostra-a-2, aprovados pelo PO em 13/11/2026)
 
 **Problema:** pisos, paredes, itens de parede e portas eram o que mais destoava dos móveis novos. Os padrões antigos vinham de texturas do Blender, que só fecham sem emenda em desenhos geométricos. O PO liberou esta etapa.

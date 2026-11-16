@@ -177,6 +177,8 @@ godot --headless --export-release "Android" build/android/CafeManie.apk
 
 Para conferir o conteúdo, descompacte a pasta `assets/` do APK e rode `godot --headless --path <pasta>/assets -- --smoke-check`.
 
+**Neste PC (Windows), desde 14/11/2026:** o Java 17, o kit do Android e os modelos de exportação da Godot ficam em `C:\AndroidTools`, e a chave de teste em `C:\AndroidTools\chaves` (fora do repositório). O comando completo, já com as variáveis, está em [docs/continuar.md](docs/continuar.md). O `--smoke-check` do conteúdo do APK não funciona com o motor de exportação do Windows; teste o jogo a partir do projeto.
+
 ## Documentação
 
 | Documento | Conteúdo |

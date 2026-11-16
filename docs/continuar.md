@@ -70,7 +70,8 @@ Medidas que nunca mudam (o jogo depende delas): altura da parede (`S.WALL_Z`), t
 ### Estado do git
 
 - Ramo `amostra-a-2`. Último commit de arte, já no GitHub: `fe416d4` (pisos, paredes, itens de parede, portas e terraço, mais a revisão geral, este guia e `tools/revisao/`).
-- Nada pendente neste PC depois do envio de 13/11. `main` continua em `bb843d6`, sem o redesenho.
+- `main` continua em `bb843d6`, sem o redesenho.
+- A rodada de 14/11 (retrato do chef, pratos e panelas) foi **enviada em 16/11/2026** no commit `feat: reference A chef portrait, dishes and cookware in 3D`, logo depois de `78e2e33`. Confira com `git log --oneline -3`; `git status --short` tem de vir vazio.
 - Há três logins no `gh`: `eliashenr` (o único permitido), `eliasboncourage` e `Chiebao`. Confira qual está ativo antes de qualquer envio.
 
 ### Etapa concluída: pisos, paredes, itens de parede, portas e terraço (DT-096)
@@ -164,3 +165,96 @@ Os documentos já registram a aprovação (feito em 13/11).
 ### Próximo passo
 
 A etapa de arte está fechada. O próximo trabalho precisa da liberação do PO e segue a seção 5 de [revisao-geral.md](revisao-geral.md): primeiro o teste de sanidade da arte, e em paralelo o APK para o teste no celular. Os pontos fracos aceitos nesta etapa (TV, Piso Espelhado, Azulejo azul à noite) e a pergunta da "Janela com Cortina" continuam anotados acima.
+
+### Rodada de 14/11/2026 (em andamento; pedido do PO: "Faz ambos e já foca também no personagem")
+
+O PO pediu três coisas juntas e respondeu a duas perguntas:
+
+| Pedido | Resposta do PO | Situação |
+|---|---|---|
+| Teste no celular | "Pode baixar": autorizou baixar e instalar em `C:\AndroidTools` os modelos de exportação da Godot 4.7.2, o Java JDK 17 e o kit do Android, aceitar a licença do Android SDK e criar uma chave de teste fora do repositório | Downloads em `C:\AndroidTools\downloads` (ver abaixo) |
+| Personagem "xoxo e feio" da tela inicial | É **o retrato do chef** (canto de cima à esquerda e botão Chef), não o garçom | A fazer |
+| Pratos e panelas em 3D | Liberado ("Faz ambos") | A fazer |
+
+**Retrato do chef, como funciona hoje:** `scenes/ui/avatar_portrait.gd` empilha 3 camadas pela âncora: `avatar_roupa_<roupa>`, `avatar_cabeca_<pele>_<cabelo>` e `avatar_chapeu_<chapeu>`. São 6 roupas, 24 cabeças (4 peles × 6 cabelos) e 5 chapéus, em `art/sprites`, com caixa comum de 140×170 e âncora em (70, 110). As peças vêm de `data/avatar/*.tres` (campo `art`). A arte nova tem de manter esses nomes e esse encaixe por camadas.
+
+**Android, passos planejados:**
+1. Conferir o SHA-512 de `templates.tpz` contra `SHA512-SUMS.txt`.
+2. Descompactar: JDK em `C:\AndroidTools\jdk17`; kit em `C:\AndroidTools\sdk\cmdline-tools\latest`; modelos em `<APPDATA isolado>\Godot\export_templates\4.7.2.stable` (o `.tpz` é um zip com a pasta `templates`).
+3. `sdkmanager --licenses` e instalar `platform-tools`, `build-tools` e `platforms` nas versões que o `config.gradle` dos modelos pedir.
+4. Chave de teste com `keytool` em `C:\AndroidTools\chaves\` (nunca no repositório, DT-028).
+5. Exportar com as variáveis `GODOT_ANDROID_KEYSTORE_*` (ver README, seção Android) e as configurações do editor apontando para o JDK e o SDK, usando o APPDATA isolado.
+6. Conferir o APK com `apksigner verify` e entregar ao PO com o roteiro "Android" do `qa.md`.
+
+**Andamento da rodada de 14/11 (atualizado no meio do trabalho):**
+
+| Item | Situação |
+|---|---|
+| Ferramentas do Android | **Instaladas** em `C:\AndroidTools`: `jdk17` (Java 17.0.21, SHA-256 conferido), `sdk` (platform-tools, build-tools 36.1.0, platforms android-36; licença aceita com a autorização do PO) e os modelos da Godot 4.7.2 em `C:\AndroidTools\appdata\Godot\export_templates\4.7.2.stable` (SHA-512 conferido) |
+| Configuração da Godot para exportar | `C:\AndroidTools\appdata\Godot\editor_settings-4.7.tres` aponta para o JDK e o SDK. Toda exportação roda com `APPDATA=C:\AndroidTools\appdata`, sem tocar na configuração nem no save do PO |
+| Chave de teste | `C:\AndroidTools\chaves\cafemanie-teste.keystore`, alias `cafemanie`, senha em `senha.txt` na mesma pasta. Fora do repositório. **Nunca** copiar a senha para o repositório nem para a conversa |
+| Retrato do chef em 3D (DT-097) | Script novo `tools/render3d/retratos_a3d.py`; 35 fotos finais geradas (24 cabeças, 6 roupas, 5 chapéus). `scenes/cafe/art_sprites.gd` passou a aceitar densidade por foto (os retratos têm 4). Folha de conferência em `tools/render3d/out_retratos/retratos_folha.png`. **Falta:** conferir no jogo, rodar os testes e a revisão do PO |
+| APK | **Falta exportar** (comando abaixo), depois de os testes passarem com o retrato novo |
+| Pratos e panelas em 3D | **Não começado.** São 39 `prato_<receita>` e 39 `panela_<receita>` em `art/sprites`, com `food_width` 64 no `sprites.json`; a panela é desenhada sobre o fogão e o prato em balcões, mesas, bandeja e ícones |
+
+Comando da exportação (Git Bash):
+
+```bash
+export APPDATA='C:\AndroidTools\appdata'
+export GODOT_ANDROID_KEYSTORE_RELEASE_PATH='C:\AndroidTools\chaves\cafemanie-teste.keystore'
+export GODOT_ANDROID_KEYSTORE_RELEASE_USER=cafemanie
+export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD="$(cat /c/AndroidTools/chaves/senha.txt)"
+cd /c/Projetos/cafe-manie && mkdir -p build/android
+/c/Godot/Godot_v4.7.2-stable_win64_console.exe --headless --path . --export-release "Android" build/android/CafeManie.apk
+/c/AndroidTools/sdk/build-tools/36.1.0/apksigner.bat verify --print-certs build/android/CafeManie.apk
+```
+
+Como o retrato foi montado, para quem for ajustar: o script mede a pessoa **depois** de aplicar as formas (função `fit`), porque os vértices do objeto guardam só a forma básica; na camada da cabeça, a roupa entra invisível (`hide_below_collar`) para o pescoço acabar na borda do colarinho.
+
+**Andamento, segunda anotação de 14/11:**
+
+| Item | Situação |
+|---|---|
+| Retrato do chef | Fotos finais prontas (35 + `icone_chef`), conferidas no jogo: tela inicial, janela do avatar (abas Cabelo e Chapéu) e botão Chef. DT-097 registrada. Cena de conferência: `tools/revisao/avatar.gd` (usar `-Mode revisao -Extra <aba>`, com a aba de 0 a 3) |
+| Pratos e panelas | Script novo `tools/render3d/pratos_a3d.py` (DT-098, ainda não escrita nos documentos). Rascunho conferido em folha e no jogo (fogões com `tools/revisao/cozinha.gd`, variante `cozinha:0:0`; mesas e balões no `mostruario`): o encaixe está certo. **Fotos finais em geração**: o fim aparece como `PRATOS OK 78`. Se a sessão cair, rodar de novo `blender.exe -b -P tools/render3d/pratos_a3d.py` (sem argumentos) e conferir com as folhas |
+| Depois das fotos finais | Rodar `tools/revisao/testes.ps1`; exportar o APK (comando acima); escrever a DT-098; atualizar `status.md`, `roadmap.md` e `art-direction.md`; abrir a revisão com `tools/revisao/revisar.ps1` |
+
+Pontos fracos já vistos no rascunho dos pratos: o tempurá ficou pequeno e fino; as frigideiras são pequenas perto das panelas fundas; o ícone do botão Garçom e os retratos do crítico, vizinhos e bruxa continuam desenhados a traço.
+
+**Andamento, terceira anotação de 14/11:**
+
+- A primeira leva de fotos finais dos pratos saiu **escura**: esconder de vez o chão que recebe a sombra (`hide_render`) tira também a luz que ele rebate. Corrigido em `no_floor()` de `pratos_a3d.py`: o chão fica fora da câmera (`visible_camera = False`) e continua rebatendo luz. **As fotos finais estão sendo refeitas.**
+- A exportação do APK foi testada e funciona (98 MB, assinado). Um APK foi gerado **com os pratos escuros**: precisa ser **exportado de novo** depois que as fotos finais terminarem e os testes passarem.
+- DT-097 e DT-098 escritas; `status.md`, `roadmap.md` e `art-direction.md` atualizados como "aguardando a revisão do PO".
+- Ordem para fechar: (1) conferir `PRATOS OK 78`; (2) folhas com `tools/revisao/folha.ps1` e uma foto no jogo; (3) `tools/revisao/testes.ps1`; (4) exportar o APK (comando acima) e conferir com `apksigner verify`; (5) abrir a revisão com `tools/revisao/revisar.ps1`; (6) entregar ao PO o caminho `build\android\CafeManie.apk` e o passo a passo de instalação (README, "Jogar no celular Android").
+
+### Estado atual (14/11/2026, fim da sessão) — leia isto primeiro
+
+| Item | Situação |
+|---|---|
+| Retrato do chef (DT-097) | **Aprovado pelo PO em 16/11/2026.** 35 fotos e o `icone_chef` |
+| Pratos e panelas (DT-098) | **Aprovados pelo PO em 16/11/2026.** 78 fotos finais, claras e sem sombra no chão |
+| Testes | 739 aprovados de novo em 16/11, depois da aprovação; cena principal com saída 0; `data/` e `core/` sem mudança; save do PO em 31/10 23:33; janela de revisão fechada |
+| APK | **Gerado:** `build\android\CafeManie.apk`, 96 MB, pacote `io.github.eliashenr.cafemanie`, versão 0.2.0 (código 2), só arm64, assinado com a chave de teste (v2 e v3 conferidos com `apksigner`). `build/` não vai para o git |
+| Checagem do conteúdo do APK | **Não feita.** O `--smoke-check` com o motor de exportação do Windows não acha o projeto dentro da pasta `assets` e para num erro. O jogo foi testado a partir do projeto, não de dentro do APK |
+| Revisão do PO | Aprovados em 16/11/2026. Os documentos já registram a aprovação |
+| Commit e envio | **Enviado em 16/11/2026** para `origin/amostra-a-2`, na conta `eliashenr` |
+
+**Modelo de envio usado nesta etapa** (repetir nas próximas, trocando os arquivos e a mensagem):
+
+```bash
+gh auth status          # a conta ativa tem de ser eliashenr
+git -C C:/Projetos/cafe-manie status --short -- data core      # tem de vir vazio
+git -C C:/Projetos/cafe-manie add art/sprites docs README.md scenes/cafe/art_sprites.gd tools/render3d/retratos_a3d.py tools/render3d/pratos_a3d.py tools/revisao
+git -C C:/Projetos/cafe-manie commit -m "feat: reference A chef portrait, dishes and cookware in 3D"    # mais a linha Co-Authored-By do modelo em uso
+git -C C:/Projetos/cafe-manie push origin amostra-a-2
+```
+
+**Se o PO pedir ajustes:**
+- um prato ou panela: mexer na função da receita em `tools/render3d/pratos_a3d.py` e rodar `blender.exe -b -P tools/render3d/pratos_a3d.py -- <receita>` (faz o prato e a panela dela; acrescente `pratos` ou `panelas` para fazer só um);
+- o retrato: `tools/render3d/retratos_a3d.py`, com os grupos `cabecas`, `roupas`, `chapeus`, `icone` e `folha`;
+- depois, `tools/revisao/testes.ps1`, as folhas com `tools/revisao/folha.ps1` e a revisão de novo.
+
+**Teste no celular (depende do PO):** ele copia `build\android\CafeManie.apk` para o aparelho e instala (README, "Jogar no celular Android"); se já houver um Café Manie instalado, precisa desinstalar antes, porque a chave mudou. Depois segue o roteiro "Android" do `qa.md`. Os achados dele entram como a próxima etapa (ordem 9 do plano da revisão geral).
+
+**Próximos passos do plano, com a liberação do PO:** teste de sanidade da arte (C4); retratos do crítico, vizinhos e bruxa e o ícone do Garçom; bebidas, frutas e temperos; juntar `amostra-a-2` em `main` e ligar os testes no GitHub.

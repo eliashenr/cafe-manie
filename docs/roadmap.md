@@ -112,7 +112,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **3. Móveis em 3D:** os 130 móveis (cadeiras, mesas, fogões, balcões, máquinas e enfeites), com os encostos e o forno aceso (DT-085).
 - [x] **3b. Pisos, paredes, itens de parede, portas e terraço em 3D** (DT-086).
 - [x] **3b+. 22 pisos novos** (39 no total, um a cada nível até o 14) e a luz do chão acertada (DT-089).
-- [ ] **3c. Panelas, pratos e comidas em 3D.**
+- [x] **3c. Panelas e pratos em 3D** (DT-098, aprovados pelo PO em 16/11/2026). Bebidas, frutas e temperos continuam desenhados.
 - [x] **4. A cidade em 3D:** prédios (com as janelas acesas à noite), enfeites da calçada, semáforos e carros (DT-087).
 - [ ] **5. Crítico, vizinhos e retratos** (o robô saiu do jogo, DT-088).
 - [ ] **6. Revisão e junção no jogo principal.**
@@ -145,7 +145,10 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **Revisão visual do PO** dos enfeites e máquinas, no jogo: aprovados (01/11/2026).
 - [x] **Pisos, paredes, itens de parede, portas e terraço** (DT-096, liberados pelo PO em 01/11/2026).
 - [x] **Revisão visual do PO** dos pisos, paredes, itens de parede e portas, no jogo: aprovados (13/11/2026).
-- [ ] Panelas, pratos e retratos, por etapas, cada uma com revisão visual e liberação do PO.
+- [x] **Retrato do chef** (DT-097) e **pratos e panelas** (DT-098), liberados pelo PO em 14/11/2026.
+- [x] **Revisão visual do PO** do retrato, dos pratos e das panelas, no jogo: aprovados (16/11/2026).
+- [x] **Arquivo de instalação do celular** gerado (14/11/2026). Falta o PO fazer o roteiro "Android" do [qa.md](qa.md).
+- [ ] Retratos do crítico, dos vizinhos e da bruxa; ícone do Garçom; bebidas, frutas e temperos.
 - [ ] Plano da [revisão geral](revisao-geral.md) de 11/11/2026 (seção 5), na ordem combinada com o PO.
 
 ## Balanceamento (23/10/2026)

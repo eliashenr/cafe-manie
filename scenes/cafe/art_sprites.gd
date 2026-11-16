@@ -51,7 +51,8 @@ static func get_sprite(sprite_name: String) -> Sprite:
 	sprite.texture = load(path)
 	var anchor: Array = info["anchor"]
 	sprite.anchor = Vector2(anchor[0], anchor[1])
-	sprite.density = float(manifest.get("density", 1.0))
+	# Uma foto pode ter a sua densidade (os retratos têm 4, para aparecerem grandes sem borrar); as outras usam a do manifesto.
+	sprite.density = float(info.get("density", manifest.get("density", 1.0)))
 	_cache[sprite_name] = sprite
 	return sprite
 

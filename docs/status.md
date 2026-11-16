@@ -1,8 +1,18 @@
 # Status
 
-## CAFÉ MANIE — STATUS (13/11/2026)
+## CAFÉ MANIE — STATUS (16/11/2026)
 
 🟢 **CONCLUÍDO**
+
+**Retrato do chef, pratos e panelas em 3D, aprovados pelo PO, e o arquivo de instalação do celular** (DT-097 e DT-098, no ramo `amostra-a-2`). Nenhum id, preço, nível ou save mudou.
+
+- **Retrato do chef:** a mesma pessoa realista dos clientes, nas três camadas que o jogo já empilha (roupa, cabeça com cabelo e chapéu): 24 cabeças, 6 roupas, 5 chapéus e o ícone do botão Chef.
+- **Pratos e panelas:** as 39 receitas com o prato pronto e a panela no fogão em 3D, na luz do salão.
+- **Celular:** ferramentas do Android instaladas em `C:\AndroidTools`, com a autorização do PO, e o APK gerado em `build/android/CafeManie.apk`, assinado com uma chave de teste que fica fora do repositório.
+- **Testes:** 739 passaram e a cena principal subiu sem erros, com dados separados do save do PO.
+- **Conferido no jogo, por fotos:** tela inicial, janela do avatar, fogões cozinhando, pratos nas mesas, no balcão e nos balões.
+- **Não conferido:** o APK instalado num aparelho (só o PO consegue); cada prato um a um dentro do jogo (vistos em folha).
+- **Continuam desenhados a traço:** bebidas, frutas, temperos, o ícone do Garçom e os retratos do crítico, dos vizinhos e da bruxa.
 
 **Referência A: pisos, paredes, itens de parede, portas e terraço, aprovados pelo PO** (DT-096, no ramo `amostra-a-2`). Nenhum id, preço, nível ou save mudou.
 
