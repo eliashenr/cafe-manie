@@ -295,3 +295,10 @@ Se o PO aprovar: trocar "aguardando/aguardam a revisão" por "aprovados pelo PO"
   1. **Juntar `amostra-a-2` em `main`** e ligar os testes automáticos no GitHub (P1 e P2 da [revisão geral](revisao-geral.md)). Quanto mais tempo separado, mais difícil juntar. Antes, perguntar ao PO; ligar o GitHub Actions mexe na configuração do repositório.
   2. **Teste no celular:** o APK de 14/11 está em `build\android\CafeManie.apk`, mas é anterior aos vizinhos, bruxa, bebidas e frutas. Exportar de novo antes de entregar (comando na seção da rodada de 14/11).
   3. Teste de sanidade da arte (C4), evento de Natal (J2), cidade com a luz nova (G2).
+
+### Rodada de 19/11/2026: juntar na main (pedido do PO: "Juntar na main")
+
+- `origin/main` está em `bb843d6` e é ancestral de `amostra-a-2`: a junção é um **avanço direto** (fast-forward), sem conflito e sem commit de junção.
+- O repositório `eliashenr/cafe-manie` é **público** e a `main` não tem proteção.
+- Plano: (1) criar `.github/workflows/testes.yml`, que baixa a Godot 4.7.2 para Linux e roda os testes sem janela a cada envio; (2) enviar no `amostra-a-2` e ver o GitHub rodar verde; (3) avançar a `main` até o `amostra-a-2` e enviar; (4) conferir que a `main` também rodou verde.
+- Se o GitHub reprovar algo que passa neste PC, a diferença provável é o sistema (Linux lá, Windows aqui): ler o registro com `gh run view --log-failed` antes de mexer.

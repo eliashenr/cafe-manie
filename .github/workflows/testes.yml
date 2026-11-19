@@ -1,0 +1,46 @@
+# Testes automáticos: a cada envio, o GitHub baixa a mesma Godot do projeto, prepara o projeto e roda todos os testes sem
+# janela, como o tools/revisao/testes.ps1 faz no PC. Se algum teste falhar, o envio aparece com um X vermelho no GitHub.
+name: Testes
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.7.2
+  # SHA-512 oficial do Godot_v4.7.2-stable_linux.x86_64.zip (SHA512-SUMS.txt da versão).
+  GODOT_SHA512: 9aa00f7a605200940bce3027a567b782f49bd8e940dd06ae9e987bd65aee1b1467edd56ed84fcdcbdd44354bf613bdbb4e5d2913e925850368e150c59ed54c65
+
+jobs:
+  testes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Baixar a Godot
+        run: |
+          zip="Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          curl -sSL -o "$zip" "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/$zip"
+          echo "${GODOT_SHA512}  $zip" | sha512sum -c -
+          unzip -q "$zip"
+          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" godot
+          chmod +x godot
+          ./godot --version
+
+      - name: Preparar o projeto
+        run: ./godot --headless --import --path . || true
+
+      - name: Rodar os testes
+        run: ./godot --headless --path . -s res://tests/run_tests.gd
+
+      - name: Subir a cena principal
+        run: ./godot --headless --path . --quit-after 120
