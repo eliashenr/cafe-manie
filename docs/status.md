@@ -4,6 +4,12 @@
 
 🟢 **CONCLUÍDO**
 
+**Redesenho da referência A na versão principal e testes automáticos no GitHub** (19/11/2026, pedido do PO).
+
+- **A `main` recebeu todo o redesenho** aprovado no ramo `amostra-a-2`: personagens, móveis, cozinha, enfeites, pisos, paredes, portas, retratos, pratos, bebidas e frutas. Foi um avanço direto, sem conflito.
+- **Testes automáticos no GitHub** (`.github/workflows/testes.yml`): a cada envio, o GitHub baixa a Godot 4.7.2, confere o arquivo pelo código oficial e roda os 739 testes e a cena principal sem janela. Passaram na `amostra-a-2` e na `main` (cerca de 1 min 45 s cada).
+- **Daqui em diante:** cada etapa sai da `main` num ramo curto e volta para ela quando o PO aprovar e os testes ficarem verdes.
+
 **Vizinhos, bruxa, ícone do Garçom, bebidas e frutas em 3D, aprovados pelo PO** (DT-099, no ramo `amostra-a-2`). Nenhum id, preço, nível ou save mudou.
 
 - **7 vizinhos e a bruxa Morgana** como pessoas realistas, cada um com os traços do desenho antigo: o boné do Caio, os óculos e o coque da Vó Cida, o chapéu da bruxa.

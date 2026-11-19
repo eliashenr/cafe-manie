@@ -69,7 +69,7 @@ Medidas que nunca mudam (o jogo depende delas): altura da parede (`S.WALL_Z`), t
 
 ### Estado do git
 
-- Ramo `amostra-a-2`. Último commit de arte, já no GitHub: `fe416d4` (pisos, paredes, itens de parede, portas e terraço, mais a revisão geral, este guia e `tools/revisao/`).
+- **Histórico:** o trabalho de arte foi feito no ramo `amostra-a-2` e juntado na `main` em 19/11/2026. Ver "Onde paramos (19/11/2026, depois da junção)" no fim deste arquivo.
 - `main` continua em `bb843d6`, sem o redesenho.
 - A rodada de 14/11 (retrato do chef, pratos e panelas) foi **enviada em 16/11/2026** no commit `feat: reference A chef portrait, dishes and cookware in 3D`, logo depois de `78e2e33`. Confira com `git log --oneline -3`; `git status --short` tem de vir vazio.
 - Há três logins no `gh`: `eliashenr` (o único permitido), `eliasboncourage` e `Chiebao`. Confira qual está ativo antes de qualquer envio.
@@ -304,3 +304,14 @@ Se o PO aprovar: trocar "aguardando/aguardam a revisão" por "aprovados pelo PO"
 - Se o GitHub reprovar algo que passa neste PC, a diferença provável é o sistema (Linux lá, Windows aqui): ler o registro com `gh run view --log-failed` antes de mexer.
 - **Feito em 19/11:** o GitHub rodou os testes no `amostra-a-2` (739 aprovados, 1 min 43 s, run 44597919778). O `actions/checkout` passou para a v5, porque a v4 roda em Node 20, que o GitHub está desligando.
 - **Depois do avanço da `main`:** todo trabalho novo sai de `main` em ramos curtos por etapa (por exemplo `etapa-cidade`), e volta para a `main` quando o PO aprovar e os testes do GitHub ficarem verdes. O `amostra-a-2` e o `arte-3d` ficam só como histórico.
+
+### Onde paramos (19/11/2026, depois da junção) — leia isto primeiro
+
+- **Ramo de trabalho agora é a `main`**, em `decdbcd` (ou o commit de documentos logo depois). `amostra-a-2` e `arte-3d` ficam só como histórico; não trabalhe neles.
+- **Testes no GitHub:** `.github/workflows/testes.yml`. Depois de cada envio, confira com `gh run list --repo eliashenr/cafe-manie --limit 3` (tem de aparecer `success`). Se falhar: `gh run view <id> --repo eliashenr/cafe-manie --log-failed`.
+- **Fluxo de uma etapa nova:** `git switch -c etapa-<nome> main` → trabalho → revisão do PO → "Pode enviar" → `git push origin etapa-<nome>` → testes verdes no GitHub → `git switch main && git merge --ff-only etapa-<nome> && git push origin main`.
+- **Pendências e próximos passos (com a liberação do PO):**
+  1. **Novo APK** para o teste no celular: o de 14/11 é anterior aos vizinhos, bebidas e frutas.
+  2. Teste de sanidade da arte (achado C4 da revisão geral).
+  3. Evento de Natal (J2), cidade com a luz nova (G2), mais poses dos personagens (G3).
+  4. Dividir os arquivos grandes (C1, C2) e reescrever `architecture.md`, `gameplay.md` e `progression.md` (C6).

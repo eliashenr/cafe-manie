@@ -115,7 +115,7 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **3c. Panelas e pratos em 3D** (DT-098, aprovados pelo PO em 16/11/2026). Bebidas, frutas e temperos continuam desenhados.
 - [x] **4. A cidade em 3D:** prédios (com as janelas acesas à noite), enfeites da calçada, semáforos e carros (DT-087).
 - [ ] **5. Crítico, vizinhos e retratos** (o robô saiu do jogo, DT-088).
-- [ ] **6. Revisão e junção no jogo principal.**
+- [x] **6. Revisão e junção no jogo principal** (19/11/2026): o redesenho da referência A foi para a `main`, com os testes rodando no GitHub a cada envio.
 
 ## Redesign "Nova York Futurista" (24/10/2026, DT-077)
 
