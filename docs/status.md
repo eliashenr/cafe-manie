@@ -1,8 +1,18 @@
 # Status
 
-## CAFÉ MANIE — STATUS (16/11/2026)
+## CAFÉ MANIE — STATUS (19/11/2026)
 
 🟢 **CONCLUÍDO**
+
+**Vizinhos, bruxa, ícone do Garçom, bebidas e frutas em 3D, aprovados pelo PO** (DT-099, no ramo `amostra-a-2`). Nenhum id, preço, nível ou save mudou.
+
+- **7 vizinhos e a bruxa Morgana** como pessoas realistas, cada um com os traços do desenho antigo: o boné do Caio, os óculos e o coque da Vó Cida, o chapéu da bruxa.
+- **Ícone do botão Garçom** com o garçom do jogo, como o do Chef.
+- **9 bebidas e 3 frutas** em 3D, na mesma escala dos pratos.
+- **Ficaram como estão, de propósito:** a medalha do crítico e os 5 temperos, que são símbolos de interface.
+- **Testes:** 739 passaram e a cena principal subiu sem erros, com dados separados do save do PO.
+- **Conferido no jogo, por fotos:** a janela da Cidade com os vizinhos, a janela do evento com a bruxa e a barra de baixo com o Garçom.
+- **Não conferido no jogo:** as bebidas nos balões de pedido e as frutas nos pés de fruta (vistas só em folha).
 
 **Retrato do chef, pratos e panelas em 3D, aprovados pelo PO, e o arquivo de instalação do celular** (DT-097 e DT-098, no ramo `amostra-a-2`). Nenhum id, preço, nível ou save mudou.
 

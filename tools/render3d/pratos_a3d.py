@@ -1,7 +1,7 @@
 """Pratos e panelas em 3D na linguagem da referência A (DT-098): as 39 receitas com o prato pronto e a panela no fogão.
 
 Uso (na pasta do projeto):
-    C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/pratos_a3d.py -- [pratos] [panelas] [ids...] [rascunho]
+    C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/pratos_a3d.py -- [pratos] [panelas] [ids...] [bebidas] [frutas] [rascunho]
 
 Sem nada, faz todos. Com ids de receita (coffee, lasagna...), faz o prato e a panela só delas.
 
@@ -891,10 +891,169 @@ def render_pot(recipe, samples, anchors):
     anchors[name] = cena3d.shoot(name, anchor, WORK)
 
 
+# --- Bebidas e frutas (DT-099) ---------------------------------------------------------------------------------------
+# A mesma âncora dos pratos: a base fica 12 px de mundo abaixo dela, porque o jogo usa estas fotos nos balões de pedido e
+# nos pés de fruta, na mesma escala dos pratos.
+
+def cup(liquid, foam=None, saucer=True):
+    """Xícara de louça com pires, a bebida e, se houver, a espuma por cima."""
+    china = ceramic()
+    parts = []
+    if saucer:
+        parts.append(lathe([(0.0, 0.0), (0.15, 0.0), (0.24, 0.022), (0.25, 0.03), (0.15, 0.014), (0.0, 0.014)], china))
+    base = 0.014 if saucer else 0.0
+    parts.append(lathe([(0.0, base), (0.07, base), (0.08, base + 0.016), (0.12, base + 0.15), (0.13, base + 0.18), (0.118, base + 0.18),
+                        (0.108, base + 0.15), (0.065, base + 0.03), (0.0, base + 0.03)], china))
+    parts.append(disc(0.116, base + 0.168, sauce(liquid)))
+    if foam:
+        parts.append(blob(0.11, (0.0, 0.0, base + 0.17), food(foam, 0.6, 0.06, 40.0, 0.2), (1.0, 1.0, 0.18)))
+    handle = E.torus(0.05, 0.013, (0.0, 0.0, 0.0), china, (math.radians(90), 0.0, math.radians(45)))
+    at = RIGHT * 0.145
+    handle.location = (at.x, at.y, base + 0.1)
+    parts.append(handle)
+    return parts
+
+
+def tall_glass(liquid, height=0.3, radius=0.1):
+    """Copo alto de vidro: o vidro por fora e a bebida por dentro, um pouco abaixo da borda."""
+    parts = [lathe([(0.0, 0.0), (radius * 0.86, 0.0), (radius, height), (radius * 0.94, height), (radius * 0.8, 0.012), (0.0, 0.012)],
+                   E.glass("#e8f4f8", 0.25)),
+             lathe([(0.0, 0.014), (radius * 0.78, 0.014), (radius * 0.9, height - 0.04), (0.0, height - 0.04)], food(liquid, 0.25, 0.06, 20.0, 0.05, 0.5))]
+    return parts
+
+
+def straw(top, color, lean=(0.06, 0.03)):
+    return tube((lean[0] * 0.2, lean[1] * 0.2, 0.05), (lean[0], lean[1], top + 0.1), 0.01, solid(color, 0.35, 0.0, 0.5))
+
+
+def citrus_slice(at, color, z):
+    wheel = cylinder(0.055, -0.008, 0.008, food(color, 0.4, 0.1, 30.0, 0.1, 0.4), bevel=0.003)
+    wheel.location = Vector((at.x, at.y, z))
+    wheel.rotation_euler = (math.radians(90), 0.0, math.radians(45))
+    return wheel
+
+
+def espresso():
+    return [p for p in cup("#2c160c", "#b07a44")]
+
+
+def cappuccino():
+    parts = cup("#5a3220", "#e8d2b0")
+    parts.append(disc(0.05, 0.215, food("#8a5a34", 0.5, 0.1, 20.0, 0.05)))
+    return parts
+
+
+def hot_chocolate():
+    parts = cup("#4a2414", None, saucer=False)
+    for i, (x, y) in enumerate(((0.0, 0.03), (0.04, -0.02), (-0.04, -0.02))):
+        parts.append(box((0.045, 0.045, 0.04), (x, y, 0.195), food(("#f6f1e6", "#f2c0d0", "#f6f1e6")[i], 0.5, 0.05), 0.012))
+    return parts
+
+
+def orange_juice():
+    parts = tall_glass("#f29a1c")
+    parts += [straw(0.3, "#e0303a"), citrus_slice(RIGHT * 0.1, "#f2a21c", 0.28)]
+    return parts
+
+
+def lemonade():
+    parts = tall_glass("#e8e6a0")
+    for x, y, z in ((0.03, 0.02, 0.2), (-0.03, -0.02, 0.15), (0.0, 0.03, 0.1)):
+        parts.append(box((0.045, 0.045, 0.045), (x, y, z), E.glass("#ffffff", 0.4), 0.01))
+    parts += [straw(0.3, "#3f9a3a"), citrus_slice(RIGHT * 0.1, "#9ac83a", 0.28)]
+    return parts
+
+
+def strawberry_smoothie():
+    parts = tall_glass("#f2a0b8")
+    parts += cream((0.0, 0.0, 0.275), 0.07)
+    parts += strawberry((0.07, -0.04, 0.29), 0.035)
+    parts.append(straw(0.34, "#f6f1e6"))
+    return parts
+
+
+def _frozen(flavor, topping):
+    """Frozen yogurt num potinho, com a cobertura e a fruta em cima."""
+    cupm = ceramic("#f6f1e6")
+    parts = [lathe([(0.0, 0.0), (0.12, 0.0), (0.15, 0.12), (0.155, 0.13), (0.145, 0.13), (0.11, 0.012), (0.0, 0.012)], cupm),
+             cylinder(0.153, 0.085, 0.1, solid("#e58aa8", 0.4, 0.0, 0.5), bevel=0.004)]
+    swirl = food(flavor, 0.4, 0.06, 20.0, 0.1, 0.3)
+    for i, (r, z) in enumerate(((0.13, 0.15), (0.1, 0.2), (0.065, 0.245))):
+        parts.append(blob(r, (0.0, 0.0, z), swirl, (1.0, 1.0, 0.45)))
+    parts.append(blob(0.022, (0.0, 0.0, 0.282), swirl, (1.0, 1.0, 1.6)))
+    return parts + topping(0.29)
+
+
+def frozen_strawberry():
+    return _frozen("#f2b0c8", lambda z: strawberry((0.0, 0.0, z + 0.03), 0.038))
+
+
+def frozen_mango():
+    return _frozen("#f6d890", lambda z: [blob(0.04, (0.0, 0.0, z + 0.03), food("#f2a21c", 0.4, 0.1, 30.0, 0.1, 0.3), (0.8, 0.8, 1.1))])
+
+
+def frozen_blueberry():
+    return _frozen("#c8b8e8", lambda z: [blob(0.03, (x, y, z + 0.02), food("#3a3a8a", 0.4, 0.1, 30.0, 0.1, 0.4))
+                                         for x, y in ((0.0, 0.025), (0.025, -0.018), (-0.025, -0.018))])
+
+
+DRINKS = {
+    "espresso": espresso, "cappuccino": cappuccino, "hot_chocolate": hot_chocolate, "orange_juice": orange_juice,
+    "lemonade": lemonade, "strawberry_smoothie": strawberry_smoothie, "frozen_strawberry": frozen_strawberry,
+    "frozen_mango": frozen_mango, "frozen_blueberry": frozen_blueberry,
+}
+
+
+def fruit_strawberry():
+    """Morango: o corpo vermelho, as sementes na superfície (do lado da câmera) e as folhas em cima."""
+    rx, rz, cz = 0.117, 0.15, 0.14
+    parts = [blob(0.13, (0.0, 0.0, cz), food("#c8262e", 0.35, 0.1, 160.0, 0.35, 0.4), (0.9, 0.9, 1.15))]
+    seed = food("#f2dc8a", 0.5, 0.05)
+    for row, elevation in enumerate((-35.0, -12.0, 12.0, 34.0)):
+        for col in range(5):
+            azimuth = math.radians(-45.0 + (col - 2) * 26.0 + (row % 2) * 13.0)
+            el = math.radians(elevation)
+            parts.append(blob(0.008, (math.cos(azimuth) * rx * math.cos(el) * 1.01, math.sin(azimuth) * rx * math.cos(el) * 1.01,
+                                      cz + math.sin(el) * rz * 1.01), seed))
+    for a in [i * 2 * math.pi / 5 for i in range(5)]:
+        parts.append(blob(0.04, (math.cos(a) * 0.05, math.sin(a) * 0.05, 0.275), food("#3f8a3a", 0.6, 0.15), (1.6, 0.6, 0.3),
+                          (0.0, 0.0, math.degrees(a))))
+    return parts
+
+
+def fruit_mango():
+    body = blob(0.14, (0.0, 0.0, 0.13), food("#f2a21c", 0.35, 0.12, 20.0, 0.1, 0.35), (0.8, 1.0, 0.95), (0.0, 25.0, 45.0))
+    return [body, blob(0.06, (0.05, 0.02, 0.2), food("#d9481c", 0.4, 0.1, 20.0, 0.05, 0.3), (1.2, 1.0, 0.8)),
+            tube((0.0, 0.0, 0.25), (0.02, 0.0, 0.3), 0.01, A.rich_wood("#5a3820", 6.0, 0.1))]
+
+
+def fruit_blueberry():
+    berry_mat = food("#2a3070", 0.3, 0.1, 30.0, 0.1, 0.5)
+    parts = []
+    for x, y, z in ((-0.07, 0.0, 0.07), (0.07, 0.02, 0.07), (0.0, -0.06, 0.07), (0.0, 0.03, 0.17)):
+        parts.append(blob(0.075, (x, y, z), berry_mat))
+        parts.append(E.cone(0.022, z + 0.066, z + 0.08, food("#1a1a3a", 0.6, 0.1), (x, y), 0.03, 5))
+    return parts
+
+
+FRUITS = {"strawberry": fruit_strawberry, "mango": fruit_mango, "blueberry": fruit_blueberry}
+
+
+def render_icon(prefix, build, key, samples, anchors):
+    """Bebidas e frutas: a mesma foto e a mesma âncora dos pratos."""
+    cena3d.setup(samples, DISH_IMAGE, shadow_center=(0.0, 0.0), shadow_size=(0.9, 0.9), rig="a")
+    no_floor()
+    list(M._flatten(build()))
+    aim_camera((0.0, 0.0, ANCHOR_LIFT))
+    name = f"{prefix}_{key}"
+    anchors[name] = cena3d.shoot(name, (0.0, 0.0, ANCHOR_LIFT), WORK)
+
+
 def main():
     args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     samples = 24 if "rascunho" in args else 96
-    recipes = [a for a in args if a in DISHES] or list(DISHES)
+    extras = [a for a in args if a in ("bebidas", "frutas")]
+    recipes = [a for a in args if a in DISHES] or ([] if extras else list(DISHES))
     kinds = [a for a in args if a in ("pratos", "panelas")] or ["pratos", "panelas"]
     os.makedirs(WORK, exist_ok=True)
     anchors = {}
@@ -905,6 +1064,13 @@ def main():
             render_pot(recipe, samples, anchors)
         cena3d.update_manifest(anchors)   # a cada receita: se a próxima falhar, as fotos prontas não perdem a âncora
         print("PRONTO", recipe, flush=True)
+    everything = not [a for a in args if a != "rascunho"]
+    for prefix, group, table in (("bebida", "bebidas", DRINKS), ("fruta", "frutas", FRUITS)):
+        if everything or group in extras:
+            for key, build in table.items():
+                render_icon(prefix, build, key, samples, anchors)
+                cena3d.update_manifest(anchors)
+                print("PRONTO", prefix, key, flush=True)
     print("PRATOS OK", len(anchors), flush=True)
 
 

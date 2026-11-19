@@ -2,7 +2,7 @@
 (scenes/ui/avatar_portrait.gd): a roupa embaixo, a cabeça com o cabelo no meio e o chapéu em cima.
 
 Uso (na pasta do projeto):
-    C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/retratos_a3d.py -- [cabecas] [roupas] [chapeus] [icone] [folha] [rascunho] [prova]
+    C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/retratos_a3d.py -- [cabecas] [roupas] [chapeus] [icone] [folha] [pessoas] [vizinho_ana...] [rascunho] [prova]
 
 Sem nada, faz tudo e a folha de conferência (out_retratos/retratos_folha.png). "prova" faz só um cabelo por pele.
 
@@ -603,12 +603,156 @@ def save(anchors):
     cena3d.update_manifest(anchors, density)
 
 
+# --- Vizinhos, a bruxa e o ícone do garçom: uma foto só cada, em busto (DT-099) ---------------------------------------
+
+# Cada pessoa mantém os traços do desenho antigo. gender 1 = homem; race = (africana, asiática, europeia); skin = pele do
+# MakeHuman; tone = tom que multiplica a pele; hair = (cabelo, tingimento); clothes = roupas do MakeHuman.
+PEOPLE = {
+    "vizinho_ana": dict(gender=0.0, age=0.4, weight=0.45, race=(0.0, 0.1, 0.9), skin="young_caucasian_female",
+                        hair=("ponytail01", "ramp:#3a2212,#b07a44"), clothes=["female_casualsuit01"]),
+    "vizinho_beto": dict(gender=1.0, age=0.42, muscle=0.55, weight=0.5, race=(0.9, 0.0, 0.1), skin="young_african_male",
+                         hair=("short02", "ramp:#0c0c10,#3a3640"), clothes=["male_casualsuit06"]),
+    "vizinho_caio": dict(gender=1.0, age=0.38, muscle=0.5, weight=0.5, race=(0.7, 0.1, 0.2), skin="young_african_male",
+                         hair=None, clothes=["male_casualsuit02"], extra="cap"),
+    "vizinho_duda": dict(gender=0.0, age=0.38, weight=0.45, race=(0.0, 0.05, 0.95), skin="young_caucasian_female2",
+                         hair=("bob02", "ramp:#6e1f0c,#ee7a3c"), clothes=["female_casualsuit02"]),
+    "vizinho_lia": dict(gender=0.0, age=0.4, weight=0.42, race=(0.2, 0.4, 0.4), skin="young_asian_female", tone="#d9a882",
+                        hair=("long01", "ramp:#0c0c10,#4d4854"), clothes=["female_elegantsuit01"]),
+    "vizinho_rafa": dict(gender=1.0, age=0.4, muscle=0.55, weight=0.45, race=(0.0, 0.05, 0.95), skin="young_caucasian_male",
+                         hair=("short04", "ramp:#c49a4a,#fff0b8"), clothes=["male_casualsuit04"]),
+    "vizinho_vo_cida": dict(gender=0.0, age=0.92, weight=0.55, race=(0.0, 0.0, 1.0), skin="old_caucasian_female",
+                            hair=("ponytail01", "ramp:#77747a,#e6e3e8"),
+                            clothes=["female_elegantsuit01", "spamrakuen_tbm_glasses_frames_01"], extra="gray_bun"),
+    "retrato_bruxa": dict(gender=0.0, age=0.42, weight=0.42, race=(0.0, 0.05, 0.95), skin="young_caucasian_female",
+                          hair=("long01", "ramp:#7a2408,#f07a30"), clothes=["female_elegantsuit01"], extra="witch_hat",
+                          size=(440, 760), px_per_meter=980.0, up=0.08),
+    "icone_garcom": dict(gender=1.0, age=0.45, muscle=0.6, weight=0.45, race=(0.3, 0.25, 0.45), skin="young_caucasian_male2",
+                         hair=("short02", None), clothes=["toigo_suit_with_jacket_and_bowtie"], size=ICON_SIZE,
+                         px_per_meter=132 / 0.6, up=-0.02),
+}
+PERSON_SIZE = (300, 380)          # a janela da Cidade mostra o vizinho com 66 × 70: 300 px já sobram
+PERSON_PX_PER_METER = 620.0
+
+
+def person(spec):
+    """Uma pessoa inteira (corpo, olhos, sobrancelhas, cabelo, roupa e acessório), sorrindo."""
+    macro = TargetService.get_default_macro_info_dict()
+    for key in ("gender", "age", "muscle", "weight"):
+        if key in spec:
+            macro[key] = spec[key]
+    african, asian, caucasian = spec["race"]
+    macro["race"] = {"african": african, "asian": asian, "caucasian": caucasian}
+    basemesh = HumanService.create_human(macro_detail_dict=macro)
+    HumanService.set_character_skin(os.path.join(DATA, "skins", spec["skin"], spec["skin"] + ".mhmat"), basemesh)
+    male = spec["gender"] > 0.5
+    HumanService.add_mhclo_asset(os.path.join(DATA, "eyes", "high-poly", "high-poly.mhclo"), basemesh, asset_type="Eyes")
+    brows = "eyebrow001" if male else "eyebrow006"
+    lashes = "eyelashes01" if male else "eyelashes02"
+    HumanService.add_mhclo_asset(os.path.join(DATA, "eyebrows", brows, brows + ".mhclo"), basemesh, asset_type="Eyebrows")
+    HumanService.add_mhclo_asset(os.path.join(DATA, "eyelashes", lashes, lashes + ".mhclo"), basemesh, asset_type="Eyelashes")
+    for name, weight in SMILE.items():
+        TargetService.load_target(basemesh, os.path.join(SYSTEM, "targets", name + ".target.gz"), weight=weight,
+                                  name="expr-" + name.replace("/", "-"))
+    HumanService.refit(basemesh)
+    if spec.get("tone"):
+        tint_skin(basemesh, spec["tone"])
+    if spec.get("hair"):
+        asset, tinting = spec["hair"]
+        before = set(bpy.data.objects)
+        HumanService.add_mhclo_asset(os.path.join(DATA, "hair", asset, asset + ".mhclo"), basemesh, asset_type="Hair")
+        if tinting:
+            mode, color = tinting.split(":")
+            for obj in bpy.data.objects:
+                if obj not in before and obj.type == "MESH" and obj.active_material is not None:
+                    tint(obj.active_material, color, mode)
+    for item in spec["clothes"]:
+        HumanService.add_mhclo_asset(os.path.join(DATA, "clothes", item, item + ".mhclo"), basemesh, asset_type="Clothes")
+    bpy.context.view_layer.update()
+    fit(basemesh)
+    return basemesh
+
+
+def baseball_cap():
+    """O boné do Caio: a copa azul, a aba para a frente e a estrela branca."""
+    blue = cloth("#2f6fd9")
+    rx, ry = BAND
+    cx, cy = HEAD_CENTER
+    crown_profile = [(rx * 1.02, BAND_Z, 0.0), (rx * 1.03, BAND_Z + 0.04, 0.2), (rx * 0.92, HEAD_TOP - 0.01, 0.4),
+                     (rx * 0.6, HEAD_TOP + 0.026, 0.4), (rx * 0.25, HEAD_TOP + 0.04, 0.2), (0.0, HEAD_TOP + 0.042, 0.0)]
+    parts = [pleated(crown_profile, blue, 6, 0.02, squash=(1.0, ry / rx)),
+             sphere(0.011, (cx, cy, HEAD_TOP + 0.045), blue, (1.0, 1.0, 0.6))]
+    brim = sphere(1.0, (cx, cy - ry - 0.045, BAND_Z + 0.012), cloth("#2a62c4"), (rx * 0.98, 0.085, 0.01))
+    brim.rotation_euler = (math.radians(-8.0), 0.0, 0.0)
+    parts.append(brim)
+    points = []
+    for i in range(10):
+        angle = math.radians(90 + i * 36)
+        r = 0.026 if i % 2 == 0 else 0.011
+        points.append((math.cos(angle) * r, math.sin(angle) * r))
+    star_mesh = bpy.data.meshes.new("Estrela")
+    y = cy - ry - 0.012
+    star_mesh.from_pydata([(cx + px, y, BAND_Z + 0.062 + pz) for px, pz in points], [], [tuple(range(10))])
+    star_mesh.update()
+    star = bpy.data.objects.new("Estrela", star_mesh)
+    bpy.context.scene.collection.objects.link(star)
+    star.data.materials.append(solid("#f6f1e6", 0.5))
+    parts.append(star)
+    return parts
+
+
+def witch_hat():
+    """O chapéu da bruxa Morgana: aba larga, cone alto com a ponta caída, faixa laranja e fivela."""
+    purple = cloth("#4a2a7a")
+    rx, ry = BAND
+    cx, cy = HEAD_CENTER
+    z = BAND_Z + 0.01
+    brim = sphere(1.0, (cx, cy, z), purple, (rx * 2.0, ry * 1.9, 0.012))
+    cone_profile = [(rx * 1.03, z, 0.0), (rx * 1.0, z + 0.05, 0.3), (rx * 0.72, z + 0.13, 0.5), (rx * 0.42, z + 0.21, 0.5),
+                    (rx * 0.16, z + 0.27, 0.3), (0.0, z + 0.29, 0.0)]
+    cone = pleated(cone_profile, purple, 5, 0.04, squash=(1.0, ry / rx))
+    tip = sphere(0.026, (cx + 0.03, cy, z + 0.29), purple, (1.4, 0.8, 0.7))
+    tip.rotation_euler = (0.0, math.radians(35.0), 0.0)
+    band = arc_band(rx * 1.04, ry * 1.04, z + 0.012, z + 0.05, 0.01, 0.0, 360.0, cloth("#e0862c"), bevel=0.004)
+    buckle = box((0.04, 0.012, 0.046), (cx, cy - ry * 1.04 - 0.004, z + 0.031), solid("#d9a93a", 0.3, 0.75), 0.004)
+    return [brim, cone, tip, band, buckle]
+
+
+def render_person(name, samples):
+    spec = PEOPLE[name]
+    setup(samples)
+    scene = bpy.context.scene
+    size = spec.get("size", PERSON_SIZE)
+    scene.render.resolution_x, scene.render.resolution_y = size
+    scene.camera.data.ortho_scale = max(size) / spec.get("px_per_meter", PERSON_PX_PER_METER)
+    person(spec)
+    extra = spec.get("extra")
+    cx, cy = HEAD_CENTER
+    if extra == "cap":
+        baseball_cap()
+    elif extra == "witch_hat":
+        witch_hat()
+    elif extra == "gray_bun":
+        gray = solid("#c9c6cc", 0.6)
+        sphere(0.05, (cx, cy + 0.075, HEAD_TOP - 0.045), gray, (1.0, 1.0, 0.9))
+        arc_band(0.03, 0.03, HEAD_TOP - 0.085, HEAD_TOP - 0.072, 0.008, 0.0, 360.0, cloth("#e58aa8"), (cx, cy + 0.07))
+    bust_frame()
+    # A câmera sobe ou desce um pouco para o chapéu alto caber (ou para o ícone ficar centrado).
+    scene.camera.location.z += spec.get("up", -0.06)
+    bpy.context.view_layer.update()
+    anchors = {}
+    shoot(name, anchors)
+    cena3d.update_manifest(anchors)
+    print("PRONTO", name, flush=True)
+
+
 def main():
     args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     samples = 24 if "rascunho" in args else 96
     proof = "prova" in args
     names = ("cabecas", "roupas", "chapeus", "icone", "folha")
-    groups = [a for a in args if a in names] or list(names)
+    people_only = bool([a for a in args if a == "pessoas" or a in PEOPLE])
+    everything = not [a for a in args if a not in ("rascunho", "prova")]
+    groups = [a for a in args if a in names] or ([] if people_only else list(names))
     os.makedirs(WORK, exist_ok=True)
     anchors = {}
     if "cabecas" in groups:
@@ -661,6 +805,9 @@ def main():
         shoot("icone_chef", icon)
         cena3d.update_manifest(icon)
         print("PRONTO icone_chef", flush=True)
+    for name in PEOPLE:
+        if name in args or "pessoas" in args or everything:
+            render_person(name, samples)
     if "folha" in groups:
         with open(os.path.join(cena3d.SPRITES, "sprites.json"), encoding="utf-8") as source:
             sheet(json.load(source))

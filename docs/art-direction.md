@@ -32,7 +32,8 @@ O PO escolheu a opção A de duas imagens conceituais como **referência de acab
 | **Enfeites e máquinas (DT-095, aprovados pelo PO)** | 52 itens com modelo novo, incluindo as máquinas de bebida, o trem, o caldeirão e o balcão de entregas |
 | **Pisos, paredes, itens de parede, portas e terraço (DT-096, aprovados pelo PO)** | 37 pisos e 14 paredes com texturas sem emenda; 21 itens de parede, 12 portas e o terraço com modelo novo |
 | **Retrato do chef (DT-097) e pratos e panelas (DT-098), aprovados pelo PO** | O chef em 3D por camadas (24 cabeças, 6 roupas, 5 chapéus); 39 pratos e 39 panelas |
-| **Pendente** | Bebidas, frutas, temperos, ícone do Garçom e retratos do crítico, vizinhos e bruxa, ainda desenhados; a cidade com a luz antiga |
+| **Vizinhos, bruxa, Garçom, bebidas e frutas (DT-099, aprovados pelo PO)** | 7 vizinhos, a bruxa e o ícone do Garçom como pessoas realistas; 9 bebidas e 3 frutas |
+| **Pendente** | A cidade com a luz antiga; ícones de interface e temperos ficam desenhados de propósito |
 
 **Fica de fora nesta direção:** o que o conceito mostra e o jogo não tem. Os garçons continuam humanos e a loja continua na barra de baixo (DT-088).
 

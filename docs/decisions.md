@@ -4,6 +4,20 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-099 — Vizinhos, bruxa, ícone do Garçom, bebidas e frutas em 3D (ramo amostra-a-2, aprovados pelo PO em 19/11/2026)
+
+**Problema:** depois do retrato do chef (DT-097), os outros rostos do jogo (vizinhos, a bruxa do evento, o ícone do Garçom) e os ícones de bebida e fruta continuavam desenhados a traço e destoavam.
+
+**Decisão:**
+- **Pessoas em busto, numa foto só cada**, em `tools/render3d/retratos_a3d.py` (dicionário `PEOPLE`): os 7 vizinhos, a bruxa Morgana e o ícone do Garçom. Cada um mantém os traços do desenho antigo (cor da pele, cabelo, o boné do Caio, os óculos e o coque da Vó Cida, o chapéu da bruxa).
+- **Bebidas e frutas** em `tools/render3d/pratos_a3d.py` (`DRINKS` e `FRUITS`), com a mesma âncora dos pratos, porque vão nos mesmos balões.
+- **Mesmos nomes de foto:** vizinhos, evento, bebidas e frutas não mudaram em `data/`.
+- **Ficam como estão, de propósito:** a medalha do crítico (`icone_critico`) e os 5 temperos. São símbolos de interface (lupa, raio, foguete, relógio, cruz); em 3D perderiam a leitura.
+
+**Consequência:** o jogo inteiro (salão, personagens, rostos e comida) está na linguagem da referência A, menos a cidade, os ícones de interface e os temperos.
+
+---
+
 ## DT-098 — Pratos e panelas em 3D (ramo amostra-a-2, aprovados pelo PO em 16/11/2026)
 
 **Problema:** os pratos e as panelas eram desenhados a traço, em cima de mesas e fogões realistas. Era o defeito visual mais visível depois dos pisos (achado G1 da [revisão geral](revisao-geral.md)).

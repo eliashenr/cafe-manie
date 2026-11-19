@@ -258,3 +258,40 @@ git -C C:/Projetos/cafe-manie push origin amostra-a-2
 **Teste no celular (depende do PO):** ele copia `build\android\CafeManie.apk` para o aparelho e instala (README, "Jogar no celular Android"); se já houver um Café Manie instalado, precisa desinstalar antes, porque a chave mudou. Depois segue o roteiro "Android" do `qa.md`. Os achados dele entram como a próxima etapa (ordem 9 do plano da revisão geral).
 
 **Próximos passos do plano, com a liberação do PO:** teste de sanidade da arte (C4); retratos do crítico, vizinhos e bruxa e o ícone do Garçom; bebidas, frutas e temperos; juntar `amostra-a-2` em `main` e ligar os testes no GitHub.
+
+### Rodada de 16/11/2026 (em andamento; o PO escolheu "Retratos que faltam")
+
+Escopo decidido pela engenharia para esta etapa (DT-099, a escrever):
+
+| Grupo | Fotos | Como |
+|---|---|---|
+| Vizinhos | `vizinho_ana`, `_beto`, `_caio`, `_duda`, `_lia`, `_rafa`, `_vo_cida` | Pessoas do MakeHuman em busto, numa foto só cada (sem camadas), no fim de `tools/render3d/retratos_a3d.py` (dicionário `PEOPLE`). Aparecem na janela da Cidade com 66×70 |
+| Bruxa Morgana | `retrato_bruxa` | Mesma técnica, com o chapéu de bruxa. Aparece na janela do evento (`scenes/ui/event_dialog.gd`) |
+| Ícone do Garçom | `icone_garcom` | O garçom do jogo (mesma receita de `personagens3d.py`) em busto, como o `icone_chef` |
+| Bebidas e frutas | 9 `bebida_*` e 3 `fruta_*` | Modelos em `tools/render3d/pratos_a3d.py`, com a mesma âncora dos pratos (a base fica 24 px de mundo abaixo da âncora) |
+
+**Ficam como estão, de propósito:** `icone_critico` (é uma medalha, um símbolo de interface, não um retrato) e os 5 `tempero_*` (os desenhos têm símbolos de função: mais porções, raio, foguete, relógio, cruz; em 3D perderiam a leitura). Se o PO quiser, viram uma etapa própria.
+
+Traços de cada vizinho na arte antiga, para manter a identidade: Ana (pele clara, rabo de cavalo castanho), Beto (pele negra, cabelo preto curto), Caio (pele negra, boné azul com estrela), Duda (pele clara, chanel ruivo), Lia (pele morena, cabelo preto longo), Rafa (pele clara, loiro curto), Vó Cida (idosa, coque grisalho, óculos). A bruxa é ruiva de cabelo longo, com chapéu roxo de faixa laranja.
+
+**Andamento da rodada de 16/11 (atualizado em 19/11, quando o PO trocou para o Opus):**
+
+| Item | Situação |
+|---|---|
+| Vizinhos, bruxa e ícone do Garçom | Fotos finais prontas (`retratos_a3d.py -- pessoas`). Conferidos no jogo com `tools/revisao/janelas.gd` (`-Extra cidade` ou `-Extra evento`) |
+| Bebidas e frutas | Fotos finais prontas (`pratos_a3d.py -- bebidas frutas`). Vistas em folha |
+| DT-099, status, roadmap, art-direction | Escritos, como "aguardando a revisão do PO" |
+| Testes | 739 aprovados, cena principal com saída 0, `data/` e `core/` sem mudança, save em 31/10 23:33 |
+| Revisão do PO | **Aprovados em 19/11/2026.** Os documentos já registram a aprovação |
+| Commit | **Enviado em 19/11/2026** para `origin/amostra-a-2`, na conta `eliashenr` (commit `feat: reference A neighbors, witch, waiter icon, drinks and fruits in 3D`) |
+
+Se o PO aprovar: trocar "aguardando/aguardam a revisão" por "aprovados pelo PO" em `status.md`, `roadmap.md`, `art-direction.md` e na DT-099; rodar `tools/revisao/testes.ps1`; e, com "Pode enviar", commit `feat: reference A neighbors, witch, waiter icon, drinks and fruits in 3D`.
+
+### Onde paramos (19/11/2026, depois do envio)
+
+- Tudo enviado; `git status --short` tem de vir vazio. O redesenho está completo no ramo `amostra-a-2`, menos a cidade (luz antiga) e os ícones de interface e temperos (desenhados de propósito).
+- `main` continua em `bb843d6`, **sem nada do redesenho**.
+- **Próximos passos recomendados, com a liberação do PO:**
+  1. **Juntar `amostra-a-2` em `main`** e ligar os testes automáticos no GitHub (P1 e P2 da [revisão geral](revisao-geral.md)). Quanto mais tempo separado, mais difícil juntar. Antes, perguntar ao PO; ligar o GitHub Actions mexe na configuração do repositório.
+  2. **Teste no celular:** o APK de 14/11 está em `build\android\CafeManie.apk`, mas é anterior aos vizinhos, bruxa, bebidas e frutas. Exportar de novo antes de entregar (comando na seção da rodada de 14/11).
+  3. Teste de sanidade da arte (C4), evento de Natal (J2), cidade com a luz nova (G2).

@@ -148,7 +148,8 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **Retrato do chef** (DT-097) e **pratos e panelas** (DT-098), liberados pelo PO em 14/11/2026.
 - [x] **Revisão visual do PO** do retrato, dos pratos e das panelas, no jogo: aprovados (16/11/2026).
 - [x] **Arquivo de instalação do celular** gerado (14/11/2026). Falta o PO fazer o roteiro "Android" do [qa.md](qa.md).
-- [ ] Retratos do crítico, dos vizinhos e da bruxa; ícone do Garçom; bebidas, frutas e temperos.
+- [x] **Vizinhos, bruxa, ícone do Garçom, bebidas e frutas** (DT-099, liberados pelo PO em 16/11/2026). A medalha do crítico e os temperos ficam como símbolos de interface.
+- [x] **Revisão visual do PO** dos vizinhos, da bruxa, do Garçom, das bebidas e das frutas, no jogo: aprovados (19/11/2026).
 - [ ] Plano da [revisão geral](revisao-geral.md) de 11/11/2026 (seção 5), na ordem combinada com o PO.
 
 ## Balanceamento (23/10/2026)
