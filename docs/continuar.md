@@ -302,3 +302,5 @@ Se o PO aprovar: trocar "aguardando/aguardam a revisão" por "aprovados pelo PO"
 - O repositório `eliashenr/cafe-manie` é **público** e a `main` não tem proteção.
 - Plano: (1) criar `.github/workflows/testes.yml`, que baixa a Godot 4.7.2 para Linux e roda os testes sem janela a cada envio; (2) enviar no `amostra-a-2` e ver o GitHub rodar verde; (3) avançar a `main` até o `amostra-a-2` e enviar; (4) conferir que a `main` também rodou verde.
 - Se o GitHub reprovar algo que passa neste PC, a diferença provável é o sistema (Linux lá, Windows aqui): ler o registro com `gh run view --log-failed` antes de mexer.
+- **Feito em 19/11:** o GitHub rodou os testes no `amostra-a-2` (739 aprovados, 1 min 43 s, run 44597919778). O `actions/checkout` passou para a v5, porque a v4 roda em Node 20, que o GitHub está desligando.
+- **Depois do avanço da `main`:** todo trabalho novo sai de `main` em ramos curtos por etapa (por exemplo `etapa-cidade`), e volta para a `main` quando o PO aprovar e os testes do GitHub ficarem verdes. O `amostra-a-2` e o `arte-3d` ficam só como histórico.
