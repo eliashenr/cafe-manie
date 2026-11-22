@@ -2,9 +2,9 @@
 
 ## Estado e autorização (22/11/2026)
 
-**Atualização:** o PO também aprovou a DT-106: “Pode enviar esse novo cenário e integrar à main.” Os 413 sprites estão liberados para publicação e integração. A próxima etapa autorizada (DT-107) é melhorar a interação/continuidade do avatar do chef e unificar Loja/Reforma; ela não faz parte do lote de cenário que está sendo enviado.
+**Atualização:** o PO também aprovou a DT-106: “Pode enviar esse novo cenário e integrar à main.” Os 413 sprites foram publicados em `26c873f` e integrados à `main` pela [PR #2](https://github.com/eliashenr/cafe-manie/pull/2), merge `71489f0`, com a conta `eliashenr` e CI aprovado. A próxima etapa autorizada (DT-107) é melhorar a interação/continuidade do avatar do chef e unificar Loja/Reforma; ela não faz parte do lote de cenário já integrado.
 
-O PO aprovou a reformulação dentro do jogo: “Ficou muito bom! Pode enviar”, e confirmou “Sim, pode integrar à main”. A entrega DT-103/104/105 partiu de `737f73e`, após o Natal, foi enviada em `a09f8e9` e integrada pela [PR #1](https://github.com/eliashenr/cafe-manie/pull/1) no merge `449e755`. Os testes de push e PR passaram antes da integração. A `main` já contém a reformulação aprovada; o cenário DT-106 também foi aprovado e tem publicação/integração autorizadas.
+O PO aprovou a reformulação dentro do jogo: “Ficou muito bom! Pode enviar”, e confirmou “Sim, pode integrar à main”. A entrega DT-103/104/105 partiu de `737f73e`, após o Natal, foi enviada em `a09f8e9` e integrada pela [PR #1](https://github.com/eliashenr/cafe-manie/pull/1) no merge `449e755`. Os testes de push e PR passaram antes da integração. A `main` já contém a reformulação aprovada; o cenário DT-106 também foi aprovado e integrado pela PR #2.
 
 ## O que mudou
 
@@ -45,7 +45,7 @@ O PO pediu também fogões, janelas, pisos e decorações. Essa extensão é a D
 
 ### Extensão do cenário — DT-106, ramo `codex/visual-cenario`
 
-O ramo parte de `94474fc`, que já contém a integração aprovada e a passagem da DT-105 publicada na `main`. O cenário foi validado e aprovado visualmente pelo PO, com envio e integração autorizados em 22/11/2026. A confirmação remota será registrada ao concluir a publicação.
+O ramo parte de `94474fc`, que já contém a integração aprovada e a passagem da DT-105 publicada na `main`. O cenário foi validado e aprovado visualmente pelo PO, com envio e integração autorizados em 22/11/2026. Confirmação remota: commit `26c873f`, PR #2 e merge `71489f0`; testes de push e PR aprovados antes da integração.
 
 - **Cozinha:** 37 itens em quatro rotações, mais dois brilhos de forno: 150 PNGs. Fogões com corpo arredondado, pés, porta e comandos separados; balcões com marcenaria mais leve; máquinas compactas. Inclui trem, caldeirão, forno do Natal e balcão de entregas.
 - **Revestimentos e janelas:** 139 PNGs para 39 pisos (75 variações), 16 paredes, 15 janelas e dois pilares. Veios e juntas mais discretos, vidros legíveis e molduras mais finas. O cache dos materiais distingue os planos XY/XZ, evitando a colisão entre o piso e a parede brasileiros.

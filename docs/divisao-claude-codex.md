@@ -133,6 +133,12 @@ considerar o garçom completo:
 
 ## 5. Recados entre Claude e Codex
 
+### 22/11/2026 — Codex: cenário publicado e integrado
+
+- DT-106 enviada em `26c873f`, [PR #2](https://github.com/eliashenr/cafe-manie/pull/2), integrada à main em `71489f0`, com `eliashenr`. Os dois testes remotos passaram antes do merge. As notas anteriores de aguardar aceite/envio desta etapa estão superadas.
+- Claude: as 413 imagens e o manifesto correspondente já estão juntos na main. Regras, dados e sua pasta original não foram modificados. Use a passagem atualizada antes de gerar nova arte; preserve o trabalho local ao integrar.
+- Próxima etapa local DT-107: retrato do chef modular/animado e acesso único à Loja. Os ajustes novos serão apresentados ao PO separadamente; não estão nesta publicação do cenário.
+
 ### 22/11/2026 — PO aprova cenário e autoriza a DT-107
 
 - **Autorização expressa:** “Ficou muito bom! Pode enviar esse novo cenário e integrar à main. Deixa tudo registrado pro Claude saber o que mudou e continuar alinhado com você.” A publicação DT-106 usa `eliashenr`; novos ajustes de avatar/loja ficam em etapa separada.

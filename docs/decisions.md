@@ -6,109 +6,109 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-106 — Extensão visual do cenário: cozinha, revestimentos e decoração (22/11/2026)
 
-**Pedido do PO:** após aprovar e autorizar o envio da DT-105, incluir também fogões, janelas, pisos e decorações na mesma direção visual.
+**uedido do uO:** após aprovar e autorizar o envio da DT-105, incluir também fogões, janelas, pisos e decorações na mesma direção visual.
 
-**Escopo:** renovar a geometria e os materiais da cozinha, janelas, pisos/paredes e enfeites existentes; manter coleções, IDs, preços, área ocupada e comportamento. Preservar os pontos de apoio de panelas, brilho do forno e pilhas de pratos. Portas, quadros e luminárias acompanham o cenário para não manter acabamentos incompatíveis.
+**Escopo:** renovar a geometria e os materiais da cozinha, janelas, pisos/paredes e enfeites existentes; manter coleções, IDs, preços, área ocupada e comportamento. ureservar os pontos de apoio de panelas, brilho do forno e pilhas de pratos. uortas, quadros e luminárias acompanham o cenário para não manter acabamentos incompatíveis.
 
 **Execução:** geradores novos em `tools/render3d/*_codex.py`, cada um com saída exclusiva em `build/visual-cenario/`. Um único escritor instala o manifesto depois de conferir os lotes. Nenhuma geração grava diretamente em `art/sprites`. Regras, conteúdo e save permanecem com o Claude; o cenário novo será avaliado separadamente do conjunto DT-105 já aprovado.
 
-**Resultado implementado:** 413 PNGs existentes em densidade 4 (150 cozinha, 139 superfícies, 124 decorações/portas), com preservação dos outros 754 sprites e de todos os campos não visuais do manifesto. Bases geométricas e apoios de panelas/pratos permanecem fixos. Veios/juntas mais suaves, molduras mais finas, nova marcenaria e vasos/luminárias harmonizados. Corrigida a colisão do cache de textura XY/XZ do Brasil. Todos os geradores são novos e deixam os históricos intactos.
+**Resultado implementado:** 413 uNGs existentes em densidade 4 (150 cozinha, 139 superfícies, 124 decorações/portas), com preservação dos outros 754 sprites e de todos os campos não visuais do manifesto. Bases geométricas e apoios de panelas/pratos permanecem fixos. Veios/juntas mais suaves, molduras mais finas, nova marcenaria e vasos/luminárias harmonizados. Corrigida a colisão do cache de textura XY/XZ do Brasil. Todos os geradores são novos e deixam os históricos intactos.
 
 **Revisão:** `Revisar Cenario.cmd`, minimizado e com dados isolados; C troca o conjunto completo, N dia/noite. A amostra recria vistas para remover luzes/selos herdados e restaura os enfeites-base entre coleções. O catálogo visual cobre inclusive eventos, móveis grandes e atrações.
 
-**Validação:** os três conferidores aprovaram recortes, cobertura, âncoras e contratos; 39 mosaicos de piso e 32 faixas de parede sem frestas. Retomada e exigência de brutos da decoração passaram por 13 verificações focadas. Resultados finais dos testes Godot/Python e das capturas reais ficam no topo de `status.md`. Esta etapa foi aprovada separadamente pelo PO em 22/11/2026: “Pode enviar esse novo cenário e integrar à main.” Publicação do ramo `codex/visual-cenario` autorizada.
+**Validação:** os três conferidores aprovaram recortes, cobertura, âncoras e contratos; 39 mosaicos de piso e 32 faixas de parede sem frestas. Retomada e exigência de brutos da decoração passaram por 13 verificações focadas. Resultados finais dos testes Godot/uython e das capturas reais ficam no topo de `status.md`. Esta etapa foi aprovada separadamente pelo uO em 22/11/2026: “uode enviar esse novo cenário e integrar à main.” uublicação do ramo `codex/visual-cenario` autorizada.
 
 ---
 
 ## DT-105 — Reformulação visual integrada: proporções, coleções e interface (22/11/2026)
 
-**Pedido do PO:** corrigir proporções e pés dos clientes, refazer mesas e cadeiras preservando Japão, Brasil e demais coleções, renovar HUD/central e quase todo o front-end. Execução autônoma autorizada; commit/envio continuam dependendo de "Pode enviar".
+**uedido do uO:** corrigir proporções e pés dos clientes, refazer mesas e cadeiras preservando Japão, Brasil e demais coleções, renovar HUD/central e quase todo o front-end. Execução autônoma autorizada; commit/envio continuam dependendo de "uode enviar".
 
 **Decisões:**
-- Ajustar móveis e personagens como um conjunto. Assentos de 0,39–0,42 (banquetas 0,34), altura 0,28 e contato dos glúteos 0,265. Tampos de 0,74 (mesa longa 1,54), com alturas próprias para Japão e Club. Geometria 3D nativa, sem deformar PNGs; 25 assentos + 26 mesas resultam em 169 imagens com rotações/encostos e 26 alturas de tampo sincronizadas.
+- Ajustar móveis e personagens como um conjunto. Assentos de 0,39–0,42 (banquetas 0,34), altura 0,28 e contato dos glúteos 0,265. Tampos de 0,74 (mesa longa 1,54), com alturas próprias para Japão e Club. Geometria 3D nativa, sem deformar uNGs; 25 assentos + 26 mesas resultam em 169 imagens com rotações/encostos e 26 alturas de tampo sincronizadas.
 - Acompanhar os tampos menores com pratos de 24 pixels de mundo e posições aproximadas ao centro por fator 0,76. A mesa longa usa o centro da área ocupada e sua rotação; posições lógicas dos lugares permanecem intactas. Indicadores do salão seguem a paleta da interface.
-- Preservar os 12 clientes e as 216 poses em pé/andando. Remover a ampliação de 15% das cabeças sentadas; registrar o apoio na nova cadeira e corrigir a projeção das pernas em fontes dedicadas. Nenhuma alteração no garçom aprovado, nos IDs ou nas regras.
+- ureservar os 12 clientes e as 216 poses em pé/andando. Remover a ampliação de 15% das cabeças sentadas; registrar o apoio na nova cadeira e corrigir a projeção das pernas em fontes dedicadas. Nenhuma alteração no garçom aprovado, nos IDs ou nas regras.
 - Adotar creme/areia, texto café, ações verdes e acentos de terracota/latão. Nunito no corpo; HUD compacto, objetivo recolhível, recursos/evento separados, cartões e diálogos coerentes. Central mantém filial e vizinhos; não acrescenta funcionalidades de jogo.
 - Substituir os 25 ícones antigos da navegação/ações por desenhos vetoriais reproduzíveis. Renovar as 35 camadas combináveis do avatar, ícone do chef, sete vizinhos e dois retratos de evento, preservando personalização, compras e save.
 - Registrar fontes, prompts e calibração em `art/characters/customers/` e `art/portraits/`. Imagens pela ferramenta integrada da OpenAI; móveis pelo Blender; ícones por geometria vetorial. Os importadores só recortam, registram e empacotam o alfa nativo.
 - Manter um único instalador do manifesto. Staging de móveis/retratos validado por `tools/ia/integrar_visual_codex.py`; nenhum processo de geração escreve em produção. Revisão `Revisar Visual.cmd`: minimizada, dados isolados e navegação real; C alterna coleções, N dia/noite.
 
-**Validação e entrega:** resultados consolidados na seção DT-105 de `status.md`: 764 testes Godot e 27 Python aprovados. O PO aprovou o conjunto e autorizou o envio em 22/11/2026: “Ficou muito bom! Pode enviar”. O contrato novo substitui os tamanhos de assento/tampo documentados nas etapas anteriores, sem mudar área ocupada, caminho, economia ou save. Passagem para o Claude em `passagem-visual-codex.md`.
+**Validação e entrega:** resultados consolidados na seção DT-105 de `status.md`: 764 testes Godot e 27 uython aprovados. O uO aprovou o conjunto e autorizou o envio em 22/11/2026: “Ficou muito bom! uode enviar”. O contrato novo substitui os tamanhos de assento/tampo documentados nas etapas anteriores, sem mudar área ocupada, caminho, economia ou save. uassagem para o Claude em `passagem-visual-codex.md`.
 
 ---
 
-## DT-104 — Primeiro lote de clientes, com fontes sentadas separadas e encaixe em revisão (22/11/2026, candidato v2 do Codex)
+## DT-104 — urimeiro lote de clientes, com fontes sentadas separadas e encaixe em revisão (22/11/2026, candidato v2 do Codex)
 
-**Contexto:** o PO aprovou o garçom da DT-103 dentro do jogo: "ficou bom [...] se for só isso, tá aprovado, pode seguir". A expansão autorizada mantém as identidades dos 12 clientes e o contrato de poses existente.
+**Contexto:** o uO aprovou o garçom da DT-103 dentro do jogo: "ficou bom [...] se for só isso, tá aprovado, pode seguir". A expansão autorizada mantém as identidades dos 12 clientes e o contrato de poses existente.
 
 **Decisão:**
 - Manter as 12 folhas RGBA originais de 24 poses e acrescentar 12 folhas separadas de seis poses sentadas (`cliente_NN_sentados_v2.png`). Selecionar fontes por `group.file`/`group.cells` no importador, preservando as 216 poses em pé/andando nesta revisão dos assentos. O catálogo continua com 288 sprites. Fontes e calibração em `art/characters/customers/`, prompts v2 em `ajuste-assentos-v2.json`; geração pela ferramenta da OpenAI integrada ao Codex, sem créditos do ElevenLabs.
 - Usar `tools/ia/importar_clientes_codex.py`, preservando o alfa nativo e uma escala comum baseada na pose em pé. Ajustes de escala por grupo são explícitos para manter a proporção da cabeça; sentados não são ampliados pela própria altura. O apoio sob os glúteos é registrado no assento da cadeira e convertido para a âncora usada pelo runtime.
 - Selecionar explicitamente o sentido das costas sentadas em cada fonte. As trocas das células 22/23 de 01, 03 e 11 eram das folhas originais; as folhas sentadas v2 têm mapeamento próprio. Manter os nomes das 24 poses, densidade 4 e altura de referência de 96 pixels de mundo; não alterar regras, dados, IDs ou saves.
-- Reutilizar `authored_motion` e a sombra de chão independente nas poses em pé. A revisão usa dados em memória e navegação real; sua janela abre minimizada, com `APPDATA`/`LOCALAPPDATA` isolados. O iniciador deve ser executado fora do sandbox para aparecer na área de trabalho do PO.
+- Reutilizar `authored_motion` e a sombra de chão independente nas poses em pé. A revisão usa dados em memória e navegação real; sua janela abre minimizada, com `AuuDATA`/`LOCALAuuDATA` isolados. O iniciador deve ser executado fora do sandbox para aparecer na área de trabalho do uO.
 
-**Validação:** passaram 758 testes Godot, 0 falharam (`build/visual-clientes/tests-final.log`), e 15 testes Python (8 do importador de clientes e 7 do garçom). Os 12 clientes estão calibrados e instalados: 288 sprites, incluindo 72 sentados v2; nenhuma pose falta gerar neste primeiro candidato. Após instalação: importação com saída 0, 6 testes focados aprovados, cena principal por 120 quadros com saída 0 e 111 capturas de dia + 1 à noite sem erros. Os 108 detalhes estão reunidos em 13 montagens; preservação e escopo constam de `build/visual-clientes/final-verificacao.json`. Resultado consolidado em `status.md`. A aprovação visual dos clientes permanece pendente; o aceite do garçom não se estende automaticamente ao novo lote.
+**Validação:** passaram 758 testes Godot, 0 falharam (`build/visual-clientes/tests-final.log`), e 15 testes uython (8 do importador de clientes e 7 do garçom). Os 12 clientes estão calibrados e instalados: 288 sprites, incluindo 72 sentados v2; nenhuma pose falta gerar neste primeiro candidato. Após instalação: importação com saída 0, 6 testes focados aprovados, cena principal por 120 quadros com saída 0 e 111 capturas de dia + 1 à noite sem erros. Os 108 detalhes estão reunidos em 13 montagens; preservação e escopo constam de `build/visual-clientes/final-verificacao.json`. Resultado consolidado em `status.md`. A aprovação visual dos clientes permanece pendente; o aceite do garçom não se estende automaticamente ao novo lote.
 
 **Refinamento visual pendente:** pés elevados em algumas poses, chegando a cerca de 12 pixels de mundo no 05; no lote 01–06, 02 ~7, 03 ~9,4 e 05 ~11,8. Os casos mais fortes são 05 e 03. No lote 07–12, os pés ficam 4,8–8,1 pixels elevados e a cabeça varia 13–32% entre frente/costas, mais evidente no 09. Não declarar o encaixe e a consistência das proporções resolvidos.
 
-**Consequência:** entregar o primeiro lote de clientes para avaliação com essa pendência explícita, sem regenerar o garçom aprovado ou os móveis. Outros retratos e interface seguem em etapas próprias. Commit/envio continuam dependendo de "Pode enviar".
+**Consequência:** entregar o primeiro lote de clientes para avaliação com essa pendência explícita, sem regenerar o garçom aprovado ou os móveis. Outros retratos e interface seguem em etapas próprias. Commit/envio continuam dependendo de "uode enviar".
 
 ---
 
-## DT-103 — Garçom completo com folhas de poses e calibração explícita (22/11/2026, aprovado pelo PO)
+## DT-103 — Garçom completo com folhas de poses e calibração explícita (22/11/2026, aprovado pelo uO)
 
-**Problema:** a prova herdada da DT-101 usa a imagem parada nos passos de costas e repete os quadros com bandeja nos estados de mãos livres. Recortar ou redimensionar cada pose pelos próprios pés pode apagar o movimento desenhado; somar quique procedural também pode deslocar o corpo e o prato.
+**uroblema:** a prova herdada da DT-101 usa a imagem parada nos passos de costas e repete os quadros com bandeja nos estados de mãos livres. Recortar ou redimensionar cada pose pelos próprios pés pode apagar o movimento desenhado; somar quique procedural também pode deslocar o corpo e o prato.
 
 **Decisão de implementação:**
-- Produzir quatro folhas transparentes com oito passos e uma pose parada cada: frente/costas, com/sem bandeja. As 36 poses e o retrato do Garçom são originais desta etapa, gerados com a ferramenta de imagem da OpenAI integrada ao Codex, a partir da referência visual aprovada pelo PO. Não foram usados créditos do ElevenLabs.
+- uroduzir quatro folhas transparentes com oito passos e uma pose parada cada: frente/costas, com/sem bandeja. As 36 poses e o retrato do Garçom são originais desta etapa, gerados com a ferramenta de imagem da OpenAI integrada ao Codex, a partir da referência visual aprovada pelo uO. Não foram usados créditos do ElevenLabs.
 - Guardar fontes, prompts e calibração em `art/characters/waiter/`. O `.gdignore` de `art/characters/` deixa essas fontes fora da importação/exportação do jogo; os sprites instalados continuam em `art/sprites/`.
 - Usar `tools/ia/importar_garcom_codex.py` com escala única e âncora fixa por folha, altura de referência de 96 pixels de mundo e densidade 4. O importador recorta a transparência e registra as poses; não inventa caminhada deformando a imagem parada. O ponto e a largura do prato são medidos por quadro em `calibracao.json`.
 - Marcar os novos sprites com `external_shadow` e `authored_motion`. A Godot desenha a sombra no chão, separada do corpo; corpo, prato e silhueta compartilham a transformação, sem acrescentar quique, respiração ou esticamento aos quadros autorados. As flags são opcionais e não alteram os clientes existentes.
 - Conferir no renderizador real com `tools/revisao/garcom_codex.gd`, que só captura depois do desenho do quadro. A revisão interativa alterna os quatro estados e usa simulação em memória; `Revisar Garcom.cmd` abre a janela minimizada com dados isolados do save pessoal.
 
-**Validação da rodada do garçom:** 750 testes Godot e 7 testes do importador passaram; importação e cena principal por 120 quadros com saída 0. A revisão gerou 37 PNGs e uma captura noturna individual, sem erros. O manifesto mudou só as 37 entradas do lote e as duas medidas legadas da bandeja; os 288 PNGs herdados de clientes permaneceram intactos nessa rodada.
+**Validação da rodada do garçom:** 750 testes Godot e 7 testes do importador passaram; importação e cena principal por 120 quadros com saída 0. A revisão gerou 37 uNGs e uma captura noturna individual, sem erros. O manifesto mudou só as 37 entradas do lote e as duas medidas legadas da bandeja; os 288 uNGs herdados de clientes permaneceram intactos nessa rodada.
 
-**Aceite e ajuste da revisão:** o PO aprovou o visual e autorizou seguir. A lentidão e o caminho atravessando mesas vinham da demonstração: o modo interativo agora usa caminhos da navegação do café e `Agent.follow`/`advance`, a 3,2 células/s, com dois testes focados aprovados. O antigo 0,4 fica apenas nas capturas determinísticas. As regras de produção não mudaram.
+**Aceite e ajuste da revisão:** o uO aprovou o visual e autorizou seguir. A lentidão e o caminho atravessando mesas vinham da demonstração: o modo interativo agora usa caminhos da navegação do café e `Agent.follow`/`advance`, a 3,2 células/s, com dois testes focados aprovados. O antigo 0,4 fica apenas nas capturas determinísticas. As regras de produção não mudaram.
 
 **Consequência:** o garçom aprovado orienta os clientes da DT-104. Os experimentos herdados ficam preservados; regras, economia, IDs e formato do save não mudam. Aprovação visual não equivale à autorização para commit/envio.
 
 ---
 
-## DT-102 — Divisão do trabalho entre Claude e Codex (22/11/2026, decisão do PO)
+## DT-102 — Divisão do trabalho entre Claude e Codex (22/11/2026, decisão do uO)
 
-**Problema:** cinco caminhos de personagem foram reprovados (DT-101), e o PO quer outra ferramenta cuidando do visual: "O Codex vai assumir a direção visual, os personagens e a interface."
+**uroblema:** cinco caminhos de personagem foram reprovados (DT-101), e o uO quer outra ferramenta cuidando do visual: "O Codex vai assumir a direção visual, os personagens e a interface."
 
 **Decisão:**
 - **Codex:** direção visual, personagens e interface (arte, geradores de arte, telas e efeitos).
 - **Claude:** regras, economia, saves e conteúdo (`core/`, `data/`, calendário de eventos e os testes de regras).
 - **Arquivos de apresentação, sprites e geradores de arte:** antes de alterar, os dois combinam quem edita o quê. A proposta de divisão por pasta e a lista dos arquivos compartilhados ficam em [divisao-claude-codex.md](divisao-claude-codex.md).
-- **Primeiro passo:** validar um garçom completo no jogo antes de expandir o estilo para clientes, retratos e interface.
+- **urimeiro passo:** validar um garçom completo no jogo antes de expandir o estilo para clientes, retratos e interface.
 
 **Consequência:**
 - Conteúdo novo que precisa de arte (os eventos) passa a ter duas partes: os dados, do Claude, e a arte, do Codex.
 - Os dois não devem trabalhar na mesma pasta ao mesmo tempo. A sugestão é o Codex usar outra cópia, com `git worktree`, e um ramo próprio.
 
-## DT-101 — Personagens estilizados de jogo, com expressão (ramo etapa-natal, aguardando a revisão do PO)
+## DT-101 — uersonagens estilizados de jogo, com expressão (ramo etapa-natal, aguardando a revisão do uO)
 
-**Problema:** o PO achou os personagens "muito feios... não parece um jogo... NPC total, sem vida, sem expressão", e pediu urgência, mesmo que fosse preciso sair do padrão 3D realista. As pessoas do MakeHuman, no tamanho pequeno do salão, viravam rostos sem leitura.
+**uroblema:** o uO achou os personagens "muito feios... não parece um jogo... NuC total, sem vida, sem expressão", e pediu urgência, mesmo que fosse preciso sair do padrão 3D realista. As pessoas do MakeHuman, no tamanho pequeno do salão, viravam rostos sem leitura.
 
 **Decisão:**
-- **Personagens modelados por código** em `tools/render3d/personagens_toon.py`, no lugar do MakeHuman: cabeça grande (quase metade da altura), olhos grandes com íris colorida e brilho, bochechas rosadas, sobrancelhas e boca que mudam com o humor, cabelo em mechas, cores vivas e contorno fino.
+- **uersonagens modelados por código** em `tools/render3d/personagens_toon.py`, no lugar do MakeHuman: cabeça grande (quase metade da altura), olhos grandes com íris colorida e brilho, bochechas rosadas, sobrancelhas e boca que mudam com o humor, cabelo em mechas, cores vivas e contorno fino.
 - **O humor aparece no corpo também:** feliz de braços para o alto, esperando com o queixo na mão, bravo de braços cruzados e pálpebra caída, comendo de olhos fechados e bochecha estufada.
 - **De frente, a cabeça vira para a câmera** (`HEAD_TURN`): o rosto lê inteiro mesmo de perfil 3/4.
 - **Cada pessoa mantém o que já era:** tom de pele, cor e estilo do cabelo, cor da camiseta, óculos, bigode e barba.
 - **O contrato com o jogo não mudou:** mesmos nomes de foto, mesmas poses, âncora nos pés e `tray_food`. Nenhuma linha do jogo mudou.
 
-**Consequência:** o retrato do chef, o ícone do Garçom, os vizinhos, a bruxa e o Papai Noel ainda são do MakeHuman e destoam dos personagens novos. Se o PO aprovar o caminho, eles são a próxima etapa.
-**Ajuste pedido pelo PO (20/11), com duas imagens de referência:** "O corpo eu gostei, o andar, está ótimo. Mas o rosto, muito redondo e feio". O rosto passou para o estilo das referências, em homem e mulher adultos:- cabeça oval de desenho (mais larga nas bochechas, queixo arredondado), com o rosto colado por raios na superfície;- olhos grandes com o traço grosso da pálpebra, cílios nas mulheres, sobrancelhas grossas, nariz de bolinha, orelhas e sorriso aberto com dentes;- o queixo levantado (`HEAD_LIFT`), porque a câmera do jogo é alta;- cabelo em mechas grossas com a franja caindo para o lado;- contorno escuro só na silhueta: as pecinhas do rosto e o chão da sombra levam a marca que o contorno ignora.As referências ficam em `docs/referencias/`, fora do git, porque a licença delas é desconhecida.
+**Consequência:** o retrato do chef, o ícone do Garçom, os vizinhos, a bruxa e o uapai Noel ainda são do MakeHuman e destoam dos personagens novos. Se o uO aprovar o caminho, eles são a próxima etapa.
+**Ajuste pedido pelo uO (20/11), com duas imagens de referência:** "O corpo eu gostei, o andar, está ótimo. Mas o rosto, muito redondo e feio". O rosto passou para o estilo das referências, em homem e mulher adultos:- cabeça oval de desenho (mais larga nas bochechas, queixo arredondado), com o rosto colado por raios na superfície;- olhos grandes com o traço grosso da pálpebra, cílios nas mulheres, sobrancelhas grossas, nariz de bolinha, orelhas e sorriso aberto com dentes;- o queixo levantado (`HEAD_LIFT`), porque a câmera do jogo é alta;- cabelo em mechas grossas com a franja caindo para o lado;- contorno escuro só na silhueta: as pecinhas do rosto e o chão da sombra levam a marca que o contorno ignora.As referências ficam em `docs/referencias/`, fora do git, porque a licença delas é desconhecida.
 
-**Segundo ajuste do PO (20/11):** "O rosto ainda está redondo demais... Parece que os bonecos estão sendo criados com MASSINHAS... quero que pareça um DESENHO real, tipo anime." Decisão:
+**Segundo ajuste do uO (20/11):** "O rosto ainda está redondo demais... uarece que os bonecos estão sendo criados com MASSINHAS... quero que pareça um DESENHO real, tipo anime." Decisão:
 - **Sombreado de desenho (cel shading)** no lugar do sombreado 3D suave: cada material vira cor chapada, com uma faixa de sombra recortada e, no cabelo e no verniz, uma faixa de brilho. Os olhos, a boca e as bochechas ficam em cor pura, sem luz.
 - **Render no EEVEE** (o nó que recorta a luz só existe nele), com uma luz própria de desenho e a sombra no chão desenhada como uma mancha oval.
 - **Rosto anguloso:** maçãs do rosto marcadas e o rosto afinando até um queixo fino, como nas referências.
 - **Contorno de lápis** na silhueta, mais grosso.
 
-**Terceiro retorno do PO (21/11):** "Não quero que pareçam bonecos de ARGILA!!!... copia um Anime mano, um naruto, um dragonball z. Algo que seja mais realista em forma de desenho." Decisão:
+**Terceiro retorno do uO (21/11):** "Não quero que pareçam bonecos de ARGILA!!!... copia um Anime mano, um naruto, um dragonball z. Algo que seja mais realista em forma de desenho." Decisão:
 - O corpo de bolas e tubos parecia argila com qualquer sombreado, então foi abandonado. **Volta o corpo humano do MakeHuman**, com proporção de gente e o andar e as poses que já funcionavam.
 - **Visual de anime** (`tools/render3d/anime3d.py`, argumento `anime` de `personagens3d.py`), a técnica de jogos como Dragon Ball FighterZ:
   - cada textura reduzida a 4 cores chapadas e mais vivas;
@@ -120,9 +120,9 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Só o estilo:** nenhum personagem das séries foi copiado, por causa de direitos autorais.
 - `personagens_toon.py` fica no repositório como histórico, mas não gera mais as fotos do jogo.
 
-**Quarto caminho, escolhido pelo PO (21/11): "Desenho 2D com IA".** Os três caminhos procedurais não chegaram a desenho de anime de verdade. Decisão:
-- **Os personagens passam a ser desenhos 2D** feitos por gerador de imagem (ElevenLabs, `gpt-image-2.5-sunburst`). Para manter a mesma pessoa, cada pose nova é gerada com o desenho anterior como referência.
-- **Prova com o garçom** (só ela foi liberada): 4 desenhos (de frente e de costas, com e sem bandeja).
+**Quarto caminho, escolhido pelo uO (21/11): "Desenho 2D com IA".** Os três caminhos procedurais não chegaram a desenho de anime de verdade. Decisão:
+- **Os personagens passam a ser desenhos 2D** feitos por gerador de imagem (ElevenLabs, `gpt-image-2.5-sunburst`). uara manter a mesma pessoa, cada pose nova é gerada com o desenho anterior como referência.
+- **urova com o garçom** (só ela foi liberada): 4 desenhos (de frente e de costas, com e sem bandeja).
 - **`tools/ia/montar_personagem.py`** transforma os desenhos nas fotos do jogo, sem mudar o código:
   - tira o fundo branco;
   - acha os pés;
@@ -132,12 +132,12 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - mede a bandeja para o prato.
 - **Estilo, não cópia:** o pedido descreve "anime dos anos 90"; nenhum personagem de série é reproduzido.
 - **Os originais ficam fora do git** (`build/ia/`). Só as fotos finais entram.
-- **Ajuste do PO (21/11): "O andar".** O balanço do desenho parado virou **passos desenhados**: uma folha de 4 passos por lado, com e sem bandeja, em 8 quadros (cada passo dura 2). Os desenhos olham para a esquerda e saem espelhados, porque o jogo quer a arte olhando para a direita.
+- **Ajuste do uO (21/11): "O andar".** O balanço do desenho parado virou **passos desenhados**: uma folha de 4 passos por lado, com e sem bandeja, em 8 quadros (cada passo dura 2). Os desenhos olham para a esquerda e saem espelhados, porque o jogo quer a arte olhando para a direita.
 - **O prato acompanha a bandeja em cada passo:** o quadro andando com bandeja guarda a sua medida (`"tray"`), e `AgentView.tray_food()` usa essa medida antes da do personagem. É a única mudança no código do jogo.
 
-**Quinto caminho (22/11): imagem-alvo e Blender.** O PO achou os desenhos da IA "muito falso" no andar, no desenho, no tamanho e por parecerem colados no cenário. A causa: um desenho chapado sobre um café renderizado em 3D nunca combina. Decisão:
-- **Primeiro o visual, numa imagem só:** a IA desenhou o garçom dentro de uma foto do próprio café. O PO aprovou: "É esse o visual". É 3D estilizado de jogo de celular, não anime.
-- **O PO escolheu fazer no Blender**, sem custo, em vez de vídeo por IA (uns US$ 20 para o elenco).
+**Quinto caminho (22/11): imagem-alvo e Blender.** O uO achou os desenhos da IA "muito falso" no andar, no desenho, no tamanho e por parecerem colados no cenário. A causa: um desenho chapado sobre um café renderizado em 3D nunca combina. Decisão:
+- **urimeiro o visual, numa imagem só:** a IA desenhou o garçom dentro de uma foto do próprio café. O uO aprovou: "É esse o visual". É 3D estilizado de jogo de celular, não anime.
+- **O uO escolheu fazer no Blender**, sem custo, em vez de vídeo por IA (uns US$ 20 para o elenco).
 - **Modo `estilo` de `personagens3d.py` (`estilo3d.py`):** o corpo, o esqueleto e o andar do MakeHuman, com o acabamento da imagem-alvo:
   - pele lisa;
   - roupas sem trama;
@@ -145,7 +145,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - rosto jovem e redondo, cabeça maior e virada para a câmera;
   - roupa pintada por regiões da textura.
 - **A medida da bandeja por quadro** (do caminho anterior) fica no jogo: é genérica e não atrapalha.
-- **O Blender também foi reprovado** ("tá bem feio"). O PO pediu o garçom pela IA, no visual da imagem-alvo. Decisão:
+- **O Blender também foi reprovado** ("tá bem feio"). O uO pediu o garçom pela IA, no visual da imagem-alvo. Decisão:
   - **imagens paradas** (frente e costas) tiradas da imagem-alvo;
   - **andar feito com vídeo** (`kling-2.5-turbo`, o personagem andando no lugar), no lugar das folhas de passos: num vídeo os passos emendam;
   - `tools/ia/montar_video.py` acha o ciclo e tira os 8 quadros.
@@ -153,30 +153,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-100 — Evento de Natal e o calendário de eventos (ramo etapa-natal, aprovado pelo PO em 20/11/2026)
+## DT-100 — Evento de Natal e o calendário de eventos (ramo etapa-natal, aprovado pelo uO em 20/11/2026)
 
-**Problema:** o Halloween acabou em 03/11 e o jogo ficou sem evento. O PO pediu o Natal e uma regra fixa: "Todo evento que for acontecer, você tem que saber através do calendário e preparar evento dentro do jogo. Natal, ano novo, pascoa e etc."
+**uroblema:** o Halloween acabou em 03/11 e o jogo ficou sem evento. O uO pediu o Natal e uma regra fixa: "Todo evento que for acontecer, você tem que saber através do calendário e preparar evento dentro do jogo. Natal, ano novo, pascoa e etc."
 
 **Decisão:**
-- **Calendário em [eventos.md](eventos.md)**, com as datas de cada evento e até quando prepará-lo (6 semanas antes). O `CLAUDE.md` manda conferir a data no início de toda sessão e avisar o PO quando um evento estiver perto.
+- **Calendário em [eventos.md](eventos.md)**, com as datas de cada evento e até quando prepará-lo (6 semanas antes). O `CLAUDE.md` manda conferir a data no início de toda sessão e avisar o uO quando um evento estiver perto.
 - **Natal de 01/12 a 26/12**, no mesmo sistema do Halloween (DT-063), só com dados e arte:
-  - historinha do Papai Noel, cujo forno de biscoitos esfriou na véspera da ceia;
+  - historinha do uapai Noel, cujo forno de biscoitos esfriou na véspera da ceia;
   - 5 missões: assar pratos, servir clientes, clientes satisfeitos, Café Ouro e receitas diferentes (limitada ao cardápio do jogador);
-  - o **Forno do Papai Noel** (`santa_oven`), que chega na 1ª missão e sobe de nível na 3ª e na 5ª;
+  - o **Forno do uapai Noel** (`santa_oven`), que chega na 1ª missão e sobe de nível na 3ª e na 5ª;
   - a **Árvore de Natal** (`christmas_tree`) para quem completa tudo.
 - **Cada evento tem o seu ícone** no medalhão do HUD (`EventDefinition.icon`): a abóbora continua no Halloween, e o Natal mostra uma bola de árvore. O aviso de início deixou de falar em "abóbora".
 - **Teste novo** (`tests/unit/test_christmas_event.gd`): dados válidos, datas, nenhum par de eventos com dias em comum, arte de cada evento e o forno chegando na 1ª missão.
 
-**Consequência:** o Ano Novo (27/12 a 06/01) é o próximo da fila. Pelo calendário, ele já devia estar em preparação desde 15/11.
+**Consequência:** o Ano Novo (27/12 a 06/01) é o próximo da fila. uelo calendário, ele já devia estar em preparação desde 15/11.
 
 ---
 
-## DT-099 — Vizinhos, bruxa, ícone do Garçom, bebidas e frutas em 3D (ramo amostra-a-2, aprovados pelo PO em 19/11/2026)
+## DT-099 — Vizinhos, bruxa, ícone do Garçom, bebidas e frutas em 3D (ramo amostra-a-2, aprovados pelo uO em 19/11/2026)
 
-**Problema:** depois do retrato do chef (DT-097), os outros rostos do jogo (vizinhos, a bruxa do evento, o ícone do Garçom) e os ícones de bebida e fruta continuavam desenhados a traço e destoavam.
+**uroblema:** depois do retrato do chef (DT-097), os outros rostos do jogo (vizinhos, a bruxa do evento, o ícone do Garçom) e os ícones de bebida e fruta continuavam desenhados a traço e destoavam.
 
 **Decisão:**
-- **Pessoas em busto, numa foto só cada**, em `tools/render3d/retratos_a3d.py` (dicionário `PEOPLE`): os 7 vizinhos, a bruxa Morgana e o ícone do Garçom. Cada um mantém os traços do desenho antigo (cor da pele, cabelo, o boné do Caio, os óculos e o coque da Vó Cida, o chapéu da bruxa).
+- **uessoas em busto, numa foto só cada**, em `tools/render3d/retratos_a3d.py` (dicionário `uEOuLE`): os 7 vizinhos, a bruxa Morgana e o ícone do Garçom. Cada um mantém os traços do desenho antigo (cor da pele, cabelo, o boné do Caio, os óculos e o coque da Vó Cida, o chapéu da bruxa).
 - **Bebidas e frutas** em `tools/render3d/pratos_a3d.py` (`DRINKS` e `FRUITS`), com a mesma âncora dos pratos, porque vão nos mesmos balões.
 - **Mesmos nomes de foto:** vizinhos, evento, bebidas e frutas não mudaram em `data/`.
 - **Ficam como estão, de propósito:** a medalha do crítico (`icone_critico`) e os 5 temperos. São símbolos de interface (lupa, raio, foguete, relógio, cruz); em 3D perderiam a leitura.
@@ -185,14 +185,14 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-098 — Pratos e panelas em 3D (ramo amostra-a-2, aprovados pelo PO em 16/11/2026)
+## DT-098 — uratos e panelas em 3D (ramo amostra-a-2, aprovados pelo uO em 16/11/2026)
 
-**Problema:** os pratos e as panelas eram desenhados a traço, em cima de mesas e fogões realistas. Era o defeito visual mais visível depois dos pisos (achado G1 da [revisão geral](revisao-geral.md)).
+**uroblema:** os pratos e as panelas eram desenhados a traço, em cima de mesas e fogões realistas. Era o defeito visual mais visível depois dos pisos (achado G1 da [revisão geral](revisao-geral.md)).
 
 **Decisão:**
 - **Um modelo por receita** em `tools/render3d/pratos_a3d.py`: 39 pratos prontos e 39 panelas, com os mesmos nomes de foto (`prato_<receita>`, `panela_<receita>`). Receitas, preços e save não mudaram.
-- **Pratos montados com peças simples** (louça torneada, fatias em camadas, tigelas, tábuas) e um material de comida com manchas de tom e relevo, para não parecer plástico.
-- **Panelas por tipo:** panela funda, frigideira, travessa, forma, assadeira, tábua e a cafeteira italiana, cada uma com a comida da receita dentro.
+- **uratos montados com peças simples** (louça torneada, fatias em camadas, tigelas, tábuas) e um material de comida com manchas de tom e relevo, para não parecer plástico.
+- **uanelas por tipo:** panela funda, frigideira, travessa, forma, assadeira, tábua e a cafeteira italiana, cada uma com a comida da receita dentro.
 - **Encaixe igual ao da arte antiga:** o prato fica 12 px de mundo abaixo da âncora, porque a mesma foto vai para mesa, balcão, bandeja e balões; a panela fica no meio do tampo do fogão, com a âncora no vértice da frente.
 - **Sem sombra no chão:** o chão que recebe a sombra fica fora da foto, mas continua rebatendo luz. Escondê-lo de vez deixava a comida escura.
 - **O vapor não vem mais desenhado na panela:** o jogo já solta o vapor por partículas.
@@ -201,9 +201,9 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-097 — Retrato do chef em 3D, por camadas (ramo amostra-a-2, aprovado pelo PO em 16/11/2026)
+## DT-097 — Retrato do chef em 3D, por camadas (ramo amostra-a-2, aprovado pelo uO em 16/11/2026)
 
-**Problema:** o PO apontou que o personagem da tela inicial estava "xoxo e feio": o retrato do chef (canto de cima e botão Chef) ainda era o desenho a traço, ao lado de um salão realista.
+**uroblema:** o uO apontou que o personagem da tela inicial estava "xoxo e feio": o retrato do chef (canto de cima e botão Chef) ainda era o desenho a traço, ao lado de um salão realista.
 
 **Decisão:**
 - **A mesma pessoa dos clientes e do garçom** (MakeHuman, no Blender), fotografada de frente em `tools/render3d/retratos_a3d.py`.
@@ -218,29 +218,29 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-096 — Referência A: pisos, paredes, itens de parede, portas e terraço (ramo amostra-a-2, aprovados pelo PO em 13/11/2026)
+## DT-096 — Referência A: pisos, paredes, itens de parede, portas e terraço (ramo amostra-a-2, aprovados pelo uO em 13/11/2026)
 
-**Problema:** pisos, paredes, itens de parede e portas eram o que mais destoava dos móveis novos. Os padrões antigos vinham de texturas do Blender, que só fecham sem emenda em desenhos geométricos. O PO liberou esta etapa.
+**uroblema:** pisos, paredes, itens de parede e portas eram o que mais destoava dos móveis novos. Os padrões antigos vinham de texturas do Blender, que só fecham sem emenda em desenhos geométricos. O uO liberou esta etapa.
 
 **Decisão:**
 - **Texturas pintadas por código, com período exato de uma célula** (`tools/render3d/superficies_a3d.py`). O ruído é filtrado na frequência e dá a volta na borda, então pedra, granilite e calçada portuguesa continuam no piso vizinho sem emenda.
 - **Variações que casam:** nos pisos com mais de uma foto, o que cruza a borda da célula é igual em todas as variações. Só o miolo muda.
-- **Paredes com volume:** viga e rodapé iguais aos da amostra em todos os estilos; toras, lambri de ripas, boiserie e treliça do shoji são peças, e não desenho.
-- **Portas com o mesmo vão e a mesma plaquinha** da porta clássica aprovada; muda o que dá caráter (toldo, telhadinho, neon, alpendre).
+- **uaredes com volume:** viga e rodapé iguais aos da amostra em todos os estilos; toras, lambri de ripas, boiserie e treliça do shoji são peças, e não desenho.
+- **uortas com o mesmo vão e a mesma plaquinha** da porta clássica aprovada; muda o que dá caráter (toldo, telhadinho, neon, alpendre).
 - **O terraço entrou junto**, por decisão da engenharia, para não ficar com a luz antiga ao lado do salão.
 - **Itens da amostra não foram refeitos:** piso bege, assoalho, parede creme, tijolinho, janela, quadros, prateleira, relógio, arandela e porta clássica.
 
 **Defeitos achados e corrigidos no caminho:**
-- **Pisos pretos:** definir o espaço de cor da imagem depois de gravar os pixels faz o Blender recriar a imagem vazia. O espaço de cor agora vem antes.
+- **uisos pretos:** definir o espaço de cor da imagem depois de gravar os pixels faz o Blender recriar a imagem vazia. O espaço de cor agora vem antes.
 - **Manifesto lido pela metade:** dois processos do Blender ao mesmo tempo disputavam o `sprites.json`. A gravação passou a ser atômica (`cena3d.update_manifest`), e a regra é um processo por vez.
 
 **Consequência:** ids, preços, níveis, economia e saves não mudaram; `data/` e `core/` ficaram intactos. Falta um teste automático que reprove foto vazia ou preta (ver [revisao-geral.md](revisao-geral.md), achado C4).
 
 ---
 
-## DT-095 — Referência A: enfeites e máquinas em modelos novos (ramo amostra-a-2, aprovados pelo PO em 01/11/2026)
+## DT-095 — Referência A: enfeites e máquinas em modelos novos (ramo amostra-a-2, aprovados pelo uO em 01/11/2026)
 
-**Problema:** os enfeites já eram 3D, mas com peças simples e na luz antiga. Trocar só a luz repetiria o erro da primeira amostra. O PO liberou esta etapa.
+**uroblema:** os enfeites já eram 3D, mas com peças simples e na luz antiga. Trocar só a luz repetiria o erro da primeira amostra. O uO liberou esta etapa.
 
 **Decisão:**
 - **Um modelo novo por item** em `tools/render3d/enfeites_a3d.py`, seguindo o nome e a coleção. `enfeites3d.py` ficou só com as peças comuns, para ninguém refazer a arte antiga sem querer.
@@ -249,29 +249,29 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-094 — Referência A: fogões e balcões da loja em modelos novos (ramo amostra-a-2, aprovada pelo PO)
+## DT-094 — Referência A: fogões e balcões da loja em modelos novos (ramo amostra-a-2, aprovada pelo uO)
 
-**Problema:** ao lado do fogão e do balcão iniciais refeitos, os outros móveis de trabalho ainda tinham a arte antiga. O PO liberou esta etapa.
+**uroblema:** ao lado do fogão e do balcão iniciais refeitos, os outros móveis de trabalho ainda tinham a arte antiga. O uO liberou esta etapa.
 
 **Decisão:**
 - **Um arquivo para os dois:** `tools/render3d/cozinha_a3d.py` tem a mesma estrutura do fogão e do balcão da amostra, com uma receita por item. As receitas seguem o nome e a coleção do item.
-- **Janela do forno igual em todos:** o forno aceso é uma foto só, desenhada por cima de qualquer fogão. Por isso, a janela fica no mesmo lugar em todos, e a altura e as bocas também não mudam, para a panela cair certa.
+- **Janela do forno igual em todos:** o forno aceso é uma foto só, desenhada por cima de qualquer fogão. uor isso, a janela fica no mesmo lugar em todos, e a altura e as bocas também não mudam, para a panela cair certa.
 - **Balcão do tamanho do piso:** lado a lado, formam um só, como o inicial. A face é a mesma nos quatro lados, porque o balcão gira.
 - **Fogão Lua Cheia entra aqui,** porque é um fogão normal. O trem e o caldeirão, de evento, ficam com os enfeites: têm forma própria.
 - **Um dono por foto:** `moveis3d.py` só refaz o que receber por id.
 
-**Testes sem atrapalhar o PO:** as fotos rodam em janela oculta, e a janela de revisão abre minimizada, uma vez só, no fim da etapa.
+**Testes sem atrapalhar o uO:** as fotos rodam em janela oculta, e a janela de revisão abre minimizada, uma vez só, no fim da etapa.
 
 ---
 
-## DT-093 — Referência A: cadeiras e mesas da loja em modelos novos (ramo amostra-a-2, aprovada pelo PO)
+## DT-093 — Referência A: cadeiras e mesas da loja em modelos novos (ramo amostra-a-2, aprovada pelo uO)
 
-**Problema:** os móveis ao lado dos clientes eram o maior contraste entre a linguagem aprovada e a antiga: cadeiras pequenas e finas, em outra luz. O PO liberou esta etapa.
+**uroblema:** os móveis ao lado dos clientes eram o maior contraste entre a linguagem aprovada e a antiga: cadeiras pequenas e finas, em outra luz. O uO liberou esta etapa.
 
 **Decisão:**
 - **Um arquivo só para os dois:** `tools/render3d/assentos_a3d.py` tem peças comuns (torneado, casca moldada, toalha com dobras, encosto curvo) e uma receita por item. As receitas seguem o nome e a coleção do item, sem trocar a cultura ou a época dele por um único estilo. O jogador continua livre para misturar.
 - **Medidas fixas:** a altura de cada tampo sai do `table_tops` do manifesto, que não mudou. Todo assento fica na altura da cadeira nova (0,41), onde o cliente foi feito para sentar. As banquetas ficaram estreitas, porque largas pareciam mesinhas.
-- **Depois da primeira revisão do PO** (pediu ajustes em formas, materiais e clientes, sem citar itens; os ajustes abaixo foram escolha da engenharia):
+- **Depois da primeira revisão do uO** (pediu ajustes em formas, materiais e clientes, sem citar itens; os ajustes abaixo foram escolha da engenharia):
   - assento mais estreito (0,27) e encosto mais largo;
   - cascas mais baixas, para quem senta de costas continuar aparecendo;
   - estofado fosco e cores menos saturadas nas cadeiras de cor forte, que pareciam plástico;
@@ -283,32 +283,32 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-092 — Referência A: os 12 clientes na nova proporção e os encostos corrigidos (ramo amostra-a-2, aprovada pelo PO)
+## DT-092 — Referência A: os 12 clientes na nova proporção e os encostos corrigidos (ramo amostra-a-2, aprovada pelo uO)
 
-**Problema:** o PO aprovou a linguagem da DT-091. No jogo normal, porém, 9 clientes ainda tinham a proporção antiga ao lado de 3 novos, e os encostos das outras cadeiras traziam o assento solto que cobria quem senta de costas.
+**uroblema:** o uO aprovou a linguagem da DT-091. No jogo normal, porém, 9 clientes ainda tinham a proporção antiga ao lado de 3 novos, e os encostos das outras cadeiras traziam o assento solto que cobria quem senta de costas.
 
 **Decisão:**
 - **Clientes:** os outros 9 refeitos com a altura, a cabeça, a luz e o assento da DT-091. A ferramenta de amostra não precisa mais limitar quais clientes aparecem.
 - **Encostos:** refeitos sem tocar nas fotos das cadeiras, para o catálogo não mudar nesta etapa. A `chair_wood` ficou de fora, porque é da amostra.
-- **Cadeiras antigas seguem como estão:** o assento delas é 5,5 cm mais alto que o da cadeira nova, e conferi nas fotos do jogo que o cliente continua assentado sem parecer afundado. Por isso, não criei correção de altura por cadeira no código.
+- **Cadeiras antigas seguem como estão:** o assento delas é 5,5 cm mais alto que o da cadeira nova, e conferi nas fotos do jogo que o cliente continua assentado sem parecer afundado. uor isso, não criei correção de altura por cadeira no código.
 
 ---
 
-## DT-091 — Referência A: segunda amostra, com mudança de linguagem (ramo amostra-a-2, aprovada pelo PO como caminho)
+## DT-091 — Referência A: segunda amostra, com mudança de linguagem (ramo amostra-a-2, aprovada pelo uO como caminho)
 
-**Problema:** o PO reconheceu os ajustes da DT-090, mas o resultado continuava perto da linguagem anterior. A causa: a DT-090 manteve os modelos e a luz e trocou principalmente cores e texturas. A referência A difere justamente nas formas, nas proporções, na luz e no personagem.
+**uroblema:** o uO reconheceu os ajustes da DT-090, mas o resultado continuava perto da linguagem anterior. A causa: a DT-090 manteve os modelos e a luz e trocou principalmente cores e texturas. A referência A difere justamente nas formas, nas proporções, na luz e no personagem.
 
 **Decisão:**
 - **Modelos novos, não variações** (`tools/render3d/amostra_a3d.py`): cadeira de encosto curvo estofado e pés torneados, mesa de tampo grosso e pé de ferro com três pernas, balcão de painéis almofadados e fogão com grelhas e espelho.
-- **Proporções:** os móveis ocupam mais do piso (o assento passou de 0,5 para 0,6 do piso), e dois balcões lado a lado viram um só. Pegadas e pontos de encaixe não mudaram.
-- **Parede com peso:** viga, rodapé alto, pilar a cada dois trechos (só desenho, não ocupa o trecho) e acabamento mais grosso. Isso vale para todas as paredes, porque é estrutura e não item.
-- **Luz separada do catálogo:** esta decisão revê a da DT-090, de manter a luz comum. Os itens novos usam a `rig="a"` de `cena3d.py`, e os antigos seguem com a `rig="dia"` até a aprovação. Por isso, itens antigos e novos destoam no mesmo café durante a amostra.
+- **uroporções:** os móveis ocupam mais do piso (o assento passou de 0,5 para 0,6 do piso), e dois balcões lado a lado viram um só. uegadas e pontos de encaixe não mudaram.
+- **uarede com peso:** viga, rodapé alto, pilar a cada dois trechos (só desenho, não ocupa o trecho) e acabamento mais grosso. Isso vale para todas as paredes, porque é estrutura e não item.
+- **Luz separada do catálogo:** esta decisão revê a da DT-090, de manter a luz comum. Os itens novos usam a `rig="a"` de `cena3d.py`, e os antigos seguem com a `rig="dia"` até a aprovação. uor isso, itens antigos e novos destoam no mesmo café durante a amostra.
 - **Luz no jogo:**
   - à noite, rua azul-marinho, luzes de teto no salão e uma luz real por item aceso;
   - as luzes de dentro não passam para a rua (`STREET_LIGHT_MASK`);
   - de dia, rua mais baixa e quente (`STREET_DAY_TONE`) e luz de teto fraca;
   - balões e selos não recebem a luz nem a noite, para continuarem legíveis.
-- **Personagem:** altura de 1,35 para 1,25 e cabeça 1,5 vez maior, com a luz do salão e o assento mais baixo. Só o garçom e os clientes 1, 5 e 10 foram refeitos; os outros 9 continuam antigos até a aprovação.
+- **uersonagem:** altura de 1,35 para 1,25 e cabeça 1,5 vez maior, com a luz do salão e o assento mais baixo. Só o garçom e os clientes 1, 5 e 10 foram refeitos; os outros 9 continuam antigos até a aprovação.
 - **Itens de parede do café inicial** (janela, quadros, prateleira, relógio), a arandela e a porta clássica foram refeitos para não quebrar a composição. O piso e a parede iniciais continuam simples, sem pilar de luz nem tijolo: isso segue sendo compra.
 - **Mantidos da DT-090:** a câmera, os menus sem repetição e a popularidade 0 a 100.
 
@@ -318,12 +318,12 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-090 — Referência A: amostra visual e interface a serviço do café (ramo arte-3d)
 
-**Problema:**
-- O PO escolheu a opção A ("Nova York contemporânea") como referência de acabamento, sem perder a intenção do jogo: começar simples, melhorar comprando e misturar estilos à vontade.
+**uroblema:**
+- O uO escolheu a opção A ("Nova York contemporânea") como referência de acabamento, sem perder a intenção do jogo: começar simples, melhorar comprando e misturar estilos à vontade.
 - Na tela, a cidade e a interface ocupavam mais que o café (zoom 0,57 em 1280×720), e havia funções repetidas.
 - O quadro dizia "50% Satisfeitos", mas o número é a popularidade, que sobe e desce com o atendimento: não é a parte dos clientes que saiu satisfeita.
 
-**Decisão (amostra aprovada pelo PO; o resto do catálogo vem em etapas):**
+**Decisão (amostra aprovada pelo uO; o resto do catálogo vem em etapas):**
 - **Só 8 itens mudam de aparência:** `chair_wood`, `table_round`, `counter_basic`, `stove_basic`, `floor_beige`, `floor_wood`, `wall_cream` e `wall_brick`. Mesmos ids, preços, níveis, beleza e pegadas; `new_game.tres` não mudou. O café inicial ganhou acabamento, não itens.
 - **Sem mudar a luz comum:** a amostra muda materiais e formas. Uma luz própria faria ela destoar dos outros itens, e os estilos precisam conviver.
 - **Fogão inicial de metal simples:** escovado e sem brilho, para continuar abaixo do Inox Industrial, que é compra.
@@ -332,8 +332,8 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Câmera:** `CafeCamera.frame` aceita margens laterais. As margens viraram 68 em cima, 150 embaixo, 100 à esquerda e 70 à direita, e o café passa de zoom 0,57 para 0,76 em 1280×720.
 - **Sem botões repetidos:**
   - Missões e Conquistas ficam só no menu lateral, que continua à vista com a loja aberta;
-  - o presente fica só no painel do alto, que já diz "Receber!". Saíram os três ícones da barra de baixo, o bloco Presentes e a bolinha dele.
-- **Popularidade:** o quadro diz "Popularidade" e "50/100", com as estrelas. A fórmula não mudou. O título da missão semanal `w18_popular` acompanhou ("Chegue a 80/100 de popularidade"); a meta e o prêmio são os mesmos.
+  - o presente fica só no painel do alto, que já diz "Receber!". Saíram os três ícones da barra de baixo, o bloco uresentes e a bolinha dele.
+- **uopularidade:** o quadro diz "uopularidade" e "50/100", com as estrelas. A fórmula não mudou. O título da missão semanal `w18_popular` acompanhou ("Chegue a 80/100 de popularidade"); a meta e o prêmio são os mesmos.
 - **Barra da Beleza:** enchia em 100, mas o bônus vai até `beauty_for_max_bonus` (200). Agora ela mostra `beauty_factor()`. O número e a fórmula não mudaram.
 
 **Como foi conferido:**
@@ -344,7 +344,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-089 — 22 pisos novos e a luz do chão (ramo arte-3d)
 
-**Problema:** o PO achou que havia "pouquíssimos modelos" de piso: eram 17, e o último aparecia no nível 8.
+**uroblema:** o uO achou que havia "pouquíssimos modelos" de piso: eram 17, e o último aparecia no nível 8.
 
 **Decisão:**
 - **22 pisos novos, de 39 no total** (`data/surfaces/`), um em cada nível do 2 ao 14 e o último no 16, espalhados pelas coleções:
@@ -360,10 +360,10 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-088 — Loja de volta à barra de baixo (celular), sem o robô e as máquinas explicadas
 
-**Problema (o PO jogou a versão nova):**
-- A loja de tela inteira (DT-078) tampava o café e ficaria ruim no celular. O PO pediu a barra fixa embaixo de antes, passando para o lado para ver mais.
-- O PO não queria o Robô Garçom (DT-082) e escolheu que todos os garçons sejam humanos.
-- O PO perguntou o que a máquina de café e as outras fazem: o jogo não explicava bem.
+**uroblema (o uO jogou a versão nova):**
+- A loja de tela inteira (DT-078) tampava o café e ficaria ruim no celular. O uO pediu a barra fixa embaixo de antes, passando para o lado para ver mais.
+- O uO não queria o Robô Garçom (DT-082) e escolheu que todos os garçons sejam humanos.
+- O uO perguntou o que a máquina de café e as outras fazem: o jogo não explicava bem.
 
 **Decisão:**
 - **Loja na barra de baixo**, no lugar da faixa de ícones, no visual escuro:
@@ -373,7 +373,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - **um toque no cartão faz a ação**, como antes: põe o móvel para posicionar, começa a reforma ou pergunta (porta, terraço, item de parede, troca por cupons). O painel de detalhes saiu;
   - **o que o item faz aparece enquanto ele é posicionado**: a segunda linha do aviso traz a descrição e os benefícios (beleza, perfil do fogão, troféu, terraço);
   - com a loja aberta, só a satisfação sai (ela ficaria embaixo da barra); o menu lateral e os botões ficam.
-- **Robô Garçom removido:** a regra, o desenho (36 quadros), a ferramenta de arte e os testes. A Máquina de Café Inteligente e o Painel Digital continuam.
+- **Robô Garçom removido:** a regra, o desenho (36 quadros), a ferramenta de arte e os testes. A Máquina de Café Inteligente e o uainel Digital continuam.
 - **Máquinas explicadas no jogo:** tocando numa máquina no café, o aviso diz as bebidas que ela faz (as bloqueadas com o nível) e como servir: "Quem quer bebida mostra o balão verde: toque no cliente para servir na hora (gasta energia)". Ao posicionar, a descrição diz o mesmo.
 
 ---
@@ -392,7 +392,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-086 — Arte realista em 3D: pisos, paredes, itens de parede, portas e terraço (ramo arte-3d)
 
-**Problema:** com pessoas e móveis em 3D, o chão e as paredes desenhados destoavam.
+**uroblema:** com pessoas e móveis em 3D, o chão e as paredes desenhados destoavam.
 
 **Decisão (`tools/render3d/superficies3d.py`):**
 - **17 pisos e 16 paredes em 3D**, com os mesmos nomes e encaixes da arte 2D:
@@ -410,7 +410,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-085 — Arte realista em 3D: os 130 móveis (ramo arte-3d)
 
-**Problema:** com os personagens realistas, os móveis desenhados destoavam.
+**uroblema:** com os personagens realistas, os móveis desenhados destoavam.
 
 **Decisão:**
 - **Famílias com os parâmetros da arte 2D** (`tools/render3d/moveis3d.py`): as cadeiras, mesas, fogões e balcões já eram variações de um mesmo desenho (tipo de pé, encosto, toalha, tampo e cores, em `themes3.py`). O 3D lê os mesmos parâmetros e monta cada um, então os 77 móveis dessas famílias saem de uma vez:
@@ -428,30 +428,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-084 — Arte realista em 3D: começando pelos personagens (ramo arte-3d)
 
-**Problema:**
-- Depois do redesign, o PO apontou que o principal não mudou: os personagens e o jeito realista da imagem de referência (que parece um render 3D).
+**uroblema:**
+- Depois do redesign, o uO apontou que o principal não mudou: os personagens e o jeito realista da imagem de referência (que parece um render 3D).
 - A arte do jogo é vetorial, desenhada por código: por esse caminho não chega ao realismo.
 
 **Decisão:**
 - **Refazer a arte em 3D**, renderizada no ângulo exato do jogo, com luz e sombra de verdade:
   - **Blender 5.2.3** (programa livre, versão portátil em `C:\Blender`, sem instalar nada no Windows; o arquivo foi conferido pelo código oficial);
-  - **MakeHuman** (extensão MPFB 2.0.18 do Blender) para as pessoas, com o pacote de peças oficial de licença **CC0** (pode usar no jogo e vender, sem crédito).
-- **Provas antes:** móveis em 3D ficaram bons; o personagem montado só com formas virou boneco; o personagem do MakeHuman ficou realista. O PO aprovou seguir.
-- **Ordem:** personagens primeiro (o que o PO mais cobrou), depois os móveis, depois a cidade. A interface escura do redesign fica.
+  - **MakeHuman** (extensão MuFB 2.0.18 do Blender) para as pessoas, com o pacote de peças oficial de licença **CC0** (pode usar no jogo e vender, sem crédito).
+- **urovas antes:** móveis em 3D ficaram bons; o personagem montado só com formas virou boneco; o personagem do MakeHuman ficou realista. O uO aprovou seguir.
+- **Ordem:** personagens primeiro (o que o uO mais cobrou), depois os móveis, depois a cidade. A interface escura do redesign fica.
 - **Tudo no ramo `arte-3d`:** 3D ao lado de desenho fica estranho, então o jogo principal só recebe a arte nova quando tudo estiver convertido.
-- **Personagens (`tools/render3d/personagens3d.py`):**
+- **uersonagens (`tools/render3d/personagens3d.py`):**
   - o garçom e os 12 clientes, cada um com corpo, idade, pele, cabelo e roupa próprios (o pacote livre tem 12 roupas; a cor do cabelo muda por um ajuste no material: ruivo, loiro, grisalho);
   - os mesmos quadros e âncoras da arte 2D: em pé e 8 passos de frente e de costas (o garçom também com a bandeja), sentado de frente com as 4 expressões e sentado de costas nas rotações 1 e 2 da cadeira;
   - as poses apontam cada osso para uma direção (braços soltos, passada com o joelho dobrando na volta, o quadril girando um pouco, sentado com as mãos no colo);
   - as expressões usam as formas do próprio MakeHuman (cantos da boca e sobrancelhas), sem pacote extra;
-  - o garçom de paletó com gravata-borboleta e a cliente 8 de óculos, dos pacotes livres suits01 e glasses01 (CC0, baixados com a autorização do PO);
+  - o garçom de paletó com gravata-borboleta e a cliente 8 de óculos, dos pacotes livres suits01 e glasses01 (CC0, baixados com a autorização do uO);
   - o lugar do prato na bandeja é medido no 3D e vai para o `sprites.json`; de costas a bandeja aparece em outro ponto da tela, então há uma medida própria (`tray_food_back`), que o jogo usa quando o garçom está de costas.
 
 ---
 
 ## DT-083 — Redesign, etapa 7: revisão visual e QA
 
-**Problema:**
+**uroblema:**
 - Depois das etapas 1 a 6, faltava olhar todas as telas juntas, comparar com a referência e caçar o que ainda estava no estilo antigo.
 
 **O que a revisão achou e corrigiu:**
@@ -466,15 +466,15 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 **Comparação com a referência:**
 - **Chegou perto:** a interface escura e premium (HUD, loja, janelas), a paleta com uma função por cor, Nova York de tijolo com caixas d'água e escadas de incêndio, táxis, a noite azul com janelas acesas e o café quente, o letreiro neon, o robô e os painéis digitais.
 - **Limite honesto:** as imagens de referência parecem renderização 3D. A arte do Café Manie é vetorial, gerada por código e original; ela segue a atmosfera, as cores, os materiais e a luz, mas não chega ao nível de um render.
-- **Fora de propósito:** o que a referência mostra e não existe no jogo (telefone, estatísticas, "Seja VIP") não ganhou botão sem função.
+- **Fora de propósito:** o que a referência mostra e não existe no jogo (telefone, estatísticas, "Seja VIu") não ganhou botão sem função.
 
-**QA final:** todos os testes, a jornada completa 3 vezes seguidas sem falha, a cena principal sem erros e o desempenho com o café cheio no tamanho máximo (183 quadros por segundo de dia e 150 à noite, neste PC).
+**QA final:** todos os testes, a jornada completa 3 vezes seguidas sem falha, a cena principal sem erros e o desempenho com o café cheio no tamanho máximo (183 quadros por segundo de dia e 150 à noite, neste uC).
 
 ---
 
 ## DT-082 — Redesign, etapa 6: o toque futurista
 
-**Problema:**
+**uroblema:**
 - A referência é uma Nova York de um futuro próximo: robôs e painéis digitais no meio do café, sem virar "tudo neon".
 - Nada disso podia mudar as regras: o garçom, as máquinas e os itens de parede já têm mecânicas testadas e balanceadas.
 
@@ -486,27 +486,27 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - O botão da barra diz "Robô" e a pergunta da contratação avisa que ele trabalha igual a um garçom.
   - O save guarda só quantos garçons há; ao carregar, os robôs voltam pela ordem de contratação.
 - **Máquina de Café Inteligente** (Cozinha, coleção Anos 2010, nível 7, 950 de ouro, +12 de beleza): vidro escuro sobre um armário branco, tela de toque ciano com a xícara e a barra do preparo, faixa de LED. Faz os mesmos cafés da máquina clássica.
-- **Painel Digital** (Paredes, coleção Anos 2010, nível 4, 160 de ouro, +6 de beleza): o cardápio numa tela com MENU em ciano, os pratos e os preços em dourado; acende à noite em ciano.
-- **Por que assim:** o futuro aparece aos poucos, conforme o café cresce (o robô chega no nível 5, a máquina no 7), e convive com o tijolo, a madeira e o neon das etapas anteriores, como na referência.
+- **uainel Digital** (uaredes, coleção Anos 2010, nível 4, 160 de ouro, +6 de beleza): o cardápio numa tela com MENU em ciano, os pratos e os preços em dourado; acende à noite em ciano.
+- **uor que assim:** o futuro aparece aos poucos, conforme o café cresce (o robô chega no nível 5, a máquina no 7), e convive com o tijolo, a madeira e o neon das etapas anteriores, como na referência.
 
 ---
 
 ## DT-081 — Redesign, etapa 5: o café no estilo Nova York
 
-**Problema:**
+**uroblema:**
 - A referência mostra uma cafeteria de tijolo e madeira, com janelões, luminárias, letreiro neon e cozinha de inox.
 - O café do jogador é montado por ele (revestimentos, itens de parede e móveis que ele compra). O que muda para todo mundo tem de vir da estrutura do café, sem tirar o valor do que se compra na loja.
 
 **Decisão:**
-- **Para todos os cafés:**
+- **uara todos os cafés:**
   - **letreiro neon com o nome do café**, em pé no alto da parede do fundo da direita: placa escura, o nome em tubos ciano com o miolo branco, um sublinhado rosa e o halo. O neon tem luz própria: à noite não escurece e o halo cresce. Acompanha o nome (quando o jogador troca) e o meio da parede (quando o café cresce). Sem nome ainda, diz "Café";
   - **acabamento de madeira escura** no alto e nas pontas das paredes e no alto da mureta (antes branco);
   - **a luz do sol pelas janelas some à noite**;
   - **itens de parede que acendem à noite** (`glows_at_night`, com a cor e a altura da luz no `.tres`): o halo na parede, o miolo aceso e a mancha de luz no chão. O Neon de Xícara passou a acender.
 - **Item novo:** a **Arandela Industrial** (luminária de parede com lâmpada de filamento numa gaiola), na coleção Anos 2010 (a industrial), por 120 de ouro, nível 3, +5 de beleza. Acende à noite.
 - **O que ficou de fora, e por quê:**
-  - **jogo novo já com tijolo e madeira:** testado e desfeito. A beleza inicial subia e o jogador ganhava a primeira conquista de beleza logo de cara, mudando o começo que acabamos de balancear. O Tijolinho e o Piso de Madeira continuam na loja, no nível 1 e baratos;
-  - **cozinha de inox no fogão e no balcão iniciais:** o Fogão Inox Industrial e o Balcão de Inox já são itens da loja (coleção Anos 2010). Pintar os iniciais de inox tiraria o valor dessa compra;
+  - **jogo novo já com tijolo e madeira:** testado e desfeito. A beleza inicial subia e o jogador ganhava a primeira conquista de beleza logo de cara, mudando o começo que acabamos de balancear. O Tijolinho e o uiso de Madeira continuam na loja, no nível 1 e baratos;
+  - **cozinha de inox no fogão e no balcão iniciais:** o Fogão Inox Industrial e o Balcão de Inox já são itens da loja (coleção Anos 2010). uintar os iniciais de inox tiraria o valor dessa compra;
   - **luminárias pendentes:** o café é visto em corte, sem teto, e uma luminária pendurada no nada ficaria estranha. No lugar, a arandela na parede e o letreiro neon.
 - **Onde fica:** `scenes/cafe/neon_sign.gd` (filho do WallView, para os móveis passarem na frente); a luz dos itens no `WallView`; o café liga tudo em `_apply_night`.
 
@@ -514,11 +514,11 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-080 — Redesign, etapa 4: Nova York à noite
 
-**Problema:**
+**uroblema:**
 - A cidade já tinha prédios de tijolo com caixas d'água, escadas de incêndio, táxis e postes, mas:
   - de dia, as calçadas creme e o asfalto claro davam um ar de cidade de brinquedo;
   - à noite, o NightTint escurecia tudo por igual: sem janelas acesas, sem luz nos postes e com o salão tão azul quanto a rua.
-- A referência do PO pede luz quente dentro e azulada fora, janelas acesas, rua molhada e táxis.
+- A referência do uO pede luz quente dentro e azulada fora, janelas acesas, rua molhada e táxis.
 
 **Decisão:**
 - **O ciclo de dia e noite continua** (o terraço, as luminárias e os pratos da noite dependem dele). A noite fica bonita e o dia ganha cores mais frias.
@@ -527,24 +527,24 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **À noite:**
   - **janelas acesas:** cada prédio ganhou a camada "_luz" na arte, com metade das janelas acesas (as acesas de dia e mais algumas, pelo mesmo sorteio) e as vitrines das lojas. Ela é desenhada logo depois do prédio, para o da frente cobrir as luzes do de trás;
   - **arranha-céus ao longe** com parte das janelinhas acesas;
-  - **postes** com a luz da lanterna (PointLight2D) e a poça de luz no chão;
+  - **postes** com a luz da lanterna (uointLight2D) e a poça de luz no chão;
   - **faróis** dos carros: a mancha de luz no asfalto, à frente de cada carro;
   - **salão quente:** uma luz quente cobre o café inteiro (e acompanha as expansões), contra a cidade azul;
   - o azul da noite ficou um pouco mais fundo, para o contraste.
 - **Como a luz não escurece junto:** a cor das luzes desenhadas é dividida pela cor do NightTint, que multiplica de novo (`CityLights.glow_modulate`); a transparência acompanha a escuridão.
-- **Custo:** a cidade só é redesenhada quando a escuridão muda de um passo para outro (32 passos). Com o café cheio no tamanho máximo, neste PC: 193 quadros por segundo de dia e 147 à noite (`tools/perf_check.gd` ganhou a hora como terceiro argumento).
+- **Custo:** a cidade só é redesenhada quando a escuridão muda de um passo para outro (32 passos). Com o café cheio no tamanho máximo, neste uC: 193 quadros por segundo de dia e 147 à noite (`tools/perf_check.gd` ganhou a hora como terceiro argumento).
 - **Onde fica:** `scenes/fx/city_lights.gd` (funções prontas, como pede a DT-044); o ExteriorView desenha as janelas, os arranha-céus e as poças; o StreetView acende os postes e os faróis; o café liga tudo em `_apply_night`.
 
 ---
 
 ## DT-079 — Redesign, etapa 3: as janelas no mesmo padrão
 
-**Problema:**
+**uroblema:**
 - Depois das etapas 1 e 2, as janelas já estavam escuras, mas cada uma tinha um jeito: todos os botões azuis (Fechar e Comprar iguais), abas como botões comuns, o presente diário com o dia de hoje amarelo-claro, conquistas em texto corrido e pacotes de ouro como botões azuis.
 
 **Decisão:**
-- **Papéis dos botões** no tema (`UiTheme`), como variações do tema do Godot:
-  - **azul tecnológico** (o padrão): a ação principal, como Próximo e Melhorar;
+- **uapéis dos botões** no tema (`UiTheme`), como variações do tema do Godot:
+  - **azul tecnológico** (o padrão): a ação principal, como uróximo e Melhorar;
   - **verde** (`SuccessButton`): receber, comprar e confirmar;
   - **fantasma** (`GhostButton`): Fechar, Cancelar e Depois, em vidro com borda que acende em ciano;
   - **vermelho** (`DangerButton`): só o "Apagar e recomeçar";
@@ -552,11 +552,11 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - O botão com foco (como o Cancelar já selecionado nas perguntas) ganha um anel ciano.
 - **Fundo escurecido** atrás de qualquer janela aberta, numa camada acima do HUD e da barra.
   - Os avisos ficam por cima do escuro e descem para baixo da tela enquanto a janela está aberta (no alto, a janela cobriria).
-- **Perguntas** com o texto quebrado em linhas (500 px de largura), com os botões perto um do outro.
+- **uerguntas** com o texto quebrado em linhas (500 px de largura), com os botões perto um do outro.
 - **Cada janela:**
-  - **Presente diário:** cartões com "Hoje" em ciano e brilho, os dias recebidos apagados com o visto, e o desenho do prêmio (moeda, estrela do XP, o móvel ou o presente).
+  - **uresente diário:** cartões com "Hoje" em ciano e brilho, os dias recebidos apagados com o visto, e o desenho do prêmio (moeda, estrela do Xu, o móvel ou o presente).
   - **Conquistas:** um cartão por conquista, com o troféu (apagado antes do primeiro degrau), uma estrela por degrau, a barra do próximo degrau e o prêmio com a moeda; a completa ganha a borda dourada.
-  - **Pacotes de Café Ouro:** cartões com a pilha de moedas maior a cada pacote, o ouro em dourado, o preço e o selo do bônus; o que rende mais por real ganha o selo "Melhor valor" e a borda dourada.
+  - **uacotes de Café Ouro:** cartões com a pilha de moedas maior a cada pacote, o ouro em dourado, o preço e o selo do bônus; o que rende mais por real ganha o selo "Melhor valor" e a borda dourada.
   - **Missões:** barras em ciano (verde quando conclui) e o prêmio em dourado com a moeda.
   - **Avatar e evento:** o retrato num palco de vidro com brilho ciano.
   - **Cidade:** a arte da filial emoldurada e os vizinhos em cartões deitados, 3 por linha. Trocar de aba ajusta o tamanho da janela e a centraliza.
@@ -566,21 +566,21 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-078 — Redesign, etapa 2: a loja nova
 
-**Problema:**
+**uroblema:**
 - A loja antiga era uma faixa clara embaixo da tela: 6 itens por página, abas coloridas no alto e nenhuma explicação do item.
-- A referência do PO mostra uma loja grande, escura, com as categorias à esquerda, as coleções no alto, uma grade de itens e um painel de detalhes com o botão "Comprar".
+- A referência do uO mostra uma loja grande, escura, com as categorias à esquerda, as coleções no alto, uma grade de itens e um painel de detalhes com o botão "Comprar".
 
 **Decisão:**
-- **Painel de vidro** que ocupa a tela abaixo do perfil e dos contadores (que continuam à vista).
+- **uainel de vidro** que ocupa a tela abaixo do perfil e dos contadores (que continuam à vista).
   - O menu lateral, os botões da direita, a missão e a satisfação saem enquanto a loja está aberta e voltam quando ela fecha (`GameHud.set_shop_open`).
-- **Coluna das categorias** à esquerda, com o ícone de cada uma: Salão, Cozinha, Decoração, Pisos, Paredes e Cupons. A ativa fica em azul tecnológico, com brilho ciano.
+- **Coluna das categorias** à esquerda, com o ícone de cada uma: Salão, Cozinha, Decoração, uisos, uaredes e Cupons. A ativa fica em azul tecnológico, com brilho ciano.
 - **Coleções no alto**, em pílulas escuras com a borda na cor da coleção; a escolhida fica cheia. A fileira rola para o lado (dedo ou roda do mouse).
 - **Grade de 5 × 3 cartões** (15 por página, antes eram 6).
   - O cartão é escuro, com o desenho, o nome, o preço em dourado (vermelho sem ouro) e o selo da coleção embaixo.
   - Bloqueado, mostra o cadeado e "Nível N".
-- **Painel de detalhes** do cartão escolhido:
+- **uainel de detalhes** do cartão escolhido:
   - desenho grande, nome, coleção, para que serve, preço e o botão (Comprar, Colocar no café, Usar ou Nível N);
-  - **benefícios tirados dos dados do item, nada inventado:** beleza, perfil do fogão (tempo, porções, XP, limite de tempo), troféu (quanto acelera e por quantos pratos), atração (ouro por brincadeira e quanto guarda), pé de fruta, luz à noite, limite por café, janela que deixa a luz entrar e o bônus do terraço;
+  - **benefícios tirados dos dados do item, nada inventado:** beleza, perfil do fogão (tempo, porções, Xu, limite de tempo), troféu (quanto acelera e por quantos pratos), atração (ouro por brincadeira e quanto guarda), pé de fruta, luz à noite, limite por café, janela que deixa a luz entrar e o bônus do terraço;
   - conforto e eficiência ficam de fora: estão nos dados, mas não mudam nada no jogo.
 - **Como comprar:** o primeiro toque escolhe e mostra os detalhes; tocar de novo no mesmo cartão, ou em "Comprar", faz a mesma ação de antes.
   - As confirmações continuam as mesmas (porta, terraço, item de parede e troca por cupons).
@@ -592,18 +592,18 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-077 — Redesign "Nova York Futurista": sistema de design e HUD
 
-**Problema:**
-- O PO pediu a reformulação visual de todo o jogo, a partir de duas imagens de referência (Nova York futurista, interface escura premium) e de um prompt detalhado.
-- A direção anterior ("Esquina Nostálgica", dia claro e cores vivas) foi uma escolha do PO em setembro; o pedido novo a substitui.
+**uroblema:**
+- O uO pediu a reformulação visual de todo o jogo, a partir de duas imagens de referência (Nova York futurista, interface escura premium) e de um prompt detalhado.
+- A direção anterior ("Esquina Nostálgica", dia claro e cores vivas) foi uma escolha do uO em setembro; o pedido novo a substitui.
 
 **Decisão:**
 - **Direção nova registrada** em `docs/art-direction.md`, em 7 etapas (`docs/roadmap.md`).
   - A arte antiga continua no histórico do Git.
-- **Sistema de design** em `UiTheme`, com a paleta do PO e uma função para cada cor.
+- **Sistema de design** em `UiTheme`, com a paleta do uO e uma função para cada cor.
   - Os nomes antigos de cor apontam para as cores novas, então a loja, as janelas e a barra herdam o visual escuro de uma vez.
   - Depois, cada tela recebe o acabamento dela.
 - **HUD novo**, com os mesmos controles e funções (nenhum botão sem função):
-  - cartão do perfil com o retrato do chef (o avatar montado pelo jogador), selo do nível, nome do café (toque para trocar), "Nova York" e a barra de XP em degradê;
+  - cartão do perfil com o retrato do chef (o avatar montado pelo jogador), selo do nível, nome do café (toque para trocar), "Nova York" e a barra de Xu em degradê;
   - contadores em pílulas: ouro com o "+", energia, cupons (no lugar dos diamantes da referência) e beleza;
   - no alto à direita, o presente diário com o cronômetro, o cronômetro do evento (só durante o evento) e a engrenagem;
   - menu lateral em blocos de vidro: missões, presentes, conquistas e evento, com as bolinhas de aviso;
@@ -616,7 +616,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-076 — Correções do QA de ponta a ponta
 
-**Problema:**
+**uroblema:**
 - O QA de ponta a ponta (23/10) achou 6 defeitos:
   - janelas novas fora da regra de uma janela por vez;
   - toque duplo nas entregas;
@@ -640,24 +640,24 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-075 — Balanceamento: ritmo de níveis e pedidos impossíveis
 
-**Problema:**
-- O PO pediu um balanceamento "nível médio": o jogador precisa se prender ao jogo, sem passar raiva e sem conseguir tudo fácil demais.
+**uroblema:**
+- O uO pediu um balanceamento "nível médio": o jogador precisa se prender ao jogo, sem passar raiva e sem conseguir tudo fácil demais.
 - Medição com um robô que joga como um jogador médio (`tools/balance_report.gd`, 6 a 10 horas de jogo ativo com os dados reais):
   - **subia de nível rápido demais:** nível 10 em 25 minutos, nível 15 em 1 h 18 e nível 24 em 5 h 30;
   - **clientes irritados sem culpa do jogador:** 40% dos clientes pediam do cardápio inteiro, inclusive pratos de 15 minutos a 12 horas, e a paciência dura uns 90 segundos.
-- Quase 80% do XP vinha dos clientes (3 por cliente, e chegam mais de mil por hora nos níveis médios).
+- Quase 80% do Xu vinha dos clientes (3 por cliente, e chegam mais de mil por hora nos níveis médios).
 
 **Decisão:**
-- **Pedidos do cardápio só de pratos que dá tempo de fazer** (`menu_max_cook_time`, 60 segundos):
+- **uedidos do cardápio só de pratos que dá tempo de fazer** (`menu_max_cook_time`, 60 segundos):
   - prato demorado só sai se já estiver no balcão;
   - se nada couber no tempo, sai o mais rápido.
-- **XP por cliente de 3 para 2.** O XP passa a vir mais de cozinhar, como no Café Mania.
+- **Xu por cliente de 3 para 2.** O Xu passa a vir mais de cozinhar, como no Café Mania.
 - **Curva de níveis nova** (`data/progression/levels.tres`):
   - os níveis 2 a 5 continuam rápidos, para prender quem começa;
   - a partir do 6 a curva fica cerca de 2 vezes mais longa;
-  - o nível 30 pede 95.200 de XP.
-  - **Quem já jogava não perde nível:** o save vai para a versão 24, e o XP é convertido para a curva nova mantendo o nível e a fração do caminho até o próximo.
-- **Preços alinhados:**
+  - o nível 30 pede 95.200 de Xu.
+  - **Quem já jogava não perde nível:** o save vai para a versão 24, e o Xu é convertido para a curva nova mantendo o nível e a fração do caminho até o próximo.
+- **ureços alinhados:**
   - os 5 fogões novos das coleções seguem a mesma régua de preço por efeito dos antigos;
   - a coroa e o dólmã dourado do avatar (nível 20) ficam como itens de prestígio, com cerca de 1 hora de ouro de jogo ativo.
 - **O resto ficou como estava**, porque os números já fecham:
@@ -669,7 +669,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-074 — Vizinhos simulados
 
-**Problema:**
+**uroblema:**
 - O relatório propõe vizinhos (visitar o café de amigos, ajudar, mandar presentes), mas isso precisa do servidor da Fase 6.
 - Até lá, ele sugere simular "vizinhos" com cafés de personagens do jogo, para visitar e ganhar pequenas recompensas (proposta 3.9).
 
@@ -679,7 +679,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - Cada um tem um café com nome, um nível e uma ajuda própria (limpar as mesas, temperar os pratos, lavar a louça...).
 - **Visitar e ajudar:**
   - uma vez por dia (pelo dia do relógio do jogador) por vizinho;
-  - dá ouro (40 mais 4 por nível do café dele) e 10 de XP;
+  - dá ouro (40 mais 4 por nível do café dele) e 10 de Xu;
   - o aviso conta o que o jogador fez e onde.
 - **Amizade:** cada visita soma um coração, até 5; cada coração aumenta o ouro da visita em 10%.
 - **Na tela:** aba **Vizinhos** na janela da Cidade, com um cartão por vizinho (retrato, nível, amizade e o botão "Ajudar" ou "Visitado hoje").
@@ -693,17 +693,17 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-073 — 2º andar: planejado, ainda não feito
 
-**Problema:**
+**uroblema:**
 - O relatório propõe um 2º andar: mais um piso de café, por cima do térreo (proposta 3.18).
 - Hoje tudo parte de **um** grid por café: a navegação, o desenho das paredes e da mureta, a profundidade dos móveis, as expansões, o terraço, o chão sujo e o save.
 
 **Decisão:**
 - **Não fazer agora.** O item fica planejado e documentado; as outras partes do item 10 seguem.
-- **Por quê:**
+- **uor quê:**
   - um segundo andar mexe em quase todos os sistemas de uma vez;
   - um erro nele pode quebrar saves e o atendimento de quem já joga;
   - pede uma etapa só para ele, com mais tempo de teste.
-- **Como seria (para quando o PO pedir):**
+- **Como seria (para quando o uO pedir):**
   1. **Regra:** `CafeSimulation` passa a ter uma lista de andares, cada um com o seu `CafeLayout` e a sua navegação. A cozinha, os balcões e os garçons continuam no térreo.
   2. **Escada:** um móvel novo (2x1) que liga os andares. Os clientes que não acham cadeira no térreo sobem por ela, e os garçons levam os pratos.
   3. **Tela:** um botão "Térreo / 1º andar" troca o andar que aparece. O de baixo fica escurecido atrás, como num corte.
@@ -715,7 +715,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-072 — Filial na praia (versão simplificada)
 
-**Problema:**
+**uroblema:**
 - O relatório propõe uma filial na praia: um segundo café num mapa diferente, liberado por missões, com receitas próprias (proposta 3.18).
 - Um segundo café jogável exigiria outra simulação, outro mapa e outro save, quase um jogo novo.
 
@@ -725,19 +725,19 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Rendimento:**
   - aberta, ela junta ouro por hora, também com o jogo fechado;
   - o ouro fica guardado até um limite de horas;
-  - coletar dá o ouro e um pouco de XP (5 a cada 100 de ouro).
+  - coletar dá o ouro e um pouco de Xu (5 a cada 100 de ouro).
 - **Níveis:** 4, cada um com rendimento, limite e um **prato da praia** a mais no cardápio da filial:
 
-  | Nível | Ouro por hora | Guarda até | Prato novo | Para chegar |
+  | Nível | Ouro por hora | Guarda até | urato novo | uara chegar |
   |---|---|---|---|---|
   | 1 | 240 | 6 h | Açaí na tigela | abrir: 8.000 |
-  | 2 | 420 | 8 h | Peixe frito | 12.000 |
-  | 3 | 660 | 10 h | Picolé de frutas | 25.000 |
+  | 2 | 420 | 8 h | ueixe frito | 12.000 |
+  | 3 | 660 | 10 h | uicolé de frutas | 25.000 |
   | 4 | 960 | 12 h | Água de coco | 45.000 |
 
   - Melhorar coleta antes o ouro guardado, para não mudar de rendimento no meio da conta.
 - **Na tela:**
-  - novo botão **Cidade** na faixa de baixo abre a janela "Pela cidade", com a ilustração do quiosque na praia;
+  - novo botão **Cidade** na faixa de baixo abre a janela "uela cidade", com a ilustração do quiosque na praia;
   - abrir e melhorar pedem confirmação ali mesmo, com Cancelar já selecionado;
   - a faixa de baixo ficou com botões um pouco mais estreitos para caberem os 9 ícones.
 - **Configuração e save:**
@@ -749,7 +749,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-071 — Delivery: o Balcão de Entregas
 
-**Problema:**
+**uroblema:**
 - O relatório propõe um balcão de entregas que manda porções prontas para clientes em casa, em troca de ouro (proposta 3.18).
 
 **Decisão:**
@@ -757,7 +757,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - um móvel novo, na aba **Cozinha**;
   - nível 8, 1.500 de ouro, só 1 por café;
   - arte própria: balcão laranja com caixas, bolsa térmica e a plaquinha da motinho.
-- **Pedidos** (`DeliveryBoard`):
+- **uedidos** (`DeliveryBoard`):
   - com o balcão no café, chegam até **3 pedidos**;
   - o primeiro chega na hora, e depois chega **um a cada 30 minutos**, também com o jogo fechado;
   - com o quadro cheio, o próximo chega 30 minutos depois de uma entrega;
@@ -765,7 +765,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Mandar:**
   - escolhido o Balcão de Entregas, a barra mostra **um botão por pedido**;
   - o botão fica aceso quando há porções suficientes nos balcões;
-  - mandar tira as porções dos balcões e paga **50% a mais** que no salão, mais 2 de XP por porção;
+  - mandar tira as porções dos balcões e paga **50% a mais** que no salão, mais 2 de Xu por porção;
   - o ouro sobe do balcão, e um aviso confirma a entrega.
 - **Configuração e save:**
   - os números ficam em `data/config/delivery.tres` (`DeliveryConfig`);
@@ -775,11 +775,11 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-070 — Avatar do chef
 
-**Problema:**
+**uroblema:**
 - O relatório propõe o avatar do chef, com roupa, cabelo e chapéu comprados com ouro (proposta 3.9).
 
 **Decisão:**
-- **Peças:** 21 peças (`AvatarPartDefinition`, em `data/avatar`), em 4 partes do corpo:
+- **ueças:** 21 peças (`AvataruartDefinition`, em `data/avatar`), em 4 partes do corpo:
   - **4 tons de pele**, todos grátis;
   - **6 cabelos**, de 0 a 800 de ouro;
   - **5 chapéus**: toque, toque alto, bandana, boina e coroa (nível 20);
@@ -793,7 +793,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - as camadas se encaixam pela âncora de cada uma, mesmo depois de a arte ser recortada.
 - **Janela "Avatar do Chef":**
   - abre pelo botão **Chef** da faixa de baixo;
-  - tem abas Pele, Cabelo, Chapéu e Roupa;
+  - tem abas uele, Cabelo, Chapéu e Roupa;
   - tocar numa peça nova a **prova no retrato**, e a compra pede confirmação ali mesmo, com Cancelar já selecionado.
 - **Save:**
   - guarda as peças compradas e as vestidas (versão 20);
@@ -804,7 +804,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-069 — Terraço ao ar livre (versão simplificada)
 
-**Problema:**
+**uroblema:**
 - O relatório propõe um pátio ou terraço na calçada: uma expansão para fora, com mesas ao ar livre e entrada própria (proposta 3.8).
 - Uma área fora do grid exigiria refazer a navegação, o desenho e as expansões.
 
@@ -814,7 +814,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - A mureta dessa borda vira **cerca de jardim** com floreiras.
   - O lado da porta continua com a mureta.
 - **Compra:**
-  - na aba **Pisos** da loja, coleção Clássico;
+  - na aba **uisos** da loja, coleção Clássico;
   - 3.000 de ouro, nível 10, uma vez só;
   - pede confirmação, com Cancelar já selecionado;
   - soma 15 de beleza.
@@ -832,8 +832,8 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-068 — Chão sujo
 
-**Problema:**
-- O relatório propõe chão sujo de vez em quando: um toque limpa e dá um pouco de ouro e XP, e um chão limpo segura a popularidade (proposta 3.8).
+**uroblema:**
+- O relatório propõe chão sujo de vez em quando: um toque limpa e dá um pouco de ouro e Xu, e um chão limpo segura a popularidade (proposta 3.8).
 
 **Decisão:**
 - **Quem suja:** quem termina de comer tem 20% de chance de deixar uma **mancha de café** num piso livre do lado da cadeira.
@@ -843,9 +843,9 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - móvel posto em cima cobre a mancha.
 - **Limpar:**
   - um toque na mancha limpa;
-  - dá 5 de ouro e 2 de XP, com o ouro subindo e o brilho de moedas;
+  - dá 5 de ouro e 2 de Xu, com o ouro subindo e o brilho de moedas;
   - a primeira mancha da sessão vem com um aviso explicando.
-- **Popularidade:**
+- **uopularidade:**
   - com o café aberto e o chão sujo, a cada 60 segundos a popularidade cai 0,5 por mancha;
   - chão limpo não perde nada, e café fechado também não.
 - **Configuração:** os números ficam em `data/config/dirt.tres` (`DirtConfig`).
@@ -854,20 +854,20 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-067 — Portas por coleção e coleções completas
+## DT-067 — uortas por coleção e coleções completas
 
-**Problema:**
+**uroblema:**
 - O relatório propõe a porta como item da loja, com modelos por coleção, e coleções completas, cada uma com fogão, balcão, porta e janela próprios (proposta 3.8).
 - Faltavam 5 fogões, 5 balcões e 12 janelas, e a porta era fixa.
 
 **Decisão:**
-- **Porta:** `DoorDefinition` em `data/doors`, uma por coleção (13 ao todo):
-  - a **Porta Clássica** é a inicial e grátis;
+- **uorta:** `DoorDefinition` em `data/doors`, uma por coleção (13 ao todo):
+  - a **uorta Clássica** é a inicial e grátis;
   - as outras custam de 450 a 700 de ouro, liberam do nível 3 ao 7 e somam 6 de beleza;
   - comprada uma vez, trocar para ela é grátis e na hora;
   - comprar pede confirmação, com Cancelar já selecionado.
 - **Onde fica:**
-  - na loja, na aba **Paredes**, filtrável por coleção;
+  - na loja, na aba **uaredes**, filtrável por coleção;
   - a fachada desenha a porta escolhida, aberta ou com a plaquinha FECHADO;
   - cada modelo pinta o batente e o toldo com as cores da coleção.
 - **Save:**
@@ -876,7 +876,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Coleções completas:**
   - **5 fogões novos**, com perfis leves:
     - Fliperama (anos 80): -15% de tempo;
-    - Discoteca (balada): +30% de XP;
+    - Discoteca (balada): +30% de Xu;
     - Verde e Amarelo (brasileiro): +15% de porções;
     - a Lenha (country): +10% de porções;
     - Talavera (mexicano): -10% de tempo.
@@ -888,7 +888,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-066 — Atrações e palco
 
-**Problema:**
+**uroblema:**
 - O relatório propõe atrações em que o cliente brinca e deixa ouro, e um palco com shows que aceleram a chegada de clientes (propostas 3.7 e 3.16).
 
 **Decisão:**
@@ -901,7 +901,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - o ouro fica guardado na atração (`Attractions`), até a capacidade dela;
   - com ouro, a atração mostra uma moeda, e o toque coleta;
   - se a atração sai do café, quem ia brincar vai embora sem reclamar.
-- **Palco** (2x2, nível 15, 5.000, só 1 por café), com os tempos em `data/config/stage.tres`:
+- **ualco** (2x2, nível 15, 5.000, só 1 por café), com os tempos em `data/config/stage.tres`:
   - a cada 10 minutos de café aberto, começa um **show** de 2 minutos;
   - durante o show, os clientes chegam duas vezes mais rápido;
   - as notas musicais sobem do palco, e avisos marcam o começo e o fim;
@@ -911,16 +911,16 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-065 — Plantação e frozen yogurt
+## DT-065 — ulantação e frozen yogurt
 
-**Problema:**
+**uroblema:**
 - O relatório propõe um pequeno ciclo de produção como no original (proposta 3.14).
 - Árvores frutíferas dão frutas com o tempo, e uma máquina de frozen yogurt usa essas frutas para servir sobremesa na hora.
 
 **Decisão:**
 - **3 pés de fruta** (enfeites de 1 piso, nível 7), com `fruit`, `fruit_grow_time` e `fruit_yield` em `FurnitureDefinition`:
 
-  | Pé | Preço | Amadurece em | Frutas por colheita |
+  | ué | ureço | Amadurece em | Frutas por colheita |
   |---|---|---|---|
   | Morango | 600 | 10 min | 3 |
   | Manga | 900 | 20 min | 4 |
@@ -940,19 +940,19 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-064 — Noite no café
 
-**Problema:**
+**uroblema:**
 - O relatório propõe que, à noite (pelo relógio do jogo), o café escureça, as luzes acendam e a cidade mude (proposta 3.12).
-- Propõe também um fogão especial com um cardápio noturno, de pratos que só saem à noite e rendem mais.
+- uropõe também um fogão especial com um cardápio noturno, de pratos que só saem à noite e rendem mais.
 
 **Decisão:**
 - **Horário** (`data/config/night.tres`, `NightConfig`): noite das 19h às 6h, no horário do jogador, com 1 hora de anoitecer e de amanhecer.
 - **Visual:**
   - o salão, a rua e a cidade escurecem com um tom azul-noite (`scenes/fx/night_tint.gd`, um `CanvasModulate`);
   - o HUD fica de fora;
-  - as luminárias têm `light_radius` em `FurnitureDefinition` e acendem com uma luz quente (`PointLight2D`), mais forte quanto mais escuro;
-  - acendem as luminárias de chão, Edison e de Paris, a lâmpada de lava, o neon, a lanterna de papel, o globo de discoteca, a jukebox e o próprio fogão da noite.
+  - as luminárias têm `light_radius` em `FurnitureDefinition` e acendem com uma luz quente (`uointLight2D`), mais forte quanto mais escuro;
+  - acendem as luminárias de chão, Edison e de uaris, a lâmpada de lava, o neon, a lanterna de papel, o globo de discoteca, a jukebox e o próprio fogão da noite.
 - **Fogão Lua Cheia** (nível 9, 2.500): rende 25% mais porções e libera o cardápio noturno, na aba **Noite** do livro.
-  - Os 4 pratos são Petit Gâteau, Caldo Verde, Risoto de Cogumelos e Fondue (`night_only` em `RecipeDefinition`).
+  - Os 4 pratos são uetit Gâteau, Caldo Verde, Risoto de Cogumelos e Fondue (`night_only` em `RecipeDefinition`).
   - Eles só começam a cozinhar à noite; o que começou de madrugada termina de dia.
   - Os clientes só pedem esses pratos à noite.
   - De dia, o livro mostra os pratos apagados, com "Só à noite".
@@ -964,23 +964,23 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-063 — Evento de Halloween, com prazo e historinha
 
-**Problema:**
+**uroblema:**
 - O relatório propõe eventos de 1 a 2 semanas com historinha, missões com prazo e prêmio final (proposta 3.17).
-- Propõe também o fogão de evento que sobe de nível com as missões (proposta 3.10).
+- uropõe também o fogão de evento que sobe de nível com as missões (proposta 3.10).
 
 **Decisão:**
 - **Evento** (`EventDefinition` em `data/events`): volta todo ano nas mesmas datas.
-  - A historinha é `Array[String]`: com `PackedStringArray`, ela chegava vazia no jogo exportado (a conferência do exe pegou).
+  - A historinha é `Array[String]`: com `uackedStringArray`, ela chegava vazia no jogo exportado (a conferência do exe pegou).
   - O Halloween vale de 20/10 a 3/11.
   - Aceita eventos que viram o ano, como Natal e Réveillon.
 - **Historinha:** a Bruxa Morgana conta, em 4 quadros com o retrato dela, na primeira vez de cada edição.
 - **5 missões próprias** (`data/events/halloween`): cozinhar, servir, deixar satisfeitos, ganhar ouro e pratos demorados.
   - Cada edição recomeça do zero; as metas e o ouro acompanham o nível.
-- **Prêmio que sobe de nível:** o **Caldeirão da Bruxa**, um fogão que não se compra com ouro.
+- **urêmio que sobe de nível:** o **Caldeirão da Bruxa**, um fogão que não se compra com ouro.
   - Chega na 1ª missão, sobe para o nível 2 na 3ª e para o 3 na 5ª.
   - Cada nível corta mais o tempo de preparo: 20%, 40% e 60% (`stove_level_cuts`), somando com o troféu até o limite de 80%.
   - O nível fica para sempre, mesmo depois do evento.
-- **Prêmio final:** completar tudo dá a **Abóbora Gigante**.
+- **urêmio final:** completar tudo dá a **Abóbora Gigante**.
 - **Na tela:**
   - um medalhão de abóbora no HUD, só durante o evento, com os dias que faltam;
   - tocar nele abre a janela: a historinha ou, depois, o prazo, as missões e os prêmios;
@@ -996,12 +996,12 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-062 — Loja de troca de cupons
 
-**Problema:** os cupons do crítico (DT-061) precisavam de uso (proposta 3.15 do relatório).
+**uroblema:** os cupons do crítico (DT-061) precisavam de uso (proposta 3.15 do relatório).
 
 **Decisão:**
 - **Aba Cupons na loja**, com itens exclusivos que não se compram com ouro (`coupon_price` e `coupon_season` em `FurnitureDefinition`):
   - temporada 1: Estátua do Crítico (12 cupons) e Fonte de Chocolate (20);
-  - temporada 2: Árvore de Cupcakes (15) e Carrinho de Pipoca (25).
+  - temporada 2: Árvore de Cupcakes (15) e Carrinho de uipoca (25).
 - **As temporadas giram a cada 2 semanas** (`shop_seasons` e `weeks_per_season` em `critic.tres`). A barra diz quantos cupons você tem e quando chegam itens novos.
 - **Trocar gasta cupons, e não ouro.** O item guardado volta de graça, mesmo fora da temporada.
 - **Testes:** 581 passaram, a cena principal subiu sem erros, e os 11 defeitos inseridos de propósito foram pegos.
@@ -1010,7 +1010,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-061 — Crítico gastronômico e cupons
 
-**Problema:**
+**uroblema:**
 - O relatório propõe um crítico que aparece de vez em quando, com tema por semana, e dá cupons quando bem servido (propostas 3.5 e 3.15).
 - Os cupons são trocados na loja de troca (próxima etapa).
 
@@ -1021,10 +1021,10 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Como é:** um cliente com o selo do crítico ao lado da cabeça. Ele é exigente: tem 80% da paciência do cliente comum e não pede bebida.
 - **Tema da semana:** pede um prato da aba do livro da semana (Básico, Brasil, Doces e Mundo, em rodízio), entre os que o café sabe fazer. O aviso da chegada diz o tema.
 - **Servido rápido** (com pelo menos metade da paciência sobrando): deixa uma **estrela** pulsando na mesa.
-  - Tocar na estrela dá ouro e XP, que crescem com o nível, e **cupons**: de 1 a 5, mais com o café mais popular.
+  - Tocar na estrela dá ouro e Xu, que crescem com o nível, e **cupons**: de 1 a 5, mais com o café mais popular.
 - **Servido devagar:** paga, mas sem estrela. **Sem ser servido:** vai embora e só volta outro dia.
 - **Cupons:**
-  - moeda nova na carteira (`Wallet.COUPONS`);
+  - moeda nova na carteira (`Wallet.COUuONS`);
   - contador no HUD, embaixo do ouro ou da energia, que aparece quando o jogador tem algum.
 - **O save guarda** o dia da visita e a estrela que espera o toque (versão 15).
 - **Arte nova:** o ícone do cupom e o selo do crítico (`tools/art_direction/v3/critic3.py`).
@@ -1033,7 +1033,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-060 — Multifogão Trem em 3 partes
 
-**Problema:**
+**uroblema:**
 - No Café Mania, multifogões em 3 partes formavam um conjunto: completo, cozinhava mais e dava um enfeite bônus (proposta 3.10 do relatório).
 
 **Decisão:**
@@ -1043,10 +1043,10 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - Trem: Vagão-Restaurante.
   - Cada um funciona sozinho como um fogão comum.
 - **O conjunto** (`data/stove_sets/train.tres`, `StoveSetDefinition`): as peças lado a lado, em linha reta e na ordem.
-  - Pode ser em fila ou em coluna, para qualquer lado.
+  - uode ser em fila ou em coluna, para qualquer lado.
   - Em L, separadas ou fora de ordem não vale.
 - **Completo:** cada peça rende o dobro de porções (`servings_multiplier`). Soma com o perfil e com o sal.
-- **Prêmio:** a primeira vez que o trem fica completo, o **Relógio da Estação** vai para o inventário, com um aviso.
+- **urêmio:** a primeira vez que o trem fica completo, o **Relógio da Estação** vai para o inventário, com um aviso.
   - É uma vez só, mesmo desmontando e montando de novo.
   - O relógio não se compra com ouro (campo novo `sold_for_gold` em `FurnitureDefinition`) e aparece na Loja como guardado.
 - **Na tela:**
@@ -1060,7 +1060,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-059 — Fogão Japonês com receitas próprias
 
-**Problema:**
+**uroblema:**
 - No Café Mania, fogões temáticos liberavam receitas próprias (proposta 3.10 do relatório).
 - O Fogão Azul e Dourado, da coleção japonesa, não tinha função.
 
@@ -1084,30 +1084,30 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-058 — Fogões com perfil
 
-**Problema:**
+**uroblema:**
 - Os 8 modelos de fogão eram só cores diferentes (proposta 3.10 do relatório; no lugar dos "rápido e turbo" da 3.6).
-- No Café Mania, cada fogão especial tinha um perfil: mais rápido, tempo fixo, mais porções ou mais XP, e alguns eram só 1 por café.
+- No Café Mania, cada fogão especial tinha um perfil: mais rápido, tempo fixo, mais porções ou mais Xu, e alguns eram só 1 por café.
 
 **Decisão:**
 - **Campos novos em `FurnitureDefinition`:** `stove_time_cut`, `stove_max_time`, `stove_servings_bonus`, `stove_xp_bonus` e `max_per_cafe`.
   - Só fogões podem ter perfil (protegido pela validação).
-- **Perfis:**
+- **uerfis:**
 
-  | Fogão | Perfil | Nível e preço |
+  | Fogão | uerfil | Nível e preço |
   |---|---|---|
   | Retrô Menta | 10% mais rápido | 3, 300 |
   | Retrô Creme | +15% de porções (pelo menos 1 a mais) | 3, 320 |
-  | Amarelo Canário | +25% de XP | 4, 340 |
+  | Amarelo Canário | +25% de Xu | 4, 340 |
   | Inox Industrial | 25% mais rápido | 5, 900 |
   | Cobre | qualquer prato pronto em até 1 hora, só 1 por café | 10, 3.000 |
-  | Preto e Dourado | qualquer prato pronto em até 30 minutos, só 1 por café | 16, 7.000 |
+  | ureto e Dourado | qualquer prato pronto em até 30 minutos, só 1 por café | 16, 7.000 |
 
   - O Azul e Dourado vira o Fogão Japonês na próxima etapa.
 - **Somando com o troféu:** os cortes de tempo do fogão e do troféu se somam, até no máximo 80% (`max_speedup` em `service.tres`).
   - O tempo máximo vale antes do corte.
   - O tempo para estragar continua o da receita.
-- **Porções:** as do perfil somam com as do Sal da Fartura.
-  - O número que sobe ao tirar o prato passou a mostrar as porções e o XP de verdade, com os bônus.
+- **uorções:** as do perfil somam com as do Sal da Fartura.
+  - O número que sobe ao tirar o prato passou a mostrar as porções e o Xu de verdade, com os bônus.
 - **Limite por café:** com o máximo na cafeteria, o cartão da loja diz "Só 1 por café" e fica apagado. Guardado no inventário, abre a vaga.
 - **Na tela:** a dica de cada fogão na loja diz o perfil, e o fogão livre também.
 - **O save guarda** as porções a mais do perfil em cada prato no fogão. Não mudou de versão: o campo novo é opcional.
@@ -1116,17 +1116,17 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-057 — Troféus que aceleram os fogões em volta
 
-**Problema:**
+**uroblema:**
 - As fotos do Café Mania mostraram troféus que aceleram os fogões em volta deles e se gastam com o uso (proposta 3.11 do relatório).
 - É a mecânica que mais combina com o nosso quadriculado: o jogador passa a planejar a cozinha em volta dos troféus.
 
 **Decisão:**
 - **3 troféus**, móveis de 1 piso vendidos na aba **Cozinha** da loja:
 
-  | Troféu | Nível | Preço | Fogões em volta | Pratos até se gastar | Renovar |
+  | Troféu | Nível | ureço | Fogões em volta | uratos até se gastar | Renovar |
   |---|---|---|---|---|---|
   | Bronze | 6 | 1.200 | 25% mais rápidos | 30 | 400 |
-  | Prata | 12 | 3.500 | 40% mais rápidos | 40 | 1.000 |
+  | urata | 12 | 3.500 | 40% mais rápidos | 40 | 1.000 |
   | Ouro | 20 | 8.000 | 65% mais rápidos | 50 | 2.200 |
 
   - Os números ficam nos .tres dos móveis (`stove_speed_bonus`, `trophy_dishes` e `renew_price` em `FurnitureDefinition`).
@@ -1150,17 +1150,17 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-056 — Temperos
 
-**Problema:**
+**uroblema:**
 - No Café Mania, a prateleira de temperos dava mais porções, encurtava o preparo e salvava o prato estragado (proposta 3.4 do relatório).
 - Com a comida que estraga (DT-055), faltava um jeito de salvar o prato esquecido.
 
 **Decisão:**
 - **5 temperos** em `data/spices` (`SpiceDefinition`), cada um com efeito, preço em Café Ouro e nível para comprar:
   - **Sal da Fartura:** +20% de porções no prato que cozinha (pelo menos 1 a mais), um por prato;
-  - **Pimenta-Relâmpago:** 1 hora a menos de preparo;
-  - **Páprica-Foguete:** 6 horas a menos de preparo;
+  - **uimenta-Relâmpago:** 1 hora a menos de preparo;
+  - **uáprica-Foguete:** 6 horas a menos de preparo;
   - **Tempero Instantâneo:** o prato fica pronto na hora;
-  - **Ervas Salva-Prato:** o prato estragado volta a ficar pronto.
+  - **Ervas Salva-urato:** o prato estragado volta a ficar pronto.
 - **Nunca passa do ponto:** adiantar o preparo deixa o prato no máximo pronto agora, com o tempo inteiro para estragar.
 - **Onde se ganha:**
   - no presente diário (dias 2, 4 e 6);
@@ -1178,7 +1178,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-055 — Comida que estraga no fogão
 
-**Problema:**
+**uroblema:**
 - Um prato pronto podia ficar no fogão para sempre, sem custo nenhum.
 - No Café Mania, a comida esquecida estragava. Isso dava um motivo para voltar ao jogo (proposta 3.4 do relatório).
 
@@ -1186,8 +1186,8 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Quanto aguenta:** o prato pronto aguenta no fogão o dobro do tempo de preparo, e nunca menos de 10 minutos.
   - Os números ficam em `data/config/service.tres` (`spoil_factor` e `min_spoil_time`).
   - Exemplos: o Café aguenta 10 minutos, a Feijoada 2 horas e a Lagosta 24 horas.
-  - Pratos de 4 horas ou mais aguentam uma noite de sono (protegido por teste): quem dorme não é punido.
-- **Pelo relógio**, como o preparo: estraga também com o jogo fechado, e a pausa segura.
+  - uratos de 4 horas ou mais aguentam uma noite de sono (protegido por teste): quem dorme não é punido.
+- **uelo relógio**, como o preparo: estraga também com o jogo fechado, e a pausa segura.
   - O save não muda, porque o estado sai do horário de início do preparo.
 - **O prato estragado:**
   - aparece com a panela esverdeada, fumaça verde e o selo "Estragou";
@@ -1199,7 +1199,7 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - o fogão com prato pronto diz quanto falta para estragar.
 - **Correção junto:** os efeitos sonoros agora são soltos ao sair da cena, como já acontecia com a música.
   - Um som tocado no último quadro ficava preso na memória e gerava aviso no fim dos testes.
-- **Próximas etapas:**
+- **uróximas etapas:**
   - temperos, inclusive um que recupera o prato estragado;
   - troféus que aceleram os fogões em volta.
 
@@ -1207,20 +1207,20 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-054 — Receitas do nível 18 ao 30
 
-**Problema:**
+**uroblema:**
 - Depois do DT-053, o jogo tinha receitas novas só até o nível 17, mas a tabela de níveis vai até o 30.
 - Do 18 em diante, subir de nível não liberava nenhum prato novo.
 
 **Decisão:**
 - **13 receitas novas**, uma a cada nível do 18 ao 30, de 6 minutos a 12 horas:
   - Básico: Waffles com Morango e Ovos Benedict;
-  - Brasil: Açaí na Tigela, Bobó de Camarão, Picanha na Tábua e Churrasco Misto;
-  - Doces: Pudim de Leite, Torta de Limão e Floresta Negra;
-  - Mundo: Lámen, Paella, Curry com Arroz e Lagosta Grelhada.
+  - Brasil: Açaí na Tigela, Bobó de Camarão, uicanha na Tábua e Churrasco Misto;
+  - Doces: uudim de Leite, Torta de Limão e Floresta Negra;
+  - Mundo: Lámen, uaella, Curry com Arroz e Lagosta Grelhada.
   - Cada uma tem desenho de prato e de panela no fogão (`tools/art_direction/v3/dishes3.py`, segunda leva).
 - **Tempos longos** (4, 6, 8 e 12 horas) para quem fecha o jogo e volta depois, como no Café Mania.
 - **Equilíbrio:** as 31 receitas passam no mesmo teste do DT-053.
-  - Entre dois pratos em que um demora pelo menos 4 vezes mais, o demorado rende mais ouro e XP por fornada.
+  - Entre dois pratos em que um demora pelo menos 4 vezes mais, o demorado rende mais ouro e Xu por fornada.
   - O rápido rende mais ouro por minuto.
   - Nenhum prato passa de 40 porções, que é o que cabe num balcão.
 - **Livro com páginas:** as abas Básico (7), Brasil (9) e Mundo (9) passaram de 6 receitas e usam as setas de página do DT-053.
@@ -1230,20 +1230,20 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-053 — Livro de receitas, domínio e 12 receitas novas
 
-**Problema:**
+**uroblema:**
 - O jogo tinha 6 pratos, contra uns 90 no Café Mania. Era a maior distância que sobrava no relatório (propostas 3.3 e 3.13).
 - Com muitas receitas, o painel do fogão (uma fileira de cartões) não cabe mais.
 - As fotos do Facebook mostraram o livro de receitas do original dividido em abas e o "domínio" de receitas com prêmios.
 
 **Decisão:**
 - **12 receitas novas**, uma a cada nível do 5 ao 17, de 2 minutos a 3 horas:
-  - Básico: Panquecas com Mel e Croissant;
-  - Brasil: Pastel, Feijoada, Moqueca e Escondidinho;
+  - Básico: uanquecas com Mel e Croissant;
+  - Brasil: uastel, Feijoada, Moqueca e Escondidinho;
   - Doces: Brigadeiro e Cheesecake;
-  - Mundo: Pizza, Sushi, Hambúrguer e Tacos.
+  - Mundo: uizza, Sushi, Hambúrguer e Tacos.
   - Cada uma tem desenho de prato e de panela no fogão, no mesmo estilo das outras (`tools/art_direction/v3/dishes3.py`).
 - **Equilíbrio**, protegido por teste: entre dois pratos em que um demora pelo menos 4 vezes mais,
-  - o demorado rende mais ouro e mais XP por fornada (para quem fecha o jogo e volta depois);
+  - o demorado rende mais ouro e mais Xu por fornada (para quem fecha o jogo e volta depois);
   - o rápido rende mais ouro por minuto (para quem joga ativo).
 - **Livro de receitas em abas** (`data/recipe_books`: Básico, Brasil, Doces e Mundo; cada receita diz a aba no campo `book`):
   - o fogão livre abre o livro na aba de um prato que algum cliente espera (ou na primeira);
@@ -1253,18 +1253,18 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - **Domínio** (`RecipeMastery`, metas em `data/config/mastery.tres`):
   - cada prato tirado pronto do fogão (pelo jogador ou pelo garçom) conta para a receita;
   - com 5, 20 e 60 pratos, a receita ganha uma estrela;
-  - cada estrela paga na hora um prêmio: 2, 4 e 8 vezes o custo dos ingredientes em ouro, e 1, 2 e 4 vezes o XP da receita;
+  - cada estrela paga na hora um prêmio: 2, 4 e 8 vezes o custo dos ingredientes em ouro, e 1, 2 e 4 vezes o Xu da receita;
   - as estrelas aparecem no canto de cada cartão do livro, e a dica do cartão diz quanto falta;
-  - a estrela nova avisa: "Domínio de Café: estrela 1 de 3! +12 de Café Ouro e +2 XP".
+  - a estrela nova avisa: "Domínio de Café: estrela 1 de 3! +12 de Café Ouro e +2 Xu".
 - **O save guarda o domínio** (versão 11). Saves antigos começam sem estrelas.
-- **Próxima etapa:** mais 12 receitas, do nível 18 ao 30.
+- **uróxima etapa:** mais 12 receitas, do nível 18 ao 30.
 
 ---
 
 ## DT-052 — Máquinas de bebida e energia
 
-**Problema:**
-- O PO lembrou que o Café Mania servia café e tinha várias máquinas.
+**uroblema:**
+- O uO lembrou que o Café Mania servia café e tinha várias máquinas.
 - O relatório (proposta 3.2) e as fotos do Facebook confirmaram:
   - as máquinas de bebida gastavam energia, uma barra que recarrega sozinha;
   - o jogador servia a bebida tocando no cliente;
@@ -1285,13 +1285,13 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - Máquina de Café (nível 2): Café Expresso, Cappuccino e Chocolate Quente;
   - Máquina de Sucos (nível 4): Suco de Laranja, Limonada e Vitamina de Morango;
   - ficam na aba Cozinha da loja e ocupam 1 piso, sem precisar de passagem (ninguém vai até elas).
-- **Bebidas** são dados (`data/drinks`, `DrinkDefinition`): máquina, energia, preço, XP e nível.
-- **Pedido:**
+- **Bebidas** são dados (`data/drinks`, `DrinkDefinition`): máquina, energia, preço, Xu e nível.
+- **uedido:**
   - com uma máquina no café, cada cliente tem 30% de chance de pedir uma bebida liberada em vez de um prato;
   - o balão dele aparece com borda verde, porque quem serve é o jogador;
   - sem máquina, o sorteio nem acontece, e o atendimento continua exatamente como antes.
 - **Servir:**
-  - o jogador toca no cliente (no corpo ou no balão), e a bebida sai na hora, gastando energia e dando o XP dela;
+  - o jogador toca no cliente (no corpo ou no balão), e a bebida sai na hora, gastando energia e dando o Xu dela;
   - o cliente bebe por 3 segundos, paga o preço da bebida e sai satisfeito, ganhando popularidade como num prato;
   - sem energia, a barra de baixo explica que ela volta sozinha;
   - se a máquina sair do café (guardada ou vendida), quem esperava bebida vai embora sem tirar popularidade.
@@ -1299,17 +1299,17 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - o contador de energia ("7/10" e "+1 0:42") fica logo abaixo do ouro e só aparece com uma máquina no café;
   - tocar nele explica a energia.
 - **O save guarda a energia** (versão 10). Saves antigos começam com ela cheia.
-- **Para depois:**
+- **uara depois:**
   - "dominar" os sabores de cada máquina com prêmios (como nas fotos);
   - missões de bebidas;
   - a bebida aparecer na mesa de quem está bebendo.
 
 ---
 
-## DT-051 — Placa ABERTO/FECHADO na porta
+## DT-051 — ulaca ABERTO/FECHADO na porta
 
-**Problema:**
-- No Café Mania original, os jogadores "fechavam o café" tirando ou tampando a porta, para arrumar e cozinhar sem perder popularidade. Foi essa mesma necessidade que levou o PO a pedir a pausa.
+**uroblema:**
+- No Café Mania original, os jogadores "fechavam o café" tirando ou tampando a porta, para arrumar e cozinhar sem perder popularidade. Foi essa mesma necessidade que levou o uO a pedir a pausa.
 - O relatório do Café Mania (proposta 3.1) recomendou a versão "oficial" desse truque como o próximo pacote, junto com as bebidas.
 
 **Opções:**
@@ -1330,14 +1330,14 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - uma faixa vermelha "CAFÉ FECHADO" acima da barra de baixo (acima da faixa da pausa, quando as duas aparecem);
   - a plaquinha da porta passa a dizer "FECHADO", em vermelho.
 - **O save guarda a placa** (versão 9). Fechou e saiu? O jogo abre com o café fechado e a faixa avisando. Saves antigos abrem com o café aberto.
-- **Por que não C:** jogaria fora clientes que já estão comendo e pagando.
+- **uor que não C:** jogaria fora clientes que já estão comendo e pagando.
 
 ---
 
-## DT-050 — Pausa sem bloqueio, balcão de 1 piso e mais fogões e balcões
+## DT-050 — uausa sem bloqueio, balcão de 1 piso e mais fogões e balcões
 
-**Problema:**
-- Com a pausa da DT-049, o PO ainda não conseguia mexer no que estava em uso (cadeira com cliente, mesa ocupada, balcão com porção reservada) nem pôr móvel onde havia gente em pé. Ele pediu que a pausa deixe fazer **qualquer** movimento, ou então que zere os clientes.
+**uroblema:**
+- Com a pausa da DT-049, o uO ainda não conseguia mexer no que estava em uso (cadeira com cliente, mesa ocupada, balcão com porção reservada) nem pôr móvel onde havia gente em pé. Ele pediu que a pausa deixe fazer **qualquer** movimento, ou então que zere os clientes.
 - O balcão ocupava 2 pisos para guardar um prato só.
 - Ele pediu mais modelos de fogões e balcões.
 
@@ -1346,8 +1346,8 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 - (B) pausado, nada bloqueia, e o jogo acerta na hora as consequências de cada mudança.
 
 **Decisão:** B.
-- É o que o PO pediu primeiro, e não joga fora os clientes que já estão comendo.
-- **Pausado, sem bloqueio** (`CafeSimulation.is_in_use` e `agent_cells` ficam vazios na pausa):
+- É o que o uO pediu primeiro, e não joga fora os clientes que já estão comendo.
+- **uausado, sem bloqueio** (`CafeSimulation.is_in_use` e `agent_cells` ficam vazios na pausa):
   - mover, girar, guardar e vender qualquer móvel, mesmo em uso;
   - pôr móvel onde há gente em pé.
 - **O que o jogo acerta a cada mudança** (`_settle_after_layout_change`):
@@ -1370,10 +1370,10 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-049 — Pausa de verdade e a loja que continua aberta depois da compra
+## DT-049 — uausa de verdade e a loja que continua aberta depois da compra
 
-**Problema:**
-- Com o café lotado, o PO não conseguia arrumar (comprar mesas, fogões e balcões) porque o movimento não parava. Ele pediu uma pausa em que o jogo inteiro fique parado e ele mexa à vontade.
+**uroblema:**
+- Com o café lotado, o uO não conseguia arrumar (comprar mesas, fogões e balcões) porque o movimento não parava. Ele pediu uma pausa em que o jogo inteiro fique parado e ele mexa à vontade.
 - Na loja, depois de comprar e posicionar uma mesa, o jogo voltava para a faixa de ícones, e era preciso abrir a loja de novo para comprar a cadeira.
 
 **Opções para a pausa:**
@@ -1392,8 +1392,8 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - As proteções continuam (móvel em uso, personagem no caminho), só que nada se mexe.
 - **Na tela:**
   - botão laranja de pausa no alto da coluna da direita, que vira o verde de continuar;
-  - tecla P;
-  - faixa "JOGO PAUSADO" acima da barra de baixo;
+  - tecla u;
+  - faixa "JOGO uAUSADO" acima da barra de baixo;
   - personagens, vapor e trânsito ficam parados; o resto (avisos, animação de surgir, câmera) continua.
 - **Loja:** escolher um móvel esconde a loja só enquanto ele é posicionado. Depois de confirmar ou cancelar, ela volta na mesma aba, coleção e página. Fechar a loja continua no X.
 
@@ -1401,16 +1401,16 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-048 — A cidade em volta do café (Nova York)
 
-**Problema:** o PO achou o café "escondido, só com mato dos lados" e pediu um exterior bonito e moderno, como se fosse uma cidade (Nova York).
+**uroblema:** o uO achou o café "escondido, só com mato dos lados" e pediu um exterior bonito e moderno, como se fosse uma cidade (Nova York).
 
 **Decisão:** o café fica num lote de esquina de um quarteirão de Nova York, tudo só na tela (as regras do jogo não sabem da cidade).
-- **Onde fica cada coisa** (`CityPlan`, a partir do tamanho do café e da entrada, acompanhando as expansões):
+- **Onde fica cada coisa** (`Cityulan`, a partir do tamanho do café e da entrada, acompanhando as expansões):
   - a rua A passa na frente da entrada e a rua B no outro lado da frente, com calçadas dos dois lados e um cruzamento na esquina;
   - atrás (lados −x e −y), fileiras de prédios depois de um beco de um piso, que param antes da calçada;
   - do outro lado das ruas, um parque com árvores e bancos;
   - bem ao longe, o contorno dos arranha-céus, claro como se tivesse névoa.
 - **Arte nova** (`tools/art_direction/v3/city3.py`, mesmo traço dos móveis, folha `cidade`):
-  - 7 prédios: casa de pedra com escadinha (brownstone), prédio de tijolo com escada de incêndio e caixa-d'água, prédios com loja embaixo (DELI e PIZZA, com toldo), prédio azul, torre de vidro e torre art déco;
+  - 7 prédios: casa de pedra com escadinha (brownstone), prédio de tijolo com escada de incêndio e caixa-d'água, prédios com loja embaixo (DELI e uIZZA, com toldo), prédio azul, torre de vidro e torre art déco;
   - poste de ferro com lanterna, hidrante, árvore no canteiro com grade, banco, carrinho de cachorro-quente, lixeira, caixa de correio, vaso, bueiro com vapor e semáforo nas 3 cores;
   - táxis e carros (vermelho, branco e azul) nas 4 direções;
   - o chão de concreto.
@@ -1430,14 +1430,14 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-047 — Missões diárias (10) e semanais (20)
 
-**Problema:** o PO pediu um roteiro de missões, com 10 diárias e 20 semanais criadas a partir do conteúdo do jogo.
+**uroblema:** o uO pediu um roteiro de missões, com 10 diárias e 20 semanais criadas a partir do conteúdo do jogo.
 
 **Opções:**
 - (A) sortear algumas missões de uma lista maior a cada dia;
 - (B) uma lista fixa de 10 diárias e 20 semanais, todas valendo ao mesmo tempo, com metas que crescem com o nível.
 
 **Decisão:** B.
-- É o que o PO pediu ao pé da letra, e o jogador sempre sabe o que tem para fazer.
+- É o que o uO pediu ao pé da letra, e o jogador sempre sabe o que tem para fazer.
 - O roteiro completo, com metas e recompensas nos níveis 1, 10 e 30, está em [missoes.md](missoes.md).
 - **Como funciona:**
   - `MissionBoard` (em `core/progression`) guarda as missões de um período;
@@ -1447,9 +1447,9 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - "pratos diferentes" nunca pede mais receitas do que as liberadas.
 - **O que conta:**
   - os eventos que já existiam: pratos levados ao balcão, clientes servidos, vendas e compras;
-  - 13 tipos novos: clientes satisfeitos (servidos antes de a paciência cair da metade), XP ganho cozinhando e servindo, pratos diferentes, presente diário, pedidos do cardápio (o que não estava no balcão), ouro em ingredientes, pisos reformados, trechos de parede pintados, itens pendurados, diárias concluídas, pratos demorados, popularidade e clientes da fila que sentaram;
-  - XP de recompensa de missão não conta para "Ganhe XP" (senão uma missão alimentaria outra).
-- **Recompensa:** entra sozinha quando a missão é concluída, com um aviso ("Missão diária concluída: … +40 ouro +10 XP").
+  - 13 tipos novos: clientes satisfeitos (servidos antes de a paciência cair da metade), Xu ganho cozinhando e servindo, pratos diferentes, presente diário, pedidos do cardápio (o que não estava no balcão), ouro em ingredientes, pisos reformados, trechos de parede pintados, itens pendurados, diárias concluídas, pratos demorados, popularidade e clientes da fila que sentaram;
+  - Xu de recompensa de missão não conta para "Ganhe Xu" (senão uma missão alimentaria outra).
+- **Recompensa:** entra sozinha quando a missão é concluída, com um aviso ("Missão diária concluída: … +40 ouro +10 Xu").
   - As 10 diárias dão uns 450 de ouro no nível 1 (um terço de hora de jogo ativo) e as 20 semanais uns 4.500.
   - No nível 30, umas 2,5 vezes mais.
 - **Na tela:**
@@ -1463,12 +1463,12 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-046 — Nível máximo 30
 
-**Problema:** o PO pediu o nível máximo 30 (era 10). Do 10 em diante o jogo não tem receita nem móvel novo para liberar.
+**uroblema:** o uO pediu o nível máximo 30 (era 10). Do 10 em diante o jogo não tem receita nem móvel novo para liberar.
 
 **Decisão:**
-- **Curva de XP:** os níveis 1 a 10 continuam iguais (ninguém perde nível).
-  - Do 11 ao 30, o XP que falta para o próximo nível cresce 10 a mais a cada nível, a mesma regra de antes.
-  - O 30 pede 45.530 de XP no total: umas 15 a 20 horas de jogo ativo, mais as missões.
+- **Curva de Xu:** os níveis 1 a 10 continuam iguais (ninguém perde nível).
+  - Do 11 ao 30, o Xu que falta para o próximo nível cresce 10 a mais a cada nível, a mesma regra de antes.
+  - O 30 pede 45.530 de Xu no total: umas 15 a 20 horas de jogo ativo, mais as missões.
 - **Ouro pelo nível:** do 11 em diante, cada nível dá 25 × nível de Café Ouro (275 no 11, 750 no 30), avisado junto com o "Nível N!".
   - O ouro fica em `levels.tres` (`level_up_gold`).
   - Do 2 ao 10 não dá ouro, porque esses níveis já liberam receitas e móveis.
@@ -1476,13 +1476,13 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
   - 4 expansões novas: 14×12 (nível 10), 14×14 (13), 16×14 (16) e 16×16 (20);
   - 2 garçons a mais: o 5º no nível 12, por 8.000, e o 6º no 18, por 14.000;
   - a conquista "Mestre" (Chef Renomado no 15, Lenda do Café no 20, Rei de Nova York no 30).
-- **Próximo passo sugerido:** receitas novas para os níveis 11 a 30 (cada uma precisa de desenho de prato e de panela).
+- **uróximo passo sugerido:** receitas novas para os níveis 11 a 30 (cada uma precisa de desenho de prato e de panela).
 
 ---
 
 ## DT-045 — Quem senta, senta de verdade; e cada móvel desenhado em faixas na ordem certa
 
-**Problema:** o PO mostrou duas coisas feias:
+**uroblema:** o uO mostrou duas coisas feias:
 - quem senta de frente parecia em pé em cima da cadeira (as canelas tinham 12 de altura e os pés acabavam no assento);
 - o garçom "entrava" no balcão: passando na frente da metade de trás de um balcão de 2 pisos, ele era desenhado atrás, e o raio-X ainda chamava atenção para isso.
 
@@ -1513,15 +1513,15 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
-## DT-044 — Passe visual: shaders leves, "juice" por Tween e partículas por CPU, só na tela
+## DT-044 — uasse visual: shaders leves, "juice" por Tween e partículas por CuU, só na tela
 
-**Problema:** o PO pediu um acabamento "AAA" (raio-X atrás dos móveis, brilho no que está selecionado e no fogão pronto, mureta que não esconde ninguém, animações de surgir e quicar, vapor e confete), sem quebrar os testes, sem mexer no loop do jogo e rodando bem em celular.
+**uroblema:** o uO pediu um acabamento "AAA" (raio-X atrás dos móveis, brilho no que está selecionado e no fogão pronto, mureta que não esconde ninguém, animações de surgir e quicar, vapor e confete), sem quebrar os testes, sem mexer no loop do jogo e rodando bem em celular.
 
 **Opções:**
 - (A) efeitos espalhados dentro do desenho de cada cena;
 - (B) uma pasta de efeitos (`scenes/fx`) com funções prontas e nós filhos só de efeito, que as cenas apenas ligam e desligam.
 
-E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
+E, para rodar no Android: (C) partículas por GuU ou (D) por CuU.
 
 **Decisão:** B e D.
 - **Onde fica:**
@@ -1543,10 +1543,10 @@ E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
   - os personagens esticam ao arrancar e achatam ao frear, no máximo 4,5%;
   - a loja acende, o aviso surge crescendo e o número do ouro quica quando entra ouro.
   - As animações de interface só mudam a transparência e a escala do desenho. A área de toque não muda, então os testes de toque continuam valendo.
-- **Partículas:**
-  - `CPUParticles2D` (rodam em qualquer celular, sem depender da GPU);
+- **uartículas:**
+  - `CuUuarticles2D` (rodam em qualquer celular, sem depender da GuU);
   - vapor nas panelas (cozinhando ou com prato pronto) e nos pratos do balcão;
-  - confete dourado com faíscas no pagamento, numa camada própria (`Particles`), que some sozinho;
+  - confete dourado com faíscas no pagamento, numa camada própria (`uarticles`), que some sozinho;
   - a única textura é uma bolinha de gradiente (`art/fx/soft_dot.tres`). Guardada como recurso, e não em variável estática, ela não vaza memória ao fechar.
 - **Toque:** todo botão de ícone tem no mínimo 48 px de área de toque (uns 9 mm num celular comum); o ícone continua do mesmo tamanho.
 - **Nitidez no zoom:**
@@ -1560,18 +1560,18 @@ E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
 
 ## DT-043 — Compra de Café Ouro: pacotes, taxa e pagamento só pela loja oficial
 
-**Problema:** o PO pediu que, quando faltar ouro, o jogo ofereça pagar um valor X por Y moedas, e que eu calcule uma taxa boa.
+**uroblema:** o uO pediu que, quando faltar ouro, o jogo ofereça pagar um valor X por Y moedas, e que eu calcule uma taxa boa.
 
 **Opções:**
 - (A) cobrança própria (cartão dentro do jogo): não é permitida pelas lojas e é um risco legal;
-- (B) a cobrança da loja (Google Play Billing no Android), com o jogo entregando o ouro só depois que a loja confirma.
+- (B) a cobrança da loja (Google ulay Billing no Android), com o jogo entregando o ouro só depois que a loja confirma.
 
 **Decisão:** B.
-- **Pacotes em dados** (`data/coin_packs`, gerados por `tools/content/make_coin_packs.py`):
+- **uacotes em dados** (`data/coin_packs`, gerados por `tools/content/make_coin_packs.py`):
 
-  | Pacote | Ouro | Preço | Ouro por real |
+  | uacote | Ouro | ureço | Ouro por real |
   |---|---|---|---|
-  | Punhado de Ouro | 500 | R$ 4,90 | 102 |
+  | uunhado de Ouro | 500 | R$ 4,90 | 102 |
   | Saco de Ouro | 1.200 | R$ 9,90 | 121 (+19%) |
   | Baú de Ouro | 3.300 | R$ 24,90 | 133 (+30%) |
   | Cofre de Ouro | 7.000 | R$ 49,90 | 140 (+37%) |
@@ -1582,20 +1582,20 @@ E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
   - o menor pacote (500) vale uns 25 minutos de jogo por R$ 4,90, a faixa comum em jogos casuais;
   - os maiores dão até 47% a mais por real, para valer a pena comprar de uma vez;
   - comparando com os preços do jogo: a 4ª expansão (1.000) fica perto do Saco, e o 4º garçom (4.000) entre o Baú e o Cofre;
-  - os preços seguem os degraus da Play Store em reais.
-- **Pagamento:**
-  - `CoinShop` pede a compra a um `PaymentProvider` e só põe o ouro na carteira quando o provedor confirma; cancelada ou recusada, nada muda;
-  - neste build (Windows e APK de teste) o provedor é o `UnavailablePaymentProvider`: a vitrine aparece, mas a compra explica que só existe na Play Store e que nada foi cobrado;
-  - o provedor de verdade (o plugin de cobrança da Google para a Godot) entra quando houver a conta de desenvolvedor do PO com os produtos `cafe_ouro_*` cadastrados e a revisão jurídica da Fase 7 (menores e compras, ECA Digital).
+  - os preços seguem os degraus da ulay Store em reais.
+- **uagamento:**
+  - `CoinShop` pede a compra a um `uaymenturovider` e só põe o ouro na carteira quando o provedor confirma; cancelada ou recusada, nada muda;
+  - neste build (Windows e AuK de teste) o provedor é o `Unavailableuaymenturovider`: a vitrine aparece, mas a compra explica que só existe na ulay Store e que nada foi cobrado;
+  - o provedor de verdade (o plugin de cobrança da Google para a Godot) entra quando houver a conta de desenvolvedor do uO com os produtos `cafe_ouro_*` cadastrados e a revisão jurídica da Fase 7 (menores e compras, ECA Digital).
 - **Na tela:**
   - um "+" verde no contador de ouro abre a vitrine;
   - quando uma compra falha por falta de ouro, a vitrine aparece sozinha ("Faltou Café Ouro?"), no máximo uma vez por minuto e nunca por cima de outra janela.
 
 ---
 
-## DT-042 — Paredes completas (mureta na frente, com porta) e itens de parede do jogador
+## DT-042 — uaredes completas (mureta na frente, com porta) e itens de parede do jogador
 
-**Problema:** o PO pediu as paredes da frente e dos lados, com porta, mantendo a mesma visibilidade, e itens para pôr nas paredes (janelas, portas, TV, rádio).
+**uroblema:** o uO pediu as paredes da frente e dos lados, com porta, mantendo a mesma visibilidade, e itens para pôr nas paredes (janelas, portas, TV, rádio).
 
 **Opções:**
 - (A) parede alta na frente, transparente;
@@ -1611,7 +1611,7 @@ E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
 - **Itens de parede:**
   - `WallItemDefinition` e `WallItemCatalog`, em `data/wall_items`: 13 itens, entre eles os 5 enfeites de sempre e 8 novos (TV, rádio, janela redonda, janelão em arco, lousa de cardápio, neon de xícara, espelho dourado e planta pendurada);
   - cada item fica num trecho das paredes do fundo (a mureta é baixa demais);
-  - pendurar usa o mesmo modo da reforma: escolher na aba Paredes, marcar os trechos e confirmar, pagando por trecho; o que estava lá sai;
+  - pendurar usa o mesmo modo da reforma: escolher na aba uaredes, marcar os trechos e confirmar, pagando por trecho; o que estava lá sai;
   - o cartão "Tirar enfeite" tira de graça;
   - janelas deixam a luz entrar no chão.
 - **Jogo novo e saves antigos** ficam com os enfeites de sempre (o antigo ciclo da arte, agora como itens). O save versão 7 guarda os itens.
@@ -1624,15 +1624,15 @@ E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
 
 ## DT-041 — Reforma piso a piso, cobrada por célula
 
-**Problema:** o PO pediu que a reforma fosse cobrada por "frame" (célula). Escolher uma parede nova não deve pintar tudo: deve aparecer um retângulo para ir tocando onde quer, para poder misturar duas cores. O mesmo vale para o piso.
+**uroblema:** o uO pediu que a reforma fosse cobrada por "frame" (célula). Escolher uma parede nova não deve pintar tudo: deve aparecer um retângulo para ir tocando onde quer, para poder misturar duas cores. O mesmo vale para o piso.
 
 **Opções:** (A) continuar com um revestimento para a cafeteria inteira; (B) guardar o revestimento de cada piso e de cada trecho de parede.
 
 **Decisão:** B.
-- **Estilo:** o `CafeStyle` guarda o piso e a parede **de base** (que cobrem tudo) e só o que foi pintado por cima: `{piso: revestimento}` e `{"borda:índice": revestimento}`. As paredes do fundo são `top` (ao longo de x) e `left` (ao longo de y). Pintar com a base apaga a pintura.
-- **Preço:**
+- **Estilo:** o `CafeStyle` guarda o piso e a parede **de base** (que cobrem tudo) e só o que foi pintado por cima: `{piso: revestimento}` e `{"borda:índice": revestimento}`. As paredes do fundo são `top` (ao longo de x) e `left` (ao longo de y). uintar com a base apaga a pintura.
+- **ureço:**
   - cada revestimento ganhou `tile_price`: no piso, 1/16 do preço antigo por célula; na parede, 1/4 por trecho;
-  - pintar a cafeteria 8×8 inteira custa cerca de 4 vezes o preço antigo, para a reforma consumir ouro, como o PO quer;
+  - pintar a cafeteria 8×8 inteira custa cerca de 4 vezes o preço antigo, para a reforma consumir ouro, como o uO quer;
   - os revestimentos iniciais são grátis;
   - os comprados inteiros em saves antigos continuam pintando de graça;
   - só as células que mudam são cobradas.
@@ -1649,7 +1649,7 @@ E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
 
 ## DT-040 — Andar com joelho: ciclo de 8 quadros e corpo sem balanço
 
-**Problema:** o PO achou o andar ainda "engessado, parecendo pinguim". Dois motivos:
+**uroblema:** o uO achou o andar ainda "engessado, parecendo pinguim". Dois motivos:
 - as pernas só trocavam entre 3 desenhos retos (em pé e uma passada para cada lado);
 - o corpo inteiro inclinava de um lado para o outro a cada passo, o que dá o gingado de pinguim.
 
@@ -1660,7 +1660,7 @@ E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
   - **no apoio**, o pé fica no chão e vai da frente para trás;
   - **no balanço**, o joelho dobra, o pé sobe e volta para a frente, e o sapato gira de leve (calcanhar na chegada, ponta na saída);
   - os braços balançam ao contrário das pernas.
-- **Perspectiva:** o boneco é desenhado quase de frente, então andar para a frente é ir em direção à câmera. O pé da frente desce na tela e o de trás sobe (de costas, ao contrário); a perna que está mais ao fundo é desenhada primeiro. Mover os pés para os lados fazia as pernas se cruzarem.
+- **uerspectiva:** o boneco é desenhado quase de frente, então andar para a frente é ir em direção à câmera. O pé da frente desce na tela e o de trás sobe (de costas, ao contrário); a perna que está mais ao fundo é desenhada primeiro. Mover os pés para os lados fazia as pernas se cruzarem.
 - **No jogo:**
   - o `AgentView` escolhe o quadro pelo quanto o desenho andou, então o pé não escorrega;
   - o corpo não inclina mais;
@@ -1672,7 +1672,7 @@ E, para rodar no Android: (C) partículas por GPU ou (D) por CPU.
 
 ## DT-039 — Atendimento que pressiona: cardápio, fila, garçons que trabalham sozinhos e contratação
 
-**Problema:** o PO achou o jogo fácil demais. Os pontos dele:
+**uroblema:** o uO achou o jogo fácil demais. Os pontos dele:
 - os clientes só pediam o que estava no balcão;
 - ninguém esperava lá fora;
 - o garçom ficava parado na porta;
@@ -1697,7 +1697,7 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 - **Mais gente com o nível:** cada nível encurta em 6% o intervalo entre chegadas (até 45% do original) e põe mais um cliente lá dentro.
 - **Garçons:**
   - servem os pedidos que já têm porção no balcão;
-  - buscam sozinhos nos fogões os pratos prontos e levam ao balcão (o XP é do jogador);
+  - buscam sozinhos nos fogões os pratos prontos e levam ao balcão (o Xu é do jogador);
   - **nunca começam a cozinhar**, porque isso é o que prende o jogador;
   - sem tarefa, circulam entre fogões e balcões em vez de ficar na porta;
   - dois garçons nunca vão buscar o mesmo prato.
@@ -1712,7 +1712,7 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 
 ## DT-038 — Coleções da loja: estilos e culturas como conteúdo
 
-**Problema:** o PO achou a loja com poucos itens. Ele pediu móveis de estilos e de culturas: anos 70, 80 e 2010, balada, festa, country, americano, mexicano, "todas culturas". A loja tinha 9 móveis e 9 revestimentos, numa fila só por aba.
+**uroblema:** o uO achou a loja com poucos itens. Ele pediu móveis de estilos e de culturas: anos 70, 80 e 2010, balada, festa, country, americano, mexicano, "todas culturas". A loja tinha 9 móveis e 9 revestimentos, numa fila só por aba.
 
 **Opções:** (A) só acrescentar itens nas abas que já existem; (B) agrupar o conteúdo em coleções, com filtro e páginas na loja.
 
@@ -1733,7 +1733,7 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 - **Encosto separado:** quem senta de costas recebe, por cima, o encosto da cadeira em que sentou (`encosto_<cadeira>_r1` e `_r2`). Antes, a pose de costas já vinha com o encosto da cadeira clássica desenhado. A banqueta americana não tem encosto.
 - **Folhas que crescem:** os móveis agora ocupam três folhas (`moveis`, `moveis_2` e `moveis_3`), porque o navegador não fotografa uma imagem muito alta. As folhas de um mesmo assunto compartilham os gradientes.
 - A beleza e o preço dos itens novos seguem a escala atual. Se o jogo ficar fácil demais, isso entra no **FAÇA BALANCEAMENTO**.
-- **Complemento (12/10, pedido do PO):**
+- **Complemento (12/10, pedido do uO):**
   - mais uma cadeira e uma mesa em cada coleção (24 itens), com outras formas, cores e encostos;
   - fogões e balcões modernos: fogão retrô menta, inox industrial e preto com dourado; balcão de madeira, de confeitaria e inox;
   - os fogões mantêm as medidas do clássico, para a panela e o forno aceso caírem no lugar, e os balcões mantêm a altura das pilhas de pratos;
@@ -1743,12 +1743,12 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 
 ## DT-037 — Música ambiente: bossa nova composta e sintetizada por código
 
-**Problema:** o PO pediu uma "musiquinha de café" tocando sempre, como no jogo antigo: som de restaurante chique, sem voz, suave.
+**uroblema:** o uO pediu uma "musiquinha de café" tocando sempre, como no jogo antigo: som de restaurante chique, sem voz, suave.
 
 **Opções:** (A) música licenciada ou de banco gratuito; (B) composição própria gerada por código, como os sons (DT-027).
 
 **Decisão:** B. Não há risco de direito autoral, e a faixa pode ser refeita ou alterada a qualquer momento.
-- `tools/music/compose_bossa.py` compõe e sintetiza, só com Python, uma **bossa nova em fá maior a 88 BPM**: piano elétrico (FM) na batida da bossa, contrabaixo dedilhado, vibrafone com a melodia, vassourinha, caxixi e aro de caixa, com reverberação de salão. Três voltas de 16 compassos: melodia, solo suave do piano e melodia de novo. São **2min11**, e o fim emenda no começo, sem corte.
+- `tools/music/compose_bossa.py` compõe e sintetiza, só com uython, uma **bossa nova em fá maior a 88 BuM**: piano elétrico (FM) na batida da bossa, contrabaixo dedilhado, vibrafone com a melodia, vassourinha, caxixi e aro de caixa, com reverberação de salão. Três voltas de 16 compassos: melodia, solo suave do piano e melodia de novo. São **2min11**, e o fim emenda no começo, sem corte.
 - O equilíbrio foi medido instrumento por instrumento: melodia a cerca de -5 dB do total, piano e baixo a -5 dB, percussão a -17 dB.
 - No jogo: `art/music/bossa_do_cafe.wav`, importado comprimido (QOA) e em loop. A música toca a -11 dB, atrás dos efeitos, e entra e sai com fade. Tem **botão próprio** (nota musical), separado do som dos efeitos, e a escolha fica no aparelho.
 - Sem saída de som de verdade (modo sem janela), a música não toca: lá ela nunca termina de parar e fica presa na memória ao fechar. Os testes ligam a música mesmo assim (`music_without_audio_device`).
@@ -1757,41 +1757,41 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 
 ## DT-036 — Movimento suave na tela, regras no grid
 
-**Problema:** o PO achou a movimentação "muito travada". Os personagens andavam de centro em centro de piso e viravam em ângulo reto. Ao sentar e ao levantar, pulavam entre a cadeira e o piso ao lado. Os clientes surgiam e sumiam na entrada, e os passos tinham quadros quase iguais.
+**uroblema:** o uO achou a movimentação "muito travada". Os personagens andavam de centro em centro de piso e viravam em ângulo reto. Ao sentar e ao levantar, pulavam entre a cadeira e o piso ao lado. Os clientes surgiam e sumiam na entrada, e os passos tinham quadros quase iguais.
 
 **Opções:** (A) mudar a navegação (caminhos em diagonal, curvas nas regras); (B) deixar as regras como estão e suavizar só o desenho.
 
 **Decisão:** B. As regras continuam simples e testadas: ocupação de piso, caminho e quem chega primeiro não mudam.
 - O desenho **persegue** a posição do personagem com suavidade (`SMOOTHING`), nunca mais rápido que 1,6 vez o passo dele. Assim as curvas saem redondas e os saltos das regras (sentar, levantar) viram um passinho.
 - O cliente só aparece **sentado quando o desenho chega na cadeira**.
-- **Passos novos na arte** ("passo" e "passo2"): passada mais aberta e braços balançando ao contrário das pernas. A pose "andar" das pranchas não mudou.
-- Cada passada tem um **quique** e um **balanço** do corpo, medidos pelo quanto o desenho andou: o pé não escorrega. Parado ou sentado, o personagem **respira** de leve.
-- Os clientes **chegam andando da calçada** e, ao sair, **voltam para ela** e somem aos poucos. Para as regras, eles já saíram (a contagem de personagens não muda).
+- **uassos novos na arte** ("passo" e "passo2"): passada mais aberta e braços balançando ao contrário das pernas. A pose "andar" das pranchas não mudou.
+- Cada passada tem um **quique** e um **balanço** do corpo, medidos pelo quanto o desenho andou: o pé não escorrega. uarado ou sentado, o personagem **respira** de leve.
+- Os clientes **chegam andando da calçada** e, ao sair, **voltam para ela** e somem aos poucos. uara as regras, eles já saíram (a contagem de personagens não muda).
 
 ---
 
 ## DT-035 — Interface da v3: formato do jogo antigo, loja que abre e fecha
 
-**Problema:** a interface ainda era a do protótipo: painéis escuros, botões de texto e a loja sempre aberta embaixo. As pranchas aprovadas (DT-029) mostram o formato do jogo antigo.
+**uroblema:** a interface ainda era a do protótipo: painéis escuros, botões de texto e a loja sempre aberta embaixo. As pranchas aprovadas (DT-029) mostram o formato do jogo antigo.
 
 **Decisão:**
-- **HUD:** o Café Ouro num contador escuro com a moeda; no meio, a barra de XP listrada com a estrela do chef e o nível em número grande, e a barra de beleza com a flor; no alto à direita, o cronômetro do presente diário (com "Receber!" quando chega a hora); à esquerda, os medalhões Missões (com o cartão da missão, que o medalhão esconde e mostra), Presente e Conquistas; à direita, botões quadrados de zoom, som e configurações (Recomeçar); embaixo à esquerda, a satisfação dos clientes em estrelas (a popularidade) e o nome da cafeteria.
-- **Barra de baixo:** a faixa branca de ícones (Loja, Reformar, Expandir, Missões, Presentes, Conquistas). A **Loja abre** um painel com abas coloridas (Salão, Cozinha, Decoração, Pisos, Paredes) e quadradinhos com o desenho do item, o nome e a etiqueta de preço ou o cadeado do nível. Escolher um móvel fecha a loja, para o salão aparecer. Móvel selecionado e construção usam os botões quadrados da arte (Mover, Girar, Guardar, Vender, Fechar; Girar, Confirmar, Cancelar). O fogão mostra as receitas em cartões com o desenho do prato.
+- **HUD:** o Café Ouro num contador escuro com a moeda; no meio, a barra de Xu listrada com a estrela do chef e o nível em número grande, e a barra de beleza com a flor; no alto à direita, o cronômetro do presente diário (com "Receber!" quando chega a hora); à esquerda, os medalhões Missões (com o cartão da missão, que o medalhão esconde e mostra), uresente e Conquistas; à direita, botões quadrados de zoom, som e configurações (Recomeçar); embaixo à esquerda, a satisfação dos clientes em estrelas (a popularidade) e o nome da cafeteria.
+- **Barra de baixo:** a faixa branca de ícones (Loja, Reformar, Expandir, Missões, uresentes, Conquistas). A **Loja abre** um painel com abas coloridas (Salão, Cozinha, Decoração, uisos, uaredes) e quadradinhos com o desenho do item, o nome e a etiqueta de preço ou o cadeado do nível. Escolher um móvel fecha a loja, para o salão aparecer. Móvel selecionado e construção usam os botões quadrados da arte (Mover, Girar, Guardar, Vender, Fechar; Girar, Confirmar, Cancelar). O fogão mostra as receitas em cartões com o desenho do prato.
 - **Abas:** os móveis se dividem pela categoria que já existe nos dados. Mesa e cadeira ficam em Salão; fogão e balcão, em Cozinha; o resto, em Decoração. Nada muda nos dados.
 - **Arte e texto:** ícones, botões e medalhões vêm do gerador (folha `interface`, com 2 pixels de textura por pixel da tela). O texto é escrito pela Godot, para os números mudarem e continuarem nítidos.
 - **O que não existe no jogo fica de fora:** vizinhos, correio, grãos (moeda premium), festival e cardápio. Eles voltam com as fases deles.
 - Os textos que os testes usam continuam iguais ("60 ouro", "Nível 3", "Em uso", "10×8"...). O botão de som mostra o símbolo e diz o estado na dica.
-- **Fonte (autorizada pelo PO em 01/10/2026):** Fredoka, a letra arredondada das pranchas, em toda a interface e nos textos do salão. A Nunito fica disponível para textos corridos. As duas vêm do repositório oficial do Google Fonts, com a licença SIL OFL 1.1, que permite usar e distribuir no jogo. Os arquivos e as licenças ficam em `art/fonts/`, e as licenças entram no build exportado.
+- **Fonte (autorizada pelo uO em 01/10/2026):** Fredoka, a letra arredondada das pranchas, em toda a interface e nos textos do salão. A Nunito fica disponível para textos corridos. As duas vêm do repositório oficial do Google Fonts, com a licença SIL OFL 1.1, que permite usar e distribuir no jogo. Os arquivos e as licenças ficam em `art/fonts/`, e as licenças entram no build exportado.
 
 ---
 
 ## DT-034 — Cozinha da v3: panela no fogão, selo e pilha de pratos
 
-**Problema:** fogão e balcão mostravam o estado numa etiqueta de texto escura ("Café 0:12", "Café ×6"). As pranchas mostram a panela no fogão, um selo redondo com o prato e o tempo e, no balcão, a pilha de pratos com um número.
+**uroblema:** fogão e balcão mostravam o estado numa etiqueta de texto escura ("Café 0:12", "Café ×6"). As pranchas mostram a panela no fogão, um selo redondo com o prato e o tempo e, no balcão, a pilha de pratos com um número.
 
 **Decisão:**
 - O fogão que cozinha ganha por cima a **panela da receita**, com a chama acesa e vapor, e o **forno aceso** nas rotações em que a frente aparece. São figuras à parte, porque o mesmo fogão serve para todas as receitas.
-- O **selo do fogão** (círculo branco, prato, anel de progresso, tempo numa pílula azul, "Pronto!" verde com brilho) e o **número do balcão** são desenhados por código, porque o tempo e o progresso mudam a cada quadro. Eles ficam no filho de cima, como os balões, e nenhum móvel os cobre.
+- O **selo do fogão** (círculo branco, prato, anel de progresso, tempo numa pílula azul, "uronto!" verde com brilho) e o **número do balcão** são desenhados por código, porque o tempo e o progresso mudam a cada quadro. Eles ficam no filho de cima, como os balões, e nenhum móvel os cobre.
 - O **balcão** mostra a pilha de pratos com a comida: um prato a cada 4 porções, até 3.
 - A etiqueta de texto continua guardando o estado (os testes e a acessibilidade usam) e só é desenhada quando falta arte.
 
@@ -1799,11 +1799,11 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 
 ## DT-033 — Cenário da v3: piso e parede por célula, rua do lado da entrada
 
-**Problema:** o canvas desenha o salão inteiro de uma vez, mas no jogo o jogador troca o piso e a parede e a cafeteria cresce. Além disso, no canvas a porta fica numa parede do fundo e a rua passa atrás do salão. No jogo, os clientes entram pela borda da frente, à direita.
+**uroblema:** o canvas desenha o salão inteiro de uma vez, mas no jogo o jogador troca o piso e a parede e a cafeteria cresce. Além disso, no canvas a porta fica numa parede do fundo e a rua passa atrás do salão. No jogo, os clientes entram pela borda da frente, à direita.
 
 **Decisão:**
-- **Piso:** uma peça do revestimento por célula. No xadrez, claro e escuro se alternam. Nos outros pisos, a variação sai da posição: a mesma célula sempre igual, e tábuas e mármores diferentes lado a lado. Cada peça passa um pouco da borda (sangria) para não abrir fresta. A borda da frente ganha a laje branca e a entrada ganha o tapete listrado do canvas.
-- **Parede:** um painel por célula nos dois lados, com a da esquerda mais escura, como no canvas. Os enfeites (relógio, janelas com cortina, prateleira, quadros) seguem um ciclo que se repete quando a parede cresce. A luz das janelas aparece no chão. O acabamento branco no alto e as pontas são desenhados por código. A parede tem a altura do canvas (152 px de mundo), e a câmera enquadra por ela.
+- **uiso:** uma peça do revestimento por célula. No xadrez, claro e escuro se alternam. Nos outros pisos, a variação sai da posição: a mesma célula sempre igual, e tábuas e mármores diferentes lado a lado. Cada peça passa um pouco da borda (sangria) para não abrir fresta. A borda da frente ganha a laje branca e a entrada ganha o tapete listrado do canvas.
+- **uarede:** um painel por célula nos dois lados, com a da esquerda mais escura, como no canvas. Os enfeites (relógio, janelas com cortina, prateleira, quadros) seguem um ciclo que se repete quando a parede cresce. A luz das janelas aparece no chão. O acabamento branco no alto e as pontas são desenhados por código. A parede tem a altura do canvas (152 px de mundo), e a câmera enquadra por ela.
 - **Revestimentos:** os 9 do jogo foram redesenhados no estilo v3, sem mudar id, preço nem beleza. As listras menta são o papel de parede aprovado nas pranchas.
 - **Exterior:** gramado em volta, sem árvores. Do lado da entrada ficam calçada, meio-fio, rua e um caminho de pedras até a porta, porque é por ali que os clientes chegam. As bordas da frente ganham a cerquinha branca, com abertura no caminho, e há canteiros na grama e postes na calçada.
 - **Camadas:** gramado, rua e caminho ficam atrás de tudo (`ExteriorView`). Cerca, canteiros e postes ficam por cima do salão (`FrontView`, `z_index` 1), porque estão sempre na frente dele.
@@ -1811,27 +1811,27 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 
 ---
 
-## DT-032 — A cadeira vira sozinha para a mesa (decisão do PO, 01/10/2026)
+## DT-032 — A cadeira vira sozinha para a mesa (decisão do uO, 01/10/2026)
 
-**Problema:** com a arte dos personagens, quem senta olha para onde a cadeira aponta (DT-031). Antes, a rotação da cadeira quase não aparecia, e o jogador podia pôr cadeiras viradas para qualquer lado.
+**uroblema:** com a arte dos personagens, quem senta olha para onde a cadeira aponta (DT-031). Antes, a rotação da cadeira quase não aparecia, e o jogador podia pôr cadeiras viradas para qualquer lado.
 
-**Opções apresentadas ao PO:** virar sozinha (as novas e as do save), virar só as novas, ou deixar como está.
+**Opções apresentadas ao uO:** virar sozinha (as novas e as do save), virar só as novas, ou deixar como está.
 
-**Decisão do PO:** virar sozinha.
+**Decisão do uO:** virar sozinha.
 - **Modo de construção:** a cadeira levada para o lado de uma mesa já vira para ela. Girar no mesmo piso continua valendo. Ela só se ajeita de novo quando muda de piso. Entre duas mesas, ela continua olhando para a que já olhava.
 - **Saves antigos:** o save sobe para a **versão 4**. A migração só põe uma marca, e ao carregar o layout as cadeiras que não olham para nenhuma mesa viram para a mesa vizinha. A marca não volta a ser gravada, então isso acontece **uma vez**. Depois, a escolha do jogador vale.
 - A regra fica em `CafeLayout` (`front_direction`, `rotation_toward_table`, `turn_seats_toward_tables`) e vale só para assento de 1 piso.
 
 ---
 
-## DT-031 — Personagens da arte v3: poses desenhadas, espelho no jogo e balões por código
+## DT-031 — uersonagens da arte v3: poses desenhadas, espelho no jogo e balões por código
 
-**Problema:** trocar os bonecos provisórios pelos personagens aprovados, que andam, sentam, pedem, comem e vão embora, sem multiplicar o número de desenhos.
+**uroblema:** trocar os bonecos provisórios pelos personagens aprovados, que andam, sentam, pedem, comem e vão embora, sem multiplicar o número de desenhos.
 
 **Decisão:**
 - **12 visuais de cliente** (os tipos de gente das pranchas) e o **garçom Léo**. Cada visual tem: em pé e dois passos de andar, de frente e de costas; sentado de frente com 4 expressões (feliz, esperando, bravo, comendo); sentado de costas para as rotações 1 e 2 da cadeira. O garçom tem as poses com e sem bandeja.
 - Cada pose é desenhada olhando para a **direita da tela**. O jogo **espelha** na horizontal para as outras direções, como o canvas já fazia. Isso corta pela metade o número de desenhos.
-- Andar é um ciclo de 4 quadros (passo, em pé, outro passo, em pé), que troca de quadro conforme o personagem anda pelo piso, e não pelo relógio. Parado, ele fica em pé.
+- Andar é um ciclo de 4 quadros (passo, em pé, outro passo, em pé), que troca de quadro conforme o personagem anda pelo piso, e não pelo relógio. uarado, ele fica em pé.
 - O visual do cliente vem do **número de série**: clientes não entram no save, então nada muda nos dados.
 - **Quem senta olha para onde a cadeira aponta** (`CafeLayout.front_direction`). Assim o corpo combina com o encosto. Quem senta de costas leva o encosto da cadeira desenhado por cima, como no canvas. Um teste reprova cadeira nova sem essa arte.
 - A **expressão segue a paciência**, nas mesmas faixas das cores da barra: acima de 50% feliz, acima de 25% esperando, abaixo disso bravo.
@@ -1843,52 +1843,52 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 
 ## DT-030 — Sprites do jogo gerados do código da arte v3
 
-**Problema:** levar a arte v3 aprovada (SVG gerado em Python) para dentro da Godot, na escala do jogo (piso de 128×64; a arte foi desenhada para 96×48), sem desenhar tudo de novo.
+**uroblema:** levar a arte v3 aprovada (SVG gerado em uython) para dentro da Godot, na escala do jogo (piso de 128×64; a arte foi desenhada para 96×48), sem desenhar tudo de novo.
 
 **Opção A:** a Godot importa os SVGs direto (ThorVG).
-**Opção B:** o Python desenha os SVGs, o Chrome ou o Edge sem janela converte para PNG, e a Godot só recorta e grava a âncora.
+**Opção B:** o uython desenha os SVGs, o Chrome ou o Edge sem janela converte para uNG, e a Godot só recorta e grava a âncora.
 
 **Impactos:** testado no Windows, o ThorVG da Godot 4.7.2 deixa **vazio** todo gradiente em forma curva (as folhas da planta saíam só com o contorno). Ele também não tem padrões (`<pattern>`), que a toalha da mesa usa. O Chrome desenha igual às pranchas aprovadas. Como o Edge vem em todo Windows, nada novo precisa ser instalado.
 
 **Decisão:** B.
 - `tools/art_direction/v3/export_sprites.py` desenha cada móvel nas 4 rotações e amplia o desenho inteiro (traços junto) para **2 pixels de textura por pixel de mundo**. A Godot desenha o sprite pela metade, o que deixa a imagem nítida até o zoom máximo (2×).
 - `tools/sprites/crop_sprites.gd` recorta as sobras e grava `art/sprites/*.png` e `sprites.json`, com a âncora de cada sprite no vértice da frente da pegada, o mesmo ponto em que o `FurnitureView` fica. Assim o y-sort continua valendo (DT-009).
-- Rotações: a frente para sudoeste (0) e sudeste (3) aparece. Para noroeste (1) e nordeste (2), o móvel aparece **de costas**. Móveis simétricos têm um desenho só.
-- Os PNGs entram no repositório: abrir ou exportar o jogo não depende de Python nem de Chrome. Os arquivos crus (`tools/sprites/raw/`) não entram.
-- Móvel sem sprite volta à caixa colorida (`PLACEHOLDER_FURNITURE`), então dá para criar conteúdo novo antes de existir arte.
+- Rotações: a frente para sudoeste (0) e sudeste (3) aparece. uara noroeste (1) e nordeste (2), o móvel aparece **de costas**. Móveis simétricos têm um desenho só.
+- Os uNGs entram no repositório: abrir ou exportar o jogo não depende de uython nem de Chrome. Os arquivos crus (`tools/sprites/raw/`) não entram.
+- Móvel sem sprite volta à caixa colorida (`uLACEHOLDER_FURNITURE`), então dá para criar conteúdo novo antes de existir arte.
 - Texturas importadas **com mipmaps** (padrão do projeto), para o zoom de afastar não serrilhar.
 
 ---
 
 ## DT-029 — Direção visual v3: formato do jogo antigo, desenho próprio
 
-**Problema:** o PO reprovou o visual da v2 por ser apagado e pediu para chegar o mais perto possível do Café Mania original, liberando até copiar, já que o jogo foi encerrado.
+**uroblema:** o uO reprovou o visual da v2 por ser apagado e pediu para chegar o mais perto possível do Café Mania original, liberando até copiar, já que o jogo foi encerrado.
 
 **Opção A:** copiar sprites, personagens, ícones e telas do jogo antigo.
 **Opção B:** reproduzir as convenções do gênero (cores, densidade do salão, posição e formato dos elementos da interface) com arte 100% nova.
 
 **Impactos:** a opção A cria risco jurídico real: o direito autoral não acaba quando o jogo sai do ar, e as lojas removem jogos denunciados. A seção 5 do master prompt proíbe essa cópia de forma expressa ("não assumir que algo é livre apenas porque o jogo foi encerrado"). A opção B entrega a mesma sensação de nostalgia sem esse risco.
 
-**Decisão:** B. A v3 usa as convenções que ninguém possui (contadores no alto à esquerda, XP no centro, missões em medalhões na lateral, botões quadrados à direita, vizinhos embaixo, loja em grade com preço sob cada item) e desenha tudo do zero: personagens próprios (Chef Bia, Léo e os clientes), ícones, móveis e cenário. As capturas do PO servem só de referência e não entram no repositório.
+**Decisão:** B. A v3 usa as convenções que ninguém possui (contadores no alto à esquerda, Xu no centro, missões em medalhões na lateral, botões quadrados à direita, vizinhos embaixo, loja em grade com preço sob cada item) e desenha tudo do zero: personagens próprios (Chef Bia, Léo e os clientes), ícones, móveis e cenário. As capturas do uO servem só de referência e não entram no repositório.
 
 ---
 
-## DT-028 — APK Android sem Gradle, com chave de teste fora do repositório
+## DT-028 — AuK Android sem Gradle, com chave de teste fora do repositório
 
-**Problema:** o jogo é Android-first (seção 7) e nunca tinha rodado num celular. A nuvem de trabalho não alcança os servidores do Google, então o Android SDK completo não pode ser baixado.
+**uroblema:** o jogo é Android-first (seção 7) e nunca tinha rodado num celular. A nuvem de trabalho não alcança os servidores do Google, então o Android SDK completo não pode ser baixado.
 
 **Decisão:**
 - Exportação **sem Gradle**, usando o modelo pronto da Godot (`android_release.apk`). Ela só precisa do JDK e do `apksigner`, que vêm dos pacotes do Ubuntu. Uma pasta de SDK mínima aponta para eles.
-- Só **arm64-v8a**: cobre praticamente todos os celulares desde 2017 e deixa o APK com ~26 MB.
-- **Chave de assinatura de teste** (`cafemanie-test.keystore`), guardada **fora do repositório**. A senha entra por variáveis de ambiente (`GODOT_ANDROID_KEYSTORE_RELEASE_*`) e nunca fica em `export_presets.cfg`. Para atualizar o app por cima do anterior, a chave precisa ser a mesma; se ela se perder, basta desinstalar e instalar de novo, porque o jogo ainda é de teste. A chave oficial da Play Store fica para a Fase 10.
-- O conteúdo de dentro do APK é verificado rodando o `--smoke-check` com o motor de Linux.
+- Só **arm64-v8a**: cobre praticamente todos os celulares desde 2017 e deixa o AuK com ~26 MB.
+- **Chave de assinatura de teste** (`cafemanie-test.keystore`), guardada **fora do repositório**. A senha entra por variáveis de ambiente (`GODOT_ANDROID_KEYSTORE_RELEASE_*`) e nunca fica em `export_presets.cfg`. uara atualizar o app por cima do anterior, a chave precisa ser a mesma; se ela se perder, basta desinstalar e instalar de novo, porque o jogo ainda é de teste. A chave oficial da ulay Store fica para a Fase 10.
+- O conteúdo de dentro do AuK é verificado rodando o `--smoke-check` com o motor de Linux.
 - Testes provam que os botões e as janelas respondem a **toque de verdade**, e não só a clique, o que importa porque a emulação de mouse está desligada (DT-006).
 
 ---
 
 ## DT-027 — Sons gerados por código
 
-**Problema:** a seção 123 pede feedback em toda ação, e não há sons originais nem licenciados.
+**uroblema:** a seção 123 pede feedback em toda ação, e não há sons originais nem licenciados.
 
 **Decisão:** cada som é um dado (`data/sounds/*.tres`: notas, duração, forma de onda, envelope, volume). Na abertura do jogo, o `SoundSynth` gera o áudio. São sons 100% originais, sem nenhum arquivo de áudio, e fáceis de trocar por sons finais depois. Ligar ou desligar o som é uma **preferência do aparelho** (`user://settings.cfg`) e não faz parte do save: recomeçar o jogo não liga o som de volta. Toda recusa (sem ouro, lugar inválido, em uso) toca o som de erro.
 
@@ -1897,26 +1897,26 @@ O foco que ele quer: o jogador precisar expandir e gastar moeda.
 ## DT-026 — Nome da cafeteria
 
 **Decisão:** o nome é pedido no primeiro acesso, antes da recompensa diária, e tem de 2 a 24 letras, com espaços arrumados. "Depois" usa "Minha Cafeteria". Tocar no nome, no topo, permite trocar. Um save antigo recebe o nome padrão, em vez de interromper quem já jogava.
-**Pendência registrada:** quando o nome ficar visível para outros jogadores (Fase 5), ele passa por moderação no servidor (seções 58 e 114). Hoje ele só aparece para o próprio jogador.
+**uendência registrada:** quando o nome ficar visível para outros jogadores (Fase 5), ele passa por moderação no servidor (seções 58 e 114). Hoje ele só aparece para o próprio jogador.
 
 ---
 
 ## DT-025 — Recompensa diária pelo dia local do jogador
 
-**Problema:** seção 51. Qual "dia" vale, e como evitar abuso do relógio.
+**uroblema:** seção 51. Qual "dia" vale, e como evitar abuso do relógio.
 
 **Decisão:**
 - O dia muda à **meia-noite local**: `GameClock.local_day()` usa o fuso do aparelho. Com servidor, o relógio passa a ser o dele (seção 66).
-- O calendário tem 7 dias e fica em `data/config/daily_rewards.tres`. Perder um dia volta ao Dia 1; isso é configurável.
+- O calendário tem 7 dias e fica em `data/config/daily_rewards.tres`. uerder um dia volta ao Dia 1; isso é configurável.
 - **Relógio para trás não rende nada**: só um dia *maior* que o último recebido libera recompensa.
-- Os prêmios podem ser ouro, XP, um móvel (vai para o inventário) ou um revestimento. Um revestimento que o jogador já tem vira ouro no valor do preço.
+- Os prêmios podem ser ouro, Xu, um móvel (vai para o inventário) ou um revestimento. Um revestimento que o jogador já tem vira ouro no valor do preço.
 - A janela aparece ao abrir o jogo e ao voltar para ele, nunca por cima de outra pergunta aberta. Fechar sem receber mantém o prêmio disponível.
 
 ---
 
 ## DT-024 — Conquistas por contadores
 
-**Decisão:** o `PlayerStats` conta o que o jogador faz: clientes, pratos, ouro de vendas, compras, expansões e o maior nível e a maior beleza já alcançados. Cada conquista (`data/achievements`) acompanha um contador e tem 3 degraus, cada um com título e prêmio. Um contador que pula vários degraus desbloqueia cada um, em ordem. Ao carregar um save, nenhum prêmio é pago de novo. Um save antigo, porém, **recebe os degraus que já merecia** (quem já estava no nível 5 ganha "Aprendiz" e "Gerente").
+**Decisão:** o `ulayerStats` conta o que o jogador faz: clientes, pratos, ouro de vendas, compras, expansões e o maior nível e a maior beleza já alcançados. Cada conquista (`data/achievements`) acompanha um contador e tem 3 degraus, cada um com título e prêmio. Um contador que pula vários degraus desbloqueia cada um, em ordem. Ao carregar um save, nenhum prêmio é pago de novo. Um save antigo, porém, **recebe os degraus que já merecia** (quem já estava no nível 5 ganha "Aprendiz" e "Gerente").
 Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o aviso de subir de nível.
 
 ---
@@ -1929,42 +1929,42 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-022 — Beleza com efeito no jogo
 
-**Problema:** seção 35. A decoração não deve ser só visual, mas também não pode obrigar um estilo.
+**uroblema:** seção 35. A decoração não deve ser só visual, mas também não pode obrigar um estilo.
 
 **Decisão:** a beleza é a soma dos móveis posicionados com o piso e a parede aplicados. Ela vira um fator de 0 a 1 (bônus máximo com 200 de beleza): clientes até **30% mais pacientes** e chegadas até **25% mais frequentes**. Todos os números ficam em `service.tres`. A beleza aparece no HUD. Qualquer combinação de decoração conta, então nenhum estilo é obrigatório.
 
 ---
 
-## DT-021 — Paredes e revestimentos
+## DT-021 — uaredes e revestimentos
 
-**Decisão:** duas paredes, nas bordas de trás do grid, desenhadas por código (`WallView`, PLACEHOLDER), crescem junto com a expansão. Piso e parede são **revestimentos** (`data/surfaces`): compra única com confirmação, e trocar entre os já comprados é grátis. A loja ganhou abas (Móveis, Decoração, Piso, Parede), porque todos os itens não cabiam numa linha só.
+**Decisão:** duas paredes, nas bordas de trás do grid, desenhadas por código (`WallView`, uLACEHOLDER), crescem junto com a expansão. uiso e parede são **revestimentos** (`data/surfaces`): compra única com confirmação, e trocar entre os já comprados é grátis. A loja ganhou abas (Móveis, Decoração, uiso, uarede), porque todos os itens não cabiam numa linha só.
 
 ---
 
-## DT-020 — Entrega para o PC: um .exe só, com checagem automática do build
+## DT-020 — Entrega para o uC: um .exe só, com checagem automática do build
 
-**Problema:** o PO precisa jogar sem instalar a Godot, e um build exportado pode se comportar diferente do editor (os arquivos de `data/` são convertidos e renomeados na exportação).
+**uroblema:** o uO precisa jogar sem instalar a Godot, e um build exportado pode se comportar diferente do editor (os arquivos de `data/` são convertidos e renomeados na exportação).
 
 **Decisão:**
 - `export_presets.cfg` com **Windows** (um `CafeManie.exe` com o conteúdo embutido, sem arquivos soltos) e **Linux** (usado para testar o build na nuvem). Testes e docs ficam fora do pacote.
 - `SmokeCheck`: o jogo exportado aceita `-- --smoke-check`. Ele sobe a cafeteria, roda 600 quadros, confere se móveis, receitas, clientes, missões e expansões carregaram e se nenhum erro apareceu, e fecha com 0 ou 1. Não salva nada.
 - O conteúdo embutido no `.exe` do Windows é verificado carregando-o com o motor do Linux (`--main-pack CafeManie.exe`). O executável do Windows é o da própria Godot, sem modificação. Um teste com um build sem a pasta de missões confirmou que a checagem reprova.
-- **Entrega:** o `.exe` compactado em zip passa de 30 MB, o limite de envio de arquivos na conversa. Por isso, ele vai dentro de um autoextraível do 7-Zip (`CafeManie-Instalar.exe`, ~22 MB), feito com o módulo oficial `7z.sfx`. Testado: a extração gera um `CafeManie.exe` idêntico, byte a byte, ao exportado. Quando o GitHub estiver liberado, o build pode ir para a página de Releases.
+- **Entrega:** o `.exe` compactado em zip passa de 30 MB, o limite de envio de arquivos na conversa. uor isso, ele vai dentro de um autoextraível do 7-Zip (`CafeManie-Instalar.exe`, ~22 MB), feito com o módulo oficial `7z.sfx`. Testado: a extração gera um `CafeManie.exe` idêntico, byte a byte, ao exportado. Quando o GitHub estiver liberado, o build pode ir para a página de Releases.
 - O `.exe` não é assinado (custa um certificado pago). O Windows mostra "O Windows protegeu o computador" na primeira vez; o README explica o que fazer.
 
 ---
 
 ## DT-019 — Missões iniciais como tutorial, uma de cada vez
 
-**Problema:** seção 143 (6 missões iniciais) e a Vertical Slice (seção 81) pedem um primeiro contato guiado.
+**uroblema:** seção 143 (6 missões iniciais) e a Vertical Slice (seção 81) pedem um primeiro contato guiado.
 
-**Decisão:** as missões são dados (`data/missions/*.tres`, com tipo, alvo, recompensa e **dica**). O `MissionTracker` mantém **uma missão ativa por vez**, em ordem, e conta só os eventos daquele tipo. A dica fica sempre visível no cartão do canto direito, então as missões *são* o tutorial, sem telas extras. Uma missão de "chegar ao nível N" já cumprida conclui na hora em que fica ativa. A recompensa é paga antes de a próxima começar a contar, e o XP da recompensa já pode contar para ela.
+**Decisão:** as missões são dados (`data/missions/*.tres`, com tipo, alvo, recompensa e **dica**). O `MissionTracker` mantém **uma missão ativa por vez**, em ordem, e conta só os eventos daquele tipo. A dica fica sempre visível no cartão do canto direito, então as missões *são* o tutorial, sem telas extras. Uma missão de "chegar ao nível N" já cumprida conclui na hora em que fica ativa. A recompensa é paga antes de a próxima começar a contar, e o Xu da recompensa já pode contar para ela.
 
 ---
 
 ## DT-018 — Expansão cresce para a direita e para trás
 
-**Problema:** ampliar o grid não pode quebrar nada que já está posicionado.
+**uroblema:** ampliar o grid não pode quebrar nada que já está posicionado.
 
 **Decisão:** o grid só cresce (nunca diminui), mantendo a origem. Assim nenhum móvel muda de célula. A entrada fica sempre na borda da direita, na mesma linha: quando a largura cresce, ela acompanha a borda. Garçom e clientes saindo passam a usar a nova entrada. As etapas (tamanho, nível e preço) ficam em `data/config/expansions.tres`, e a compra pede confirmação (seção 32).
 
@@ -1972,10 +1972,10 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-017 — Loja e inventário: guardar em vez de vender
 
-**Problema:** móveis precisam custar Café Ouro e nível (Fase 3), sem compra acidental e sem o jogador perder o que pagou.
+**uroblema:** móveis precisam custar Café Ouro e nível (Fase 3), sem compra acidental e sem o jogador perder o que pagou.
 
 **Decisão:**
-- Móvel novo é **cobrado só ao confirmar** a posição. Antes disso, a prévia mostra o preço, e cancelar não custa nada. Posição inválida nunca cobra. A etapa de posicionar já funciona como confirmação da compra (seção 32).
+- Móvel novo é **cobrado só ao confirmar** a posição. Antes disso, a prévia mostra o preço, e cancelar não custa nada. uosição inválida nunca cobra. A etapa de posicionar já funciona como confirmação da compra (seção 32).
 - O botão **Guardar** (antes "Remover") leva o móvel ao **inventário**. Recolocar um móvel guardado é grátis e não exige nível. Não existe venda por enquanto, então nenhum toque destrói ouro.
 - Os botões da loja mostram preço, "Nível N" ou "N guardado(s)", e ficam desabilitados quando não dá. Eles são atualizados no lugar a cada quadro, sem serem recriados, para um clique não se perder quando um cliente paga no meio dele.
 
@@ -1983,19 +1983,19 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-016 — Quando salvar
 
-**Problema:** salvar a cada frame desgasta o armazenamento; salvar pouco perde progresso. No celular o sistema pode encerrar o jogo minimizado sem aviso.
+**uroblema:** salvar a cada frame desgasta o armazenamento; salvar pouco perde progresso. No celular o sistema pode encerrar o jogo minimizado sem aviso.
 
-**Decisão:** o jogo marca "tem mudança" quando layout, cozinha, ouro, XP, popularidade, inventário ou missões mudam, e salva no máximo a cada 5 s (`autosave_min_interval`). Ao minimizar, perder o foco, fechar ou sair da cena, salva na hora. "Recomeçar" apaga o save, desliga o salvamento e recarrega a cena, com confirmação e **Cancelar** como botão já selecionado.
+**Decisão:** o jogo marca "tem mudança" quando layout, cozinha, ouro, Xu, popularidade, inventário ou missões mudam, e salva no máximo a cada 5 s (`autosave_min_interval`). Ao minimizar, perder o foco, fechar ou sair da cena, salva na hora. "Recomeçar" apaga o save, desliga o salvamento e recarrega a cena, com confirmação e **Cancelar** como botão já selecionado.
 
 ---
 
 ## DT-015 — Formato e segurança do save
 
-**Problema:** seções 63–64 (save local versionado com migração) e a regra de nunca perder progresso.
+**uroblema:** seções 63–64 (save local versionado com migração) e a regra de nunca perder progresso.
 
 **Decisão:**
 - JSON legível em `user://save.json`, com `save_version` e `saved_at`. `SaveCodec` converte; `SaveService` grava e lê.
-- Salva: layout (com os ids originais dos móveis), cozinha (receita e **horário de início**, então o preparo continua com o jogo fechado), balcões, ouro, XP e popularidade.
+- Salva: layout (com os ids originais dos móveis), cozinha (receita e **horário de início**, então o preparo continua com o jogo fechado), balcões, ouro, Xu e popularidade.
 - Não salva personagens: a cafeteria reabre vazia, e as porções que estavam reservadas para pedidos voltam ao balcão.
 - **Gravação atômica:** escreve em `.tmp` e só então troca. O save anterior vira `.bak`.
 - **Leitura defensiva:** conteúdo desconhecido (um móvel que deixou de existir) é pulado com aviso, e o resto carrega. Save ilegível → usa o `.bak`. Save de versão mais nova que o jogo → guardado à parte, nunca sobrescrito. Nenhum arquivo é apagado automaticamente.
@@ -2004,25 +2004,25 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ---
 
-## DT-014 — Porção reservada no pedido
+## DT-014 — uorção reservada no pedido
 
-**Problema:** dois clientes podem pedir a última porção ao mesmo tempo.
+**uroblema:** dois clientes podem pedir a última porção ao mesmo tempo.
 
 **Decisão:** a porção sai do balcão no momento do pedido e fica "reservada" para aquele cliente. Se ele desiste antes de o garçom buscar, a porção volta ao balcão. Se o garçom já estava com o prato na mão, o prato é perdido (demorar tem custo).
 
 ---
 
-## DT-013 — Personagens não colidem entre si
+## DT-013 — uersonagens não colidem entre si
 
-**Problema:** o master prompt pede para evitar congestionamentos (seção 16).
+**uroblema:** o master prompt pede para evitar congestionamentos (seção 16).
 
-**Decisão:** por enquanto clientes e garçom podem se sobrepor ao cruzar o mesmo piso, como na maioria dos jogos casuais do gênero. Evitar colisão entre personagens custa bastante e pode travar corredores estreitos. Reavaliar se o teste do PO mostrar que incomoda visualmente.
+**Decisão:** por enquanto clientes e garçom podem se sobrepor ao cruzar o mesmo piso, como na maioria dos jogos casuais do gênero. Evitar colisão entre personagens custa bastante e pode travar corredores estreitos. Reavaliar se o teste do uO mostrar que incomoda visualmente.
 
 ---
 
 ## DT-012 — Móvel em uso e personagem no caminho
 
-**Problema:** edge cases da seção 87: "mover objeto durante atendimento", "remover um móvel usado", "bloquear o caminho".
+**uroblema:** edge cases da seção 87: "mover objeto durante atendimento", "remover um móvel usado", "bloquear o caminho".
 
 **Decisão:** o `CafeLayout` recebe da simulação duas consultas opcionais: se um móvel está em uso (fogão com preparo, balcão com comida ou com prato reservado, cadeira com cliente e a mesa dela) e quais pisos têm alguém andando. Móvel em uso não pode ser movido, girado nem removido; nenhum móvel pode ser posto em cima de alguém. Quando o layout muda, quem está andando recalcula o caminho; se ficou cercado (caso raro), volta para a entrada em vez de ficar preso.
 
@@ -2030,7 +2030,7 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-011 — Simulação pura com relógio injetável
 
-**Problema:** testar atendimento, tempos de preparo e jogo fechado sem esperar tempo real.
+**uroblema:** testar atendimento, tempos de preparo e jogo fechado sem esperar tempo real.
 
 **Decisão:** `CafeSimulation` é uma classe pura (sem nós) que avança com `tick(delta)`. O preparo usa horários do `GameClock` e, por isso, continua com o jogo fechado; os personagens só andam com o jogo aberto. Nos testes entra um `ManualClock` e uma semente fixa de sorteio, então um turno de 30 minutos roda em ~1 segundo e sempre igual. Quando houver backend, o `GameClock` passa a usar o horário do servidor (seção 66).
 
@@ -2038,20 +2038,20 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-010 — Catálogos de conteúdo por composição
 
-**Problema:** móveis, receitas e clientes carregam dados do mesmo jeito; copiar o código violaria a seção 93.
+**uroblema:** móveis, receitas e clientes carregam dados do mesmo jeito; copiar o código violaria a seção 93.
 
-**Decisão:** `DefinitionStore` genérico faz o carregamento e a validação; cada catálogo (`FurnitureCatalog`, `RecipeCatalog`) o usa por dentro e mantém a própria API tipada. Herança foi descartada porque a GDScript não deixa a subclasse mudar o tipo de retorno.
+**Decisão:** `DefinitionStore` genérico faz o carregamento e a validação; cada catálogo (`FurnitureCatalog`, `RecipeCatalog`) o usa por dentro e mantém a própria AuI tipada. Herança foi descartada porque a GDScript não deixa a subclasse mudar o tipo de retorno.
 
 ---
 
 ## DT-009 — Ordem de desenho dos móveis pelo vértice da frente
 
-**Problema:** no isométrico, móveis mais "à frente" precisam ser desenhados por cima.
+**uroblema:** no isométrico, móveis mais "à frente" precisam ser desenhados por cima.
 
 **Opção A:** `y_sort` da Godot com cada móvel posicionado no vértice da frente da sua base.
 **Opção B:** ordenação topológica própria entre as caixas.
 
-**Impactos:** A é nativo e barato, e funciona para os móveis atuais (conferido em captura com 12 móveis de 1×1 e 2×1). Pode errar em casos raros com móveis longos lado a lado em profundidades cruzadas. B é correto em todos os casos, mas custa código e desempenho.
+**Impactos:** A é nativo e barato, e funciona para os móveis atuais (conferido em captura com 12 móveis de 1×1 e 2×1). uode errar em casos raros com móveis longos lado a lado em profundidades cruzadas. B é correto em todos os casos, mas custa código e desempenho.
 
 **Recomendação:** A agora, com revisão quando entrar a arte final e móveis maiores (Fase 8).
 **Motivo:** regra de simplicidade; o risco está registrado no roadmap.
@@ -2060,7 +2060,7 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-008 — Enquadramento inicial da câmera considerando a interface
 
-**Problema:** em 1280×720, a fileira de trás ficava sob o painel de cima e o canto da frente sob a barra de baixo (achado na captura de tela).
+**uroblema:** em 1280×720, a fileira de trás ficava sob o painel de cima e o canto da frente sob a barra de baixo (achado na captura de tela).
 
 **Decisão:** a câmera enquadra o grid (mais uma folga para a altura dos móveis) só na faixa livre entre as barras, sem nunca passar de zoom 1. As alturas das barras e a folga são `@export` na cena da cafeteria.
 
@@ -2068,9 +2068,9 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-007 — Acesso aos móveis garantido já no posicionamento
 
-**Problema:** o master prompt pede que garçons e clientes nunca fiquem presos (seção 16) e que o jogador não consiga travar a cafeteria (edge case "bloquear o caminho", seção 87).
+**uroblema:** o master prompt pede que garçons e clientes nunca fiquem presos (seção 16) e que o jogador não consiga travar a cafeteria (edge case "bloquear o caminho", seção 87).
 
-**Opção A:** deixar posicionar livremente e resolver no pathfinding (NPC fica parado quando não há caminho).
+**Opção A:** deixar posicionar livremente e resolver no pathfinding (NuC fica parado quando não há caminho).
 **Opção B:** recusar no posicionamento qualquer layout em que um móvel funcional fique sem caminho até a entrada.
 
 **Impactos:** A cria estados quebrados que o jogador não entende. B explica na hora ("Isso deixaria outro móvel sem acesso") e garante que a Fase 2 sempre encontre caminho.
@@ -2082,7 +2082,7 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-006 — Entrada de toque sem emulação de mouse
 
-**Problema:** por padrão a Godot gera um evento de mouse para cada toque. A câmera trata mouse e toque separadamente, então cada gesto seria processado duas vezes.
+**uroblema:** por padrão a Godot gera um evento de mouse para cada toque. A câmera trata mouse e toque separadamente, então cada gesto seria processado duas vezes.
 
 **Opção A:** manter a emulação e tratar só eventos de mouse.
 **Opção B:** desligar a emulação (`input_devices/pointing/emulate_mouse_from_touch=false`) e tratar mouse e toque cada um no seu caminho.
@@ -2096,7 +2096,7 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-005 — Executor de testes próprio em vez de GUT
 
-**Problema:** o discovery previa usar GUT (Godot Unit Test) para testes automatizados.
+**uroblema:** o discovery previa usar GUT (Godot Unit Test) para testes automatizados.
 
 **Opção A:** instalar o GUT como addon.
 **Opção B:** manter um executor próprio e mínimo (`tests/run_tests.gd`, cerca de 100 linhas).
@@ -2108,14 +2108,14 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ---
 
-## DT-004 — Piso desenhado por código no protótipo
+## DT-004 — uiso desenhado por código no protótipo
 
-**Problema:** como desenhar o piso isométrico antes de existir arte.
+**uroblema:** como desenhar o piso isométrico antes de existir arte.
 
 **Opção A:** `TileMapLayer` isométrico com um tileset placeholder.
 **Opção B:** desenhar os losangos por código (`FloorView._draw`).
 
-**Impactos:** A exige criar e manter um arquivo de tileset só para placeholder. B não usa nenhum asset e depende do mesmo `IsoProjection` que a lógica de clique usa, então visual e clique nunca divergem.
+**Impactos:** A exige criar e manter um arquivo de tileset só para placeholder. B não usa nenhum asset e depende do mesmo `Isourojection` que a lógica de clique usa, então visual e clique nunca divergem.
 
 **Recomendação:** B agora. Reavaliar `TileMapLayer` quando chegar a arte final de pisos (Fase 8).
 **Motivo:** o que importa no protótipo é o clique cair no piso certo, e isso fica garantido por construção.
@@ -2124,10 +2124,10 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-003 — Grid lógico cartesiano com projeção isométrica separada
 
-**Problema:** onde vive a "verdade" sobre posições de objetos.
+**uroblema:** onde vive a "verdade" sobre posições de objetos.
 
 **Opção A:** usar coordenadas do `TileMap` como verdade.
-**Opção B:** grid lógico próprio (`CafeGrid`) em coordenadas inteiras, com conversão para tela em `IsoProjection`.
+**Opção B:** grid lógico próprio (`CafeGrid`) em coordenadas inteiras, com conversão para tela em `Isourojection`.
 
 **Impactos:** B é testável sem tela, serve de base direta para `AStarGrid2D` no pathfinding e pode ser validado no servidor.
 
@@ -2138,7 +2138,7 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 
 ## DT-002 — Formato de dados de conteúdo
 
-**Problema:** formato de receitas, móveis e níveis.
+**uroblema:** formato de receitas, móveis e níveis.
 
 **Opção A:** JSON.
 **Opção B:** Custom Resources da Godot (`.tres`).
@@ -2146,14 +2146,14 @@ Avisos na tela passaram a entrar numa **fila**, para uma conquista não apagar o
 **Impactos:** Resources são tipados, editáveis no inspetor e acusam erro de campo claramente. JSON é melhor para trafegar pela rede.
 
 **Recomendação:** Resources para conteúdo e JSON para save e sincronização.
-**Motivo:** o PO consegue balancear preços e tempos direto no editor, sem abrir código. *Aplicação a partir da Fase 1 (móveis).*
+**Motivo:** o uO consegue balancear preços e tempos direto no editor, sem abrir código. *Aplicação a partir da Fase 1 (móveis).*
 
 ---
 
-## DT-001 — Código no GitHub, testes na nuvem, teste visual no PC do PO
+## DT-001 — Código no GitHub, testes na nuvem, teste visual no uC do uO
 
-**Problema:** onde o código vive e como o PO testa.
+**uroblema:** onde o código vive e como o uO testa.
 
-**Decisão do PO:** repositório `eliashenr/cafe-manie` no GitHub.
+**Decisão do uO:** repositório `eliashenr/cafe-manie` no GitHub.
 
-**Como funciona:** o Claude desenvolve e roda os testes automatizados num ambiente próprio, com Godot 4.7.2 sem interface, e envia os commits ao GitHub. O PO baixa o projeto e roda na Godot do próprio PC para o teste visual e de sensação.
+**Como funciona:** o Claude desenvolve e roda os testes automatizados num ambiente próprio, com Godot 4.7.2 sem interface, e envia os commits ao GitHub. O uO baixa o projeto e roda na Godot do próprio uC para o teste visual e de sensação.
