@@ -3,7 +3,7 @@
 Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu marco de saída.
 
 | Fase | Entrega | Marco de saída | Status |
-|   |   |   |   |
+|---|---|---|---|
 | 0 — Fundação | Git, projeto Godot, estrutura, docs, testes rodando | Projeto abre sem erros e os testes passam | ✅ Concluída |
 | 1 — Protótipo | Grid isométrico, câmera, seleção, móveis genéricos no grid | O PO posiciona móveis com mouse e toque | 🟡 Falta o teste do PO |
 | 2 — Core gameplay | Cozinha, balcão, cliente, garçom, Café Ouro, XP | O loop completo roda sozinho | ✅ Implementada (falta o teste do PO) |
@@ -16,282 +16,282 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | 9 — QA | Testes, performance, segurança, regressão | | ⏳ |
 | 10 — Release | Android, publicação, analytics | | ⏳ |
 
-## Reformulação visual do Codex (22/11/2026, DT 105)
+## Reformulação visual do Codex (22/11/2026, DT-105)
 
-  [x] Reequilibrar 25 assentos e 26 mesas, preservando as coleções e sincronizando encostos/tampos.
-  [x] Renovar HUD, loja, receitas, missões, calendário, central e diálogos.
-  [x] Renovar 35 camadas do chef, ícone, sete vizinhos, dois retratos de eventos e 25 ícones de navegação/ações.
-  [x] Concluir a conferência integrada de clientes, pés, fontes finais e capturas do salão: 764 testes Godot, 27 testes Python e cena principal sem erros; 108 detalhes dos clientes e cinco capturas finais do conjunto conferidos.
-  [x] PO avaliar e aprovar o novo conjunto dentro do jogo: “Ficou muito bom!”, em 22/11/2026.
-  [x] PO autorizar commit/envio: “Pode enviar”.
-  [x] Registrar a confirmação do envio remoto: `a09f8e9`, PR #1, CI de push e PR aprovados.
-  [x] Integrar a PR #1 à `main`: `449e755`, após “Sim, pode integrar à main” do PO.
-  [x] Estender a direção visual à cozinha, janelas, revestimentos e decorações (DT 106): 413 sprites locais, preservando contratos e os outros 754 sprites.
-  [x] Concluir a validação no jogo e apresentar a revisão DT 106 ao PO: 764 testes Godot + 27 Python, cena principal e 70 capturas conferidas; janela aberta minimizada.
-  [x] PO avaliar o novo cenário e autorizar envio e integração: “Pode enviar esse novo cenário e integrar à main”, em 22/11/2026.
-  [ ] Registrar a confirmação remota da DT 106 na `main`.
-  [ ] DT 107: melhorar continuidade e movimento do chef; unificar os acessos Loja/Reforma.
+- [x] Reequilibrar 25 assentos e 26 mesas, preservando as coleções e sincronizando encostos/tampos.
+- [x] Renovar HUD, loja, receitas, missões, calendário, central e diálogos.
+- [x] Renovar 35 camadas do chef, ícone, sete vizinhos, dois retratos de eventos e 25 ícones de navegação/ações.
+- [x] Concluir a conferência integrada de clientes, pés, fontes finais e capturas do salão: 764 testes Godot, 27 testes Python e cena principal sem erros; 108 detalhes dos clientes e cinco capturas finais do conjunto conferidos.
+- [x] PO avaliar e aprovar o novo conjunto dentro do jogo: “Ficou muito bom!”, em 22/11/2026.
+- [x] PO autorizar commit/envio: “Pode enviar”.
+- [x] Registrar a confirmação do envio remoto: `a09f8e9`, PR #1, CI de push e PR aprovados.
+- [x] Integrar a PR #1 à `main`: `449e755`, após “Sim, pode integrar à main” do PO.
+- [x] Estender a direção visual à cozinha, janelas, revestimentos e decorações (DT-106): 413 sprites locais, preservando contratos e os outros 754 sprites.
+- [x] Concluir a validação no jogo e apresentar a revisão DT-106 ao PO: 764 testes Godot + 27 Python, cena principal e 70 capturas conferidas; janela aberta minimizada.
+- [x] PO avaliar o novo cenário e autorizar envio e integração: “Pode enviar esse novo cenário e integrar à main”, em 22/11/2026.
+- [x] Registrar a confirmação remota da DT-106 na `main`: `26c873f`, PR #2, merge `71489f0`, CI aprovado.
+- [ ] DT-107: melhorar continuidade e movimento do chef; unificar os acessos Loja/Reforma.
 
-## Garçom do Codex (22/11/2026, DT 103, ramo `codex/visual garcom`)
+## Garçom do Codex (22/11/2026, DT-103, ramo `codex/visual-garcom`)
 
-**Visual aprovado pelo PO:** "ficou bom [...] se for só isso, tá aprovado, pode seguir". Base `737f73e`, depois do Natal. A divisão com o Claude permanece na DT 102.
+**Visual aprovado pelo PO:** "ficou bom [...] se for só isso, tá aprovado, pode seguir". Base `737f73e`, depois do Natal. A divisão com o Claude permanece na DT-102.
 
-  [x] Quatro ciclos com oito poses próprias cada e quatro poses paradas: frente/costas, com/sem bandeja.
-  [x] Retrato do mesmo garçom para o botão da interface.
-  [x] Fontes, prompts e calibração reproduzível; escala/âncora fixas por folha e prato medido por quadro.
-  [x] Sombra independente no chão e animação autorada sem quique procedural adicional.
-  [x] Testes de apresentação e importador; capturas reais do café, prévia em GIF e abertura da revisão por dois cliques.
-  [x] Validação final: 750 testes Godot, 7 testes do importador, importação e cena principal sem erros; 37 capturas e foto noturna individual conferidas (registro em `status.md`).
-  [x] PO aprovar o garçom no jogo e autorizar seguir com o estilo.
-  [x] Corrigir a revisão interativa para usar navegação real e velocidade de 3,2 células/s; dois testes focados passaram.
-  [ ] Commit e envio somente depois de autorização explícita do PO.
+- [x] Quatro ciclos com oito poses próprias cada e quatro poses paradas: frente/costas, com/sem bandeja.
+- [x] Retrato do mesmo garçom para o botão da interface.
+- [x] Fontes, prompts e calibração reproduzível; escala/âncora fixas por folha e prato medido por quadro.
+- [x] Sombra independente no chão e animação autorada sem quique procedural adicional.
+- [x] Testes de apresentação e importador; capturas reais do café, prévia em GIF e abertura da revisão por dois cliques.
+- [x] Validação final: 750 testes Godot, 7 testes do importador, importação e cena principal sem erros; 37 capturas e foto noturna individual conferidas (registro em `status.md`).
+- [x] PO aprovar o garçom no jogo e autorizar seguir com o estilo.
+- [x] Corrigir a revisão interativa para usar navegação real e velocidade de 3,2 células/s; dois testes focados passaram.
+- [ ] Commit e envio somente depois de autorização explícita do PO.
 
-## Clientes do Codex (22/11/2026, DT 104, candidatos)
+## Clientes do Codex (22/11/2026, DT-104, candidatos)
 
-  [x] Produzir 12 folhas originais de 24 poses e 12 folhas separadas de seis poses sentadas; prompts v2 em `art/characters/customers/ajuste assentos v2.json`.
-  [x] Selecionar fontes por `group.file`/`group.cells`, preservando alfa e as 216 poses em pé/andando; catálogo de 288 sprites.
-  [x] Validar os importadores: 15 testes Python passaram (8 de clientes e 7 do garçom).
-  [x] Rodar a suíte Godot: 758 passaram, 0 falharam (`build/visual clientes/tests final.log`).
-  [x] Calibrar e instalar 01–12: 288 sprites, incluindo 72 sentados v2; nenhuma pose por gerar neste primeiro candidato.
-  [ ] Refinar pés elevados em algumas poses, chegando a cerca de 12 pixels de mundo no 05 (03 ~9,4; 02 ~7). No lote 07–12: pés em 4,8–8,1 pixels e variação de 13–32% da cabeça entre frente/costas, mais evidente no 09.
-  [x] Conferir o candidato instalado: importação com saída 0, 6 testes focados aprovados, cena por 120 quadros com saída 0 e 111 capturas de dia + 1 à noite sem erros; 108 detalhes em 13 montagens. Resultados em `status.md`.
-  [ ] Apresentar o primeiro candidato no café com os refinamentos visuais pendentes explícitos; obter a avaliação do PO antes de considerar a arte aprovada.
-  [ ] Depois do aceite, seguir aos demais retratos e às próximas etapas de interface.
-  [ ] Commit e envio somente depois de "Pode enviar".
+- [x] Produzir 12 folhas originais de 24 poses e 12 folhas separadas de seis poses sentadas; prompts v2 em `art/characters/customers/ajuste-assentos-v2.json`.
+- [x] Selecionar fontes por `group.file`/`group.cells`, preservando alfa e as 216 poses em pé/andando; catálogo de 288 sprites.
+- [x] Validar os importadores: 15 testes Python passaram (8 de clientes e 7 do garçom).
+- [x] Rodar a suíte Godot: 758 passaram, 0 falharam (`build/visual-clientes/tests-final.log`).
+- [x] Calibrar e instalar 01–12: 288 sprites, incluindo 72 sentados v2; nenhuma pose por gerar neste primeiro candidato.
+- [ ] Refinar pés elevados em algumas poses, chegando a cerca de 12 pixels de mundo no 05 (03 ~9,4; 02 ~7). No lote 07–12: pés em 4,8–8,1 pixels e variação de 13–32% da cabeça entre frente/costas, mais evidente no 09.
+- [x] Conferir o candidato instalado: importação com saída 0, 6 testes focados aprovados, cena por 120 quadros com saída 0 e 111 capturas de dia + 1 à noite sem erros; 108 detalhes em 13 montagens. Resultados em `status.md`.
+- [ ] Apresentar o primeiro candidato no café com os refinamentos visuais pendentes explícitos; obter a avaliação do PO antes de considerar a arte aprovada.
+- [ ] Depois do aceite, seguir aos demais retratos e às próximas etapas de interface.
+- [ ] Commit e envio somente depois de "Pode enviar".
 
 ## Pacote de melhorias do PO (12/10/2026)
 
 O PO pediu um conjunto de melhorias depois de jogar. Elas entram em etapas, cada uma testada e entregue
 separadamente:
 
-  [x] **1. Atendimento** (DT 039):
-    clientes pedem pratos que não estão no balcão;
-    fila na calçada, e mais clientes a cada nível;
-    garçons buscam os pratos prontos nos fogões e circulam pela cozinha;
-    contratar garçons.
-  [x] **2. Andar natural** (DT 040): ciclo de 8 quadros com joelho, sem o balanço de pinguim.
-  [x] **3. Reforma piso a piso** (DT 041):
-    escolher um piso ou parede e pintar célula por célula, pagando por célula;
-    misturar cores e estilos.
-  [x] **4. Paredes completas** (DT 042):
-    paredes da frente e dos lados, com porta, baixas o bastante para continuar vendo o salão;
-    janelas, portas, TV e rádio para pôr nas paredes.
-  [x] **5. Mais conteúdo** (24 cadeiras e mesas, 3 fogões e 3 balcões; DT 038): mais cadeiras e mesas em cada coleção e fogões e balcões modernos.
-  [x] **6. Compra de moedas** (DT 043; o pagamento de verdade depende da Play Store):
-    pacotes de Café Ouro por dinheiro, oferecidos quando falta ouro, com a taxa calculada pela economia do jogo;
-    o pagamento real depende da Play Store (conta de desenvolvedor do PO) e da revisão jurídica da Fase 7;
-    até lá, a loja de pacotes aparece e explica isso.
+- [x] **1. Atendimento** (DT-039):
+  - clientes pedem pratos que não estão no balcão;
+  - fila na calçada, e mais clientes a cada nível;
+  - garçons buscam os pratos prontos nos fogões e circulam pela cozinha;
+  - contratar garçons.
+- [x] **2. Andar natural** (DT-040): ciclo de 8 quadros com joelho, sem o balanço de pinguim.
+- [x] **3. Reforma piso a piso** (DT-041):
+  - escolher um piso ou parede e pintar célula por célula, pagando por célula;
+  - misturar cores e estilos.
+- [x] **4. Paredes completas** (DT-042):
+  - paredes da frente e dos lados, com porta, baixas o bastante para continuar vendo o salão;
+  - janelas, portas, TV e rádio para pôr nas paredes.
+- [x] **5. Mais conteúdo** (24 cadeiras e mesas, 3 fogões e 3 balcões; DT-038): mais cadeiras e mesas em cada coleção e fogões e balcões modernos.
+- [x] **6. Compra de moedas** (DT-043; o pagamento de verdade depende da Play Store):
+  - pacotes de Café Ouro por dinheiro, oferecidos quando falta ouro, com a taxa calculada pela economia do jogo;
+  - o pagamento real depende da Play Store (conta de desenvolvedor do PO) e da revisão jurídica da Fase 7;
+  - até lá, a loja de pacotes aparece e explica isso.
 
 ## Pacote de pedidos do PO (21/10/2026)
 
 O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram uma de cada vez, testadas e entregues:
 
-  [x] **1. Sentar de verdade e o garçom que entrava no balcão** (DT 045, urgente):
-    pose sentada nova;
-    móveis desenhados em faixas, na ordem certa.
-  [x] **2. Nível máximo 30** (DT 046):
-    curva de XP até o 30, com ouro a cada nível;
-    novas expansões e garçons para os níveis altos.
-  [x] **3. Missões diárias e semanais** (DT 047, roteiro em [missoes.md](missoes.md)):
-    10 diárias e 20 semanais, criadas a partir do conteúdo do jogo;
-    metas que acompanham o nível.
-  [x] **4. Cidade em volta do café** (DT 048):
-    ruas, calçadas, prédios e táxis no estilo de Nova York, no lugar do gramado.
+- [x] **1. Sentar de verdade e o garçom que entrava no balcão** (DT-045, urgente):
+  - pose sentada nova;
+  - móveis desenhados em faixas, na ordem certa.
+- [x] **2. Nível máximo 30** (DT-046):
+  - curva de XP até o 30, com ouro a cada nível;
+  - novas expansões e garçons para os níveis altos.
+- [x] **3. Missões diárias e semanais** (DT-047, roteiro em [missoes.md](missoes.md)):
+  - 10 diárias e 20 semanais, criadas a partir do conteúdo do jogo;
+  - metas que acompanham o nível.
+- [x] **4. Cidade em volta do café** (DT-048):
+  - ruas, calçadas, prédios e táxis no estilo de Nova York, no lugar do gramado.
 
 ## Pedidos do PO (22/10/2026)
 
-  [x] **Pausa** (DT 049): o jogo inteiro para (clientes, garçons, fogões, trânsito) e o jogador mexe à vontade.
-  [x] **Loja aberta depois da compra** (DT 049): volta na mesma aba depois de posicionar o móvel.
-  [x] **Pausa sem bloqueio** (DT 050): pausado, mexe em tudo, mesmo com clientes.
-  [x] **Balcão de 1 piso e mais fogões e balcões** (DT 050): 8 de cada.
-  [x] **Relatório do Café Mania original** ([relatorio_cafe_mania.md](relatorio_cafe_mania.md)): o que aprender e a ordem sugerida.
+- [x] **Pausa** (DT-049): o jogo inteiro para (clientes, garçons, fogões, trânsito) e o jogador mexe à vontade.
+- [x] **Loja aberta depois da compra** (DT-049): volta na mesma aba depois de posicionar o móvel.
+- [x] **Pausa sem bloqueio** (DT-050): pausado, mexe em tudo, mesmo com clientes.
+- [x] **Balcão de 1 piso e mais fogões e balcões** (DT-050): 8 de cada.
+- [x] **Relatório do Café Mania original** ([relatorio_cafe_mania.md](relatorio_cafe_mania.md)): o que aprender e a ordem sugerida.
 
 ## Próximo pacote do relatório (seção 4, item 2)
 
-  [x] **1. Placa ABERTO/FECHADO** (DT 051): fechado, ninguém novo entra; quem está dentro termina sem tirar popularidade.
-  [x] **2. Máquinas de café e de sucos, com energia** (DT 052): 6 bebidas, servidas tocando no cliente.
-  [x] **3. Livro de receitas, domínio e 12 receitas novas** (DT 053): 18 receitas até o nível 17, em 4 abas, com estrelas.
-  [x] **4. Mais receitas, do nível 18 ao 30** (DT 054): 13 receitas, de 6 minutos a 12 horas. Agora são 31, uma a cada nível.
+- [x] **1. Placa ABERTO/FECHADO** (DT-051): fechado, ninguém novo entra; quem está dentro termina sem tirar popularidade.
+- [x] **2. Máquinas de café e de sucos, com energia** (DT-052): 6 bebidas, servidas tocando no cliente.
+- [x] **3. Livro de receitas, domínio e 12 receitas novas** (DT-053): 18 receitas até o nível 17, em 4 abas, com estrelas.
+- [x] **4. Mais receitas, do nível 18 ao 30** (DT-054): 13 receitas, de 6 minutos a 12 horas. Agora são 31, uma a cada nível.
 
 ## Pacote do relatório: comida que estraga, temperos e troféus (seção 4, item 4)
 
-  [x] **1. Comida que estraga no fogão** (DT 055): o prato pronto aguenta o dobro do preparo (no mínimo 10 minutos); estragado, só sai jogado fora.
-  [x] **2. Temperos** (DT 056): 5 temperos (porções, menos tempo, pronto na hora e salvar o estragado), ganhos no presente e nas missões ou comprados no fogão.
-  [x] **3. Troféus que aceleram os fogões em volta** (DT 057): bronze, prata e ouro (25%, 40% e 65%), que se gastam e se renovam com ouro.
+- [x] **1. Comida que estraga no fogão** (DT-055): o prato pronto aguenta o dobro do preparo (no mínimo 10 minutos); estragado, só sai jogado fora.
+- [x] **2. Temperos** (DT-056): 5 temperos (porções, menos tempo, pronto na hora e salvar o estragado), ganhos no presente e nas missões ou comprados no fogão.
+- [x] **3. Troféus que aceleram os fogões em volta** (DT-057): bronze, prata e ouro (25%, 40% e 65%), que se gastam e se renovam com ouro.
 
 ## Pacote do relatório: fogões especiais (seção 4, item 5)
 
-  [x] **1. Fogões com perfil** (DT 058): cada modelo com uma função (mais rápido, tempo máximo, mais porções ou mais XP), os mais fortes só 1 por café.
-  [x] **2. Fogão Japonês** (DT 059): 4 receitas que só saem nele, na aba Japão; os clientes só pedem com o fogão no café.
-  [x] **3. Multifogão Trem** (DT 060): 3 peças lado a lado, na ordem; completo, cada uma rende o dobro; a primeira vez dá o Relógio da Estação.
-  O fogão de evento com níveis entra no evento de Halloween (item 6).
+- [x] **1. Fogões com perfil** (DT-058): cada modelo com uma função (mais rápido, tempo máximo, mais porções ou mais XP), os mais fortes só 1 por café.
+- [x] **2. Fogão Japonês** (DT-059): 4 receitas que só saem nele, na aba Japão; os clientes só pedem com o fogão no café.
+- [x] **3. Multifogão Trem** (DT-060): 3 peças lado a lado, na ordem; completo, cada uma rende o dobro; a primeira vez dá o Relógio da Estação.
+- O fogão de evento com níveis entra no evento de Halloween (item 6).
 
 ## Pacote do relatório: crítico, cupons e evento (seção 4, item 6)
 
-  [x] **1. Crítico gastronômico** (DT 061): uma visita por dia com tema da semana; servido rápido, deixa a estrela com ouro, XP e cupons.
-  [x] **2. Loja de troca de cupons** (DT 062): aba Cupons com 4 itens exclusivos em 2 temporadas.
-  [x] **3. Evento de Halloween** (DT 063): historinha da Bruxa Morgana, 5 missões com prazo, o Caldeirão da Bruxa que sobe de nível e a Abóbora Gigante.
+- [x] **1. Crítico gastronômico** (DT-061): uma visita por dia com tema da semana; servido rápido, deixa a estrela com ouro, XP e cupons.
+- [x] **2. Loja de troca de cupons** (DT-062): aba Cupons com 4 itens exclusivos em 2 temporadas.
+- [x] **3. Evento de Halloween** (DT-063): historinha da Bruxa Morgana, 5 missões com prazo, o Caldeirão da Bruxa que sobe de nível e a Abóbora Gigante.
 
 ## Pacote do relatório: noite no café (seção 4, item 7)
 
-  [x] **Noite no café** (DT 064): das 19h às 6h o café escurece e as luminárias acendem; o Fogão Lua Cheia abre o cardápio noturno.
+- [x] **Noite no café** (DT-064): das 19h às 6h o café escurece e as luminárias acendem; o Fogão Lua Cheia abre o cardápio noturno.
 
 ## Pacote do relatório: plantação, frozen, atrações e palco (seção 4, item 8)
 
-  [x] **1. Plantação e frozen yogurt** (DT 065): 3 pés de fruta e a máquina de frozen, que usa as frutas.
-  [x] **2. Atrações e palco** (DT 066): 4 atrações em que os clientes brincam e deixam ouro; o palco faz shows que aceleram as chegadas.
+- [x] **1. Plantação e frozen yogurt** (DT-065): 3 pés de fruta e a máquina de frozen, que usa as frutas.
+- [x] **2. Atrações e palco** (DT-066): 4 atrações em que os clientes brincam e deixam ouro; o palco faz shows que aceleram as chegadas.
 
 ## Pacote do relatório: café mais completo e avatar (seção 4, item 9)
 
-  [x] **1. Portas por coleção e coleções completas** (DT 067): 13 portas na loja; toda coleção com fogão, balcão, porta e janela.
-  [x] **2. Chão sujo** (DT 068): os clientes deixam manchas; um toque limpa e dá ouro e XP; chão sujo faz a popularidade cair.
-  [x] **3. Terraço** (DT 069, versão simplificada): a fileira da frente vira terraço com deque e cerca de jardim; de dia, quem senta lá paga 25% a mais.
-  [x] **4. Avatar do chef** (DT 070): pele, cabelo, chapéu e roupa; as peças novas se provam no retrato e se compram com ouro.
+- [x] **1. Portas por coleção e coleções completas** (DT-067): 13 portas na loja; toda coleção com fogão, balcão, porta e janela.
+- [x] **2. Chão sujo** (DT-068): os clientes deixam manchas; um toque limpa e dá ouro e XP; chão sujo faz a popularidade cair.
+- [x] **3. Terraço** (DT-069, versão simplificada): a fileira da frente vira terraço com deque e cerca de jardim; de dia, quem senta lá paga 25% a mais.
+- [x] **4. Avatar do chef** (DT-070): pele, cabelo, chapéu e roupa; as peças novas se provam no retrato e se compram com ouro.
 
-## Arte realista em 3D (25/10/2026, DT 084, ramo arte 3d)
+## Arte realista em 3D (25/10/2026, DT-084, ramo arte-3d)
 
-  [x] **1. Personagens:** o garçom e os 12 clientes realistas (MakeHuman), andando e sentados, com as camisetas nas cores da arte antiga.
-  [x] **2. Roupa de garçom e óculos:** pacotes livres suits01 e glasses01 (CC0): o garçom de paletó com gravata borboleta e a cliente 8 de óculos.
-  [x] **3. Móveis em 3D:** os 130 móveis (cadeiras, mesas, fogões, balcões, máquinas e enfeites), com os encostos e o forno aceso (DT 085).
-  [x] **3b. Pisos, paredes, itens de parede, portas e terraço em 3D** (DT 086).
-  [x] **3b+. 22 pisos novos** (39 no total, um a cada nível até o 14) e a luz do chão acertada (DT 089).
-  [x] **3c. Panelas e pratos em 3D** (DT 098, aprovados pelo PO em 16/11/2026). Bebidas, frutas e temperos continuam desenhados.
-  [x] **4. A cidade em 3D:** prédios (com as janelas acesas à noite), enfeites da calçada, semáforos e carros (DT 087).
-  [ ] **5. Crítico, vizinhos e retratos** (o robô saiu do jogo, DT 088).
-  [x] **6. Revisão e junção no jogo principal** (19/11/2026): o redesenho da referência A foi para a `main`, com os testes rodando no GitHub a cada envio.
+- [x] **1. Personagens:** o garçom e os 12 clientes realistas (MakeHuman), andando e sentados, com as camisetas nas cores da arte antiga.
+- [x] **2. Roupa de garçom e óculos:** pacotes livres suits01 e glasses01 (CC0): o garçom de paletó com gravata-borboleta e a cliente 8 de óculos.
+- [x] **3. Móveis em 3D:** os 130 móveis (cadeiras, mesas, fogões, balcões, máquinas e enfeites), com os encostos e o forno aceso (DT-085).
+- [x] **3b. Pisos, paredes, itens de parede, portas e terraço em 3D** (DT-086).
+- [x] **3b+. 22 pisos novos** (39 no total, um a cada nível até o 14) e a luz do chão acertada (DT-089).
+- [x] **3c. Panelas e pratos em 3D** (DT-098, aprovados pelo PO em 16/11/2026). Bebidas, frutas e temperos continuam desenhados.
+- [x] **4. A cidade em 3D:** prédios (com as janelas acesas à noite), enfeites da calçada, semáforos e carros (DT-087).
+- [ ] **5. Crítico, vizinhos e retratos** (o robô saiu do jogo, DT-088).
+- [x] **6. Revisão e junção no jogo principal** (19/11/2026): o redesenho da referência A foi para a `main`, com os testes rodando no GitHub a cada envio.
 
-## Redesign "Nova York Futurista" (24/10/2026, DT 077)
+## Redesign "Nova York Futurista" (24/10/2026, DT-077)
 
-  [x] **1. Sistema de design e HUD:** paleta, painéis de vidro, perfil com o retrato do chef, contadores, menus laterais, botões, satisfação e barra de baixo.
-  [x] **2. Loja nova:** categorias à esquerda, grade de itens e painel de detalhes com "Comprar" (DT 078).
-  [x] **3. Janelas no mesmo padrão:** avatar, cidade, missões, conquistas, presente, moedas, evento e perguntas (DT 079).
-  [x] **4. Nova York à noite:** prédios, janelas acesas, táxis amarelos, postes e rua molhada (DT 080).
-  [x] **5. A cafeteria:** letreiro neon com o nome do café, acabamento de madeira, janelas e itens de parede que acendem à noite e a Arandela Industrial nova (DT 081). Tijolo, madeira, janelões e inox seguem como compras da loja.
-  [x] **6. Toque futurista:** robô garçom, máquina de café inteligente e painéis digitais (DT 082).
-  [x] **7. Revisão visual e QA** comparando com a referência (DT 083).
+- [x] **1. Sistema de design e HUD:** paleta, painéis de vidro, perfil com o retrato do chef, contadores, menus laterais, botões, satisfação e barra de baixo.
+- [x] **2. Loja nova:** categorias à esquerda, grade de itens e painel de detalhes com "Comprar" (DT-078).
+- [x] **3. Janelas no mesmo padrão:** avatar, cidade, missões, conquistas, presente, moedas, evento e perguntas (DT-079).
+- [x] **4. Nova York à noite:** prédios, janelas acesas, táxis amarelos, postes e rua molhada (DT-080).
+- [x] **5. A cafeteria:** letreiro neon com o nome do café, acabamento de madeira, janelas e itens de parede que acendem à noite e a Arandela Industrial nova (DT-081). Tijolo, madeira, janelões e inox seguem como compras da loja.
+- [x] **6. Toque futurista:** robô garçom, máquina de café inteligente e painéis digitais (DT-082).
+- [x] **7. Revisão visual e QA** comparando com a referência (DT-083).
 
 ## Eventos do calendário (20/11/2026, regra do PO; ver [eventos.md](eventos.md))
 
-  [x] **Natal** (DT 100): 01/12 a 26/12, Papai Noel, Forno do Papai Noel e Árvore de Natal.
-  [x] **Revisão visual do PO** do Natal, no jogo: aprovado (20/11/2026).
-  [ ] **Ano Novo** (27/12 a 06/01), atrasado pelo calendário.
-  [ ] Carnaval, Páscoa, Festa Junina e Dia das Crianças, cada um até 6 semanas antes.
+- [x] **Natal** (DT-100): 01/12 a 26/12, Papai Noel, Forno do Papai Noel e Árvore de Natal.
+- [x] **Revisão visual do PO** do Natal, no jogo: aprovado (20/11/2026).
+- [ ] **Ano Novo** (27/12 a 06/01), atrasado pelo calendário.
+- [ ] Carnaval, Páscoa, Festa Junina e Dia das Crianças, cada um até 6 semanas antes.
 
-## Referência A: "Nova York contemporânea" (31/10/2026, DT 090, ramo `arte 3d`)
+## Referência A: "Nova York contemporânea" (31/10/2026, DT-090, ramo `arte-3d`)
 
-  [x] **Marco 1, direção:** referência, implementado e pendente separados em [art direction.md](art direction.md).
-  [x] **Marco 2, amostra:** piso, parede, mesa, cadeira, balcão e fogão, com a mesma câmera e o mesmo estado para comparar.
-  [x] **Marco 3, interface:** café maior na tela, sem botões repetidos e popularidade com nome e unidade certos.
-  [x] **Revisão da 1ª amostra:** os ajustes funcionais valem, mas o objetivo visual não foi atingido.
-  [x] **Marco 2, nova amostra** (DT 091, ramo `amostra a 2`): formas, proporções, materiais, iluminação e personagem.
-  [x] **Revisão visual do PO** da nova amostra, no jogo: aprovada como caminho (01/11/2026).
-  [x] **Os outros 9 clientes e os encostos das outras cadeiras** (DT 092).
-  [x] **Revisão visual do PO** dessa etapa, no jogo: aprovada (01/11/2026).
-  [x] **Cadeiras e mesas da loja** (DT 093, liberadas pelo PO em 01/11/2026).
-  [x] **Revisão visual do PO** das cadeiras e mesas, no jogo: aprovadas depois de uma rodada de ajustes (01/11/2026).
-  [x] **Fogões e balcões da loja** (DT 094, liberados pelo PO em 01/11/2026).
-  [x] **Revisão visual do PO** dos fogões e balcões, no jogo: aprovados (01/11/2026).
-  [x] **Enfeites e máquinas da loja** (DT 095, liberados pelo PO em 01/11/2026).
-  [x] **Revisão visual do PO** dos enfeites e máquinas, no jogo: aprovados (01/11/2026).
-  [x] **Pisos, paredes, itens de parede, portas e terraço** (DT 096, liberados pelo PO em 01/11/2026).
-  [x] **Revisão visual do PO** dos pisos, paredes, itens de parede e portas, no jogo: aprovados (13/11/2026).
-  [x] **Retrato do chef** (DT 097) e **pratos e panelas** (DT 098), liberados pelo PO em 14/11/2026.
-  [x] **Revisão visual do PO** do retrato, dos pratos e das panelas, no jogo: aprovados (16/11/2026).
-  [x] **Arquivo de instalação do celular** gerado (14/11/2026). Falta o PO fazer o roteiro "Android" do [qa.md](qa.md).
-  [x] **Vizinhos, bruxa, ícone do Garçom, bebidas e frutas** (DT 099, liberados pelo PO em 16/11/2026). A medalha do crítico e os temperos ficam como símbolos de interface.
-  [x] **Revisão visual do PO** dos vizinhos, da bruxa, do Garçom, das bebidas e das frutas, no jogo: aprovados (19/11/2026).
-  [ ] Plano da [revisão geral](revisao geral.md) de 11/11/2026 (seção 5), na ordem combinada com o PO.
+- [x] **Marco 1, direção:** referência, implementado e pendente separados em [art-direction.md](art-direction.md).
+- [x] **Marco 2, amostra:** piso, parede, mesa, cadeira, balcão e fogão, com a mesma câmera e o mesmo estado para comparar.
+- [x] **Marco 3, interface:** café maior na tela, sem botões repetidos e popularidade com nome e unidade certos.
+- [x] **Revisão da 1ª amostra:** os ajustes funcionais valem, mas o objetivo visual não foi atingido.
+- [x] **Marco 2, nova amostra** (DT-091, ramo `amostra-a-2`): formas, proporções, materiais, iluminação e personagem.
+- [x] **Revisão visual do PO** da nova amostra, no jogo: aprovada como caminho (01/11/2026).
+- [x] **Os outros 9 clientes e os encostos das outras cadeiras** (DT-092).
+- [x] **Revisão visual do PO** dessa etapa, no jogo: aprovada (01/11/2026).
+- [x] **Cadeiras e mesas da loja** (DT-093, liberadas pelo PO em 01/11/2026).
+- [x] **Revisão visual do PO** das cadeiras e mesas, no jogo: aprovadas depois de uma rodada de ajustes (01/11/2026).
+- [x] **Fogões e balcões da loja** (DT-094, liberados pelo PO em 01/11/2026).
+- [x] **Revisão visual do PO** dos fogões e balcões, no jogo: aprovados (01/11/2026).
+- [x] **Enfeites e máquinas da loja** (DT-095, liberados pelo PO em 01/11/2026).
+- [x] **Revisão visual do PO** dos enfeites e máquinas, no jogo: aprovados (01/11/2026).
+- [x] **Pisos, paredes, itens de parede, portas e terraço** (DT-096, liberados pelo PO em 01/11/2026).
+- [x] **Revisão visual do PO** dos pisos, paredes, itens de parede e portas, no jogo: aprovados (13/11/2026).
+- [x] **Retrato do chef** (DT-097) e **pratos e panelas** (DT-098), liberados pelo PO em 14/11/2026.
+- [x] **Revisão visual do PO** do retrato, dos pratos e das panelas, no jogo: aprovados (16/11/2026).
+- [x] **Arquivo de instalação do celular** gerado (14/11/2026). Falta o PO fazer o roteiro "Android" do [qa.md](qa.md).
+- [x] **Vizinhos, bruxa, ícone do Garçom, bebidas e frutas** (DT-099, liberados pelo PO em 16/11/2026). A medalha do crítico e os temperos ficam como símbolos de interface.
+- [x] **Revisão visual do PO** dos vizinhos, da bruxa, do Garçom, das bebidas e das frutas, no jogo: aprovados (19/11/2026).
+- [ ] Plano da [revisão geral](revisao-geral.md) de 11/11/2026 (seção 5), na ordem combinada com o PO.
 
 ## Balanceamento (23/10/2026)
 
-  [x] **FAÇA BALANCEAMENTO** (DT 075): ritmo de níveis "médio", pedidos do cardápio só de pratos possíveis, preços alinhados; ferramenta `tools/balance_report.gd`.
-  [x] **FAÇA QA de ponta a ponta** (DT 076): jornada completa automatizada, 6 defeitos corrigidos, desempenho, memória, save estragado e telas de celular e tablet.
+- [x] **FAÇA BALANCEAMENTO** (DT-075): ritmo de níveis "médio", pedidos do cardápio só de pratos possíveis, preços alinhados; ferramenta `tools/balance_report.gd`.
+- [x] **FAÇA QA de ponta a ponta** (DT-076): jornada completa automatizada, 6 defeitos corrigidos, desempenho, memória, save estragado e telas de celular e tablet.
 
 ## Pacote do relatório: delivery, filial, 2º andar e vizinhos (seção 4, item 10)
 
-  [x] **1. Delivery** (DT 071): o Balcão de Entregas recebe pedidos de porções, que pagam mais que no salão.
-  [x] **2. Filial na praia** (DT 072, versão simplificada): um segundo café que rende ouro sozinho, com 4 níveis e pratos da praia.
-  [ ] **3. 2º andar** (DT 073): planejado e documentado; fica para uma etapa só dele, quando o PO pedir.
-  [x] **4. Vizinhos simulados** (DT 074): 7 cafés de personagens para visitar e ajudar uma vez por dia, com amizade.
+- [x] **1. Delivery** (DT-071): o Balcão de Entregas recebe pedidos de porções, que pagam mais que no salão.
+- [x] **2. Filial na praia** (DT-072, versão simplificada): um segundo café que rende ouro sozinho, com 4 níveis e pratos da praia.
+- [ ] **3. 2º andar** (DT-073): planejado e documentado; fica para uma etapa só dele, quando o PO pedir.
+- [x] **4. Vizinhos simulados** (DT-074): 7 cafés de personagens para visitar e ajudar uma vez por dia, com amizade.
 
 ## Passe visual (18/10/2026)
 
-  [x] **Efeitos visuais só na tela** (DT 044):
-    raio X atrás de móveis altos, halo no móvel escolhido e no fogão pronto, mureta que abre perto de quem passa;
-    móvel que surge, pratos que quicam, esticar e achatar, loja, aviso e ouro animados;
-    vapor e confete dourado;
-    toque de 48 px, filtro de textura do projeto, ordem de desenho protegida por teste.
+- [x] **Efeitos visuais só na tela** (DT-044):
+  - raio-X atrás de móveis altos, halo no móvel escolhido e no fogão pronto, mureta que abre perto de quem passa;
+  - móvel que surge, pratos que quicam, esticar e achatar, loja, aviso e ouro animados;
+  - vapor e confete dourado;
+  - toque de 48 px, filtro de textura do projeto, ordem de desenho protegida por teste.
 
 ## Fase 1 — detalhamento
 
-  [x] Grid lógico 8×8 com ocupação, colisão e expansão
-  [x] Projeção isométrica com clique preciso
-  [x] Câmera: arrastar, zoom com roda e pinça, limites
-  [x] Seleção de piso com destaque
-  [x] Definição de móvel por dados (Resource) e catálogo com 6 móveis
-  [x] Modo de construção: escolher um móvel, ver prévia verde/vermelha com motivo da recusa, girar e posicionar
-  [x] Mover, girar no lugar e remover móveis
-  [x] Ordenação de desenho isométrico (y sort) com objetos de várias células
-  [x] Validação: nenhum móvel funcional fica sem caminho até a entrada, e a entrada fica sempre livre
-  [ ] Teste do PO no PC (roteiro em [qa.md](qa.md)) — **marco de saída da fase**
+- [x] Grid lógico 8×8 com ocupação, colisão e expansão
+- [x] Projeção isométrica com clique preciso
+- [x] Câmera: arrastar, zoom com roda e pinça, limites
+- [x] Seleção de piso com destaque
+- [x] Definição de móvel por dados (Resource) e catálogo com 6 móveis
+- [x] Modo de construção: escolher um móvel, ver prévia verde/vermelha com motivo da recusa, girar e posicionar
+- [x] Mover, girar no lugar e remover móveis
+- [x] Ordenação de desenho isométrico (y-sort) com objetos de várias células
+- [x] Validação: nenhum móvel funcional fica sem caminho até a entrada, e a entrada fica sempre livre
+- [ ] Teste do PO no PC (roteiro em [qa.md](qa.md)) — **marco de saída da fase**
 
 ## Fase 3 — detalhamento
 
-  [x] Save local versionado: layout, cozinha com horários, balcões, ouro, XP, popularidade
-  [x] Gravação atômica, cópia de segurança, recuperação de save danificado, proteção de save de versão mais nova
-  [x] Salvamento automático (ao mudar algo, no máximo a cada 5 s) e na hora ao minimizar ou fechar
-  [x] "Bem vindo de volta" contando os pratos que ficaram prontos com o jogo fechado
-  [x] Botão Recomeçar com confirmação (Cancelar já selecionado)
-  [x] Loja: móveis custam Café Ouro e exigem nível; cobrança só ao confirmar a posição (seção 32)
-  [x] Inventário: **Guardar** leva o móvel ao inventário; recolocar é grátis
-  [x] Expansão da cafeteria em 4 etapas, com confirmação
-  [x] Save versão 2 (inventário e missões), com migração da versão 1
+- [x] Save local versionado: layout, cozinha com horários, balcões, ouro, XP, popularidade
+- [x] Gravação atômica, cópia de segurança, recuperação de save danificado, proteção de save de versão mais nova
+- [x] Salvamento automático (ao mudar algo, no máximo a cada 5 s) e na hora ao minimizar ou fechar
+- [x] "Bem-vindo de volta" contando os pratos que ficaram prontos com o jogo fechado
+- [x] Botão Recomeçar com confirmação (Cancelar já selecionado)
+- [x] Loja: móveis custam Café Ouro e exigem nível; cobrança só ao confirmar a posição (seção 32)
+- [x] Inventário: **Guardar** leva o móvel ao inventário; recolocar é grátis
+- [x] Expansão da cafeteria em 4 etapas, com confirmação
+- [x] Save versão 2 (inventário e missões), com migração da versão 1
 
 ## Fase 4 — detalhamento
 
-  [x] 6 missões iniciais em dados, uma por vez, com dica sempre visível (tutorial)
-  [x] Cartão de missão no HUD e aviso de missão concluída com recompensa
-  [x] Build para Windows (`CafeManie.exe`, sem precisar da Godot) com checagem automática do build
-  [x] Conquistas progressivas (7 × 3 degraus)
-  [x] Recompensa diária de 7 dias
-  [x] Nome da cafeteria, sons de feedback
-  [x] **Validação da Vertical Slice pelo PO**, em 29/09/2026
-  [x] Primeiro APK Android (arm64), falta testar num celular de verdade
-  [ ] **FAÇA BALANCEAMENTO** com as impressões do PO
+- [x] 6 missões iniciais em dados, uma por vez, com dica sempre visível (tutorial)
+- [x] Cartão de missão no HUD e aviso de missão concluída com recompensa
+- [x] Build para Windows (`CafeManie.exe`, sem precisar da Godot) com checagem automática do build
+- [x] Conquistas progressivas (7 × 3 degraus)
+- [x] Recompensa diária de 7 dias
+- [x] Nome da cafeteria, sons de feedback
+- [x] **Validação da Vertical Slice pelo PO**, em 29/09/2026
+- [x] Primeiro APK Android (arm64), falta testar num celular de verdade
+- [ ] **FAÇA BALANCEAMENTO** com as impressões do PO
 
 ## Fase 3 — complementos desta etapa
 
-  [x] Paredes do fundo e revestimentos de piso e parede (compra única, troca grátis)
-  [x] Beleza (móveis + revestimentos) aumentando a paciência e as chegadas (seção 35)
-  [x] Venda de móveis com confirmação; o último fogão e o último balcão são protegidos
-  [x] 3 itens de decoração novos; loja em abas
+- [x] Paredes do fundo e revestimentos de piso e parede (compra única, troca grátis)
+- [x] Beleza (móveis + revestimentos) aumentando a paciência e as chegadas (seção 35)
+- [x] Venda de móveis com confirmação; o último fogão e o último balcão são protegidos
+- [x] 3 itens de decoração novos; loja em abas
 
 ## Fase 2 — detalhamento
 
-  [x] Relógio do jogo (`GameClock`) e preparo por horário: o prato fica pronto mesmo com o jogo fechado
-  [x] 6 receitas em dados, com custo, preço, XP e nível de desbloqueio
-  [x] Fogão: escolher receita (cobra ingredientes), acompanhar o tempo, tocar para levar ao balcão
-  [x] Balcão com porções empilhadas por receita e capacidade
-  [x] Clientes (2 tipos em dados): entram, sentam em cadeira ao lado de mesa, pedem o que há no balcão, esperam com paciência, comem, pagam e saem
-  [x] Garçom com caminho (A*) que busca no balcão e entrega na mesa
-  [x] Café Ouro com registro de transações; XP e níveis 1–10 em dados; popularidade que acelera as chegadas
-  [x] Proteções: móvel em uso não sai do lugar; móvel não cai em cima de quem está andando; quem anda recalcula o caminho
-  [x] HUD (nível, XP, ouro, popularidade), avisos e textos flutuantes de feedback
-  [x] Teste de turno longo (30 min simulados com um "jogador robô")
-  [ ] Teste do PO no PC (roteiro em [qa.md](qa.md)) — **marco de saída da fase**
+- [x] Relógio do jogo (`GameClock`) e preparo por horário: o prato fica pronto mesmo com o jogo fechado
+- [x] 6 receitas em dados, com custo, preço, XP e nível de desbloqueio
+- [x] Fogão: escolher receita (cobra ingredientes), acompanhar o tempo, tocar para levar ao balcão
+- [x] Balcão com porções empilhadas por receita e capacidade
+- [x] Clientes (2 tipos em dados): entram, sentam em cadeira ao lado de mesa, pedem o que há no balcão, esperam com paciência, comem, pagam e saem
+- [x] Garçom com caminho (A*) que busca no balcão e entrega na mesa
+- [x] Café Ouro com registro de transações; XP e níveis 1–10 em dados; popularidade que acelera as chegadas
+- [x] Proteções: móvel em uso não sai do lugar; móvel não cai em cima de quem está andando; quem anda recalcula o caminho
+- [x] HUD (nível, XP, ouro, popularidade), avisos e textos flutuantes de feedback
+- [x] Teste de turno longo (30 min simulados com um "jogador robô")
+- [ ] Teste do PO no PC (roteiro em [qa.md](qa.md)) — **marco de saída da fase**
 
 ## Riscos acompanhados
 
 | Risco | Mitigação | Quando tratar |
-|   |   |   |
+|---|---|---|
 | Nome "Café Manie" e moedas "Café Ouro/Grana" parecidos com o Café Mania original | IDs internos neutros; nomes na tela ficam em dados. Busca no INPI | Antes da Fase 7 |
 | Arte 2D isométrica consistente é o maior gargalo | Plano de arte (artista, pacote licenciado ou IA com revisão) | Antes da Fase 8 |
 | Menores + compras + chat (classificação 12 anos, ECA Digital) | Validação jurídica | Antes das Fases 5 e 7 |
-| Pathfinding com layout editável (garçom preso) | ✅ Mitigado: posicionamento recusa layouts sem acesso (DT 007) | Fases 1–2 |
-| Ordem de desenho com móveis longos cruzados | y sort pelo vértice da frente; rever com arte final (DT 009) | Fase 8 |
+| Pathfinding com layout editável (garçom preso) | ✅ Mitigado: posicionamento recusa layouts sem acesso (DT-007) | Fases 1–2 |
+| Ordem de desenho com móveis longos cruzados | y-sort pelo vértice da frente; rever com arte final (DT-009) | Fase 8 |
 | Desempenho em Android de entrada | Medir num aparelho real (precisa de build Android) | Fase 2 em diante |
-| Progresso some ao fechar o jogo | ✅ Mitigado: save local versionado (DT 015, DT 016) | — |
+| Progresso some ao fechar o jogo | ✅ Mitigado: save local versionado (DT-015, DT-016) | — |
 | Relógio do aparelho pode ser adiantado para pular o preparo (seção 66) | Aceito enquanto o jogo é offline; o `GameClock` vira horário do servidor na Fase 6 | Fase 6 |
 | Balanceamento fácil demais no teste do robô (0 irritados, nível 8 em 30 min; a beleza facilita ainda mais) | Comando **FAÇA BALANCEAMENTO** | Próxima etapa |
 | Chave de teste do APK só existe na nuvem de trabalho | Se ela se perder, desinstalar e instalar de novo (o jogo ainda é de teste). A chave oficial é criada e guardada pelo PO na Fase 10 | Fase 10 |
-| Nome da cafeteria visível para outros jogadores sem moderação | Moderação no servidor antes de qualquer recurso social (DT 026) | Fase 5 |
+| Nome da cafeteria visível para outros jogadores sem moderação | Moderação no servidor antes de qualquer recurso social (DT-026) | Fase 5 |
