@@ -1,6 +1,6 @@
 class_name StripedBar
 extends Control
-## Barra do HUD (XP, beleza): trilho escuro discreto, preenchimento em degradê (DT-077) ou listrado (arte "listras_*"),
+## Barra do HUD (XP, beleza): trilho areia discreto, preenchimento em degradê (DT-077) ou listrado (arte "listras_*"),
 ## com brilho, e o texto no meio.
 
 ## Textura das listras (arte "listras_xp" ou "listras_beleza"); vazio = usa o degradê.
@@ -9,7 +9,7 @@ var stripes := "listras_xp":
 		stripes = new_stripes
 		queue_redraw()
 ## Cores do degradê (da esquerda para a direita), quando não há listras.
-var gradient: Array[Color] = [UiTheme.TECH_BLUE, UiTheme.CYAN]:
+var gradient: Array[Color] = [UiTheme.PROGRESS_LIGHT, UiTheme.PROGRESS_LIGHT.lightened(0.15)]:
 	set(new_gradient):
 		gradient = new_gradient
 		queue_redraw()
@@ -29,8 +29,8 @@ var font_size := 15
 ## Lado da textura das listras, em px da interface.
 var stripe_period := 32.0
 
-const TRACK := Color(0.02, 0.05, 0.11, 0.85)
-const TRACK_EDGE := Color(1, 1, 1, 0.14)
+const TRACK := UiTheme.PROGRESS_TRACK
+const TRACK_EDGE := UiTheme.PANEL_EDGE
 const GLOSS := Color(1, 1, 1, 0.22)
 
 
@@ -71,8 +71,7 @@ func _draw() -> void:
 		var text_width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 		var baseline := (size.y + font.get_ascent(font_size) - font.get_descent(font_size)) / 2.0
 		var at := Vector2((size.x - text_width) / 2.0, baseline)
-		draw_string_outline(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 3, UiTheme.NAVY)
-		draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color.WHITE)
+		draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, UiTheme.TEXT)
 
 
 ## Retângulo de pontas redondas (meio círculo em cada lado), como polígono.

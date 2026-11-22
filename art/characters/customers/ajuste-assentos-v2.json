@@ -1,0 +1,115 @@
+{
+  "tool": "OpenAI image_gen built-in",
+  "date": "2026-11-22",
+  "purpose": "Fontes separadas para seis poses sentadas; os 18 quadros em pé permanecem da folha original.",
+  "extraction": {
+    "prompt": "Use case: background-extraction and object removal. In this EXACT image, remove ALL THREE CHAIRS and remove the ENTIRE brown background, floor and all shadows. Keep ONLY the THREE seated women as fully opaque isolated sprites on true transparent alpha0. Preserve EXACT original canvas dimensions2048x768, each woman's position, pose, body proportions, hair, face, clothes, thighs, LENGTH OF CALVES and shoe coordinates. Do NOT change any currently visible characterpixel. Inpaint only parts of her torso/hips/legs currently hidden behind chairs, so each woman is complete. Crucial: KEEP THE LONG CALVES AND LOW SHOES EXACTLY WHERE THEY ARE. Do not standardize/shorten legs; do not resize or recenter or move figures. The only allowed visual change is removing furniture/background and filling character areas that chairs occlude. Three figures inone horizontalrow unchanged. No new poses, no extra rows, no labels, no glow. Transparent gutters.",
+    "result": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-dcc66a12-2b34-463f-8856-5a2ad9eb8544.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "file": "referencia_sentados_sem_cadeira.png"
+  },
+  "layout_template": "template_sentados.png",
+  "layout_provenance": "template_sentados.proveniencia.json",
+  "prompt_template": "Use case: identity-preserve game sprite atlas edit.\nINPUT 1 is the EDIT TARGET: six seated poses already correctly proportioned for the game's chairs. INPUT 2 is IDENTITY ONLY: the original customer walking sheet.\nEdit ONLY the person's identity and four front expressions. KEEP the exact six-figure arrangement, camera angles, BODY JOINT POSITIONS, head scale relative to body, hips, horizontal thighs, knees, calf length and shoe positions of image1. Do NOT copy any seated anatomy or pose from image2. Preserve the leg lengths from image1; the feet must stay where they are. This geometry is already calibrated; it must not be standardized to a generic short seated character.\n\nApply the identity from image2 faithfully: IDENTITY_HERE. Keep hairstyle, skin color, outfit colors, garment lengths and shoes. Adults in the warm polished illustrated3D style of image1, matching image2. Do not make baby/child proportions or oversized heads.\nFirstrow: happy(front with warm bigsmile, hands near shoulders), waiting(frontneutral, hands onlap), angry(frontfrown, arms crossed).\nSecondrow: eating(frontsatisfied, hand near mouth without food), seatedbackwith body/legs facing upperLEFT, seatedbackwithbody/legs facingupperRIGHT.\nThe fourfront figures share EXACTLY the same pelvis/thigh/knee/shoe coordinates; change only face/arms between those4. Backheads must follow backbody direction naturally. Views are of the SAME person. Everyfigure fullbody.\nMaintain the input1 canvas aspect/layout3columns2rows and generous gutters. Do not fit figures by shortening legs. Only change identity/clothes/face/arms, not the sittinggeometry. NO chairs, tables, floor, castshadows, glow, trays, food, cups, labels or grid. Actual transparent alpha0 outside silhouettes; opaque interiors.",
+  "customer_01_addendum": "For this firstwoman she already has thecorrectidentity. Keep her exactface/body/clothes; ONLY edit the3expressions/arms in happy,angry,eating, and correctbackheadsdirection. Waitingfigure stays EXACTLY unchanged.",
+  "results": [
+    {
+      "id": "01",
+      "identity": "Adult woman with fair skin, a chestnut-brown ponytail, blue eyes, coral-red T-shirt (#ff4d6d), blue denim jeans, white sneakers.",
+      "output": "cliente_01_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-93adba77-74f3-4591-9952-58ea11066ce4.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "02",
+      "identity": "Adult Black man with dark brown skin, short black hair, green T-shirt (#2fae4e), charcoal trousers and white sneakers.",
+      "output": "cliente_02_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-7ff312e0-da72-4502-bf86-e1982849c19f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "03",
+      "identity": "Adult Black woman with deep brown skin, a full rounded dark afro, yellow T-shirt (#ffc928), blue knee-length skirt, red low shoes.",
+      "output": "cliente_03_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-e4e7d0dd-8bbe-4fcc-9634-315bb5fb3df6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "04",
+      "identity": "Adult fair-skinned woman with a copper red chin-length bob and green eyes, purple blouse (#7a3a8a), black trousers and black low shoes.",
+      "output": "cliente_04_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-67db3b7c-3c25-49e8-97dc-01f487f2752e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "05",
+      "identity": "Adult East Asian man with warm light-medium skin, short black quiff, orange T-shirt (#ff7a2f), blue-gray knee-length shorts, blue sneakers.",
+      "output": "cliente_05_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-5acdcb80-41c6-4eee-bda3-c6d65d319dec.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "06",
+      "identity": "Adult fair-skinned woman with long blonde hair and blue eyes, mint green T-shirt (#2fd1b5), cream trousers, pink low shoes.",
+      "output": "cliente_06_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-33b67b86-a94e-4f48-8dd2-9acd450f46c0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "07",
+      "identity": "Mature fair-skinned man, short gray hair and gray mustache, blue-gray collared shirt (#5a7a9a), brown trousers and brown shoes.",
+      "output": "cliente_07_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-e84da170-edb2-459d-b72d-460c3af11d29.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "08",
+      "identity": "Elderly fair-skinned woman, silver hair in a bun, round eyeglasses, dusty rose blouse (#b8577a), dark violet knee-length skirt and brown low shoes.",
+      "output": "cliente_08_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-40b5bb5d-c298-43e2-9557-097dfa8912d4.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "09",
+      "identity": "Mature Black man with deep brown skin, bald head and neat dark beard, ochre collared shirt (#c9a04a), charcoal trousers and brown shoes.",
+      "output": "cliente_09_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-eb0f8ab4-9010-4b25-a428-8b76148ed4c7.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "10",
+      "identity": "Young adult fair-skinned man with short black hair and blue eyes, charcoal T-shirt (#2b2b38), blue jeans and white sneakers.",
+      "output": "cliente_10_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-3fd70085-35f2-492c-a534-d84ab3f61597.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "11",
+      "identity": "Adult East Asian woman with warm light-medium skin and a long black braid, yellow T-shirt (#ffd23f), red knee-length skirt and white sneakers.",
+      "output": "cliente_11_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-41f90add-e51c-4de0-82f4-2570974ee375.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    },
+    {
+      "id": "12",
+      "identity": "Adult East Asian man with light-medium skin, short black hair and rectangular eyeglasses, sky blue collared shirt (#3fa8d8), black trousers and black shoes.",
+      "output": "cliente_12_sentados_v2.png",
+      "result": {
+        "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-2f761473-7f94-4cf4-bcff-4d11ee188913.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+      }
+    }
+  ],
+  "review_status": "Candidato visual. Configuração final em calibracao.json; verificar proporções e apoio dos pés nas capturas reais do jogo. Não há aprovação visual do PO para clientes."
+}

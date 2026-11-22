@@ -62,8 +62,10 @@ const STATUS_BAR_BG := Color(1, 1, 1, 0.25)
 const STATUS_BAR_FILL := Color("f2b33d")
 const STATUS_SIZE := 13
 
-## Largura do prato na mesa, em relação ao tamanho natural do sprite (como no canvas: 26 de 48).
-const DISH_SCALE := 26.0 / 48.0
+## Pratos de 24 px, com espaço para quatro lugares nos tampos menores.
+const DISH_SCALE := 24.0 / 48.0
+## Aproxima cada lugar do centro da pegada; vale também para a mesa longa girada.
+const DISH_TOWARD_CENTER := 0.76
 ## O prato fica um pouco acima do tampo (centro do ícone), em pixels de mundo.
 const DISH_LIFT := 5.0
 
@@ -77,15 +79,15 @@ const BADGE_FOOD := 33.0
 const BADGE_PILL := Vector2(67.0, 27.4)
 const BADGE_PILL_READY := Vector2(88.0, 27.4)
 const BADGE_TEXT_SIZE := 18
-const BADGE_FILL := Color.WHITE
-const BADGE_EDGE := Color("2a5fa8")
-const BADGE_TRACK := Color("d3e2f5")
-const BADGE_PROGRESS := Color("1f7ae0")
-const BADGE_READY := Color("35c24a")
-const BADGE_PILL_FILL := Color("2b86e8")
-const BADGE_PILL_READY_FILL := Color("3cc04e")
+const BADGE_FILL := UiTheme.PANEL
+const BADGE_EDGE := UiTheme.WOOD
+const BADGE_TRACK := UiTheme.PROGRESS_TRACK
+const BADGE_PROGRESS := UiTheme.CYAN
+const BADGE_READY := UiTheme.GREEN
+const BADGE_PILL_FILL := UiTheme.TECH_BLUE
+const BADGE_PILL_READY_FILL := UiTheme.GREEN
 const BADGE_GLOW := Color(1.0, 0.965, 0.66, 0.45)
-const BADGE_SHADOW := Color(0.1, 0.16, 0.29, 0.2)
+const BADGE_SHADOW := UiTheme.SHADOW
 ## Prato estragado (DT-055): anel e etiqueta verde-oliva, e a comida e a panela esverdeadas.
 const BADGE_SPOILED := Color("8a9a2a")
 const BADGE_PILL_SPOILED_FILL := Color("7a6a3a")
@@ -98,7 +100,7 @@ const STACK_SERVINGS_PER_PLATE := 4
 const STACK_MAX_PLATES := 3
 const COUNT_OFFSET := Vector2(21.3, -34.7)
 const COUNT_SIZE := Vector2(34.7, 21.3)
-const COUNT_EDGE := Color("1f6fd1")
+const COUNT_EDGE := UiTheme.TECH_BLUE
 const COUNT_TEXT_SIZE := 15
 const ART_INK := Color("33283a")
 ## Halo: cores (selecionado, prato pronto) e quanto o desenho cresce nas duas camadas do brilho.
@@ -371,18 +373,25 @@ func _draw_sprite() -> void:
 
 
 func _draw_dishes() -> void:
-	var top := ArtSprites.table_top(definition.id)
 	var placed: Array = []
 	for dish: Array in dishes:
 		var food := ArtSprites.food((dish[1] as RecipeDefinition).id)
 		if food == null:
 			continue
-		var at := IsoProjection.grid_point_to_world(dish[0]) - position - Vector2(0.0, top + DISH_LIFT)
+		var at := dish_draw_position(dish[0])
 		placed.append([at, food])
 	placed.sort_custom(func(a: Array, b: Array) -> bool: return a[0].y < b[0].y)
 	for item: Array in placed:
 		var food: ArtSprites.Sprite = item[1]
 		draw_texture_rect(food.texture, food.rect_at(item[0], DISH_SCALE), false)
+
+
+## Registro visual do prato; conserva a posição lógica do cliente e encolhe só a distribuição sobre o tampo.
+func dish_draw_position(grid_point: Vector2) -> Vector2:
+	var center := _footprint_center()
+	var floor_point := IsoProjection.grid_point_to_world(grid_point) - position
+	return center + (floor_point - center) * DISH_TOWARD_CENTER \
+		- Vector2(0.0, ArtSprites.table_top(definition.id) + DISH_LIFT)
 
 
 ## Panela com a chama acesa e, quando a frente aparece, o forno aceso. Estragado: panela esverdeada, forno apagado.
@@ -635,13 +644,13 @@ func _draw_stove_badge(center: Vector2) -> void:
 	var pill_size := BADGE_PILL_READY if status_ready or status_spoiled else BADGE_PILL
 	var pill := Rect2(center + Vector2(-pill_size.x / 2.0, BADGE_RADIUS - 7.6), pill_size)
 	var pill_fill := BADGE_PILL_SPOILED_FILL if status_spoiled else (BADGE_PILL_READY_FILL if status_ready else BADGE_PILL_FILL)
-	canvas.draw_style_box(_pill_style(pill_fill, Color.WHITE), pill)
-	_draw_centered_text(kitchen_detail, pill, BADGE_TEXT_SIZE, Color.WHITE)
+	canvas.draw_style_box(_pill_style(pill_fill, UiTheme.WHITE_SOFT), pill)
+	_draw_centered_text(kitchen_detail, pill, BADGE_TEXT_SIZE, UiTheme.WHITE_SOFT)
 
 
 func _draw_count_badge(center: Vector2) -> void:
 	var box := Rect2(center - COUNT_SIZE / 2.0, COUNT_SIZE)
-	_overlay.draw_style_box(_pill_style(Color.WHITE, COUNT_EDGE), box)
+	_overlay.draw_style_box(_pill_style(UiTheme.PANEL, COUNT_EDGE), box)
 	_draw_centered_text(str(kitchen_count), box, COUNT_TEXT_SIZE, COUNT_EDGE)
 
 

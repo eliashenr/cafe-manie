@@ -1,0 +1,51 @@
+{
+  "tool": "OpenAI image_gen built-in",
+  "date": "2026-11-22",
+  "reference": "../waiter/frente_livre.png",
+  "alpha_constraint": "EMPTY BACKGROUND MUST HAVE ALPHA=0 everywhere outside the opaque character silhouettes. Do not put any semitransparent white/gray wash over the canvas.",
+  "notes": "The alpha constraint was appended to original prompts for customers 03–12. Customer 01 received the alpha-only correction below; final dimensions/layout preserved.",
+  "alpha_correction_01": {
+    "prompt": "Use case: background-extraction. Edit ONLY the alpha/transparency of this EXACT existing game sprite sheet. Remove the white background completely so every pixel outside the 24 character silhouettes has alpha=0. Keep all 24 characters EXACTLY unchanged in pose, color, identity, size, position, proportions, 4-column 6-row layout and image dimensions 1024x1536. Preserve all white shoes and eye highlights as opaque parts of the characters. No new shadows, no blur, no redraw, no moving any cell. Output a PNG with genuine transparent empty background, not a white/gray/checkerboard picture. Character interiors must be fully opaque; only edge antialiasing is partially transparent.",
+    "result": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-9d8964f4-96f0-4df9-80bc-1e23b71a1390.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  },
+  "results": {
+    "10": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-9ca6d5ed-ade9-462b-abfe-770725ee6ed1.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "11": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-53a1e004-aa02-4819-a9d3-b1b7bb254d98.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "12": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-79036350-9b8a-461a-8d7d-186b456c206d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "01": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-1bb42400-b025-41ae-a46d-65d78dee9d67.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "02": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-90077119-3f7e-4d28-abad-3fcbc76d3261.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "03": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-e5ebb2dd-a35a-4ee3-a0dc-10542af072e2.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "04": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-741cd69f-bd84-46af-aca5-e48ca03d68e0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "05": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-669cbe71-21cb-4f2e-94c9-d2344f98ebbe.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "06": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-77a790b7-1a3b-44cf-8cde-61433f620e1c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "07": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-257a1e1b-81ad-4495-88da-bdb3f61b9a05.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "08": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-f83c59b5-d34c-49ca-9e2c-142a05746cd6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    "09": {
+      "hint": "Generated images are saved to C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d as C:\\Users\\Elias\\.codex\\generated_images\\01a203d6-ef61-7fc1-9d7a-82893b86c21d\\exec-61303db4-15cc-449f-a8b1-1e63a7570426.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  }
+}

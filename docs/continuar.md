@@ -1,9 +1,11 @@
 # Como continuar (guia para a próxima sessão)
 
-Este arquivo existe para a próxima sessão do Claude (qualquer modelo) retomar o trabalho sem depender da conversa anterior.
-Atualizado em 11/11/2026. Se este guia e o [status.md](status.md) discordarem, vale o que o `git log` e o `git status` mostrarem.
+Este arquivo existe para a próxima sessão do Claude ou do Codex retomar o trabalho sem depender da conversa anterior.
+Atualizado em 22/11/2026. Se este guia e o [status.md](status.md) discordarem, vale o que o `git log` e o `git status` mostrarem.
 
 > **22/11/2026: leia antes [divisao-claude-codex.md](divisao-claude-codex.md).** O Codex assumiu a direção visual, os personagens e a interface; o Claude ficou com regras, economia, saves e conteúdo. O estado do ramo `etapa-natal` e as pendências estão lá. As rodadas de personagem abaixo (DT-101) ficam como histórico.
+
+> **Retomada visual atual:** leia a última seção, "Onde paramos — garçom aprovado e clientes candidatos, DT-103/104". Ela substitui os comandos e pendências antigas de produção dos personagens; os relatos anteriores são histórico.
 
 ## 1. Regras que não podem ser quebradas
 
@@ -382,10 +384,32 @@ O corpo, as poses e o andar **não mudam**.
   - **Limites da prova:** sem bandeja, ele usa os quadros com a bandeja vazia; de costas, a foto parada (o jogo faz o balanço). Para completar o garçom: vídeo de costas com bandeja (2.121) e, se o PO quiser mãos livres, os dois vídeos sem bandeja (2 x 2.121 + 2 imagens).
 - **Fim da prova pela IA (22/11):** altura igual à da imagem-alvo (`M.HEIGHT = 96` em `montar_video.py`), 745 testes aprovados, cena principal com saída 0. Para o PO: `build/ia/andar_garcom_v2.gif` e `build/ia/comparacao_v2_alvo.png`. Revisão aberta minimizada. **Falta a resposta do PO.** Se aprovar, propor o resto: vídeo de costas com bandeja (2.121) e depois os clientes (cada um: imagem de frente e de costas a partir da imagem-alvo, vídeos de andar de frente e de costas e as poses sentadas).
 
-### Onde paramos (22/11/2026, divisão com o Codex) — leia isto primeiro
+### Onde paramos (22/11/2026, divisão com o Codex) — passagem anterior
 
 - O PO dividiu o trabalho: o **Codex** cuida do visual, dos personagens e da interface; o **Claude**, das regras, da economia, dos saves e do conteúdo. Arquivos de apresentação, sprites e geradores de arte só mudam depois de os dois combinarem quem edita o quê (DT-102).
 - O estado completo, a proposta de divisão por pasta e as pendências estão em [divisao-claude-codex.md](divisao-claude-codex.md).
 - **Natal enviado (22/11, "Pode enviar o Natal"):** foi num commit só dele (o `sprites.json` com só as âncoras do Natal, conferido numa cópia limpa com `git worktree`), mais um commit de documentos, e a `main` avançou até eles. Na pasta continuam, sem commit, os experimentos de personagem.
 - **Próximo passo do Claude:** o Ano Novo, que está atrasado, e o build novo para o celular, se o PO quiser.
 - **Próximo passo do Codex:** um garçom completo, validado no jogo pelo PO, antes de expandir o estilo.
+
+### Onde paramos — reformulação visual integrada, DT-105 (22/11/2026) — leia isto primeiro
+
+- Cópia ativa: `C:\Users\Elias\.codex\worktrees\visual-garcom\cafe-manie`, ramo `codex/visual-garcom`, base 737f73e após Natal. Não trocar o ramo na pasta do Claude.
+- O PO autorizou reformulação ampla de clientes, móveis, HUD e central. Garçom aprovado permanece intacto. Sem commit/envio; aguardar "Pode enviar".
+- Integrados 169 sprites de 25 assentos + 26 mesas, 26 alturas de tampo, 45 retratos/camadas, 25 ícones e 72 poses sentadas recalibradas. Interface creme/café/verde, objetivos recolhíveis e telas padronizadas.
+- Preservados 216 quadros em pé/andando, 37 PNGs do garçom e 665 outras entradas do manifesto. `core/`, `data/`, autoloads, `project.godot` e `cafe.gd/tscn` intactos. Claude cuida do conteúdo/calendário, regras e save.
+- Testes, capturas e limites: seção DT-105 no começo de `status.md`. Direção: `art-direction.md`; contrato físico em `tools/render3d/moveis_codex.py`.
+- Revisão sem terminal: dois cliques em `Revisar Visual.cmd`, restaurar a janela minimizada. C alterna 12 coleções, N dia/noite, 1/2 lotes, 0 todos. Dados em memória e APPDATA/LOCALAPPDATA isolados. Pela automação, iniciar fora da sandbox para aparecer no desktop; nunca trazer à frente.
+
+**Reproduzir:**
+
+1. Clientes: `python tools/ia/importar_clientes_codex.py art/characters/customers/calibracao.json --out build/clientes-reproducao`; `--install` depois de conferir. Fontes: originais para caminhada, v2 para 11 frentes, frente05v3 e costasv4. Não reutilizar calibrações antigas de build.
+2. Retratos: `python tools/ia/importar_retratos_codex.py art/portraits/calibracao.json --out build/retratos-reproducao`; instalar com `tools/ia/integrar_visual_codex.py <staging> --install`.
+3. Móveis: Blender `-b --python-exit-code 1 -P tools/render3d/moveis_codex.py -- --out build/moveis-reproducao --samples 48`. Conferir com `tools/render3d/conferir_moveis_codex.py --staging build/moveis-reproducao --complete`, instalar com o mesmo integrador. Gerador usa alturas de origem fixas, independentes do manifesto instalado.
+4. Ícones: `python tools/ia/gerar_icones_ui.py`; copiar os 25 IDs existentes de staging/png, excluindo alias `icone_reformar`. O jogo usa `icone_rolo`.
+5. Um escritor do manifesto por vez. Importar na Godot com dados isolados; rodar suíte e cena principal. Fotos ocultas via `foto.ps1`; não compartilhar `foto.log` entre capturas simultâneas.
+6. `visual_codex.gd -Extra colecao:japao` ou `colecao:brasil` mostra coleções; `clientes_codex.gd -Extra todos` gera 111 capturas. Provas em `build/visual-reformulacao/`.
+
+**Validação concluída:** 764 testes Godot, 27 testes Python e cena principal por 120 quadros sem erros. Os 108 detalhes dos clientes e cinco capturas finais do salão/central foram conferidos. Revisão aberta minimizada no desktop (processo 20184), título confirmado, sem salvar. Logs e pequenas variações visuais remanescentes estão no status.
+
+**Aceite e próximo passo:** o PO aprovou (“Ficou muito bom!”) e autorizou o envio (“Pode enviar”) em 22/11/2026. Enviar a DT-105 com a conta `eliashenr` e continuar a extensão DT-106: fogões/cozinha, janelas, pisos/revestimentos e decorações. Passagem detalhada em `passagem-visual-codex.md`. Pendências de conteúdo permanecem com o Claude. A aprovação da DT-105 não é aprovação automática da próxima arte.

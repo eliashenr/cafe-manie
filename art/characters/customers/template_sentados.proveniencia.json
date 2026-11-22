@@ -1,0 +1,38 @@
+{
+  "source": "referencia_sentados_sem_cadeira.png",
+  "source_sha256": "25df2ba518c35e1b081ae8dad78b5799e62a115e579029701339773fc53dd77b",
+  "source_rectangles": [
+    [
+      0,
+      0,
+      683,
+      768
+    ],
+    [
+      683,
+      0,
+      1365,
+      768
+    ],
+    [
+      1365,
+      0,
+      2048,
+      768
+    ]
+  ],
+  "cell_size": [
+    683,
+    768
+  ],
+  "pose_order": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    2
+  ],
+  "operation": "crop and paste only; exact RGBA pixels; no resizing or alpha editing",
+  "template_sha256": "73af11a2f7580a0429b0ff91c581f7a563a63edf973917e66f8d0894503b4636"
+}

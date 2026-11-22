@@ -9,7 +9,7 @@ const ROW_TITLE_SIZE := 15
 const REFRESH_SECONDS := 1.0
 const DONE_COLOR := UiTheme.GREEN
 const LOCKED_COLOR := UiTheme.METAL
-const BAR_BACK := Color(1, 1, 1, 0.08)
+const BAR_BACK := UiTheme.PROGRESS_TRACK
 const BAR_FILL := UiTheme.CYAN
 const TAB_DAILY := 0
 const TAB_WEEKLY := 1
@@ -104,11 +104,11 @@ func _fill_start() -> void:
 		var progress := mission.target if done else (tracker.progress() if i == tracker.completed_count() else 0)
 		list.add_child(_row(String(mission.id), mission.title, mini(progress, mission.target), mission.target,
 			mission.reward_gold, mission.reward_xp, "done" if done else "open", 1,
-			MissionsPanel.spice_reward_text(simulation.spices, mission)))
+			MissionsPanel.spice_reward_text(simulation.spices, mission), mission.hint))
 
 
 func _row(id: String, text: String, progress: int, target: int, gold: int, xp: int, state: String,
-		min_level: int, spice := "") -> Control:
+		min_level: int, spice := "", hint := "") -> Control:
 	var panel := PanelContainer.new()
 	panel.name = "Mission_" + id
 	panel.add_theme_stylebox_override("panel", UiTheme.card_box(12, 10, DONE_COLOR.darkened(0.2) if state == "done"
@@ -147,6 +147,14 @@ func _row(id: String, text: String, progress: int, target: int, gold: int, xp: i
 	count.text = "Libera no nível %d" % min_level if state == "locked" else "%s/%s" % [UiTheme.thousands(progress),
 		UiTheme.thousands(target)]
 	progress_line.add_child(count)
+	if not hint.is_empty():
+		var guidance := Label.new()
+		guidance.name = "Hint"
+		guidance.text = hint
+		guidance.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		guidance.add_theme_font_size_override("font_size", 13)
+		guidance.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
+		column.add_child(guidance)
 	line.add_child(UiTheme.art("icone_moeda", Vector2(24, 24)))
 	var reward := Label.new()
 	reward.name = "Reward"
@@ -156,7 +164,6 @@ func _row(id: String, text: String, progress: int, target: int, gold: int, xp: i
 		+ ("\n" + spice if not spice.is_empty() else "")
 	line.add_child(reward)
 	if state == "locked":
-		panel.modulate = Color(1, 1, 1, 0.55)
 		heading.add_theme_color_override("font_color", LOCKED_COLOR)
 	return panel
 

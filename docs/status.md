@@ -2,6 +2,21 @@
 
 ## CAFÉ MANIE — STATUS (22/11/2026)
 
+🟢 **REFORMULAÇÃO VISUAL APROVADA — DT-105**
+
+**Aceite do PO:** “Ficou muito bom! Pode enviar”, em 22/11/2026. Envio autorizado com `eliashenr`. A passagem para o Claude está em [passagem-visual-codex.md](passagem-visual-codex.md). O PO também autorizou continuar com fogões, janelas, pisos e decorações; esse novo lote fica separado da entrega aprovada.
+
+- **Pedido atendido nesta rodada:** proporções dos clientes/assentos, mesas e cadeiras por coleção, HUD, central, loja, receitas, missões, calendário e demais diálogos.
+- **Arte integrada:** 169 imagens de 25 assentos + 26 mesas, com encostos e alturas dos pratos sincronizados; 45 sprites de retratos/camadas; 25 ícones; 72 poses sentadas recalibradas. Fontes próprias de costas v4 e quatro frentes novas do cliente 05 corrigem a projeção das pernas. Cabeças sentadas calibradas pelas poses em pé. Pratos menores e aproximados ao centro dos tampos, inclusive na mesa longa girada.
+- **Preservação conferida:** 216 PNGs e metadados de caminhada/parado, 37 PNGs do garçom e 665 entradas restantes do manifesto intactos. `core/`, `data/`, autoloads, configuração e `cafe.gd/tscn` sem alterações. Auditoria em `build/visual-reformulacao/escopo-final.json`.
+- **Interface:** creme/café, ações verdes, Nunito no corpo, objetivos recolhíveis, recursos/eventos sem sobreposição, 25 ícones vetoriais e chef com personalização completa. Letreiro marfim/latão e balões combinam com o novo tema.
+- **Validação final:** 764 testes Godot passaram, nenhum falhou; cena principal por 120 quadros com saída 0. Os 27 testes Python dos importadores/instalador passaram. Logs: `build/visual-reformulacao/tests-final-confirmado.log`, `cena-final-confirmada.log` e `python-tests-final.log`. `git diff --check` limpo. O instalador também foi protegido contra falhas parciais, com restauração das imagens e confirmação atômica do manifesto.
+- **Conferência visual:** 111 capturas dos clientes; os 108 detalhes dos 12 personagens foram inspecionados em nove estados, sem cortes, inversões de costas ou encostos cobrindo indevidamente o corpo. Conferidos ainda 22 casos de UI em 1280×720/960×540 e cinco capturas finais do salão de dia/noite, Japão, Brasil e central (`build/visual-reformulacao/revisao-completa/*_final.png`), sem erros nos logs. Pequenas variações de apoio permanecem em algumas poses de costas; o conjunto está pronto para avaliação visual do PO, não é um aceite automático.
+- **Revisão entregue:** `Revisar Visual.cmd` abriu minimizada no desktop, fora da sandbox, com APPDATA/LOCALAPPDATA isolados. Processo 20184; título “Revisão Visual · Mostruário misto · 12 clientes” confirmado. C alterna 12 coleções, N dia/noite, 1/2 lotes e 0 todos. Simulação real, sem gravar.
+- **Próximo passo:** enviar a DT-105 aprovada e executar a extensão visual DT-106. Conteúdo/calendário continuam com o Claude; a pasta dele e seus experimentos locais são preservados.
+
+Os registros DT-103/104 abaixo documentam as rodadas anteriores; as pendências do primeiro candidato de clientes são tratadas pela DT-105.
+
 🔵 **DIVISÃO DO TRABALHO (DT-102, decisão do PO)**
 
 - **O Codex** cuida da direção visual, dos personagens e da interface. **O Claude** cuida das regras, da economia, dos saves e do conteúdo.
@@ -9,7 +24,33 @@
 - **Primeiro:** um garçom completo validado no jogo, antes de expandir o estilo.
 - **Conteúdo:** o Natal foi enviado em 22/11 (o PO disse "Pode enviar o Natal"), num commit só dele, e entrou na `main`. Falta o build novo para o celular. O Ano Novo está atrasado.
 
-🟡 **AGUARDANDO A REVISÃO VISUAL DO PO**
+🟢 **GARÇOM DO CODEX — VISUAL APROVADO PELO PO (DT-103)**
+
+**Aceite em 22/11/2026:** "ficou bom [...] se for só isso, tá aprovado, pode seguir". O Codex iniciou os 12 clientes no estilo aprovado e corrigiu a revisão interativa para usar a velocidade e os caminhos reais do café. Commit/envio continuam pendentes de autorização.
+
+- **Base e isolamento:** ramo `codex/visual-garcom`, a partir de `737f73e`, depois do Natal (`2c72ce6`). Cópia ativa em `C:\Users\Elias\.codex\worktrees\visual-garcom\cafe-manie`; os experimentos locais herdados foram preservados na passagem.
+- **Arte implementada:** 36 poses distintas — frente e costas, com e sem bandeja, oito passos e uma pose parada por combinação — e retrato para o botão Garçom. As folhas transparentes, os prompts e a calibração ficam em `art/characters/waiter/`.
+- **Integração corrigida:** escala e âncora fixas por folha; prato medido em cada quadro; sombra desenhada pela Godot no piso. `authored_motion` impede que o jogo acrescente quique ou deformação à animação já desenhada. Os sprites antigos mantêm seu comportamento.
+- **Ferramentas:** `tools/ia/importar_garcom_codex.py` prepara e instala somente o lote do garçom. `tools/revisao/garcom_codex.gd` captura os quatro ciclos no café real; `tools/revisao/preview_garcom.py` reúne as capturas em GIF e prancha. O arquivo `Revisar Garcom.cmd` abre a revisão por dois cliques, minimizada, com dados isolados.
+- **Origem:** imagens geradas pela ferramenta da OpenAI integrada ao Codex; esta etapa não usa créditos do ElevenLabs.
+- **Testes desta etapa:** 750 testes Godot passaram, nenhum falhou; 7 testes do importador passaram. Importação e cena principal por 120 quadros terminaram com saída 0, com dados isolados. A captura final gerou 37 PNGs; a captura noturna individual também passou, sem erros no stderr.
+- **Escopo daquela rodada:** o manifesto mudou somente 37 entradas (36 poses e o ícone) e as duas medidas legadas da bandeja; os 288 PNGs herdados de clientes ainda estavam intactos antes da DT-104.
+- **Revisão corrigida após o aceite:** o modo interativo usa a navegação do café e `Agent.follow`/`advance`, a 3,2 células/s, contornando mesas. A lentidão anterior (0,4) e o trajeto reto eram da amostra; as capturas determinísticas continuam separadas. Os dois testes focados da revisão passaram. Capturas e prévias do garçom ficam em `build/visual-garcom/`.
+
+🟡 **CLIENTES DO CODEX — PRIMEIRO LOTE CANDIDATO V2, AGUARDANDO AVALIAÇÃO (DT-104)**
+
+- **Arte:** 12 clientes, 24 poses por pessoa (288 sprites). Há 12 folhas originais de 24 poses e 12 folhas separadas de seis poses sentadas, selecionadas por `group.file`/`group.cells` no importador. A revisão v2 mantém intactas as 216 poses em pé/andando e substitui as 72 sentadas. Fontes RGBA e calibração em `art/characters/customers/`; prompts desta rodada em `ajuste-assentos-v2.json`. Geração pela ferramenta da OpenAI, sem créditos do ElevenLabs.
+- **Integração em revisão:** alfa nativo preservado, escala comum baseada no personagem em pé e ajustes explícitos da proporção da cabeça. O apoio sentado usa o assento como referência, convertido para a âncora esperada pelo jogo; isso ainda não garante contato correto dos pés. Caminhada autorada e sombra separada no piso, sem quique adicional.
+- **Candidato instalado:** os lotes 01–06 e 07–12 estão calibrados e instalados, totalizando 288 sprites, com 72 sentados v2. Nenhuma pose falta gerar para este primeiro candidato.
+- **Refinamento visual pendente:** pés elevados em algumas poses, chegando a cerca de 12 pixels de mundo no cliente 05. No lote 01–06: 02 ~7, 03 ~9,4 e 05 ~11,8; os casos mais fortes são 05 e 03. No lote 07–12: pés elevados em 4,8–8,1 pixels de mundo e variação de 13–32% da cabeça entre frente/costas, mais evidente no 09. Essas limitações acompanham a avaliação do primeiro candidato; encaixe e consistência das proporções não estão resolvidos.
+- **Ferramentas e testes focados:** importador `tools/ia/importar_clientes_codex.py`; 15 testes Python passaram (8 do importador de clientes e 7 do garçom). A revisão usa dados de amostra, sem ler ou gravar o save pessoal.
+- **Validação automatizada:** 758 testes Godot passaram, 0 falharam (`build/visual-clientes/tests-final.log`). Após instalar os 288 sprites, a importação Godot terminou com saída 0, os 6 testes focados dos clientes passaram sem falhas e a cena principal rodou 120 quadros com saída 0. Os 750 testes acima pertencem à rodada anterior do garçom.
+- **Capturas finais:** 111 PNGs de dia e 1 à noite, ambos os processos com stderr vazio; 108 detalhes reunidos em 13 montagens, em `build/visual-clientes/`. A auditoria dos 108 detalhes não encontrou sprite faltando, corte corporal ou rosto coberto por encosto. Os refinamentos visuais registrados acima permanecem.
+- **Escopo conferido:** `build/visual-clientes/final-verificacao.json` confirma exatamente 288 entradas de clientes alteradas no manifesto, nenhum outro campo alterado, 216 PNGs e metadados em pé/andando preservados, 37 PNGs do garçom idênticos e fontes da calibração relativas. `core/`, `data/`, autoloads e a cena principal do café permanecem sem alterações.
+- **Revisão entregue:** janela dos 12 clientes confirmada na área de trabalho em 22/11, iniciada minimizada fora do sandbox (processo 18808), sem salvar. N troca dia/noite, 1/2 mostram os lotes e 0 mostra todos.
+- **Próximo passo:** receber a avaliação do PO sobre o primeiro candidato, com as pendências de pés e cabeças explícitas. Garçom aprovado; clientes ainda sem aprovação visual. Nenhum commit ou envio deste lote foi feito.
+
+**Histórico da prova anterior — DT-101, substituída pelo candidato acima nesta cópia visual:**
 
 **Prova do garçom pela IA, no visual da imagem-alvo** (DT-101, no ramo `etapa-natal`, sem commit). O PO reprovou o Blender e pediu: "segue pelo elevenlabs o garçom, se ficar bom, vemos de seguir com os outros".
 

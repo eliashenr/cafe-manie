@@ -1,26 +1,26 @@
 class_name NeonSign
 extends Node2D
 ## Letreiro neon com o nome do café (DT-081), preso no alto da parede do fundo da direita: uma placa escura, o nome
-## em tubos ciano com o miolo branco, um sublinhado rosa e o halo. O neon tem luz própria: à noite ele não escurece
+## em tubos de luz quente com o miolo marfim, detalhe de latão e halo suave. O neon tem luz própria: à noite ele não escurece
 ## com o resto (a cor vem compensada pelo NightTint) e o halo cresce.
 
 const FONT_SIZE := 26
-const TUBE_COLOR := UiTheme.CYAN
-const ACCENT_COLOR := Color("ff5fa8")
-const CORE_COLOR := Color(1, 1, 1, 0.95)
-const TUBE_WIDTH := 5
-const BOARD_COLOR := Color(0.03, 0.06, 0.12, 0.88)
-const BOARD_EDGE := Color(0.19, 0.84, 1.0, 0.45)
+const TUBE_COLOR := Color("f3d59d")
+const ACCENT_COLOR := Color("b99962")
+const CORE_COLOR := Color("fff8e9")
+const TUBE_WIDTH := 3
+const BOARD_COLOR := Color("253e35ed")
+const BOARD_EDGE := Color("bc996a99")
 const BOARD_PADDING := Vector2(18, 10)
 const BOARD_RADIUS := 8
 ## A placa fica presa no alto da parede: esta parte dela desce pela parede (o resto fica acima), para caber no
 ## enquadramento da câmera sem afastar o café.
 const DROP := 14.0
 ## Halo: camadas, quanto cada uma alarga e a transparência de dia e no meio da noite.
-const HALO_LAYERS := 4
-const HALO_STEP := 4
-const DAY_HALO := 0.12
-const NIGHT_HALO := 0.22
+const HALO_LAYERS := 3
+const HALO_STEP := 3
+const DAY_HALO := 0.06
+const NIGHT_HALO := 0.16
 ## Sem nome escolhido, o letreiro diz só isto.
 const EMPTY_TEXT := "Café"
 ## Direção da parede da direita na tela (a borda y = 0 desce para a direita): o letreiro segue a inclinação dela.

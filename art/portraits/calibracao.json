@@ -1,0 +1,601 @@
+{
+  "version": 1,
+  "atlases": [
+    {
+      "file": "cabecas.png",
+      "grid": [
+        6,
+        4
+      ],
+      "entries": [
+        {
+          "name": "avatar_cabeca_clara_curto_castanho",
+          "cell": 0,
+          "point_px": [
+            134,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_clara_rabo_preto",
+          "cell": 1,
+          "point_px": [
+            149,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_clara_chanel_ruivo",
+          "cell": 2,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_clara_coque_loiro",
+          "cell": 3,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_clara_topete_azul",
+          "cell": 4,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_clara_longo_rosa",
+          "cell": 5,
+          "point_px": [
+            152,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_morena_clara_curto_castanho",
+          "cell": 6,
+          "point_px": [
+            134,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_morena_clara_rabo_preto",
+          "cell": 7,
+          "point_px": [
+            149,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_morena_clara_chanel_ruivo",
+          "cell": 8,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_morena_clara_coque_loiro",
+          "cell": 9,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_morena_clara_topete_azul",
+          "cell": 10,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_morena_clara_longo_rosa",
+          "cell": 11,
+          "point_px": [
+            152,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_parda_curto_castanho",
+          "cell": 12,
+          "point_px": [
+            134,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_parda_rabo_preto",
+          "cell": 13,
+          "point_px": [
+            149,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_parda_chanel_ruivo",
+          "cell": 14,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_parda_coque_loiro",
+          "cell": 15,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_parda_topete_azul",
+          "cell": 16,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_parda_longo_rosa",
+          "cell": 17,
+          "point_px": [
+            152,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_negra_curto_castanho",
+          "cell": 18,
+          "point_px": [
+            134,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_negra_rabo_preto",
+          "cell": 19,
+          "point_px": [
+            149,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_negra_chanel_ruivo",
+          "cell": 20,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_negra_coque_loiro",
+          "cell": 21,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_negra_topete_azul",
+          "cell": 22,
+          "point_px": [
+            135,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        },
+        {
+          "name": "avatar_cabeca_negra_longo_rosa",
+          "cell": 23,
+          "point_px": [
+            152,
+            244
+          ],
+          "target_ui": [
+            70,
+            127
+          ],
+          "scale_ui": 0.31
+        }
+      ]
+    },
+    {
+      "file": "camadas.png",
+      "grid": [
+        3,
+        4
+      ],
+      "entries": [
+        {
+          "name": "avatar_roupa_branca",
+          "cell": 0,
+          "point_px": [
+            185,
+            144
+          ],
+          "target_ui": [
+            70,
+            120
+          ],
+          "scale_ui": 0.34,
+          "clip_ui": [
+            0,
+            0,
+            140,
+            169
+          ]
+        },
+        {
+          "name": "avatar_roupa_azul",
+          "cell": 1,
+          "point_px": [
+            181,
+            144
+          ],
+          "target_ui": [
+            70,
+            120
+          ],
+          "scale_ui": 0.34,
+          "clip_ui": [
+            0,
+            0,
+            140,
+            169
+          ]
+        },
+        {
+          "name": "avatar_roupa_vermelha",
+          "cell": 2,
+          "point_px": [
+            181,
+            144
+          ],
+          "target_ui": [
+            70,
+            120
+          ],
+          "scale_ui": 0.34,
+          "clip_ui": [
+            0,
+            0,
+            140,
+            169
+          ]
+        },
+        {
+          "name": "avatar_roupa_rosa",
+          "cell": 3,
+          "point_px": [
+            181,
+            144
+          ],
+          "target_ui": [
+            70,
+            120
+          ],
+          "scale_ui": 0.34,
+          "clip_ui": [
+            0,
+            0,
+            140,
+            169
+          ]
+        },
+        {
+          "name": "avatar_roupa_preta",
+          "cell": 4,
+          "point_px": [
+            181,
+            144
+          ],
+          "target_ui": [
+            70,
+            120
+          ],
+          "scale_ui": 0.34,
+          "clip_ui": [
+            0,
+            0,
+            140,
+            169
+          ]
+        },
+        {
+          "name": "avatar_roupa_dourada",
+          "cell": 5,
+          "point_px": [
+            181,
+            144
+          ],
+          "target_ui": [
+            70,
+            120
+          ],
+          "scale_ui": 0.34,
+          "clip_ui": [
+            0,
+            0,
+            140,
+            169
+          ]
+        },
+        {
+          "name": "avatar_chapeu_toque",
+          "cell": 6,
+          "point_px": [
+            187,
+            320
+          ],
+          "target_ui": [
+            70,
+            79
+          ],
+          "scale_ui": 0.29
+        },
+        {
+          "name": "avatar_chapeu_toque_alto",
+          "cell": 7,
+          "point_px": [
+            181,
+            323
+          ],
+          "target_ui": [
+            70,
+            82
+          ],
+          "scale_ui": 0.25
+        },
+        {
+          "name": "avatar_chapeu_bandana",
+          "cell": 8,
+          "point_px": [
+            174,
+            245
+          ],
+          "target_ui": [
+            78,
+            76
+          ],
+          "scale_ui": 0.29
+        },
+        {
+          "name": "avatar_chapeu_boina",
+          "cell": 9,
+          "point_px": [
+            190,
+            269
+          ],
+          "target_ui": [
+            70,
+            80
+          ],
+          "scale_ui": 0.29
+        },
+        {
+          "name": "avatar_chapeu_coroa",
+          "cell": 10,
+          "point_px": [
+            181,
+            262
+          ],
+          "target_ui": [
+            70,
+            78
+          ],
+          "scale_ui": 0.27
+        }
+      ]
+    },
+    {
+      "file": "vizinhos_limpos.png",
+      "grid": [
+        3,
+        3
+      ],
+      "entries": [
+        {
+          "name": "vizinho_ana",
+          "cell": 0,
+          "fit_px": [
+            384,
+            384
+          ]
+        },
+        {
+          "name": "vizinho_beto",
+          "cell": 1,
+          "fit_px": [
+            384,
+            384
+          ]
+        },
+        {
+          "name": "vizinho_caio",
+          "cell": 2,
+          "fit_px": [
+            384,
+            384
+          ]
+        },
+        {
+          "name": "vizinho_duda",
+          "cell": 3,
+          "fit_px": [
+            384,
+            384
+          ]
+        },
+        {
+          "name": "vizinho_lia",
+          "cell": 4,
+          "fit_px": [
+            384,
+            384
+          ]
+        },
+        {
+          "name": "vizinho_rafa",
+          "cell": 5,
+          "fit_px": [
+            384,
+            384
+          ]
+        },
+        {
+          "name": "vizinho_vo_cida",
+          "cell": 6,
+          "fit_px": [
+            384,
+            384
+          ]
+        },
+        {
+          "name": "retrato_bruxa",
+          "cell": 7,
+          "fit_px": [
+            384,
+            384
+          ]
+        },
+        {
+          "name": "retrato_papai_noel",
+          "cell": 8,
+          "fit_px": [
+            384,
+            384
+          ]
+        }
+      ]
+    }
+  ],
+  "default_avatar": {
+    "skin": "clara",
+    "hair": "curto_castanho",
+    "outfit": "branca",
+    "hat": "toque"
+  }
+}

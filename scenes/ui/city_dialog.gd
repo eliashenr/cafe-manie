@@ -34,11 +34,22 @@ var _confirm: Button
 
 func _init() -> void:
 	name = "CityDialog"
-	title = "Pela cidade"
+	title = "Central da cidade"
 	ok_button_text = "Fechar"
 	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 10)
+	root.add_theme_constant_override("separation", 16)
 	add_child(root)
+	var heading := Label.new()
+	heading.name = "CityHeading"
+	heading.text = "Seu café, além do salão"
+	heading.add_theme_font_override("font", UiTheme.font(UiTheme.BOLD))
+	heading.add_theme_font_size_override("font_size", 25)
+	root.add_child(heading)
+	var introduction := Label.new()
+	introduction.name = "CityIntroduction"
+	introduction.text = "Cuide da sua filial e cultive as amizades da vizinhança."
+	introduction.add_theme_color_override("font_color", UiTheme.TEXT_SOFT)
+	root.add_child(introduction)
 	_tabs = HBoxContainer.new()
 	_tabs.add_theme_constant_override("separation", 8)
 	root.add_child(_tabs)
@@ -226,6 +237,7 @@ func _refresh() -> void:
 		_action.text = "Melhorar · %s ouro" % UiTheme.thousands(branch.upgrade_price())
 		_action.disabled = false
 	_confirm_row.visible = pending != &""
+	_action.visible = _action.visible and pending == &""
 	if pending == &"open":
 		_confirm_label.text = "Abrir a filial por %s ouro?" % UiTheme.thousands(config.open_price)
 		_confirm.text = "Abrir"
@@ -286,7 +298,7 @@ func _refresh_neighbors() -> void:
 		button.text = "Ajudar · +%s ouro" % UiTheme.thousands(simulation.neighbor_reward(neighbor.id)) if can_visit \
 			else "Visitado hoje"
 		button.disabled = not can_visit
-		button.custom_minimum_size = Vector2(0, 40)
+		button.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
 		button.add_theme_font_size_override("font_size", 14)
 		_neighbors.add_child(frame)
 
