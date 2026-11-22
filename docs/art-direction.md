@@ -2,6 +2,28 @@
 
 Referência: seções 5, 43, 77, 78, 130–132 do master prompt. Documento vivo: vai ser completado com as impressões do PO sobre as capturas do jogo antigo.
 
+## Ajuste após reprovação do avatar e estudo do original (22/11/2026, DT-108)
+
+O PO mantém a estrutura aprovada e quer reorganização gradual. A pesquisa e as propostas estão em [estudo-cafe-mania-original.md](estudo-cafe-mania-original.md). Preservar o acabamento do cenário, o garçom aprovado e os temas culturais; trabalhar hierarquia, descoberta e coerência dos conjuntos em mudanças pequenas.
+
+O avatar DT-107 foi reprovado: o pescoço apaga a frente da gola, o chapéu é uma camada genérica sobre o cabelo e falta contato entre as peças. Corrigir a composição de **um chef completo vestido e parado** antes de separar camadas. Gola traseira/frontal, cabelo traseiro/mechas e abertura/borda do chapéu precisam de profundidade coerente. A recomposição deve reproduzir a referência completa; só depois animar. Conferir a 210×255 e ampliado. Estabilidade de âncora, ausência de corte e testes aprovados não substituem esse critério visual.
+
+Os portfólios estudados reforçam paletas e proporções pensadas por coleção e personagens compostos como um todo. Aplicar essa disciplina ao visual próprio já aprovado; as imagens históricas são referências de estudo, sem instalação no jogo. O estudo não aprova automaticamente novas cores, telas ou mudanças de economia.
+
+### Primeira prova vestida — DT-109
+
+Fonte única `art/avatar/chef_vestido_v1.png`, gerada como retrato inteiro e apresentada parada no café real. Gola traseira atrás da nuca, abas dianteiras sobre a base do pescoço, faixa do toque acompanhando crânio e cabelo. **Aprovada pelo PO em 22/11/2026**, no tamanho normal e ampliado. Prompt e proveniência em `art/portraits/chef_vestido/`.
+
+### Continuidade animada — DT-110
+
+Preservar a base aprovada byte a byte. Animar por malha contínua, sem separar a união de pescoço/gola ou cabeça/chapéu. Apenas duas áreas dos olhos recebem pálpebras novas durante a piscada; fora delas, textura e alfa são os originais. Movimento discreto, pausa e comparação com a pose aprovada disponíveis na revisão. Não usar geração de novos retratos completos a cada expressão: ela altera traços e caimento. **A animação foi aprovada pelo PO**, que autorizou concluir a interface na DT-111.
+
+### Organização integrada — DT-111
+
+Manter creme, verde e os temas das coleções. A Loja reúne móveis e reforma, com separação por tipo, coleção e busca; o filtro ativo fica à vista mesmo depois de reabrir. No HUD, objetivo e progresso permanecem visíveis ao recolher a dica; controles de funcionamento/zoom ficam agrupados e áudio em Configurações. Cidade separa Filial e Vizinhos com estados e ações legíveis. Nenhuma arte de cenário foi substituída nesta reorganização.
+
+O chef canônico aprovado agora aparece no HUD, nas miniaturas correspondentes e no diálogo real: estático nas áreas pequenas e animado no retrato principal. A integração escolhe a pintura completa para os mesmos IDs; nunca recobre sua gola ou chapéu com partes antigas. Outras combinações continuam compatíveis, mas seus encaixes ainda não foram aprovados. Revisão integrada em `Revisar Interface Completa.cmd`; conferência em 1280×720 e 960×540.
+
 ## Direção visual integrada (22/11/2026, DT-105)
 
 A referência do garçom aprovado passa a orientar os clientes, chef personalizável, vizinhos e personagens de evento. A interface usa creme, areia e café, ações verdes, detalhes de terracota e latão; mantém Fredoka nos títulos e Nunito no corpo. Botões grandes, textos escuros e menos área sobre o salão.
@@ -234,4 +256,4 @@ Para cada captura, anotar em palavras (não copiar):
 
 ## Próximo passo
 
-Validar os clientes da DT-104 dentro do jogo e incorporar o retorno do PO. O garçom da DT-103 já foi aprovado; demais retratos e interface continuam em etapas próprias com revisão visual. As aprovações históricas do ambiente permanecem registradas acima.
+O PO pode testar Loja, HUD e Cidade na revisão integrada DT-111. Garçom, clientes, cenário e chef canônico possuem os aceites registrados nas DT-103–110. Variantes completas de personalização continuam como trabalho futuro; não confundir compatibilidade de IDs com aprovação de encaixe visual.

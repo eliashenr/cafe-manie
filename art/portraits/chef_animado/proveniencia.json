@@ -1,0 +1,39 @@
+{
+  "decision": "DT-110",
+  "date": "2026-11-22",
+  "status": "animacao_dt110_aprovada_pelo_po_2026-11-22",
+  "publication": {
+    "authorized": true,
+    "date": "2026-11-22",
+    "together_with": "DT-111",
+    "scope": "Chef canônico aprovado; não inclui variantes modulares DT-107",
+    "execution_status": "autorizada; commit, envio e integração ainda não registrados"
+  },
+  "approved_base": {
+    "path": "art/avatar/chef_vestido_v1.png",
+    "sha256": "756c9c25ac9779e2926ac2f4d07bf68c0fe3058f8a7e4fcc9e109433fe61044c",
+    "approval": "Agora sim, ficou muito bom! Pode seguir com a animação, mantendo esse rosto e o encaixe da roupa e do chapéu."
+  },
+  "tool": "OpenAI image generation integrada ao Codex",
+  "prompts": "art/portraits/chef_animado/prompts.json",
+  "blink_config": "art/avatar/chef_blink_v1.json",
+  "sources": [
+    {
+      "state": "half",
+      "path": "art/avatar/chef_blink_half_v1.png",
+      "generation_id": "01a203d6-ef61-7fc1-9d7a-82893b86c21d/exec-ebdee29c-d363-4bc7-889e-1e3aa8a5a1b9.png",
+      "sha256": "cf753349e1ff5bb1c280b26a9cf980296a7558e290ae73eeda360f983e40a16a"
+    },
+    {
+      "state": "closed",
+      "path": "art/avatar/chef_blink_closed_v1.png",
+      "generation_id": "01a203d6-ef61-7fc1-9d7a-82893b86c21d/exec-dec46343-ed58-4f7b-9edb-67174025282f.png",
+      "sha256": "657a6fa777d588b655be09f3310da20e1960a241fdaf3482a5c7769ef7877169"
+    }
+  ],
+  "size_each": [1122, 1402],
+  "mode": "RGBA",
+  "transparent_background": true,
+  "postprocessing": "none; generated PNG bytes copied unchanged",
+  "sampling_contract": "Only the configured eye regions are sampled from blink sources. All other pixels and alpha come from the approved base."
+}

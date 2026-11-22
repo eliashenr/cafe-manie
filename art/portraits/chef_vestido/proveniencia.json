@@ -1,0 +1,29 @@
+{
+  "decision": "DT-109",
+  "date": "2026-11-22",
+  "status": "chef_estatico_aprovado_pelo_po_2026-11-22",
+  "tool": "OpenAI image generation integrada ao Codex",
+  "prompt": "art/portraits/chef_vestido/prompt.txt",
+  "reference": "art/portraits/avatar_modular/referencia_rosto.png",
+  "reference_packaged": false,
+  "reference_scope": "Arquivo histórico local, omitido do pacote; não é dependência de execução ou revisão do chef canônico",
+  "reference_sha256": "7d2dd8be29757660ef063311eacd3d0872338e466478326f83b00f7af0c694c7",
+  "reference_bytes": 89968,
+  "canonical_image": "art/avatar/chef_vestido_v1.png",
+  "generation_id": "01a203d6-ef61-7fc1-9d7a-82893b86c21d/exec-72c1da98-8468-4d5d-a89b-7fe1b062008e.png",
+  "sha256": "756c9c25ac9779e2926ac2f4d07bf68c0fe3058f8a7e4fcc9e109433fe61044c",
+  "size": [1122, 1402],
+  "mode": "RGBA",
+  "transparent_background": true,
+  "postprocessing": "none; original bytes copied into repository",
+  "review_sizes_logical": [[210, 255], [336, 408]],
+  "runtime_personalization_changed": false,
+  "runtime_scope": "O campo anterior descreve a prova estática DT-109; a integração DT-111 reutiliza o chef canônico preservando IDs e saves",
+  "animation_approval": "DT-110 aprovada pelo PO em 2026-11-22",
+  "publication": {
+    "authorized": true,
+    "date": "2026-11-22",
+    "together_with": "DT-111",
+    "execution_status": "autorizada; commit, envio e integração ainda não registrados"
+  }
+}

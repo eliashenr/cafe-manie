@@ -3,9 +3,9 @@ extends CanvasLayer
 ## Interface de baixo, no formato da v3 (o do jogo antigo, desenho nosso).
 ##
 ## Mostra, conforme o estado da cafeteria:
-## - nada selecionado: a faixa de ícones (Loja, Reformar, Expandir, Garçom, Chef e
+## - nada selecionado: a faixa de ícones (Loja, Expandir, Garçom, Chef e
 ##   Cidade; Missões e Conquistas ficam no menu lateral e o presente no alto, DT-090);
-##   a Loja abre o painel em abas (Salão, Cozinha, Decoração, Pisos, Paredes) com os
+##   a Loja reúne móveis e reforma em abas (Salão, Cozinha, Decoração, Pisos, Paredes, Cupons) com os
 ##   quadradinhos dos itens;
 ## - fogão selecionado: o livro de receitas, em abas (DT-053), com as estrelas de domínio de cada receita (ou o
 ##   tempo que falta), e as ações do móvel;
@@ -17,9 +17,10 @@ extends CanvasLayer
 ## tempos e mensagens são atualizados no lugar a cada frame, para um clique
 ## nunca se perder porque um cliente pagou no meio dele.
 
-const ICON_BUTTON_SIZE := Vector2(80, 64)
+const ICON_BUTTON_SIZE := Vector2(104, 72)
 ## Espaço entre os botões da faixa: ela cabe entre o quadro da popularidade e a borda direita.
 const ICON_SEPARATION := 6
+const SHOP_DESCRIPTION := "Móveis, decoração, pisos e paredes em um só lugar."
 ## Loja na barra de baixo (DT-088): quantos cartões cabem por página depende da largura da tela (no celular estreito,
 ## menos), entre SHOP_MIN_ITEMS e SHOP_MAX_ITEMS.
 const SHOP_MIN_ITEMS := 3
@@ -130,6 +131,17 @@ const SHOP_TAB_NAMES := {
 	ShopTab.WALL: "Paredes",
 	ShopTab.COUPONS: "Cupons",
 }
+## Tipos visuais dentro das abas existentes. Todos conserva a ordem original do catálogo.
+const SHOP_FILTERS := {
+	ShopTab.SALON: {&"": "Todos", &"tables": "Mesas", &"seats": "Assentos"},
+	ShopTab.KITCHEN: {&"": "Todos", &"stoves": "Fogões", &"counters": "Balcões", &"drinks": "Bebidas"},
+	ShopTab.WALL: {&"": "Todos", &"surfaces": "Revestimentos", &"windows": "Janelas", &"doors": "Portas", &"ornaments": "Enfeites"},
+}
+## Sinônimos da busca: o jogador pode procurar o país ou o nome da coleção existente.
+const COLLECTION_SEARCH_ALIASES := {
+	&"japones": "Japão", &"brasileiro": "Brasil", &"frances": "França",
+	&"italiano": "Itália", &"mexicano": "México", &"americano": "Estados Unidos EUA",
+}
 ## Categorias de móvel em cada aba de móveis.
 ## Atração escolhida (DT-066).
 const ATTRACTION_TEXT := "%s: os clientes brincam e deixam ouro (%d de %d guardado). Toque nela para coletar"
@@ -157,6 +169,9 @@ var shop_open := false
 ## Coleção escolhida na loja (&"" = todas) e a página dos quadradinhos.
 var shop_collection: StringName = &""
 var shop_page := 0
+## Filtros só de apresentação; não alteram posse, preço ou disponibilidade.
+var shop_filter: StringName = &""
+var shop_query := ""
 ## Aba do livro de receitas escolhida em cada fogão (id do fogão -> id da aba) e a página de cada aba. Sem escolha,
 ## o livro abre na aba de um prato que algum cliente espera (ou na primeira).
 var _chosen_book := {}
@@ -175,6 +190,10 @@ var _buttons: HBoxContainer
 var _shop: VBoxContainer
 var _tabs: HBoxContainer
 var _chips: HBoxContainer
+var _filters: HBoxContainer
+var _search: LineEdit
+var _result_count: Label
+var _collection_scroll: ScrollContainer
 var _items: HBoxContainer
 var _prev_page: Button
 var _remove_card: WallItemDefinition
@@ -274,12 +293,37 @@ func _build_shop() -> void:
 	shop_card.size_flags_horizontal = Control.SIZE_FILL  # tão largo quanto a fileira de cartões
 	_shop.add_child(shop_card)
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 8)
+	column.add_theme_constant_override("separation", 6)
 	shop_card.add_child(column)
+	var filter_row := HBoxContainer.new()
+	filter_row.name = "ShopFilterRow"
+	filter_row.add_theme_constant_override("separation", 10)
+	column.add_child(filter_row)
+	_filters = _row("ItemTypes")
+	_filters.alignment = BoxContainer.ALIGNMENT_BEGIN
+	_filters.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_filters.add_theme_constant_override("separation", 4)
+	filter_row.add_child(_filters)
+	_search = LineEdit.new()
+	_search.name = "ShopSearch"
+	_search.placeholder_text = "Buscar nesta aba"
+	_search.tooltip_text = "Buscar pelo nome do item ou da coleção"
+	_search.custom_minimum_size = Vector2(194, UiTheme.MIN_TOUCH)
+	_search.clear_button_enabled = true
+	_search.add_theme_font_size_override("font_size", 14)
+	_search.text_changed.connect(show_shop_search)
+	filter_row.add_child(_search)
 	var top_row := HBoxContainer.new()
 	top_row.add_theme_constant_override("separation", 8)
 	column.add_child(top_row)
+	var collection_label := UiTheme.caption("Coleções", UiTheme.TEXT_SOFT, 13)
+	top_row.add_child(collection_label)
+	var collection_previous := UiTheme.icon_button("PreviousCollectionsButton", "left", "", 32)
+	collection_previous.tooltip_text = "Ver coleções anteriores"
+	collection_previous.pressed.connect(func() -> void: _collection_scroll.scroll_horizontal -= 240)
+	top_row.add_child(collection_previous)
 	var scroll := ScrollContainer.new()
+	_collection_scroll = scroll
 	scroll.name = "CollectionScroll"
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -290,6 +334,15 @@ func _build_shop() -> void:
 	_chips.alignment = BoxContainer.ALIGNMENT_BEGIN
 	_chips.add_theme_constant_override("separation", 6)
 	scroll.add_child(_chips)
+	var collection_next := UiTheme.icon_button("NextCollectionsButton", "right", "", 32)
+	collection_next.tooltip_text = "Ver mais coleções"
+	collection_next.pressed.connect(func() -> void: _collection_scroll.scroll_horizontal += 240)
+	top_row.add_child(collection_next)
+	_result_count = UiTheme.caption("", UiTheme.TEXT_SOFT, 13)
+	_result_count.name = "ShopResultCount"
+	_result_count.custom_minimum_size.x = 62
+	_result_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	top_row.add_child(_result_count)
 	var close := UiTheme.icon_button("CloseShopButton", "close", "", 34)
 	close.tooltip_text = "Fechar a loja"
 	close.pressed.connect(close_shop)
@@ -392,7 +445,7 @@ func message_text() -> String:
 
 
 func find_button(button_name: String) -> Button:
-	for row: Node in [_primary, _buttons, _tabs, _chips, _items]:
+	for row: Node in [_primary, _buttons, _tabs, _chips, _filters, _items]:
 		var button := row.find_child(button_name, true, false) as Button
 		if button != null:
 			return button
@@ -414,6 +467,11 @@ signal shop_toggled(shown: bool)
 
 ## Abre a loja na aba pedida (no lugar da faixa de ícones).
 func open_shop(tab := shop_tab) -> void:
+	if tab != shop_tab:
+		shop_collection = &""
+		shop_filter = &""
+		shop_query = ""
+		shop_page = 0
 	shop_tab = tab
 	shop_open = true
 	_request_rebuild()
@@ -426,11 +484,30 @@ func close_shop() -> void:
 
 ## Troca a aba da loja (e abre a loja, se estiver fechada). A coleção e a página voltam ao começo.
 func show_shop_tab(tab: ShopTab) -> void:
-	if tab != shop_tab:
-		shop_collection = &""
-		shop_page = 0
 	open_shop(tab)
 
+
+## Tipo e busca preservados ao posicionar/cancelar ou fechar/reabrir a Loja.
+func show_shop_filter(filter_id: StringName) -> void:
+	if not SHOP_FILTERS.get(shop_tab, {&"": "Todos"}).has(filter_id):
+		return
+	shop_filter = filter_id
+	shop_page = 0
+	_request_rebuild()
+
+
+func show_shop_search(query: String) -> void:
+	shop_query = query
+	shop_page = 0
+	_request_rebuild()
+
+
+func clear_shop_filters() -> void:
+	shop_filter = &""
+	shop_collection = &""
+	shop_query = ""
+	shop_page = 0
+	_request_rebuild()
 
 ## Mostra só os itens de uma coleção (&"" = todas), a partir da primeira página.
 func show_shop_collection(collection: StringName) -> void:
@@ -490,7 +567,7 @@ func in_shop(definition: FurnitureDefinition, tab: ShopTab) -> bool:
 	return in_hand and BuildBar.shows_in_tab(definition, tab)
 
 
-func _shop_items() -> Array:
+func _shop_items(filtered := true) -> Array:
 	var items: Array = []
 	match shop_tab:
 		ShopTab.FLOOR, ShopTab.WALL:
@@ -506,9 +583,50 @@ func _shop_items() -> Array:
 			for definition in cafe.catalog.all():
 				if in_shop(definition, shop_tab):
 					items.append(definition)
+	if not filtered:
+		return items
+	if shop_filter != &"":
+		items = items.filter(_matches_shop_filter)
 	if shop_collection != &"":
 		items = items.filter(func(item: Resource) -> bool: return item.collection == shop_collection)
+	var terms := _search_key(shop_query).split(" ", false)
+	if not terms.is_empty():
+		items = items.filter(func(item: Resource) -> bool:
+			var collection := cafe.simulation.collections.get_definition(item.collection)
+			var haystack := _search_key(item.display_name + " " + (collection.display_name if collection != null else "")
+				+ " " + String(COLLECTION_SEARCH_ALIASES.get(item.collection, "")))
+			for term: String in terms:
+				if not haystack.contains(term):
+					return false
+			return true)
 	return items
+
+
+## Usa os campos dos recursos; nenhum novo tipo de gameplay ou lista de IDs duplicada.
+func _matches_shop_filter(item: Resource) -> bool:
+	match shop_filter:
+		&"surfaces": return item is SurfaceDefinition
+		&"doors": return item is DoorDefinition
+		&"windows": return item is WallItemDefinition and item.lets_light_in
+		&"ornaments": return item is WallItemDefinition and not item.lets_light_in
+	if not item is FurnitureDefinition:
+		return false
+	match shop_filter:
+		&"tables": return item.category == FurnitureDefinition.Category.TABLE
+		&"seats": return item.category == FurnitureDefinition.Category.SEATING
+		&"stoves": return item.category == FurnitureDefinition.Category.COOKING or item.is_trophy()
+		&"counters": return item.category == FurnitureDefinition.Category.COUNTER or item.delivery
+		&"drinks": return item.category == FurnitureDefinition.Category.MACHINE
+	return true
+
+
+static func _search_key(value: String) -> String:
+	var result := value.to_lower().strip_edges()
+	var accents := {"a": "áàâãä", "e": "éèêë", "i": "íìîï", "o": "óòôõö", "u": "úùûü", "c": "ç"}
+	for plain: String in accents:
+		for letter: String in String(accents[plain]):
+			result = result.replace(letter, plain)
+	return result
 
 
 func _process(_delta: float) -> void:
@@ -534,7 +652,7 @@ func _rebuild() -> void:
 		_refresh_in_place()
 		return
 	_shown_signature = signature
-	for row: Node in [_primary, _buttons, _tabs, _chips, _items]:
+	for row: Node in [_primary, _buttons, _tabs, _chips, _filters, _items]:
 		for child in row.get_children():
 			row.remove_child(child)
 			child.queue_free()
@@ -570,7 +688,7 @@ func _signature() -> Array:
 	var book: StringName = _chosen_book.get(cafe.selected_id, &"") if _has_selection() else &""
 	return [cafe.mode, cafe.selected_id if _has_selection() else &"", stove_status,
 		cafe.session != null and cafe.session.is_moving(), cafe.simulation.next_expansion().is_empty(), shop_tab, shop_open,
-		shop_collection, shop_page, book, _recipe_page.get(book, 0), cafe.simulation.delivery.version,
+		shop_collection, shop_filter, shop_query, shop_page, book, _recipe_page.get(book, 0), cafe.simulation.delivery.version,
 		items_per_page() if shop_open else 0]
 
 
@@ -590,12 +708,12 @@ func _has_selection() -> bool:
 
 func _show_icon_bar() -> void:
 	_message_source = func() -> String: return _problem_text()
-	_add_icon(_buttons, "ShopButton", "loja", "Loja", func() -> void: open_shop(ShopTab.SALON))
-	_add_icon(_buttons, "RenovateButton", "rolo", "Reformar", func() -> void: open_shop(ShopTab.FLOOR))
+	var shop := _add_icon(_buttons, "ShopButton", "loja", "Loja\nDecorar", func() -> void: open_shop())
+	shop.tooltip_text = SHOP_DESCRIPTION
 	_add_expand_button()
 	_add_hire_button()
-	_add_icon(_buttons, "ChefBarButton", "chef", "Chef", func() -> void: cafe.hud.show_avatar())
-	_add_icon(_buttons, "CityBarButton", "cidade", "Central", func() -> void: cafe.hud.show_city())
+	_add_icon(_buttons, "ChefBarButton", "chef", "Chef\nSeu visual", func() -> void: cafe.hud.show_avatar())
+	_add_icon(_buttons, "CityBarButton", "cidade", "Cidade\nFilial · vizinhos", func() -> void: cafe.hud.show_city())
 
 
 ## Botão da faixa: o ícone da arte em cima e o nome embaixo.
@@ -608,7 +726,7 @@ func _add_icon(row: HBoxContainer, button_name: String, icon: String, text: Stri
 		button.icon = sprite.texture
 	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-	button.add_theme_constant_override("icon_max_width", 36)
+	button.add_theme_constant_override("icon_max_width", 32)
 	button.custom_minimum_size = ICON_BUTTON_SIZE
 	for state in ["normal", "disabled", "focus"]:
 		button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
@@ -633,35 +751,33 @@ func _add_icon(row: HBoxContainer, button_name: String, icon: String, text: Stri
 
 func _add_expand_button() -> void:
 	var simulation := cafe.simulation
-	if simulation.next_expansion().is_empty():
-		return
 	var expand := _add_icon(_buttons, "ExpandButton", "expandir", "", ask_expand)
-	expand.custom_minimum_size = Vector2(108, ICON_BUTTON_SIZE.y)
 	_updaters.append(func() -> void:
 		var next := simulation.next_expansion()
 		if next.is_empty():
+			expand.text = "Expandir\nCompleto"
+			expand.disabled = true
 			return
 		var size: Vector2i = next["size"]
 		if int(next["level"]) > simulation.progression.level:
 			expand.text = "Expandir\nNível %d" % int(next["level"])
 		else:
-			expand.text = "Expandir\n%d×%d · %d" % [size.x, size.y, int(next["price"])]
+			expand.text = "Expandir\n%d×%d · %s" % [size.x, size.y, UiTheme.thousands(int(next["price"]))]
+		expand.tooltip_text = "Ampliar para %d×%d por %s Café Ouro" % [size.x, size.y, UiTheme.thousands(int(next["price"]))]
 		expand.disabled = simulation.can_expand() != ServiceResult.OK)
-
 
 ## Contratar garçom: mostra o preço, o nível que falta ou que a equipe está completa.
 func _add_hire_button() -> void:
 	var simulation := cafe.simulation
 	var hire := _add_icon(_buttons, "HireButton", "garcom", "", ask_hire_waiter)
-	hire.custom_minimum_size = Vector2(100, ICON_BUTTON_SIZE.y)
 	_updaters.append(func() -> void:
 		var price := simulation.next_waiter_price()
 		if price < 0:
 			hire.text = "Garçons\nCompleto"
 		elif simulation.next_waiter_level() > simulation.progression.level:
-			hire.text = "Garçom\nNível %d" % simulation.next_waiter_level()
+			hire.text = "Garçons\nNível %d" % simulation.next_waiter_level()
 		else:
-			hire.text = "Garçom\n%s" % UiTheme.thousands(price)
+			hire.text = "Garçons\n%s" % UiTheme.thousands(price)
 		hire.disabled = simulation.can_hire_waiter() != ServiceResult.OK)
 
 
@@ -677,7 +793,7 @@ func ask_hire_waiter() -> void:
 # --- Loja ------------------------------------------------------------------
 
 func _show_shop() -> void:
-	_message_source = func() -> String: return _problem_text()
+	_message_source = func() -> String: return _with_problem(SHOP_DESCRIPTION)
 	if shop_tab == ShopTab.COUPONS:
 		_message_source = func() -> String: return _with_problem(_coupon_shop_text())
 	for tab in SHOP_TAB_NAMES:
@@ -698,10 +814,15 @@ func _show_shop() -> void:
 		button.add_theme_font_size_override("font_size", 15)
 		button.pressed.connect(func() -> void: show_shop_tab(this_tab))
 		_tabs.add_child(button)
+	_show_type_filters()
 	_show_collection_chips()
+	if _search.text != shop_query:
+		_search.text = shop_query
 	shop_page = clampi(shop_page, 0, shop_page_count() - 1)
 	var per_page := items_per_page()
-	var page := _shop_items().slice(shop_page * per_page, (shop_page + 1) * per_page)
+	var filtered := _shop_items()
+	_result_count.text = "%d %s" % [filtered.size(), "item" if filtered.size() == 1 else "itens"]
+	var page := filtered.slice(shop_page * per_page, (shop_page + 1) * per_page)
 	_items.custom_minimum_size = Vector2(per_page * (ShopItemButton.CARD_SIZE.x + SHOP_CARD_GAP) - SHOP_CARD_GAP,
 		ShopItemButton.CARD_SIZE.y)
 	for item: Resource in page:
@@ -720,12 +841,52 @@ func _show_shop() -> void:
 		if collection != null:
 			card.tag_text = collection.display_name
 			card.tag_color = collection.color
+	if filtered.is_empty():
+		_show_empty_shop()
 	var pages := shop_page_count()
 	_prev_page.disabled = shop_page == 0
 	_next_page.disabled = shop_page >= pages - 1
 	_prev_page.modulate.a = 0.35 if _prev_page.disabled else 1.0
 	_next_page.modulate.a = 0.35 if _next_page.disabled else 1.0
-	_page_label.text = "%d/%d" % [shop_page + 1, pages]
+	_page_label.text = "0/0" if filtered.is_empty() else "%d/%d" % [shop_page + 1, pages]
+
+
+func _show_type_filters() -> void:
+	var options: Dictionary = SHOP_FILTERS.get(shop_tab, {})
+	if options.is_empty():
+		_filters.add_child(UiTheme.caption("Todos os itens", UiTheme.TEXT_SOFT, 14))
+	for filter_id: StringName in options:
+		var button := Button.new()
+		button.name = "Filter_" + (String(filter_id) if filter_id != &"" else "all")
+		button.text = options[filter_id]
+		button.toggle_mode = true
+		button.button_pressed = filter_id == shop_filter
+		button.custom_minimum_size.y = UiTheme.MIN_TOUCH
+		button.add_theme_font_size_override("font_size", 14)
+		button.focus_mode = Control.FOCUS_NONE
+		UiTheme.role(button, UiTheme.TAB_BUTTON)
+		button.pressed.connect(func() -> void: show_shop_filter(filter_id))
+		_filters.add_child(button)
+
+
+func _show_empty_shop() -> void:
+	var empty := VBoxContainer.new()
+	empty.name = "ShopEmptyState"
+	empty.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	empty.alignment = BoxContainer.ALIGNMENT_CENTER
+	empty.add_theme_constant_override("separation", 12)
+	_items.add_child(empty)
+	var label := UiTheme.caption("Nenhum item encontrado.\nTente outro tipo, coleção ou nome.", UiTheme.TEXT_SOFT, 16)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	empty.add_child(label)
+	var clear := Button.new()
+	clear.name = "ClearShopFiltersButton"
+	clear.text = "Limpar filtros"
+	clear.custom_minimum_size.y = UiTheme.MIN_TOUCH
+	clear.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	UiTheme.role(clear, UiTheme.GHOST_BUTTON)
+	clear.pressed.connect(clear_shop_filters)
+	empty.add_child(clear)
 
 
 ## "Você tem 7 cupons — itens novos em 5 dias e 3h" (DT-062).
@@ -738,16 +899,25 @@ func _coupon_shop_text() -> String:
 ## Fileira de coleções: "Todas" e as que têm itens nesta aba, cada uma na sua cor.
 func _show_collection_chips() -> void:
 	var present := {}
-	var saved := shop_collection
-	shop_collection = &""
-	for item: Resource in _shop_items():
+	for item: Resource in _shop_items(false):
 		present[item.collection] = true
-	shop_collection = saved
 	_add_chip("Collection_all", "Todas", UiTheme.BLUE, shop_collection == &"", &"")
 	for collection in cafe.simulation.collections.all():
 		if present.has(collection.id):
 			_add_chip("Collection_" + String(collection.id), collection.display_name, collection.color,
 				shop_collection == collection.id, collection.id)
+	_reveal_active_collection.call_deferred()
+
+
+## Após os Containers organizarem os chips, mantém o filtro escolhido visível.
+func _reveal_active_collection() -> void:
+	await get_tree().process_frame
+	if not _shop.visible:
+		return
+	var chip_name := "Collection_" + (String(shop_collection) if shop_collection != &"" else "all")
+	var active := _chips.get_node_or_null(chip_name) as Control
+	if active != null:
+		_collection_scroll.ensure_control_visible(active)
 
 
 func _add_chip(chip_name: String, text: String, color: Color, active: bool, collection: StringName) -> void:
