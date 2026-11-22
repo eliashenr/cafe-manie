@@ -12,7 +12,11 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 **Execução:** geradores novos em `tools/render3d/*_codex.py`, cada um com saída exclusiva em `build/visual-cenario/`. Um único escritor instala o manifesto depois de conferir os lotes. Nenhuma geração grava diretamente em `art/sprites`. Regras, conteúdo e save permanecem com o Claude; o cenário novo será avaliado separadamente do conjunto DT-105 já aprovado.
 
-**Validação prevista:** conferir cobertura e registro de todos os sprites, mosaicos comparativos, cenas reais com cozinha ativa, janelas/iluminação de dia e noite, pisos sem frestas e decorações de todas as coleções. Testes e resultado serão registrados no status ao concluir.
+**Resultado implementado:** 413 PNGs existentes em densidade 4 (150 cozinha, 139 superfícies, 124 decorações/portas), com preservação dos outros 754 sprites e de todos os campos não visuais do manifesto. Bases geométricas e apoios de panelas/pratos permanecem fixos. Veios/juntas mais suaves, molduras mais finas, nova marcenaria e vasos/luminárias harmonizados. Corrigida a colisão do cache de textura XY/XZ do Brasil. Todos os geradores são novos e deixam os históricos intactos.
+
+**Revisão:** `Revisar Cenario.cmd`, minimizado e com dados isolados; C troca o conjunto completo, N dia/noite. A amostra recria vistas para remover luzes/selos herdados e restaura os enfeites-base entre coleções. O catálogo visual cobre inclusive eventos, móveis grandes e atrações.
+
+**Validação:** os três conferidores aprovaram recortes, cobertura, âncoras e contratos; 39 mosaicos de piso e 32 faixas de parede sem frestas. Retomada e exigência de brutos da decoração passaram por 13 verificações focadas. Resultados finais dos testes Godot/Python e das capturas reais ficam no topo de `status.md`. Esta etapa foi aprovada separadamente pelo PO em 22/11/2026: “Pode enviar esse novo cenário e integrar à main.” Publicação do ramo `codex/visual-cenario` autorizada.
 
 ---
 

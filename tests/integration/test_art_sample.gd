@@ -76,8 +76,8 @@ func test_sample_art_keeps_the_sprite_contract() -> void:
 		for id: StringName in FURNITURE:
 			var sprite := ArtSprites.furniture(id, rotation)
 			assert_true(sprite != null, "%s na rotação %d" % [id, rotation])
-			var expected_density := 4.0 if id in [&"chair_wood", &"table_round"] else 2.0
-			assert_almost_eq(sprite.density, expected_density, 0.001)
+			# DT-106: a cozinha acompanha a densidade 4 das mesas e cadeiras.
+			assert_almost_eq(sprite.density, 4.0, 0.001)
 	for rotation in [1, 2]:
 		assert_true(ArtSprites.chair_backrest(&"chair_wood", rotation) != null, "encosto de quem senta de costas")
 	for side in ["R", "L"]:

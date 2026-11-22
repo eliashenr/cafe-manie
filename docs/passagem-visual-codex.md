@@ -2,7 +2,9 @@
 
 ## Estado e autorização (22/11/2026)
 
-O PO aprovou a reformulação dentro do jogo: “Ficou muito bom! Pode enviar”, e confirmou “Sim, pode integrar à main”. A entrega DT-103/104/105 partiu de `737f73e`, após o Natal, foi enviada em `a09f8e9` e integrada pela [PR #1](https://github.com/eliashenr/cafe-manie/pull/1) no merge `449e755`. Os testes de push e PR passaram antes da integração. A `main` já contém a reformulação aprovada; o cenário DT-106 continua em desenvolvimento separado na cópia do Codex.
+**Atualização:** o PO também aprovou a DT-106: “Pode enviar esse novo cenário e integrar à main.” Os 413 sprites estão liberados para publicação e integração. A próxima etapa autorizada (DT-107) é melhorar a interação/continuidade do avatar do chef e unificar Loja/Reforma; ela não faz parte do lote de cenário que está sendo enviado.
+
+O PO aprovou a reformulação dentro do jogo: “Ficou muito bom! Pode enviar”, e confirmou “Sim, pode integrar à main”. A entrega DT-103/104/105 partiu de `737f73e`, após o Natal, foi enviada em `a09f8e9` e integrada pela [PR #1](https://github.com/eliashenr/cafe-manie/pull/1) no merge `449e755`. Os testes de push e PR passaram antes da integração. A `main` já contém a reformulação aprovada; o cenário DT-106 também foi aprovado e tem publicação/integração autorizadas.
 
 ## O que mudou
 
@@ -40,6 +42,24 @@ Para revisar sem terminal: `Revisar Visual.cmd`. Abre minimizado. C troca 12 col
 ## Continuidade alinhada
 
 O PO pediu também fogões, janelas, pisos e decorações. Essa extensão é a DT-106, sob responsabilidade visual do Codex, e será apresentada separadamente da DT-105 já aprovada. Cozinha, revestimentos e enfeites manterão IDs, dimensões lógicas, regras e temas.
+
+### Extensão do cenário — DT-106, ramo `codex/visual-cenario`
+
+O ramo parte de `94474fc`, que já contém a integração aprovada e a passagem da DT-105 publicada na `main`. O cenário foi validado e aprovado visualmente pelo PO, com envio e integração autorizados em 22/11/2026. A confirmação remota será registrada ao concluir a publicação.
+
+- **Cozinha:** 37 itens em quatro rotações, mais dois brilhos de forno: 150 PNGs. Fogões com corpo arredondado, pés, porta e comandos separados; balcões com marcenaria mais leve; máquinas compactas. Inclui trem, caldeirão, forno do Natal e balcão de entregas.
+- **Revestimentos e janelas:** 139 PNGs para 39 pisos (75 variações), 16 paredes, 15 janelas e dois pilares. Veios e juntas mais discretos, vidros legíveis e molduras mais finas. O cache dos materiais distingue os planos XY/XZ, evitando a colisão entre o piso e a parede brasileiros.
+- **Decorações e portas:** 124 PNGs para 44 enfeites de piso, 12 de parede e 13 portas, incluindo lados e estados aberto/fechado. Vasos, suportes, luminárias, quadros e acabamentos harmonizados; aliases e móveis de 2×1/2×2 preservados.
+- **Contrato:** somente 413 PNGs existentes e suas entradas de âncora/densidade mudam. A densidade passa a 4, acompanhando os personagens e móveis aprovados. Os outros 754 sprites e todos os campos de mapeamento do manifesto devem permanecer idênticos à DT-105. Apoios preservados: fogão z=0,748455, panela z=0,794455, balcão z=0,799486 (62,67 no jogo), parede 152,38. Sem mudança de preço, beleza, tamanho lógico ou regra.
+- **Revisão:** `Revisar Cenario.cmd` abre minimizado, com C para coleções completas e N para dia/noite. `cenario_codex.gd` muda apenas dados de amostra em memória; recria vistas ao trocar os enfeites para não herdar luzes ou selos, e restaura os enfeites-base quando a coleção não tem os seus. `catalogo_cenario.gd` mostra todos os itens da cozinha e de decoração por página.
+
+Fontes novas: `tools/render3d/cozinha_codex.py`, `superficies_codex.py` e `decoracoes_codex.py`, com seus três `conferir_*_codex.py`. Os módulos históricos usados como primitivas não foram alterados. Os geradores escrevem apenas em subpastas de `build/`; cada saída inclui `physical_contract.json`, `manifest_patch.json`, imagens brutas e sprites.
+
+Para reproduzir, executar pelo Blender em segundo plano (`-b -t 3 -P <gerador> -- --out <subpasta nova de build> --samples <amostras>`). Cozinha/decorações usam 32 amostras; superfícies, 40; densidade 4. Executar o conferidor correspondente com a pasta gerada (cozinha usa `--staging <pasta> --complete` para exigir os 150 sprites). Conferir as imagens antes de instalar com `tools/ia/integrar_visual_codex.py`. Usar saídas novas: não sobrescrever lotes ou misturar uma retomada com fontes diferentes. Cozinha e decorações tiveram correções pontuais, com os dois lotes documentados nos contratos e nas proveniências locais. As correções posteriores de retomada/QA da decoração não alteram a geometria nem os PNGs.
+
+Capturas e relatórios desta rodada ficam em `build/visual-cenario/`; não são dependências dos geradores. A revisão usa APPDATA/LOCALAPPDATA em `build/visual-cenario/interactive`. O teste de contrato visual passa a exigir densidade 4 também no fogão e no balcão básicos; os valores de preço, área e apoio continuam os mesmos.
+
+**Validação final DT-106:** 764 testes Godot, 27 Python e 13 verificações focadas de controle de geração aprovados; cena principal por 120 quadros, saída 0. Inspecionadas 70 capturas reais: 26 salões, 14 páginas de cozinha, 16 de decoração, 10 de pisos e quatro de parede, incluindo dia/noite. Brilho dos fornos, panelas, pratos, luzes, janelas, juntas e apoios conferidos. Escopo final confirma 413 sprites instalados e 754 preservados, sem alterar os demais contratos, regras ou dados. Revisão minimizada confirmada no desktop, processo 23204, log isolado limpo.
 
 Claude continua com Ano Novo, calendário, conteúdo, regras, economia e saves. Para novos itens, passar ao Codex ID, dimensões, rotações e contexto visual antes de criar imagens. Não há necessidade de refazer a interface nem os personagens aprovados.
 

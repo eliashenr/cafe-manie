@@ -2,11 +2,18 @@
 
 ## CAFÉ MANIE — STATUS (22/11/2026)
 
-🟡 **EXTENSÃO DO CENÁRIO EM EXECUÇÃO — DT-106**
+🟢 **CENÁRIO APROVADO — ENVIO E INTEGRAÇÃO AUTORIZADOS, DT-106**
 
-- Pedido do PO: incluir fogões, janelas, pisos e decorações depois da aprovação da DT-105. Cozinha, revestimentos/janelas e enfeites/portas estão sendo trabalhados separadamente; instalação centralizada do manifesto.
-- Geradores em preparação local: `cozinha_codex.py`, `superficies_codex.py` e `decoracoes_codex.py`, em `tools/render3d/`. Saídas em `build/visual-cenario/`; nenhuma geração escreve diretamente em produção. Estes novos arquivos ainda não integram a entrega aprovada DT-105.
-- Nova revisão em preparação local, `Revisar Cenario.cmd`: C troca coleções completas (móveis, cozinha, revestimentos, janelas e porta); N dia/noite. A amostra usa dados em memória e enquadra o alto das paredes. A base anterior tem 13 capturas em `build/visual-cenario/antes/`.
+**Aceite do PO (22/11):** “Ficou muito bom! Pode enviar esse novo cenário e integrar à main.” Publicação em andamento com a conta `eliashenr`. O PO pediu depois melhorar a continuidade/movimento do avatar e unificar Loja/Reforma; essa nova intervenção fica separada da arte do cenário aprovada.
+
+- Pedido do PO atendido no ramo `codex/visual-cenario`, a partir de `94474fc`: fogões/cozinha, janelas, pisos/paredes, decorações e portas na direção visual aprovada. Instalação única de **413 PNGs e suas entradas**: cozinha 150, superfícies 139, decorações/portas 124.
+- Cobertura: 37 itens de cozinha nas quatro rotações; 39 pisos, 16 paredes, 15 janelas e dois pilares; 44 decorações de piso, 12 de parede e 13 portas em ambos os lados/estados. Materiais menos ruidosos, molduras/juntas mais finas, marcenaria e detalhes de apoio renovados. Temas e IDs preservados.
+- **Preservação conferida:** 754 sprites e metadados restantes idênticos à DT-105; todos os campos do manifesto fora de `sprites` preservados, incluindo apoio de panelas/pratos. `core/`, `data/`, autoloads, configuração e cena principal intactos. Relatório `build/visual-cenario/escopo-final.json`.
+- Geradores reproduzíveis novos em `tools/render3d/`, com três conferidores. Contratos, brutos, comparações, lotes de correção e hashes em `build/visual-cenario/`. Corrigidos 20 sprites de puxadores/travessas da cozinha e sete de estante/garrafa/quadro antes da instalação. Retomada e brutos da decoração protegidos por 13 verificações focadas aprovadas.
+- **Revisão local:** `Revisar Cenario.cmd`; C troca coleções completas, N dia/noite, 1/2 lotes de clientes, 0 todos. Dados em memória, APPDATA/LOCALAPPDATA isolados, janela minimizada. A troca recria vistas de enfeites para não herdar luzes/selos e restaura a decoração-base das coleções sem enfeites próprios. As novas imagens foram aprovadas pelo PO; publicação autorizada em andamento.
+- **Validação concluída:** importação headless sem erros, **764 testes Godot e 27 testes Python aprovados**; cena principal por 120 quadros, saída 0. Logs `build/visual-cenario/tests-final.log`, `cena-final.log`, `python-tests-final.log` e `validacao-final.txt`. `git diff --check` sem erros. Um falso positivo no resumo do runner local (nome de teste contendo `error_sound`) foi corrigido no filtro; nenhum teste ou cena precisou ser repetido.
+- **Conferência visual concluída:** 70 PNGs reais, gerados em 46 execuções ocultas com saída 0 e logs sem erros: 26 salões (misto + 12 coleções, dia/noite), 14 páginas da cozinha (37 itens em r0/r3), 16 de decoração (44 itens em ambos os períodos), 10 de pisos e quatro de parede. Todos inspecionados; sem frestas, cortes ou perda de apoio de panelas/pratos. Portas fechadas e as demais rotações também foram conferidas nos mosaicos de render. Abajur/lava/globo mantêm a luz noturna intensa prevista pelo conteúdo existente, com silhuetas legíveis.
+- **Janela entregue:** processo 23204, título “Revisão do Cenário · Mostruário misto · 12 clientes” confirmado no desktop, fora da sandbox; lançamento minimizado. Log da pasta isolada sem erros. Não usa nem grava o save pessoal.
 - **Resultado aprovado integrado:** commit `a09f8e9`, [PR #1](https://github.com/eliashenr/cafe-manie/pull/1), incorporado à `main` em `449e755`. O PO confirmou expressamente “Sim, pode integrar à main”. Os testes de push e PR passaram antes da integração. Nenhuma mudança feita na pasta do Claude.
 
 🟢 **REFORMULAÇÃO VISUAL APROVADA — DT-105**
