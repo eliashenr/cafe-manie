@@ -108,6 +108,8 @@ var _coupon_pill: Control
 var _event_button: Button
 var _event_badge: Control
 var _event_days: Label
+## Ícone que os medalhões do evento mostram agora (muda com o evento, DT-100).
+var _event_icon := ""
 var _event_dialog: EventDialog
 var _avatar_dialog: AvatarDialog
 var _city_dialog: CityDialog
@@ -325,6 +327,26 @@ func _refresh_event() -> void:
 		var hours := floori(simulation.clock.seconds_to_next_local_day() / 3600.0)
 		_event_timer_value.text = "%dd %02dh" % [days, hours] if days > 0 else "%dh restantes" % hours
 		(_event_button.get_child(1) as Label).text = event.title.to_upper() if event.title.length() <= 11 else "EVENTO"
+		_show_event_icon(event.icon)
+
+
+## Troca o desenho dos dois medalhões do evento (o da esquerda e o do alto) pelo ícone do evento que vale agora.
+func _show_event_icon(icon: String) -> void:
+	if icon == _event_icon:
+		return
+	var sprite := ArtSprites.get_sprite(icon)
+	if sprite == null:
+		return
+	_event_icon = icon
+	for holder: Control in [_event_button, _event_timer]:
+		var rect := holder.get_node_or_null("medalhao_evento") as TextureRect
+		if rect != null:
+			rect.texture = sprite.texture
+
+
+## Ícone que os medalhões do evento mostram agora (para os testes).
+func event_icon() -> String:
+	return _event_icon
 
 
 ## Retrato do chef no perfil: só redesenha quando o jogador troca uma peça do avatar.

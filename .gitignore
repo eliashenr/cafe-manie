@@ -27,3 +27,4 @@ __pycache__/
 # Saida dos renders 3D (gerada pelo Blender)
 tools/render3d/out*/
 tools/render3d/__pycache__/
+/docs/referencias/

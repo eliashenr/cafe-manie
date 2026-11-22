@@ -22,6 +22,8 @@ extends Resource
 ## Fogão de prêmio e quantas missões concluídas liberam cada nível dele (o 1º nível entrega o fogão).
 @export var prize_stove: StringName = &""
 @export var stove_levels_at: PackedInt32Array = [1, 3, 5]
+## Ícone do medalhão do evento no HUD (nome do sprite): cada evento tem o seu (abóbora no Halloween, bola no Natal...).
+@export var icon := "medalhao_evento"
 ## Enfeite de prêmio por concluir todas as missões.
 @export var final_prize: StringName = &""
 

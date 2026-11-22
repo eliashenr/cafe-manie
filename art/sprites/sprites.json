@@ -7000,6 +7000,48 @@
     17.0,
     315.38
    ]
+  },
+  "christmas_tree_r0": {
+   "anchor": [
+    89.0,
+    281.87
+   ]
+  },
+  "medalhao_natal": {
+   "anchor": [
+    50.0,
+    68.0
+   ]
+  },
+  "retrato_papai_noel": {
+   "anchor": [
+    162.3,
+    200.55
+   ]
+  },
+  "santa_oven_r0": {
+   "anchor": [
+    128.0,
+    301.87
+   ]
+  },
+  "santa_oven_r1": {
+   "anchor": [
+    128.0,
+    251.87
+   ]
+  },
+  "santa_oven_r2": {
+   "anchor": [
+    129.0,
+    268.87
+   ]
+  },
+  "santa_oven_r3": {
+   "anchor": [
+    129.0,
+    318.87
+   ]
   }
  },
  "furniture": {
@@ -7782,6 +7824,18 @@
    "1": "dj_booth_r1",
    "2": "dj_booth_r0",
    "3": "dj_booth_r1"
+  },
+  "santa_oven": {
+   "0": "santa_oven_r0",
+   "1": "santa_oven_r1",
+   "2": "santa_oven_r2",
+   "3": "santa_oven_r3"
+  },
+  "christmas_tree": {
+   "0": "christmas_tree_r0",
+   "1": "christmas_tree_r0",
+   "2": "christmas_tree_r0",
+   "3": "christmas_tree_r0"
   }
  },
  "table_tops": {

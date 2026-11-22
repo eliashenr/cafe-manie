@@ -1191,6 +1191,126 @@ def delivery_counter():
 
 # --- Catálogo e fotos -------------------------------------------------------------------------------------------
 
+def gift(center, size, paper, ribbon):
+    """Presente: a caixa, a fita em cruz e o laço em cima."""
+    x, y, z = center
+    w, d, h = size
+    parts = [box((w, d, h), (x, y, z + h / 2), paper, 0.008),
+             box((w + 0.004, 0.018, h + 0.004), (x, y, z + h / 2), ribbon, 0.002),
+             box((0.018, d + 0.004, h + 0.004), (x, y, z + h / 2), ribbon, 0.002)]
+    for side in (-1, 1):
+        loop = sphere(0.022, (x + side * 0.02, y, z + h + 0.014), ribbon, (1.3, 0.5, 0.8))
+        loop.rotation_euler = (0.0, math.radians(side * -25.0), 0.0)
+        parts.append(loop)
+    return parts
+
+
+def candy_cane(base, height, turn=0.0):
+    """Bengala doce: o cabo listrado e a curva em cima."""
+    red, white = solid("#c8262e", 0.3, 0.0, 0.6), solid("#f6f1e6", 0.3, 0.0, 0.6)
+    x, y, z = base
+    parts = []
+    steps = 8
+    for i in range(steps):
+        z0 = z + height * i / steps
+        parts.append(cylinder(0.012, z0, z0 + height / steps, (red, white)[i % 2], (x, y), bevel=0.002, vertices=16))
+    hook = torus(0.03, 0.012, (x + 0.03 * math.cos(math.radians(turn)), y + 0.03 * math.sin(math.radians(turn)), z + height), red,
+                 (math.radians(90), 0.0, math.radians(turn)))
+    parts.append(hook)
+    return parts
+
+
+def santa_oven():
+    """Forno do Papai Noel: esmalte vermelho com friso dourado, a guirlanda e as meias no espelho, biscoitos de gengibre,
+    presentes e a bengala doce. A panela e o forno aceso caem nos mesmos lugares dos outros fogões."""
+    red = enamel("#a8202a")
+    gold_trim = gold()
+    parts = range_stove(red, gold_trim, solid("#f6f1e6", 0.3, 0.0, 0.5), gold_trim, door=enamel("#7a1620"), back=enamel("#7a1620"))
+    y = K.BACK_Y - 0.06
+    top = K.H + 0.31
+    # A guirlanda no espelho, com as bolinhas e o laço.
+    wreath_z = K.H + 0.16
+    needles = foliage("#2a6a34")
+    for i in range(14):
+        angle = 2 * math.pi * i / 14
+        parts.append(sphere(0.03, (0.0 + math.cos(angle) * 0.085, y - 0.02, wreath_z + math.sin(angle) * 0.085), needles, (1.0, 0.7, 1.0)))
+    for i, color in enumerate(("#d9a93a", "#c8262e", "#d9a93a", "#c8262e", "#d9a93a")):
+        angle = 2 * math.pi * (i + 0.5) / 5
+        parts.append(sphere(0.014, (math.cos(angle) * 0.09, y - 0.05, wreath_z + math.sin(angle) * 0.09), solid(color, 0.2, 0.5, 0.6)))
+    parts.append(sphere(0.022, (0.0, y - 0.05, wreath_z - 0.09), solid("#c8262e", 0.4), (1.6, 0.6, 1.0)))
+    # Duas meias penduradas no trilho, uma de cada lado.
+    for x, color in ((-0.32, "#c8262e"), (0.32, "#2a6a34")):
+        sock = M.fabric("plain", color)
+        parts.append(box((0.07, 0.03, 0.1), (x, y - 0.04, K.H + 0.2), sock, 0.02))
+        parts.append(box((0.06, 0.03, 0.04), (x + 0.025, y - 0.04, K.H + 0.135), sock, 0.018))
+        parts.append(box((0.08, 0.034, 0.03), (x, y - 0.04, K.H + 0.255), M.fabric("plain", "#f6f1e6"), 0.012))
+    # Em cima do espelho: presentes, o pote de biscoitos e a bengala.
+    parts += gift((-0.3, y, top), (0.12, 0.1, 0.1), solid("#2a6a34", 0.5), solid("#d9a93a", 0.3, 0.6))
+    parts += gift((-0.17, y, top), (0.09, 0.08, 0.075), solid("#f6f1e6", 0.5), solid("#c8262e", 0.4))
+    jar = glass("#f4f8fb", 0.25)
+    parts.append(cylinder(0.06, top, top + 0.13, jar, (0.12, y), bevel=0.01))
+    parts.append(cylinder(0.064, top + 0.13, top + 0.15, solid("#c8262e", 0.4), (0.12, y), bevel=0.008))
+    for dz in (0.03, 0.065, 0.1):
+        parts.append(sphere(0.04, (0.12, y, top + dz), food_brown(), (1.0, 1.0, 0.25)))
+    parts += candy_cane((0.3, y, top), 0.22, 180.0)
+    return parts
+
+
+def food_brown():
+    return solid("#a8642c", 0.6)
+
+
+def christmas_tree():
+    """Árvore de Natal: o vaso de madeira, a copa em camadas de agulhas, as bolas, o pisca-pisca aceso, a estrela e os
+    presentes em volta."""
+    parts = []
+    trunk = wood("#5a3820", 0.1)
+    parts.append(box((0.42, 0.42, 0.16), (0.0, 0.0, 0.08), wood("#8a5530", 0.35), 0.016))
+    parts.append(cylinder(0.05, 0.16, 0.3, trunk))
+    needles = [foliage("#24572c"), foliage("#2e6a34"), foliage("#1f4a26")]
+    rnd = random.Random(12)
+    tiers = ((0.3, 0.42, 0.62), (0.52, 0.34, 0.5), (0.72, 0.26, 0.38), (0.9, 0.18, 0.26), (1.05, 0.1, 0.16))
+    ornaments = ("#c8262e", "#d9a93a", "#2f6fd9", "#f6f1e6", "#c8262e", "#d9a93a")
+    lights = ("#ffd27a", "#ff8a7a", "#9ad8ff", "#ffd27a")
+    for index, (z, radius, height) in enumerate(tiers):
+        parts.append(cone(radius, z, z + height, needles[index % 3], (0.0, 0.0), 0.0, 24))
+        count = int(radius * 90)
+        for i in range(count):
+            angle = 2 * math.pi * i / count + rnd.uniform(-0.1, 0.1)
+            t = rnd.uniform(0.05, 0.55)
+            r = radius * (1.0 - t) * 0.98
+            parts.append(leaf((math.cos(angle) * r * 0.9, math.sin(angle) * r * 0.9, z + height * t),
+                              (math.cos(angle), math.sin(angle), -0.35), 0.09, 0.025, needles[i % 3]))
+        for i in range(int(radius * 22)):
+            angle = 2 * math.pi * (i + 0.5) / int(radius * 22) + index * 0.5
+            t = 0.12
+            r = radius * (1.0 - t)
+            parts.append(sphere(0.026 + radius * 0.02, (math.cos(angle) * r, math.sin(angle) * r, z + height * t + 0.01),
+                                solid(ornaments[(i + index) % len(ornaments)], 0.18, 0.5, 0.8)))
+        for i in range(int(radius * 30)):
+            angle = 2 * math.pi * (i + 0.25) / int(radius * 30) - index * 0.3
+            t = 0.35
+            r = radius * (1.0 - t) + 0.01
+            parts.append(sphere(0.011, (math.cos(angle) * r, math.sin(angle) * r, z + height * t),
+                                emission(lights[(i + index) % len(lights)], 9.0)))
+    # A estrela no alto, virada para a câmera.
+    star_points = []
+    for i in range(10):
+        angle = math.radians(90 + i * 36)
+        r = 0.09 if i % 2 == 0 else 0.038
+        star_points.append((math.cos(angle) * r, math.sin(angle) * r))
+    star = prism(star_points, 0.03, solid("#f2c84a", 0.25, 0.8), 0.006)   # a estrela de pé, de frente para a câmera
+    star.rotation_euler = (0.0, 0.0, math.radians(-45))
+    star.location = (0.0, 0.0, 1.27)
+    parts.append(star)
+    parts.append(sphere(0.03, (0.0, 0.0, 1.27), emission("#ffe39a", 6.0)))
+    # Presentes no pé da árvore.
+    parts += gift((0.26, -0.24, 0.0), (0.16, 0.14, 0.12), solid("#c8262e", 0.5), solid("#d9a93a", 0.3, 0.6))
+    parts += gift((-0.26, -0.26, 0.0), (0.12, 0.12, 0.1), solid("#2f6fd9", 0.5), solid("#f6f1e6", 0.4))
+    parts += gift((0.3, 0.12, 0.0), (0.1, 0.12, 0.16), solid("#f6f1e6", 0.5), solid("#2a6a34", 0.4))
+    return parts
+
+
 ITEMS = {
     "plant_pot": plant_pot, "banana_tree": banana_tree, "bonsai": bonsai, "cactus": cactus, "olive_tree": olive_tree, "macrame_plant": macrame_plant,
     "succulents": succulents, "tree_blueberry": tree_blueberry, "tree_mango": tree_mango, "tree_strawberry": tree_strawberry, "flower_vase": flower_vase,
@@ -1202,6 +1322,7 @@ ITEMS = {
     "trophy_bronze": trophy_bronze, "trophy_silver": trophy_silver, "trophy_gold": trophy_gold,
     "machine_coffee": machine_coffee, "machine_coffee_smart": machine_coffee_smart, "machine_juice": machine_juice, "machine_frozen": machine_frozen,
     "train_locomotive": train_locomotive, "train_wagon": train_wagon, "train_dining": train_dining, "witch_cauldron": witch_cauldron, "delivery_counter": delivery_counter,
+    "santa_oven": santa_oven, "christmas_tree": christmas_tree,
 }
 FOOTPRINTS = {"bookshelf": (2, 1), "dj_booth": (2, 1), "stage": (2, 2)}
 # Os redondos que têm um lado da frente: virados para a câmera. Os outros ficam no alinhamento do piso, como os móveis.

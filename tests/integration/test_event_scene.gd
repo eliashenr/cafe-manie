@@ -21,7 +21,7 @@ func test_the_medallion_shows_only_during_the_event() -> void:
 	timer.pressed.emit()
 	await settle()
 	assert_true(cafe.hud.event_dialog().visible, "tocar no cronômetro abre o evento")
-	var later := await _event_cafe("2026-12-01T12:00:00")
+	var later := await _event_cafe("2026-11-20T12:00:00")
 	assert_false(later.hud.is_event_visible(), "fora do evento, some")
 	assert_false((later.hud.find_child("EventTimer", true, false) as Button).visible, "e o cronômetro também")
 

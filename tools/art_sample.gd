@@ -50,7 +50,11 @@ func _initialize() -> void:
 		root.title = "Amostra A: %s (tecla N: dia/noite)" % variant
 		root.window_input.connect(_on_review_input)
 	_clock = load("res://core/time/manual_clock.gd").new()
-	_clock.time = Time.get_unix_time_from_datetime_string(NIGHT if night else DAY) - _clock.utc_offset_seconds()
+	var day: String = NIGHT if night else DAY
+	# Um 5º argumento com uma data (2026-12-10) troca o dia: serve para revisar um evento, que só aparece nas datas dele.
+	if args.size() > 4 and args[4].begins_with("20"):
+		day = args[4] + ("T23:00:00" if night else "T14:00:00")
+	_clock.time = Time.get_unix_time_from_datetime_string(day) - _clock.utc_offset_seconds()
 	var simulation = load("res://core/service/cafe_simulation.gd").create_new_game(_clock, 7)
 	simulation.set_cafe_name("Café Manie")
 	if _review:

@@ -2,7 +2,7 @@
 (scenes/ui/avatar_portrait.gd): a roupa embaixo, a cabeça com o cabelo no meio e o chapéu em cima.
 
 Uso (na pasta do projeto):
-    C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/retratos_a3d.py -- [cabecas] [roupas] [chapeus] [icone] [folha] [pessoas] [vizinho_ana...] [rascunho] [prova]
+    C:/Blender/blender-5.2.3-windows-x64/blender.exe -b -P tools/render3d/retratos_a3d.py -- [cabecas] [roupas] [chapeus] [icone] [folha] [pessoas] [vizinho_ana...] [natal] [rascunho] [prova]
 
 Sem nada, faz tudo e a folha de conferência (out_retratos/retratos_folha.png). "prova" faz só um cabelo por pele.
 
@@ -16,6 +16,7 @@ As fotos têm 4 pixels por unidade do retrato (as outras têm 2): o retrato apar
 """
 import json
 import math
+import random
 import os
 import sys
 
@@ -28,8 +29,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import cena3d  # noqa: E402
 from cena3d import linear  # noqa: E402
 import moveis3d as M  # noqa: E402
-from moveis3d import box, emission, solid, sphere, tube  # noqa: E402
+from moveis3d import box, cylinder, emission, solid, sphere, tube  # noqa: E402
 import assentos_a3d as AS  # noqa: E402
+from enfeites3d import torus  # noqa: E402
 
 from bl_ext.user_default.mpfb.services.humanservice import HumanService  # noqa: E402
 from bl_ext.user_default.mpfb.services.targetservice import TargetService  # noqa: E402
@@ -745,12 +747,114 @@ def render_person(name, samples):
     print("PRONTO", name, flush=True)
 
 
+# --- Natal (DT-100): o Papai Noel e o medalhão do evento --------------------------------------------------------------
+
+def santa_extras(basemesh):
+    """O Papai Noel: o casaco vermelho com a gola de pelo, a barba e o bigode brancos e o gorro com o pompom."""
+    red = cloth("#b3202a")
+    fur = food_fur()
+    parts = [jacket(basemesh, red),
+             arc_band(0.08, 0.075, COLLAR_TOP - 0.06, COLLAR_TOP + 0.005, 0.03, 0.0, 360.0, fur, NECK_CENTER, bevel=0.02)]
+    cx, cy = HEAD_CENTER
+    chin = HEAD_TOP - 0.215
+    # A barba: tufos em volta do queixo e das bochechas, mais cheios embaixo.
+    rnd = random.Random(5)
+    for i in range(26):
+        angle = math.radians(200 + 140 * i / 25)
+        drop = 0.03 + 0.05 * math.sin(math.radians(180 * i / 25))
+        x = cx + math.cos(angle) * 0.07
+        y = cy + math.sin(angle) * 0.085
+        parts.append(sphere(0.032 + rnd.uniform(-0.004, 0.006), (x, y, chin + 0.05 - drop), fur, (1.0, 0.9, 1.25)))
+    for i in range(9):
+        parts.append(sphere(0.03, (cx + rnd.uniform(-0.04, 0.04), cy - 0.095 + rnd.uniform(-0.01, 0.01), chin - 0.03 - i * 0.008), fur))
+    for side in (-1, 1):
+        mustache = sphere(0.022, (cx + side * 0.024, cy - 0.118, chin + 0.058), fur, (1.6, 0.8, 0.7))
+        mustache.rotation_euler = (0.0, math.radians(side * 18.0), 0.0)
+        parts.append(mustache)
+    # O gorro: a faixa de pelo, o cone vermelho caído para o lado e o pompom.
+    rx, ry = BAND
+    z = BAND_Z + 0.035
+    parts.append(arc_band(rx * 1.06, ry * 1.06, z, z + 0.045, 0.02, 0.0, 360.0, fur, bevel=0.016))
+    profile = [(rx * 1.02, z + 0.03, 0.0), (rx * 0.95, z + 0.07, 0.4), (rx * 0.72, z + 0.12, 0.5), (rx * 0.42, z + 0.15, 0.4), (0.0, z + 0.165, 0.0)]
+    hat = pleated(profile, red, 5, 0.03, squash=(1.0, ry / rx))
+    parts.append(hat)
+    tip = sphere(0.03, (cx + 0.06, cy + 0.02, z + 0.145), red, (1.7, 0.9, 0.8))
+    tip.rotation_euler = (0.0, math.radians(30.0), 0.0)
+    parts += [tip, sphere(0.032, (cx + 0.11, cy + 0.02, z + 0.115), fur)]
+    return parts
+
+
+def food_fur():
+    """Pelo branco do gorro e da barba: fosco e macio."""
+    key = ("retrato_pelo",)
+    if key not in M._materials:
+        mat, nodes, links, bsdf = M._principled("Pelo")
+        fibers = nodes.new("ShaderNodeTexNoise")
+        fibers.inputs["Scale"].default_value = 220.0
+        fibers.inputs["Detail"].default_value = 6.0
+        links.new(M._coords(nodes, 1.0), fibers.inputs["Vector"])
+        bump = nodes.new("ShaderNodeBump")
+        bump.inputs["Strength"].default_value = 0.5
+        links.new(fibers.outputs["Fac"], bump.inputs["Height"])
+        links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+        bsdf.inputs["Base Color"].default_value = linear("#f4f1ea")
+        bsdf.inputs["Roughness"].default_value = 0.95
+        bsdf.inputs["Sheen Weight"].default_value = 0.6
+        M._materials[key] = mat
+    return M._materials[key]
+
+
+def render_santa(samples):
+    """O retrato do Papai Noel: uma foto só, em busto, no mesmo tamanho do retrato da bruxa."""
+    setup(samples)
+    scene = bpy.context.scene
+    scene.render.resolution_x, scene.render.resolution_y = (440, 640)
+    scene.camera.data.ortho_scale = 640 / 820.0
+    basemesh = person(dict(gender=1.0, age=0.88, muscle=0.45, weight=0.75, race=(0.0, 0.0, 1.0), skin="old_caucasian_male",
+                           tone="#f2c6b4", hair=("short02", "ramp:#c9c6c2,#ffffff"), clothes=[]))
+    santa_extras(basemesh)
+    bust_frame()
+    scene.camera.location.z -= 0.01
+    bpy.context.view_layer.update()
+    anchors = {}
+    shoot("retrato_papai_noel", anchors)
+    cena3d.update_manifest(anchors)
+    print("PRONTO retrato_papai_noel", flush=True)
+
+
+def render_christmas_medal(samples):
+    """O medalhão do Natal no HUD: uma bola de árvore vermelha com o pino dourado e os ramos, de frente."""
+    setup(samples)
+    scene = bpy.context.scene
+    scene.render.resolution_x, scene.render.resolution_y = (136, 136)
+    scene.camera.data.ortho_scale = 0.3
+    center = Vector(TARGET)
+    ball = solid("#c01e2a", 0.12, 0.3, 0.9)
+    gold_mat = solid("#d9a93a", 0.25, 0.85)
+    sphere(0.1, center, ball)
+    for dz in (-0.03, 0.03):
+        arc_band(0.1, 0.1, center.z + dz - 0.006, center.z + dz + 0.006, 0.004, 0.0, 360.0, gold_mat, (center.x, center.y), bevel=0.002)
+    cylinder(0.026, center.z + 0.092, center.z + 0.122, gold_mat, (center.x, center.y), bevel=0.004)
+    torus(0.016, 0.004, (center.x, center.y, center.z + 0.13), gold_mat, (math.radians(90), 0.0, math.radians(CAMERA_TURN)))
+    holly = solid("#2a6a34", 0.4, 0.0, 0.5)
+    for side in (-1, 1):
+        leaf_obj = sphere(1.0, (center.x + side * 0.045, center.y - 0.02, center.z + 0.112), holly, (0.045, 0.012, 0.018))
+        leaf_obj.rotation_euler = (0.0, math.radians(side * -25.0), math.radians(CAMERA_TURN))
+    for dx in (-0.012, 0.012):
+        sphere(0.012, (center.x + dx, center.y - 0.03, center.z + 0.118), solid("#d81e2a", 0.2, 0.0, 0.8))
+    bpy.context.view_layer.update()
+    anchors = {}
+    anchors["medalhao_natal"] = cena3d.shoot("medalhao_natal", tuple(center), WORK)
+    cena3d.update_manifest(anchors)
+    print("PRONTO medalhao_natal", flush=True)
+
+
 def main():
     args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     samples = 24 if "rascunho" in args else 96
     proof = "prova" in args
     names = ("cabecas", "roupas", "chapeus", "icone", "folha")
-    people_only = bool([a for a in args if a == "pessoas" or a in PEOPLE])
+    people_only = bool([a for a in args if a in ("pessoas", "natal") or a in PEOPLE])
     everything = not [a for a in args if a not in ("rascunho", "prova")]
     groups = [a for a in args if a in names] or ([] if people_only else list(names))
     os.makedirs(WORK, exist_ok=True)
@@ -808,6 +912,9 @@ def main():
     for name in PEOPLE:
         if name in args or "pessoas" in args or everything:
             render_person(name, samples)
+    if "natal" in args or everything:
+        render_santa(samples)
+        render_christmas_medal(samples)
     if "folha" in groups:
         with open(os.path.join(cena3d.SPRITES, "sprites.json"), encoding="utf-8") as source:
             sheet(json.load(source))

@@ -65,7 +65,7 @@ func test_the_board_runs_only_during_the_event() -> void:
 	clock.time = Time.get_unix_time_from_datetime_string("2026-11-04T12:00:00")
 	sim.refresh_event()
 	assert_true(sim.event_board == null, "acabou o prazo: as missões do evento somem")
-	_setup("2026-12-01T12:00:00")
+	_setup("2026-11-20T12:00:00")
 	assert_true(sim.current_event() == null)
 	assert_true(sim.event_board == null, "fora do evento, sem missões dele")
 	assert_eq(sim.event_days_left(), -1)
