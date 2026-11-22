@@ -1,14 +1,8 @@
 class_name GameHud
 extends CanvasLayer
-## Interface de cima e das laterais, no formato da v3 (o do jogo antigo, desenho nosso):
-## - no alto à esquerda, o Café Ouro num contador escuro com a moeda;
-## - no meio, a barra de XP listrada com a estrela do chef e o nível em número grande,
-##   e a barra de beleza com a flor;
-## - no alto à direita, o cronômetro do presente diário;
-## - na lateral esquerda, os medalhões de Missões (com o cartão da missão atual)
-##   e Conquistas; na direita, botões quadrados de zoom e som;
-## - embaixo à esquerda, a popularidade do café (0 a 100, não é uma contagem de clientes satisfeitos, DT-090);
-## - um aviso no alto para mensagens curtas (subiu de nível, missão concluída...).
+## Perfil e recursos no topo; objetivo compacto e atalhos nas laterais.
+## O evento ocupa uma faixa própria, sem disputar espaço com os contadores.
+## Avisos ficam acima do HUD e mudam para a base durante os diálogos.
 ##
 ## Os nomes exibidos das moedas ficam aqui, na interface; o código do jogo
 ## usa ids neutros (ver docs/economy.md).
@@ -44,29 +38,29 @@ const COIN_UNAVAILABLE_TEXT := ("A compra de Café Ouro com dinheiro de verdade 
 const TOAST_SECONDS := 2.8
 ## Tempo extra de aviso por caractere, para textos longos darem tempo de ler.
 const TOAST_SECONDS_PER_CHAR := 0.05
-const MISSION_CARD_WIDTH := 300.0
+const MISSION_CARD_WIDTH := 272.0
 const ZOOM_STEP := 1.2
 const STARS := 5
 ## Cartão do perfil e o círculo do retrato (DT-077).
-const PROFILE_SIZE := Vector2(340, 86)
-const AVATAR_SIZE := 70.0
+const PROFILE_SIZE := Vector2(300, 76)
+const AVATAR_SIZE := 60.0
 const CITY_TEXT := "Nova York"
 const RATING_CAPTION := "Popularidade"
 const RATING_FORMAT := "%d/100"
 ## Menu lateral e botões quadrados da direita.
-const SIDE_TILE_SIZE := Vector2(80, 80)
-const SIDE_TILE_GAP := 10.0
-const SIDE_TILES_TOP := 108.0
-const SIDE_BUTTONS_TOP := 80.0
-const SIDE_BUTTON_STEP := 54.0
+const SIDE_TILE_SIZE := Vector2(64, 64)
+const SIDE_TILE_GAP := 8.0
+const SIDE_TILES_TOP := 100.0
+const SIDE_BUTTONS_TOP := 132.0
+const SIDE_BUTTON_STEP := 52.0
 const DAILY_TITLE := "PRESENTE DIÁRIO EM"
 const DAILY_READY_TITLE := "PRESENTE DIÁRIO"
 const DAILY_READY := "Receber!"
 const PAUSE_TEXT := "JOGO PAUSADO: mexa à vontade. Toque em ▶ para continuar."
-const CLOSED_TEXT := "CAFÉ FECHADO: ninguém novo entra. Toque na porta verde para abrir."
+const CLOSED_TEXT := "CAFÉ FECHADO: ninguém novo entra. Toque na porta para abrir."
 ## Janelas (DT-079): o fundo escurecido atrás delas, numa camada acima do HUD e da barra (os avisos ficam por cima).
 const OVERLAY_LAYER := 2
-const DIM_COLOR := Color(0.016, 0.04, 0.09, 0.62)
+const DIM_COLOR := Color(0.16, 0.11, 0.08, 0.50)
 ## Onde fica o aviso: no alto; com uma janela aberta, embaixo (a janela cobriria o do alto).
 const TOAST_TOP := 98.0
 const TOAST_BOTTOM_WITH_DIALOG := -62.0
@@ -214,13 +208,13 @@ func _group(group_name: String) -> Control:
 
 
 ## Contadores no alto (DT-077): ouro com o "+" verde, energia (só com máquina), cupons (só com algum) e beleza,
-## em pílulas de vidro escuro lado a lado. A fileira se arruma sozinha quando um contador aparece ou some.
+## em pílulas creme lado a lado. A fileira se arruma sozinha quando um contador aparece ou some.
 func _build_currencies() -> void:
 	var row := HBoxContainer.new()
 	row.name = "Currencies"
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", 12)
-	_anchored(row, Vector2.ZERO, Vector2(364, 16), Vector2(640, 42))
+	_anchored(row, Vector2.ZERO, Vector2(328, 12), Vector2(666, 48))
 	row.add_child(_build_gold())
 	row.add_child(_build_energy())
 	row.add_child(_build_coupons())
@@ -231,19 +225,19 @@ func _build_currencies() -> void:
 func _pill(pill_name: String, icon: String, width: float) -> Control:
 	var pill := Panel.new()
 	pill.name = pill_name
-	pill.custom_minimum_size = Vector2(width, 40)
+	pill.custom_minimum_size = Vector2(width, 48)
 	pill.add_theme_stylebox_override("panel", UiTheme.pill_box(20))
 	pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_place(pill, UiTheme.art(icon, Vector2(44, 44)), Vector2(-6, -2))
+	_place(pill, UiTheme.art(icon, Vector2(34, 34)), Vector2(6, 7))
 	return pill
 
 
 func _build_gold() -> Control:
 	var group := _pill("Gold", "icone_moeda", 188)
-	_gold_label = UiTheme.outlined("0", 21, UiTheme.GOLD, UiTheme.NAVY, 3)
+	_gold_label = UiTheme.outlined("0", 21, UiTheme.GOLD, UiTheme.NAVY, 0)
 	_gold_label.name = "GoldValue"
 	_gold_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_place(group, _gold_label, Vector2(44, 0), Vector2(104, 40))
+	_place(group, _gold_label, Vector2(44, 0), Vector2(94, 48))
 	# "+" verde no fim do contador: abre a vitrine de Café Ouro.
 	var buy := Button.new()
 	buy.name = "BuyGoldButton"
@@ -259,7 +253,7 @@ func _build_gold() -> Control:
 		buy.add_theme_stylebox_override(state, box)
 	buy.add_theme_font_size_override("font_size", 22)
 	buy.pressed.connect(func() -> void: show_coin_shop())
-	_place(group, buy, Vector2(150, 5), Vector2(30, 30))
+	_place(group, buy, Vector2(140, 0), Vector2(48, 48))
 	return group
 
 
@@ -269,20 +263,20 @@ func _build_energy() -> Control:
 	_energy_button.name = "EnergyButton"
 	_energy_button.focus_mode = Control.FOCUS_NONE
 	_energy_button.tooltip_text = "Energia das máquinas de bebida"
-	_energy_button.custom_minimum_size = Vector2(168, 40)
+	_energy_button.custom_minimum_size = Vector2(168, 48)
 	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
 		_energy_button.add_theme_stylebox_override(state, UiTheme.pill_box(20))
 	_energy_button.pressed.connect(func() -> void: show_message(ENERGY_HELP))
-	_place(_energy_button, UiTheme.art("icone_energia", Vector2(44, 44)), Vector2(-6, -2))
-	_energy_label = UiTheme.outlined("0/0", 19, UiTheme.WHITE_SOFT, UiTheme.NAVY, 3)
+	_place(_energy_button, UiTheme.art("icone_energia", Vector2(34, 34)), Vector2(6, 7))
+	_energy_label = UiTheme.outlined("0/0", 19, UiTheme.TEXT, UiTheme.NAVY, 0)
 	_energy_label.name = "EnergyValue"
 	_energy_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_place(_energy_button, _energy_label, Vector2(44, 0), Vector2(64, 40))
+	_place(_energy_button, _energy_label, Vector2(44, 0), Vector2(64, 48))
 	_energy_next = UiTheme.outlined("", 12, UiTheme.CYAN, UiTheme.NAVY, 0)
 	_energy_next.name = "EnergyNext"
 	_energy_next.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_energy_next.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_place(_energy_button, _energy_next, Vector2(100, 0), Vector2(58, 40))
+	_place(_energy_button, _energy_next, Vector2(100, 0), Vector2(58, 48))
 	return _energy_button
 
 
@@ -290,10 +284,10 @@ func _build_energy() -> Control:
 func _build_coupons() -> Control:
 	_coupon_pill = _pill("CouponPill", "icone_cupom", 124)
 	_coupon_pill.tooltip_text = "Cupons do crítico: troque na Loja, aba Cupons"
-	_coupon_label = UiTheme.outlined("0", 19, UiTheme.WHITE_SOFT, UiTheme.NAVY, 3)
+	_coupon_label = UiTheme.outlined("0", 19, UiTheme.TEXT, UiTheme.NAVY, 0)
 	_coupon_label.name = "CouponValue"
 	_coupon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_place(_coupon_pill, _coupon_label, Vector2(44, 0), Vector2(74, 40))
+	_place(_coupon_pill, _coupon_label, Vector2(44, 0), Vector2(74, 48))
 	_coupon_pill.visible = false
 	return _coupon_pill
 
@@ -304,9 +298,9 @@ func _build_beauty() -> Control:
 	_beauty_bar = StripedBar.new()
 	_beauty_bar.name = "BeautyBar"
 	_beauty_bar.stripes = ""
-	_beauty_bar.gradient = [Color("ff6fb5"), Color("ffa3d6")]
+	_beauty_bar.gradient = [Color("e8b6a0"), Color("efd0b8")]
 	_beauty_bar.font_size = 12
-	_place(group, _beauty_bar, Vector2(42, 11), Vector2(98, 18))
+	_place(group, _beauty_bar, Vector2(42, 14), Vector2(98, 20))
 	return group
 
 
@@ -382,7 +376,7 @@ func shown_coupons() -> int:
 
 
 ## Cartão do perfil no alto à esquerda (DT-077): o retrato do chef (o avatar que o jogador montou) num círculo com
-## aro ciano, o selo dourado do nível, o nome do café (toque para trocar), a cidade e a barra de XP.
+## aro verde, o selo dourado do nível, o nome do café (toque para trocar), a cidade e a barra de XP.
 func _build_profile() -> void:
 	var card := Panel.new()
 	card.name = "Profile"
@@ -391,7 +385,7 @@ func _build_profile() -> void:
 	_anchored(card, Vector2.ZERO, Vector2(12, 10), PROFILE_SIZE)
 	var ring := Panel.new()
 	ring.name = "AvatarRing"
-	var ring_style := UiTheme.bar_box(Color("13305a"), int(AVATAR_SIZE / 2.0))
+	var ring_style := UiTheme.bar_box(UiTheme.CARD_SOFT, int(AVATAR_SIZE / 2.0))
 	ring_style.border_color = UiTheme.CYAN
 	ring_style.set_border_width_all(2)
 	ring.add_theme_stylebox_override("panel", ring_style)
@@ -401,20 +395,20 @@ func _build_profile() -> void:
 	_profile_portrait = AvatarPortrait.new()
 	_profile_portrait.name = "ChefPortrait"
 	_profile_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_place(ring, _profile_portrait, Vector2(-9, -30), Vector2(AVATAR_SIZE + 18, AVATAR_SIZE * 1.52))
+	_place(ring, _profile_portrait, Vector2(2, -2), Vector2(56, 68))
 	var badge := Panel.new()
 	badge.name = "LevelBadge"
-	var badge_style := UiTheme.bar_box(UiTheme.NAVY_DEEP, 17)
+	var badge_style := UiTheme.bar_box(UiTheme.CARD, 15)
 	badge_style.border_color = UiTheme.GOLD
 	badge_style.set_border_width_all(2)
 	badge.add_theme_stylebox_override("panel", badge_style)
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_place(card, badge, Vector2(2, 50), Vector2(34, 34))
-	_level_label = UiTheme.outlined("1", 17, UiTheme.GOLD, UiTheme.NAVY, 3)
+	_place(card, badge, Vector2(0, 45), Vector2(30, 30))
+	_level_label = UiTheme.outlined("1", 17, UiTheme.GOLD, UiTheme.NAVY, 0)
 	_level_label.name = "LevelValue"
 	_level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_level_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_place(badge, _level_label, Vector2.ZERO, Vector2(34, 34))
+	_place(badge, _level_label, Vector2.ZERO, Vector2(30, 30))
 	_name_button = Button.new()
 	_name_button.name = "CafeNameButton"
 	_name_button.flat = true
@@ -425,23 +419,24 @@ func _build_profile() -> void:
 	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
 		var empty := StyleBoxEmpty.new()
 		empty.content_margin_left = 0
+		empty.content_margin_bottom = 20
 		_name_button.add_theme_stylebox_override(state, empty)
 	_name_button.add_theme_font_size_override("font_size", 19)
 	for color_name in ["font_color", "font_pressed_color", "font_focus_color"]:
-		_name_button.add_theme_color_override(color_name, UiTheme.WHITE_SOFT)
+		_name_button.add_theme_color_override(color_name, UiTheme.TEXT)
 	_name_button.add_theme_color_override("font_hover_color", UiTheme.CYAN)
 	_name_button.add_theme_color_override("font_hover_pressed_color", UiTheme.CYAN)
 	_name_button.pressed.connect(func() -> void: ask_cafe_name(false))
-	_place(card, _name_button, Vector2(88, 6), Vector2(PROFILE_SIZE.x - 98, 28))
+	_place(card, _name_button, Vector2(78, 0), Vector2(PROFILE_SIZE.x - 88, UiTheme.MIN_TOUCH))
 	var city := UiTheme.outlined(CITY_TEXT, 12, UiTheme.TEXT_SOFT, Color(0, 0, 0, 0), 0)
 	city.name = "City"
-	_place(card, city, Vector2(89, 33), Vector2(PROFILE_SIZE.x - 98, 16))
+	_place(card, city, Vector2(79, 31), Vector2(PROFILE_SIZE.x - 88, 16))
 	_xp_bar = StripedBar.new()
 	_xp_bar.name = "XpBar"
 	_xp_bar.stripes = ""
-	_xp_bar.gradient = [UiTheme.TECH_BLUE, UiTheme.CYAN]
+	_xp_bar.gradient = [UiTheme.PROGRESS_LIGHT, UiTheme.PROGRESS_LIGHT.lightened(0.15)]
 	_xp_bar.font_size = 12
-	_place(card, _xp_bar, Vector2(88, 56), Vector2(PROFILE_SIZE.x - 100, 20))
+	_place(card, _xp_bar, Vector2(78, 52), Vector2(PROFILE_SIZE.x - 90, 18))
 
 
 ## No alto à direita: o presente diário com o cronômetro, o evento com os dias que faltam e a engrenagem.
@@ -451,15 +446,15 @@ func _build_top_right() -> void:
 	row.alignment = BoxContainer.ALIGNMENT_END
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", 10)
-	_anchored(row, Vector2(1.0, 0.0), Vector2(-590, 10), Vector2(578, 56))
+	_anchored(row, Vector2(1.0, 0.0), Vector2(-274, 12), Vector2(262, 56))
 	row.add_child(_build_daily_timer())
 	_event_timer = _top_panel("EventTimer", "medalhao_evento", "EVENTO ESPECIAL", func() -> void: event_requested.emit())
-	_event_timer_value = UiTheme.outlined("", 20, UiTheme.WHITE_SOFT, UiTheme.NAVY, 3)
+	_event_timer_value = UiTheme.outlined("", 20, UiTheme.TEXT, UiTheme.NAVY, 0)
 	_event_timer_value.name = "EventTimerValue"
 	_place(_event_timer, _event_timer_value, Vector2(58, 22), Vector2(110, 26))
 	_event_timer.custom_minimum_size = Vector2(176, 56)
 	_event_timer.visible = false
-	row.add_child(_event_timer)
+	_anchored(_event_timer, Vector2(1.0, 0.0), Vector2(-244, 76), Vector2(176, 56))
 	var settings := UiTheme.icon_button("RestartButton", "gear", "", 46)
 	settings.tooltip_text = "Recomeçar o jogo"
 	settings.pressed.connect(ask_restart)
@@ -491,13 +486,13 @@ func _build_daily_timer() -> Button:
 	_daily_boxes = _group("Digits")
 	_place(button, _daily_boxes, Vector2(58, 22), Vector2(140, 28))
 	for i in 3:
-		var digits := UiTheme.outlined("00", 20, UiTheme.WHITE_SOFT, UiTheme.NAVY, 3)
+		var digits := UiTheme.outlined("00", 20, UiTheme.TEXT, UiTheme.NAVY, 0)
 		digits.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_place(_daily_boxes, digits, Vector2(i * 44, 0), Vector2(30, 26))
 		_daily_digits.append(digits)
 		if i < 2:
 			_place(_daily_boxes, UiTheme.outlined(":", 18, UiTheme.CYAN, UiTheme.NAVY, 0), Vector2(i * 44 + 31, 0), Vector2(12, 24))
-	_daily_ready = UiTheme.outlined(DAILY_READY, 21, UiTheme.GREEN, UiTheme.NAVY, 3)
+	_daily_ready = UiTheme.outlined(DAILY_READY, 21, UiTheme.GREEN, UiTheme.NAVY, 0)
 	_place(button, _daily_ready, Vector2(58, 21), Vector2(140, 28))
 	return button
 
@@ -550,12 +545,12 @@ func _banner(banner_name: String, label_name: String, text: String, color: Color
 	banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var style := UiTheme.glass_box(14, 8, color)
 	style.shadow_color = Color(color, 0.3)
-	style.shadow_size = 10
+	style.shadow_size = 4
 	style.shadow_offset = Vector2.ZERO
 	banner.add_theme_stylebox_override("panel", style)
 	banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_anchored(banner, Vector2(0.5, 1.0), Vector2(-260, bottom_offset), Vector2(520, 0))
-	var label := UiTheme.outlined(text, 16, color.lightened(0.25), Color(0, 0, 0, 0), 0)
+	var label := UiTheme.outlined(text, 16, color, Color(0, 0, 0, 0), 0)
 	label.name = label_name
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	banner.add_child(label)
@@ -588,7 +583,7 @@ func is_closed_banner_visible() -> bool:
 	return _closed_banner.visible
 
 
-## Bloco do menu lateral (DT-077): vidro escuro com o ícone em cima e o nome embaixo; brilho ciano ao passar.
+## Atalho lateral compacto: ícone, legenda e realce de foco na mesma superfície creme.
 func _side_tile(button_name: String, icon: String, label: String, top: float, action: Callable) -> Button:
 	var button := Button.new()
 	button.name = button_name
@@ -600,8 +595,8 @@ func _side_tile(button_name: String, icon: String, label: String, top: float, ac
 		button.add_theme_stylebox_override(state, UiTheme.glass_box(16, 0, UiTheme.CYAN, true))
 	button.pressed.connect(action)
 	_anchored(button, Vector2.ZERO, Vector2(12, top), SIDE_TILE_SIZE, _side_layer)
-	_place(button, UiTheme.art(icon, Vector2(46, 46)), Vector2((SIDE_TILE_SIZE.x - 46) / 2.0, 6))
-	var text := UiTheme.caption(label, UiTheme.WHITE_SOFT, 10)
+	_place(button, UiTheme.art(icon, Vector2(34, 34)), Vector2((SIDE_TILE_SIZE.x - 34) / 2.0, 5))
+	var text := UiTheme.caption(label, UiTheme.TEXT, 10)
 	text.clip_text = true  # sem isto, o rótulo comprido alargava além do bloco e saía do centro
 	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(button, text, Vector2(0, SIDE_TILE_SIZE.y - 22), Vector2(SIDE_TILE_SIZE.x, 16))
@@ -652,7 +647,8 @@ func _build_mission_card() -> void:
 	_mission_card.mouse_filter = Control.MOUSE_FILTER_STOP
 	_mission_card.gui_input.connect(func(event: InputEvent) -> void:
 		var click := event as InputEventMouseButton
-		if click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+		if (click != null and click.pressed and click.button_index == MOUSE_BUTTON_LEFT) \
+				or (event is InputEventScreenTouch and event.pressed):
 			_mission_collapsed = true
 			_refresh_mission()
 			_mission_card.accept_event())
@@ -677,13 +673,13 @@ func _build_mission_card() -> void:
 	column.add_child(progress)
 	_mission_bar = ProgressBar.new()
 	_mission_bar.show_percentage = false
-	_mission_bar.custom_minimum_size = Vector2(150, 10)
+	_mission_bar.custom_minimum_size = Vector2(115, 8)
 	_mission_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_mission_bar.max_value = 1.0
 	_mission_bar.step = 0.001
 	_mission_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_mission_bar.add_theme_stylebox_override("background", _bar_style(Color(1, 1, 1, 0.1)))
-	_mission_bar.add_theme_stylebox_override("fill", _bar_style(UiTheme.CYAN))  # progresso em ciano (DT-083)
+	_mission_bar.add_theme_stylebox_override("background", _bar_style(UiTheme.PROGRESS_TRACK))
+	_mission_bar.add_theme_stylebox_override("fill", _bar_style(UiTheme.CYAN))  # progresso no acento comum
 	progress.add_child(_mission_bar)
 	_mission_count = UiTheme.outlined("", 12, UiTheme.TEXT, Color(0, 0, 0, 0), 0)
 	progress.add_child(_mission_count)
@@ -699,6 +695,8 @@ func _build_mission_card() -> void:
 	_mission_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_mission_hint.custom_minimum_size = Vector2(MISSION_CARD_WIDTH - 24, 0)
 	column.add_child(_mission_hint)
+	# A instrução completa continua nas Missões e na dica do cartão.
+	_mission_hint.visible = false
 
 
 ## Popularidade do café (DT-090): o nome, o valor de 0 a 100 e as estrelas. Ela sobe e desce com o atendimento; não é
@@ -709,17 +707,17 @@ func _build_rating() -> void:
 	_rating_card = card
 	card.add_theme_stylebox_override("panel", UiTheme.glass_box(18, 0))
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_anchored(card, Vector2(0.0, 1.0), Vector2(12, -86), Vector2(196, 74), _side_layer)
-	_place(card, UiTheme.art("icone_sorriso", Vector2(46, 46)), Vector2(7, 14))
+	_anchored(card, Vector2(0.0, 1.0), Vector2(12, -76), Vector2(176, 64), _side_layer)
+	_place(card, UiTheme.art("icone_sorriso", Vector2(36, 36)), Vector2(8, 14))
 	var caption := UiTheme.outlined(RATING_CAPTION, 12, UiTheme.CYAN, Color(0, 0, 0, 0), 0)
 	caption.name = "RatingCaption"
-	_place(card, caption, Vector2(58, 6), Vector2(136, 16))
-	_rating_label = UiTheme.outlined(RATING_FORMAT % 0, 21, UiTheme.WHITE_SOFT, UiTheme.NAVY, 3)
+	_place(card, caption, Vector2(50, 5), Vector2(120, 16))
+	_rating_label = UiTheme.outlined(RATING_FORMAT % 0, 21, UiTheme.TEXT, UiTheme.NAVY, 0)
 	_rating_label.name = "RatingValue"
-	_place(card, _rating_label, Vector2(58, 22), Vector2(136, 28))
+	_place(card, _rating_label, Vector2(50, 19), Vector2(120, 26))
 	for i in STARS:
 		var star := UiTheme.art("icone_estrela", Vector2(17, 17))
-		_place(card, star, Vector2(58 + i * 18, 51))
+		_place(card, star, Vector2(50 + i * 18, 43))
 		_stars.append(star)
 
 
@@ -727,8 +725,10 @@ func _build_toast() -> void:
 	_toast = Label.new()
 	_toast.name = "Toast"
 	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_toast.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_toast.custom_minimum_size = Vector2(560, 0)
 	_toast.add_theme_font_size_override("font_size", 19)
-	_toast.add_theme_color_override("font_color", UiTheme.WHITE_SOFT)
+	_toast.add_theme_color_override("font_color", UiTheme.TEXT)
 	var style := UiTheme.glass_box(14, 10, UiTheme.CYAN, true)
 	style.content_margin_left = 22
 	style.content_margin_right = 22
@@ -770,6 +770,7 @@ func set_dimmed(dimmed: bool) -> void:
 	_dim.visible = dimmed
 	_toast.anchor_top = 1.0 if dimmed else 0.0
 	_toast.anchor_bottom = _toast.anchor_top
+	_toast.grow_vertical = Control.GROW_DIRECTION_BEGIN if dimmed else Control.GROW_DIRECTION_END
 	_toast.offset_top = TOAST_BOTTOM_WITH_DIALOG if dimmed else TOAST_TOP
 	_toast.offset_bottom = _toast.offset_top
 
@@ -802,7 +803,7 @@ func _build_dialogs() -> void:
 
 
 ## Janela no padrão (DT-079): [param ok_role] é o papel do botão de OK (fantasma para Fechar, verde para receber e
-## confirmar, vermelho para apagar, &"" para o azul principal).
+## confirmar, vermelho para apagar, &"" para a ação principal).
 func _add_dialog(dialog: AcceptDialog, ok_role := UiTheme.GHOST_BUTTON) -> void:
 	dialog.theme = UiTheme.theme()
 	UiTheme.style_dialog(dialog, ok_role)
@@ -860,7 +861,7 @@ func _achievement_card(achievement: AchievementDefinition) -> Control:
 	head.add_theme_constant_override("separation", 2)
 	column.add_child(head)
 	var title := UiTheme.outlined("Ainda não conquistada" if tiers == 0 else achievement.tier_titles[tiers - 1], 17,
-		UiTheme.GOLD if complete else (UiTheme.WHITE_SOFT if tiers > 0 else UiTheme.TEXT_SOFT), UiTheme.NAVY, 0)
+		UiTheme.GOLD if complete else (UiTheme.TEXT if tiers > 0 else UiTheme.TEXT_SOFT), UiTheme.NAVY, 0)
 	title.name = "Title"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(title)
@@ -1081,13 +1082,13 @@ func _coin_pack_card(pack: CoinPack, index: int, bonus: int, best_value: bool) -
 	ribbon.add_theme_stylebox_override("panel", ribbon_box)
 	ribbon.modulate.a = 1.0 if bonus > 0 else 0.0
 	var ribbon_text := UiTheme.outlined((BEST_VALUE_TEXT + " · " if best_value else "") + "+%d%%" % bonus, 11,
-		UiTheme.NAVY_DEEP, UiTheme.NAVY, 0)
+		UiTheme.WHITE_SOFT, UiTheme.NAVY, 0)
 	ribbon.add_child(ribbon_text)
 	column.add_child(ribbon)
 	var coin := UiTheme.art("icone_moeda", Vector2.ONE * (COIN_ART_MIN + COIN_ART_STEP * index))
 	coin.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	column.add_child(coin)
-	for line: Array in [[pack.display_name, 13, UiTheme.WHITE_SOFT], [UiTheme.thousands(pack.gold), 24, UiTheme.GOLD],
+	for line: Array in [[pack.display_name, 13, UiTheme.TEXT], [UiTheme.thousands(pack.gold), 24, UiTheme.GOLD],
 			[pack.price_text(), 14, UiTheme.CYAN]]:
 		var label := UiTheme.outlined(line[0], line[1], line[2], UiTheme.NAVY, 0)
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1135,7 +1136,7 @@ func show_daily_reward() -> void:
 	_daily_dialog.get_ok_button().grab_focus()
 
 
-## Cartão de um dia (DT-079): "Hoje" com a borda ciano e o brilho; os dias já recebidos apagados, com o visto.
+## Cartão de um dia (DT-079): "Hoje" com a borda verde e fundo areia; os dias já recebidos apagados, com o visto.
 func _day_card(day: int, reward: Dictionary, today: int) -> Control:
 	var card := PanelContainer.new()
 	card.name = "Day%d" % day
@@ -1144,12 +1145,12 @@ func _day_card(day: int, reward: Dictionary, today: int) -> Control:
 	if day == today:
 		style.set_border_width_all(2)
 		style.bg_color = UiTheme.CARD_SOFT
-		style.shadow_color = Color(UiTheme.CYAN, 0.4)
-		style.shadow_size = 10
+		style.shadow_color = UiTheme.SHADOW
+		style.shadow_size = 4
 		style.shadow_offset = Vector2.ZERO
 	card.add_theme_stylebox_override("panel", style)
 	var column := VBoxContainer.new()
-	column.alignment = BoxContainer.ALIGNMENT_CENTER
+	column.alignment = BoxContainer.ALIGNMENT_BEGIN
 	column.add_theme_constant_override("separation", 4)
 	card.add_child(column)
 	var caption := UiTheme.caption("Hoje" if day == today else ("✓ Dia %d" % day if day < today else "Dia %d" % day),
@@ -1172,10 +1173,10 @@ func _day_card(day: int, reward: Dictionary, today: int) -> Control:
 	# Largura fixa: sem ela o texto quebraria letra a letra e a janela cresceria.
 	label.custom_minimum_size = Vector2(DAY_CARD_SIZE.x - 16, 0)
 	label.add_theme_font_size_override("font_size", 13)
-	label.add_theme_color_override("font_color", UiTheme.GOLD if int(reward.get("gold", 0)) > 0 else UiTheme.WHITE_SOFT)
+	label.add_theme_color_override("font_color", UiTheme.GOLD if int(reward.get("gold", 0)) > 0 else UiTheme.TEXT)
 	column.add_child(label)
 	if day < today:
-		card.modulate.a = 0.5
+		card.modulate.a = 0.82
 	return card
 
 
@@ -1379,6 +1380,7 @@ func _refresh_mission() -> void:
 	_mission_count.text = "%d/%d" % [progress, mission.target]
 	_mission_reward.text = "+%d" % mission.reward_gold
 	_mission_hint.text = mission.hint
+	_mission_card.tooltip_text = mission.hint
 	_mission_card.reset_size()
 
 
@@ -1393,6 +1395,8 @@ func show_message(text: String) -> void:
 func _show_now(text: String) -> void:
 	_toast.text = text
 	_toast.visible = true
+	_toast.custom_minimum_size.x = minf(560.0, _root.size.x - 32.0)
+	_toast.size.x = _toast.custom_minimum_size.x
 	_toast.reset_size()
 	_toast.position.x = (_root.size.x - _toast.size.x) / 2.0
 	_toast_time = TOAST_SECONDS + text.length() * TOAST_SECONDS_PER_CHAR

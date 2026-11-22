@@ -57,25 +57,27 @@ const BALLOON_FOOD := 40.0  ## largura do prato dentro do balão, em pixels de m
 const BALLOON_PAD := 7.0
 const BALLOON_TAIL := 9.0
 const BALLOON_BAR := 5.0
-const BALLOON_FILL := Color.WHITE
-const BALLOON_EDGE := Color("2a5fa8")
+const BALLOON_FILL := Color("fff9ed")
+const BALLOON_EDGE := Color("84694e")
 ## Balão de bebida (DT-052): borda verde, porque quem serve é o jogador, tocando no cliente.
 const BALLOON_DRINK_EDGE := Color("26a93a")
 ## Quanto acima do corpo o toque ainda pega o cliente (o balão do pedido fica ali), em pixels de mundo.
 const TAP_REACH_ABOVE := 70.0
-const BALLOON_SHADOW := Color(0.1, 0.16, 0.29, 0.18)
-const BALLOON_TEXT := Color("1f7ae0")
+const BALLOON_SHADOW := Color(0.18, 0.12, 0.07, 0.18)
+const BALLOON_TEXT := Color("316f5d")
 const BALLOON_TEXT_SIZE := 13
 const QUESTION_SIZE := 30
-const PATIENCE_GOOD := Color("35c24a")
+const PATIENCE_GOOD := Color("5b9469")
 const PATIENCE_MID := Color("ffb400")
 const PATIENCE_BAD := Color("ff3b3b")
-const PATIENCE_TRACK := Color("d7e3f3")
+const PATIENCE_TRACK := Color("e7decb")
 
 const SKIN := Color("e8b894")
 const HAIR := Color("4a3222")
 const OUTLINE := Color(0.1, 0.06, 0.04, 0.6)
 const SHADOW := Color(0, 0, 0, 0.18)
+## Sombra suave dos personagens cuja imagem tem apenas o corpo. Medidas em pixels de mundo.
+const GROUND_SHADOW_SIZE := Vector2(34.0, 12.0)
 const WAITER_SHIRT := Color("f4f1ea")
 const WAITER_APRON := Color("2f3a4a")
 ## PLACEHOLDER_CHARACTER: quanto o boneco simples sobe quando está sentado.
@@ -231,7 +233,7 @@ func walking() -> bool:
 ## Quanto o corpo está subindo na passada atual (px): no alto quando as pernas se cruzam, embaixo
 ## quando o pé da frente toca o chão.
 func step_motion() -> float:
-	if not walking():
+	if not walking() or _has_authored_motion():
 		return 0.0
 	return sin(fposmod(_traveled * STEPS_PER_CELL * PI, PI)) * BOUNCE
 
@@ -281,10 +283,8 @@ func _draw() -> void:
 	if sprite == null:
 		_draw_placeholder()
 		return
-	var breath := 1.0
-	if not walking():
-		breath += sin((_time * BREATH_RATE + agent.serial * 0.37) * TAU) * BREATH
-	_draw_body(self, sprite, body_pose[1], breath)
+	_draw_ground_shadow()
+	_draw_body(self, sprite)
 	_draw_tray_food()  # na bandeja: segue o corpo (mesma transformação)
 	draw_set_transform(Vector2.ZERO)
 	var chair_back := backrest()
@@ -292,12 +292,54 @@ func _draw() -> void:
 		draw_texture_rect(chair_back.texture, chair_back.rect_at(Vector2(0.0, -SORT_NUDGE)), false)
 
 
-## Corpo com quique, respiração, espelho e esticar/achatar (o mesmo para o desenho e para o raio-X).
-func _draw_body(canvas: CanvasItem, sprite: ArtSprites.Sprite, mirrored: bool, breath: float) -> void:
-	var squash := 1.0 - _stretch * 0.5
-	canvas.draw_set_transform(Vector2(0.0, -SORT_NUDGE - step_motion()), 0.0,
-		Vector2((-1.0 if mirrored else 1.0) * squash, breath * (1.0 + _stretch)))
+## Transformação local compartilhada pelo corpo, prato na bandeja e silhueta. A âncora do sprite fica nos pés.
+## Quadros com movimento autorado só recebem o espelho e o ajuste de ordenação; a sombra não usa esta transformação.
+func body_transform() -> Transform2D:
+	if agent == null:
+		return Transform2D.IDENTITY
+	var body_pose := pose()
+	var sprite := ArtSprites.get_sprite(body_pose[0])
+	var authored := sprite != null and sprite.authored_motion
+	var deformation := 0.0 if authored else _stretch
+	var breath := 1.0
+	if not authored and not walking():
+		breath += sin((_time * BREATH_RATE + agent.serial * 0.37) * TAU) * BREATH
+	var transform := Transform2D.IDENTITY
+	transform.x = Vector2((-1.0 if body_pose[1] else 1.0) * (1.0 - deformation * 0.5), 0.0)
+	transform.y = Vector2(0.0, breath * (1.0 + deformation))
+	transform.origin = Vector2(0.0, -SORT_NUDGE - step_motion())
+	return transform
+
+
+func _draw_body(canvas: CanvasItem, sprite: ArtSprites.Sprite) -> void:
+	canvas.draw_set_transform_matrix(body_transform())
 	canvas.draw_texture_rect(sprite.texture, sprite.draw_rect(), false)
+
+
+func _has_authored_motion() -> bool:
+	if agent == null:
+		return false
+	var sprite := ArtSprites.get_sprite(pose()[0])
+	return sprite != null and sprite.authored_motion
+
+
+## Retângulo da sombra no mundo. Permanece no chão e não entra no raio-X nem na área de toque do corpo.
+func ground_shadow_rect() -> Rect2:
+	if agent == null or seated_on_screen():
+		return Rect2()
+	var sprite := ArtSprites.get_sprite(pose()[0])
+	if sprite == null or not sprite.external_shadow:
+		return Rect2()
+	return Rect2(position - Vector2(0.0, SORT_NUDGE) - GROUND_SHADOW_SIZE / 2.0, GROUND_SHADOW_SIZE)
+
+
+func _draw_ground_shadow() -> void:
+	var rect := ground_shadow_rect()
+	if not rect.has_area():
+		return
+	rect.position -= position
+	draw_set_transform(Vector2.ZERO)
+	draw_texture_rect(FxParticles.soft_dot(), rect, false, SHADOW)
 
 
 ## Esticar e achatar pela aceleração do desenho: arrancando estica, freando achata; parado, volta ao normal.
@@ -305,6 +347,9 @@ func _update_stretch(delta: float) -> void:
 	var speeding_up := velocity.length() >= _previous_velocity.length()
 	var acceleration := (velocity - _previous_velocity).length() / delta
 	_previous_velocity = velocity
+	if _has_authored_motion():
+		_stretch = 0.0
+		return
 	var target := clampf(acceleration * STRETCH_PER_ACCEL, 0.0, STRETCH_MAX) * (1.0 if speeding_up else -1.0)
 	if seated_on_screen():
 		target = 0.0
@@ -323,8 +368,8 @@ func body_rect() -> Rect2:
 	var sprite := ArtSprites.get_sprite(pose()[0])
 	if sprite == null:
 		return Rect2()
-	var rect := sprite.draw_rect()
-	return Rect2(position + rect.position - Vector2(0.0, SORT_NUDGE), rect.size)
+	var rect := body_transform() * sprite.draw_rect()
+	return Rect2(position + rect.position, rect.size)
 
 
 ## Área de toque do personagem: o corpo e o espaço do balão acima da cabeça.
@@ -365,7 +410,7 @@ func _draw_xray_body() -> void:
 	var body_pose := pose()
 	var sprite := ArtSprites.get_sprite(body_pose[0])
 	if sprite != null:
-		_draw_body(_xray_body, sprite, body_pose[1], 1.0)
+		_draw_body(_xray_body, sprite)
 
 
 ## Encosto desenhado por cima de quem senta de costas: o da cadeira em que sentou. A arte só tem
@@ -408,9 +453,13 @@ func _direction() -> Array:
 	return [false, true] if facing.y >= 0.0 else [true, false]
 
 
-## Onde vai o prato na bandeja: [x, y, largura] a partir dos pés. De costas, a bandeja da arte 3D aparece em outro
+## Onde vai o prato na bandeja: [x, y, largura] a partir dos pés. Se o quadro tem a sua medida (o desenho à mão, em
+## que a bandeja sobe e desce com o passo), vale ela. Senão, a do personagem: de costas, a bandeja aparece em outro
 ## lugar da tela (DT-084); sem essa medida, vale a de frente.
 func tray_food() -> Array:
+	var sprite := ArtSprites.get_sprite(pose()[0])
+	if sprite != null and sprite.tray.size() == 3:
+		return sprite.tray  # a bandeja balança com o passo: cada quadro diz onde ela está
 	var info := ArtSprites.characters()
 	var front: Array = info.get("tray_food", [])
 	return info.get("tray_food_back", front) if _direction()[0] else front

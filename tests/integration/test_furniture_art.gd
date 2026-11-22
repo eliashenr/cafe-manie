@@ -90,3 +90,71 @@ func test_kitchen_shows_pot_badge_and_plate_stack() -> void:
 	assert_true(counter_view.kitchen_count > 0 and counter_view.shows_kitchen_art(), "pilha de pratos com o número")
 	var overlay: Node2D = counter_view.get_node("Overlay")
 	assert_true(overlay.z_index > 0, "selos por cima do salão")
+
+
+## Parte inferior opaca do sprite: o prato apoiado no tampo, sem limitar a comida que sobe em 3D.
+func _plate_pixels(food: ArtSprites.Sprite) -> PackedVector2Array:
+	var image := food.texture.get_image()
+	if image.is_compressed():
+		image.decompress()
+	var points := PackedVector2Array()
+	for y in range(ceili(image.get_height() * 0.6), image.get_height()):
+		for x in image.get_width():
+			if image.get_pixel(x, y).a > 0.5:
+				points.append((Vector2(x, y) - food.anchor) / food.density * FurnitureView.DISH_SCALE)
+	return points
+
+
+func test_four_dishes_stay_inside_smaller_round_tabletops() -> void:
+	# Tampos nativos têm diâmetro0,74 piso. A projeção da circunferência é uma elipse2:1.
+	var radii := Vector2(128.0, 64.0) / sqrt(2.0) * 0.37
+	var catalog := FurnitureCatalog.load_from()
+	var view := FurnitureView.new()
+	add_to_tree(view)
+	var origin := Vector2i(3, 2)
+	var directions := [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
+	for item: StringName in [&"table_round", &"table_diner_round", &"table_club"]:
+		for rotation in 4:
+			view.configure(catalog.get_definition(item), origin, rotation, FurnitureView.Look.NORMAL)
+			var top_center := IsoProjection.cell_center(origin) - view.position - Vector2(0, ArtSprites.table_top(item))
+			for recipe: StringName in [&"coxinha", &"coffee"]:
+				var points := _plate_pixels(ArtSprites.food(recipe))
+				assert_false(points.is_empty(), "o teste mede pixels reais do prato")
+				for direction: Vector2 in directions:
+					var at := view.dish_draw_position(Vector2(origin) + direction * WorldLayer.DISH_TOWARD_SEAT)
+					var farthest := 0.0
+					for pixel: Vector2 in points:
+						farthest = maxf(farthest, ((at + pixel - top_center) / radii).length_squared())
+					assert_true(farthest <= 1.0, "%s r%d %s lado%s: prato sai do tampo (%f)" % [item, rotation, recipe, direction, farthest])
+
+
+func test_long_table_keeps_four_dishes_inside_its_rotated_top() -> void:
+	var view := FurnitureView.new()
+	add_to_tree(view)
+	var definition := FurnitureCatalog.load_from().get_definition(&"table_long")
+	var origin := Vector2i(2, 3)
+	var places := [Vector2(-0.3, 0), Vector2(1.3, 0), Vector2(0, -0.3), Vector2(1, 0.3)]
+	for rotation in 4:
+		view.configure(definition, origin, rotation, FurnitureView.Look.NORMAL)
+		var fp := CafeLayout.rotated_footprint(definition.footprint, rotation)
+		var top_center := IsoProjection.vertex_to_world(Vector2(origin) + Vector2(fp) / 2.0) \
+			- view.position - Vector2(0, ArtSprites.table_top(definition.id))
+		# Tampo1,54×0,74: comprido acompanha a rotação, não a largura da textura.
+		var half_top := Vector2(0.77, 0.37) if rotation % 2 == 0 else Vector2(0.37, 0.77)
+		var positions := PackedVector2Array()
+		for place: Vector2 in places:
+			var rotated_place := place if rotation % 2 == 0 else Vector2(place.y, place.x)
+			var at := view.dish_draw_position(Vector2(origin) + rotated_place)
+			positions.append(at)
+			for recipe: StringName in [&"coxinha", &"coffee"]:
+				var fits := true
+				for pixel: Vector2 in _plate_pixels(ArtSprites.food(recipe)):
+					var projected := (at + pixel - top_center) / IsoProjection.HALF_TILE
+					var on_top := Vector2(projected.x + projected.y, projected.y - projected.x) / 2.0
+					if absf(on_top.x) > half_top.x or absf(on_top.y) > half_top.y:
+						fits = false
+						break
+				assert_true(fits, "mesa longa r%d: %s sai do tampo" % [rotation, recipe])
+		for i in positions.size():
+			for j in range(i + 1, positions.size()):
+				assert_true(positions[i].distance_to(positions[j]) > 18.0, "os quatro pratos mantêm lugares distintos")

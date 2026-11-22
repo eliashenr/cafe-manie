@@ -4,6 +4,14 @@ extends CafeTestCase
 ## expressão segue a paciência e o prato de quem come vai para a mesa certa.
 
 const FRAMES: Array[String] = ["em_pe", "passo_0", "passo_1", "passo_2", "passo_3", "passo_4", "passo_5", "passo_6", "passo_7"]
+const LegacyCharacterArt = preload("res://tests/support/legacy_character_art.gd")
+
+var _legacy_art := LegacyCharacterArt.new()
+
+
+func cleanup() -> void:
+	_legacy_art.restore()
+	super()
 
 
 func _customer(serial := 0) -> Customer:
@@ -81,6 +89,7 @@ func test_walking_direction_picks_front_or_back_and_mirror() -> void:
 
 func test_walk_cycle_alternates_feet_bounces_and_stops_standing() -> void:
 	var customer := _customer()
+	_legacy_art.use_customer(customer.serial)
 	customer.speed = 2.2
 	customer.position = Vector2(2, 3)
 	var view := _view(customer)
@@ -239,6 +248,27 @@ func test_the_plate_follows_the_tray_of_each_view() -> void:
 	var back: Array = info.get("tray_food_back", info["tray_food"])
 	assert_eq(_view(waiter).tray_food(), back, "de costas, a medida de costas (DT-084)")
 	assert_eq(back.size(), 3)
+
+
+func test_walking_the_plate_follows_the_tray_of_each_frame() -> void:
+	# Se o quadro tem a sua medida da bandeja (desenho em que ela sobe e desce com o passo), ela manda; senão, vale a
+	# do personagem (DT-101).
+	var info := ArtSprites.characters()
+	var waiter := Waiter.new()
+	waiter.carrying = load("res://data/recipes/coffee.tres")
+	waiter.speed = 2.2
+	waiter.position = Vector2(2, 3)
+	var view := _view(waiter)
+	var checked := 0
+	for i in 90:
+		waiter.position.x += waiter.speed / 60.0
+		view.advance(1.0 / 60.0)
+		var sprite := ArtSprites.get_sprite(view.pose()[0])
+		if view.walking():
+			var expected: Array = sprite.tray if sprite.tray.size() == 3 else info["tray_food"]
+			assert_eq(view.tray_food(), expected, view.pose()[0])
+			checked += 1
+	assert_true(checked > 0, "o garçom andou com a bandeja")
 
 
 func test_scene_seats_customer_with_chair_rotation_and_serves_dish_on_table() -> void:

@@ -17,7 +17,7 @@ extends CanvasLayer
 ## tempos e mensagens são atualizados no lugar a cada frame, para um clique
 ## nunca se perder porque um cliente pagou no meio dele.
 
-const ICON_BUTTON_SIZE := Vector2(84, 74)
+const ICON_BUTTON_SIZE := Vector2(80, 64)
 ## Espaço entre os botões da faixa: ela cabe entre o quadro da popularidade e a borda direita.
 const ICON_SEPARATION := 6
 ## Loja na barra de baixo (DT-088): quantos cartões cabem por página depende da largura da tela (no celular estreito,
@@ -284,7 +284,7 @@ func _build_shop() -> void:
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
-	scroll.custom_minimum_size = Vector2(0, 36)
+	scroll.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
 	top_row.add_child(scroll)
 	_chips = _row("Collections")
 	_chips.alignment = BoxContainer.ALIGNMENT_BEGIN
@@ -595,7 +595,7 @@ func _show_icon_bar() -> void:
 	_add_expand_button()
 	_add_hire_button()
 	_add_icon(_buttons, "ChefBarButton", "chef", "Chef", func() -> void: cafe.hud.show_avatar())
-	_add_icon(_buttons, "CityBarButton", "cidade", "Cidade", func() -> void: cafe.hud.show_city())
+	_add_icon(_buttons, "CityBarButton", "cidade", "Central", func() -> void: cafe.hud.show_city())
 
 
 ## Botão da faixa: o ícone da arte em cima e o nome embaixo.
@@ -608,7 +608,7 @@ func _add_icon(row: HBoxContainer, button_name: String, icon: String, text: Stri
 		button.icon = sprite.texture
 	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-	button.add_theme_constant_override("icon_max_width", 44)
+	button.add_theme_constant_override("icon_max_width", 36)
 	button.custom_minimum_size = ICON_BUTTON_SIZE
 	for state in ["normal", "disabled", "focus"]:
 		button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
@@ -617,7 +617,7 @@ func _add_icon(row: HBoxContainer, button_name: String, icon: String, text: Stri
 		lit.bg_color = Color(UiTheme.CYAN, 0.08)
 		lit.shadow_size = 0
 		button.add_theme_stylebox_override(state, lit)
-	button.add_theme_color_override("font_color", UiTheme.WHITE_SOFT)
+	button.add_theme_color_override("font_color", UiTheme.TEXT)
 	button.add_theme_color_override("font_hover_color", UiTheme.CYAN)
 	button.add_theme_color_override("font_pressed_color", UiTheme.CYAN)
 	button.add_theme_color_override("font_disabled_color", UiTheme.METAL.darkened(0.2))
@@ -687,7 +687,7 @@ func _show_shop() -> void:
 		button.text = SHOP_TAB_NAMES[tab]
 		button.toggle_mode = true
 		button.button_pressed = tab == shop_tab
-		button.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH - 4)
+		button.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
 		button.focus_mode = Control.FOCUS_NONE
 		var sprite := ArtSprites.get_sprite(SHOP_TAB_ICONS[tab])
 		if sprite != null:
@@ -757,18 +757,18 @@ func _add_chip(chip_name: String, text: String, color: Color, active: bool, coll
 	chip.toggle_mode = true
 	chip.button_pressed = active
 	chip.focus_mode = Control.FOCUS_NONE
-	chip.custom_minimum_size = Vector2(0, 34)
+	chip.custom_minimum_size = Vector2(0, UiTheme.MIN_TOUCH)
 	_style_chip(chip, color, active)
 	chip.pressed.connect(func() -> void: show_shop_collection(collection))
 	_chips.add_child(chip)
 
 
-## Pílula escura com a borda na cor dela; a escolhida fica cheia, com brilho (coleções da loja e abas do livro).
+## Coleções e livros preservam suas cores culturais; o texto se adapta ao contraste da aba ativa.
 func _style_chip(chip: Button, color: Color, active: bool) -> void:
 	for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
 		var box := StyleBoxFlat.new()
-		box.bg_color = color if active else (Color(color, 0.22) if state.begins_with("hover") else Color(0, 0, 0, 0.18))
-		box.border_color = color.lightened(0.15) if active else Color(color, 0.7)
+		box.bg_color = color if active else (UiTheme.CARD_SOFT if state.begins_with("hover") else UiTheme.CARD)
+		box.border_color = color if active else color.lerp(UiTheme.PANEL_EDGE, 0.55)
 		box.set_border_width_all(1)
 		box.set_corner_radius_all(17)
 		box.content_margin_left = 14
@@ -776,12 +776,12 @@ func _style_chip(chip: Button, color: Color, active: bool) -> void:
 		box.content_margin_top = 3
 		box.content_margin_bottom = 3
 		if active:
-			box.shadow_color = Color(color, 0.45)
-			box.shadow_size = 6
+			box.shadow_color = UiTheme.SHADOW
+			box.shadow_size = 2
 		box.anti_aliasing = true
 		chip.add_theme_stylebox_override(state, box)
 	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
-		chip.add_theme_color_override(color_name, Color.WHITE if active else color.lightened(0.5))
+		chip.add_theme_color_override(color_name, UiTheme.text_on(color) if active else UiTheme.TEXT)
 	chip.add_theme_constant_override("outline_size", 0)
 	chip.add_theme_font_size_override("font_size", 14)
 
@@ -1245,10 +1245,10 @@ func _show_stove_controls(stove_id: StringName) -> void:
 			serve.text = "Levar ao balcão"
 			serve.custom_minimum_size = Vector2(200, 56)
 			serve.focus_mode = Control.FOCUS_NONE
-			var green := Color("3cc04e")
+			var green := UiTheme.GREEN
 			for state in ["normal", "hover", "pressed", "focus", "hover_pressed"]:
-				serve.add_theme_stylebox_override(state, UiTheme.button_box(green.lightened(0.1) if state == "hover" else green, Color("177a28")))
-			serve.add_theme_color_override("font_outline_color", Color("177a28"))
+				serve.add_theme_stylebox_override(state, UiTheme.button_box(green.lightened(0.1) if state == "hover" else green, UiTheme.BLUE_DARK))
+			serve.add_theme_color_override("font_outline_color", UiTheme.BLUE_DARK)
 			serve.add_theme_font_size_override("font_size", 18)
 			var dish_icon := ArtSprites.food(simulation.kitchen.stove_recipe(stove_id).id)
 			if dish_icon != null:
@@ -1364,7 +1364,7 @@ func _add_demand_badge(button: Button) -> Label:
 	badge.position = Vector2(RECIPE_BUTTON_SIZE.x - 20, -6)
 	badge.tooltip_text = "Clientes esperando este prato"
 	var box := StyleBoxFlat.new()
-	box.bg_color = Color("e0303a")
+	box.bg_color = UiTheme.RED
 	box.border_color = Color.WHITE
 	box.set_border_width_all(2)
 	box.set_corner_radius_all(12)
@@ -1473,7 +1473,7 @@ func _show_recipe_book(stove_id: StringName) -> HBoxContainer:
 	return cards
 
 
-## Aba do livro: pílula escura na cor da aba, cheia quando é a aberta (como as coleções da loja).
+## Aba do livro: superfície clara inativa, preenchimento cultural quando selecionada.
 func _book_chip(book: RecipeBookDefinition, active: bool) -> Button:
 	var chip := Button.new()
 	chip.name = "Book_" + String(book.id)
@@ -1481,7 +1481,7 @@ func _book_chip(book: RecipeBookDefinition, active: bool) -> Button:
 	chip.toggle_mode = true
 	chip.button_pressed = active
 	chip.focus_mode = Control.FOCUS_NONE
-	chip.custom_minimum_size = Vector2(92, 32)
+	chip.custom_minimum_size = Vector2(92, UiTheme.MIN_TOUCH)
 	_style_chip(chip, book.color, active)
 	return chip
 
@@ -1536,7 +1536,7 @@ func _card_button(button_name: String, art: ArtSprites.Sprite, action: Callable,
 	var hover := UiTheme.card_box(12, 6, UiTheme.CYAN)
 	hover.shadow_size = 2
 	var disabled := UiTheme.card_box(12, 6, Color(UiTheme.CARD_EDGE, 0.5))
-	disabled.bg_color = UiTheme.NAVY_DEEP
+	disabled.bg_color = UiTheme.DISABLED
 	disabled.shadow_size = 0
 	button.add_theme_stylebox_override("normal", normal)
 	button.add_theme_stylebox_override("hover", hover)

@@ -106,13 +106,11 @@ A pasta tem duas coisas misturadas, sem commit:
 Nada de clientes, retratos ou interface no estilo novo antes de o PO aprovar o garçom **dentro do jogo**. Lista para
 considerar o garçom completo:
 
-- [ ] De frente e de costas, parado e andando (8 quadros cada), com e sem bandeja (ou a decisão de que ele sempre leva a bandeja, registrada).
-- [ ] Andando de costas com passos de verdade. Hoje é a foto parada. Um vídeo custa uns 2.121 créditos.
-- [ ] O prato assenta na bandeja em todos os quadros, de frente e de costas.
-- [ ] O mesmo tamanho da imagem-alvo e dos clientes (hoje `HEIGHT = 96` em `montar_video.py`), com a sombra no chão e sem borda branca no recorte.
-- [ ] A luz combina com o café. Os quadros do vídeo saem um pouco mais claros que a imagem-alvo.
-- [ ] O ícone do Garçom no painel no mesmo visual (interface).
-- [ ] Os testes passam, a cena principal sobe sem erros e o PO aprova na janela de revisão.
+- [x] Candidato DT-103: frente/costas, parado/andando (8 passos cada), com/sem bandeja, 36 poses próprias.
+- [x] Costas com oito passos distintos; prato calibrado por quadro; sombra separada no chão.
+- [x] Ícone do Garçom no visual do candidato.
+- [x] Validação técnica: 750 testes Godot, 7 testes do importador, importação e cena principal com saída 0; capturas reais do café.
+- [x] PO aprovou o visual dentro do jogo em 22/11/2026: "ficou bom [...] se for só isso, tá aprovado, pode seguir". Altura de referência: 96 pixels de mundo. A revisão foi corrigida para usar navegação real, contornando mesas a 3,2 células/s; dois testes focados passaram.
 
 ### Do Claude (regras, economia, saves, conteúdo)
 
@@ -128,12 +126,35 @@ considerar o garçom completo:
    - `cliente_NN_sentado_{feliz,esperando,bravo,comendo}`;
    - `cliente_NN_sentado_costas_r1|r2`.
 
-   A âncora fica nos pés. A lista dos visuais está em `"characters"` no `sprites.json`, e o teste é `tests/integration/test_character_art.gd`.
+   Em pé, a âncora referencia os pés; sentado, o ponto sob os glúteos deve coincidir com o assento e é convertido para a âncora esperada pelo jogo. A lista dos visuais está em `"characters"` no `sprites.json`, e o teste é `tests/integration/test_character_art.gd`.
 2. Os retratos no estilo novo: chef, vizinhos, bruxa, Papai Noel e o ícone do Garçom.
 3. A arte dos eventos que o Claude preparar (Ano Novo, Carnaval).
 4. Decidir o que fazer com as ferramentas e fotos dos caminhos reprovados.
 
 ## 5. Recados entre Claude e Codex
+
+### 22/11/2026 — PO aprova a DT-105, autoriza envio e amplia o cenário
+
+- **Aceite e autorização:** “Ficou muito bom! Pode enviar e deixa tudo registrado pro Claude saber o que mudou e continuar alinhado com você.” A aprovação abrange a reformulação apresentada na DT-105, além do garçom aprovado anteriormente. Envio com a conta `eliashenr`.
+- **Passagem:** [passagem-visual-codex.md](passagem-visual-codex.md) concentra as mudanças, os contratos de arte, os testes e as instruções de integração. Os experimentos antigos herdados que não participam do jogo aprovado ficam fora deste envio, preservados localmente.
+- **Próxima frente autorizada (DT-106):** fogões, balcões/máquinas de cozinha, janelas, pisos/revestimentos e decorações existentes, mantendo IDs e temas. Codex continua com `art/**`, geradores e apresentação; Claude com regras, conteúdo, calendário e save. Um único escritor integra `sprites.json`; fontes e propostas são preparadas separadamente.
+- **Coordenação:** Codex principal integra e registra; arte cuida da cozinha; interface cuida de pisos/paredes/janelas; QA audita a entrega e depois cuida dos enfeites. Sem mudanças em `core/**`/`data/**`; contratos de sobreposição e suporte de panelas/pratos devem ser mantidos. Ajustes de apresentação compartilhados, se necessários, serão registrados aqui antes de editar.
+
+### 22/11/2026 — Codex: reformulação integrada e revisão aberta (DT-105)
+
+- Implementados clientes/assentos mais proporcionais, 25 assentos e 26 mesas por coleção, HUD, central, telas, retratos e ícones. Garçom aprovado e 216 poses em pé/andando preservados. Pratos e indicadores acompanham o novo tamanho e a nova paleta.
+- Não foi necessário alterar `cafe.gd`, `cafe.tscn`, autoloads, configuração, `core/**` ou `data/**`. Mantida a divisão de conteúdo, regras, economia e save com o Claude. A pasta original do Claude não foi modificada.
+- 764 testes Godot e 27 testes Python passaram; cena principal sem erros. Conferência visual dos 12 clientes e do conjunto concluída; evidências e limites na seção DT-105 de `status.md`. Importador, gerador de móveis e instalador têm fontes/calibração reproduzíveis.
+- Revisão aberta uma vez, minimizada, com dados isolados: `Revisar Visual.cmd`. C alterna coleções e N dia/noite. Aguardando avaliação visual do PO; nenhuma aprovação presumida para o conjunto novo. Sem commit/envio.
+- Antes de integrar esta cópia após o “Pode enviar”, combinar novamente o escritor de `sprites.json` e dos documentos compartilhados; conferir alterações de conteúdo que o Claude tenha feito na outra pasta. Não copiar o manifesto inteiro sobre trabalho novo de terceiros.
+
+### 22/11/2026 — PO autoriza a reformulação visual ampla pelo Codex
+
+- **Pedido:** ajustar proporções e pés dos clientes; redesenhar mesas e cadeiras por coleção (Japão, Brasil e demais estilos), reduzindo cadeiras largas; renovar o HUD, a central e quase todo o front-end. O PO pediu execução autônoma, consultando apenas quando houver autorização realmente necessária.
+- **Escopo Codex:** personagens, móveis e seus geradores, retratos, interface, apresentação do café/cidade, ferramentas de revisão e testes de apresentação. Preservar os temas e ids de conteúdo existentes. O aceite anterior do garçom continua válido.
+- **Coordenação desta cópia:** um único escritor instala lotes e altera `sprites.json`. Trabalho dividido entre clientes/integração (Codex principal), modelos de mesas/cadeiras (arte), `scenes/ui/**` (interface) e auditoria/capturas (QA). Cada frente prepara resultados locais para integração, sem mexer na pasta do Claude.
+- **Arquivos compartilhados:** o pedido do PO autoriza as ligações de apresentação necessárias em `cafe.gd`/`cafe.tscn` nesta cópia; se forem usadas, registrar o trecho e manter regras, persistência e sinais de domínio intactos. Novas ferramentas de QA e apoio a testes ficam separadas; executor comum não precisa mudar. Documentos compartilhados recebem somente a etapa visual do Codex.
+- **Limites mantidos:** `core/**`, `data/**`, economia, calendário e saves continuam com o Claude. O Ano Novo permanece pendente dele. APPDATA/LOCALAPPDATA isolados; capturas ocultas e revisão final minimizada. A autorização de reformular não inclui commit/push: continuam dependendo de “Pode enviar”.
 
 ### 22/11/2026 — Codex: divisão confirmada e passagem do Natal
 
@@ -144,3 +165,23 @@ considerar o garçom completo:
 - **Validação do lote:** os 745 testes aprovados pelo Codex na rodada de diagnóstico pertencem ao estado combinado de Natal e personagens. O Claude deve testar o conjunto exato que vai enviar, incluindo importação, testes e inicialização da cena, com dados isolados do save pessoal. Não reutilizar o resultado do conjunto misturado como validação do Natal separado.
 - **Ambiente:** além de `APPDATA`, a execução de diagnóstico precisou apontar `LOCALAPPDATA` para uma pasta de teste gravável para a Godot importar sem erros de cache do editor. Isso foi feito apenas no processo dos comandos; nenhuma configuração do usuário foi alterada.
 - **Passagem de volta:** registrar aqui o commit/base do Natal quando autorizado e integrado, a lista de alterações de personagens preservadas e que os arquivos da exceção estão livres. Aí preparo a cópia visual sem perder as referências locais.
+
+### 22/11/2026 — Codex: registro da própria etapa visual (DT-103)
+
+- **Escopo desta atualização:** nesta cópia de trabalho, o Codex atualiza somente suas etapas visuais de garçom e clientes em `status.md`, `continuar.md`, `roadmap.md`, `decisions.md` e `art-direction.md`. O histórico e as pendências de conteúdo do Claude ficam preservados.
+- **Base recebida:** `737f73e`, depois da integração do Natal (`2c72ce6`). Os experimentos locais de personagens e suas referências foram preservados na passagem; a prova nova substitui apenas o garçom nesta cópia visual.
+- **Candidato à revisão:** 36 poses próprias (frente/costas, com/sem bandeja, 8 passos e uma pose parada por combinação), retrato do Garçom, âncoras calibradas e sombra separada no piso. Fontes e calibração em `art/characters/waiter/`; importador em `tools/ia/importar_garcom_codex.py`.
+- **Origem da nova arte:** geração de imagens da OpenAI disponível no Codex. Esta etapa não usa créditos do ElevenLabs; os números registrados na DT-101 pertencem à experiência anterior.
+- **Validação da rodada do garçom:** 750 testes Godot e 7 testes do importador passaram; importação e cena principal por 120 quadros com saída 0. Captura final de 37 PNGs e foto noturna individual sem erros. O PO aprovou o visual na sequência, conforme o recado abaixo; commit/envio continuam pendentes.
+- **Retomada:** cópia visual ativa em `C:\Users\Elias\.codex\worktrees\visual-garcom\cafe-manie`, ramo `codex/visual-garcom`; 804 arquivos copiados e conferidos por hash. A cópia aninhada permanece como backup com HEAD destacado. Usar as instruções da seção mais recente de `continuar.md`; caminhos de ferramentas e arte são relativos ao repositório.
+
+### 22/11/2026 — Codex: garçom aprovado, início dos clientes
+
+- **Aceite do PO:** "ficou bom [...] se for só isso, tá aprovado, pode seguir". O garçom foi aprovado no jogo. A crítica à lentidão e a atravessar mesas se referia ao corredor artificial da ferramenta de revisão.
+- **Revisão corrigida:** a amostra do garçom usa caminhos da navegação real e `Agent.follow`/`advance`, a 3,2 células/s, contornando móveis. Os dois testes focados passaram. O antigo 0,4 fica apenas nas capturas determinísticas; nenhuma regra de produção mudou.
+- **Etapa autorizada, primeiro lote candidato v2 (DT-104):** 12 folhas originais de 24 poses e 12 folhas separadas de seis poses sentadas, selecionadas por `group.file`/`group.cells`; as 216 poses em pé/andando ficam intactas e o catálogo mantém 288 sprites. Fontes RGBA e calibração em `art/characters/customers/`, prompts v2 em `ajuste-assentos-v2.json`. A aprovação do garçom não aprova automaticamente os clientes.
+- **Arquivos desta etapa:** fontes em `art/characters/customers/`, `cliente_*` e suas entradas em `sprites.json`, importador em `tools/ia/`, revisão em `tools/revisao/` e testes de apresentação. O Codex atualiza só sua parte nos documentos compartilhados. `core/`, `data/` e o conteúdo do Claude permanecem fora da etapa.
+- **Apoio aos testes combinado nesta cópia:** adicionar `tests/support/legacy_character_art.gd`, helper exclusivo para simular metadados antigos e continuar verificando quique/esticamento legado. Não alterar executor, base comum nem testes de regras.
+- **Validação dos clientes:** 758 testes Godot e 15 Python passaram (8 do importador de clientes e 7 do garçom). Os lotes 01–06 e 07–12 estão calibrados e instalados: 288 sprites, incluindo 72 sentados v2; nenhuma pose falta gerar para este primeiro candidato. Após instalação: importação e cena por 120 quadros com saída 0, 6 testes focados aprovados e 111 capturas de dia + 1 à noite sem erros; 108 detalhes em 13 montagens. Escopo e preservação verificados em `final-verificacao.json`, com resultado consolidado em `status.md`. Revisão com amostra em memória, sem save pessoal; a janela minimizada precisa ser iniciada fora do sandbox para aparecer na área de trabalho do PO.
+- **Refinamento a apresentar ao PO:** pés elevados em algumas poses, chegando a cerca de 12 pixels de mundo no 05 (03 ~9,4; 02 ~7). No lote 07–12, os pés ficam 4,8–8,1 pixels elevados e a cabeça varia 13–32% entre frente/costas, mais evidente no 09. Entregar o primeiro candidato para avaliação com essas limitações, sem declarar encaixe e proporções resolvidos. A aprovação visual dos clientes segue pendente.
+- **Publicação:** aprovação visual e "pode seguir" autorizam continuar o trabalho; commit/envio seguem aguardando "Pode enviar".

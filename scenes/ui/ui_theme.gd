@@ -1,53 +1,41 @@
 class_name UiTheme
 extends RefCounted
-## Sistema de design "Nova York Futurista" (DT-077): painéis de vidro azul-marinho com borda azul, destaques em ciano,
-## dourado para moedas, nível e prêmios, verde para comprar e confirmar. Texto claro sobre o escuro, sem contorno
-## grosso (só uma sombra leve para ler em cima do cenário). Os ícones e botões quadrados vêm da arte (ArtSprites).
+## Café acolhedor: superfícies creme, tinta café e ações em verde profundo.
+## Os aliases históricos preservam a API da apresentação; cada token tem um papel de contraste.
 
-# --- Paleta (cada cor com uma função) -------------------------------------------------------------
-## Fundo mais escuro (janelas, faixas).
-const NAVY_DEEP := Color("071426")
-## Painel de vidro escuro do HUD e das janelas.
-const PANEL := Color(0.043, 0.094, 0.176, 0.93)
-## Cartão dentro de um painel (itens da loja, cartões de vizinho).
-const PANEL_RAISED := Color("0f2444")
-## Borda dos painéis e cartões.
-const PANEL_EDGE := Color("21508f")
-## Azul tecnológico: botões principais e abas ativas.
-const TECH_BLUE := Color("0878f9")
-## Ciano luminoso: seleção, foco, brilho e destaques pequenos.
-const CYAN := Color("31d7ff")
-## Dourado premium: moedas, nível, prêmios.
-const GOLD := Color("ffbe55")
-## Madeira quente (detalhes do restaurante na interface).
-const WOOD := Color("70452f")
-## Branco suave: texto principal.
-const WHITE_SOFT := Color("f5f7fa")
-## Cinza metálico: texto secundário e ícones apagados.
-const METAL := Color("8c9bad")
-## Verde de sucesso: comprar, confirmar, satisfação alta.
-const GREEN := Color("35c779")
-
-# --- Nomes antigos, agora com as cores novas (o resto da interface herda o visual) ----------------
+# --- Paleta -------------------------------------------------------------------------------------
+const NAVY_DEEP := Color("382a23")
+const PANEL := Color("fff8eb")
+const PANEL_RAISED := Color("fffdf7")
+const PANEL_EDGE := Color("d9cbb7")
+const TECH_BLUE := Color("245e50")
+const CYAN := Color("347560")
+const GOLD := Color("91601c")
+const WOOD := Color("805641")
+const WHITE_SOFT := Color("fffaf0")
+const METAL := Color("786f63")
+const GREEN := Color("326647")
 const NAVY := NAVY_DEEP
-const TEXT := WHITE_SOFT
-const TEXT_SOFT := Color("9fb3cc")
+const TEXT := NAVY_DEEP
+const TEXT_SOFT := Color("786653")
 const BLUE := TECH_BLUE
-const BLUE_LIGHT := Color("3a9bff")
-const BLUE_DARK := Color("0a4fb0")
+const BLUE_LIGHT := Color("317460")
+const BLUE_DARK := Color("19493e")
 const CARD := PANEL_RAISED
 const CARD_EDGE := PANEL_EDGE
-const CARD_SOFT := Color("15325c")
+const CARD_SOFT := Color("f2e8d6")
 const PILL := PANEL
-const ORANGE := Color("ff9a3d")
-const RED := Color("ff4d5e")
+const ORANGE := Color("a85b3d")
+const RED := Color("a53e38")
 const GOLD_TEXT := GOLD
-const DISABLED := Color("34465f")
-const SHADOW := Color(0, 0, 0, 0.35)
+const DISABLED := Color("e5dfd3")
+const SHADOW := Color(0.20, 0.13, 0.08, 0.14)
+const PROGRESS_TRACK := Color("e6dac6")
+const PROGRESS_LIGHT := Color("aacbb8")
 
 # --- Tipografia e medidas -------------------------------------------------------------------------
 const FONT_SIZE := 16
-## Letras (licença OFL, em art/fonts com a licença): Fredoka para títulos, números e botões; Nunito para textos.
+## Letras (licença OFL, em art/fonts com a licença): Fredoka para títulos; Nunito para textos, números e controles.
 const FREDOKA_PATH := "res://art/fonts/Fredoka-Variable.ttf"
 const NUNITO_PATH := "res://art/fonts/Nunito-Variable.ttf"
 ## Peso padrão da interface (as fontes são variáveis: 300 a 700 na Fredoka).
@@ -58,13 +46,13 @@ const RADIUS_PANEL := 16
 const RADIUS_CARD := 12
 ## Sombra do texto em cima do cenário.
 const TEXT_SHADOW := Color(0, 0, 0, 0.55)
-## Papéis dos botões (DT-079), como variações do tema: o padrão é o azul tecnológico (ação principal).
+## Papéis dos botões (DT-079), como variações do tema: o padrão é o verde profundo (ação principal).
 const SUCCESS_BUTTON := &"SuccessButton"
 const GHOST_BUTTON := &"GhostButton"
 const DANGER_BUTTON := &"DangerButton"
 const TAB_BUTTON := &"TabButton"
 ## Botões das janelas: altura e largura mínimas (área de toque confortável).
-const DIALOG_BUTTON_SIZE := Vector2(132, 46)
+const DIALOG_BUTTON_SIZE := Vector2(132, 48)
 ## Largura das perguntas: o texto quebra em linhas e os botões ficam perto um do outro.
 const QUESTION_WIDTH := 500
 
@@ -77,14 +65,14 @@ static func theme() -> Theme:
 	if _theme != null:
 		return _theme
 	_theme = Theme.new()
-	_theme.default_font = font()
+	_theme.default_font = font(WEIGHT, true)
 	_theme.default_font_size = FONT_SIZE
 	_theme.set_color("font_color", "Label", TEXT)
 	for state in ["normal", "hover", "pressed", "disabled", "focus", "hover_pressed"]:
 		var fill: Color = {"normal": BLUE, "hover": BLUE_LIGHT, "pressed": BLUE_DARK, "disabled": DISABLED,
 			"focus": BLUE, "hover_pressed": BLUE_DARK}[state]
 		_theme.set_stylebox(state, "Button", button_box(fill, fill.lightened(0.25) if state != "disabled" else DISABLED))
-	_theme.set_stylebox("focus", "Button", StyleBoxEmpty.new())
+	_theme.set_stylebox("focus", "Button", _focus_ring())
 	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color"]:
 		_theme.set_color(color_name, "Button", Color.WHITE)
 	_theme.set_color("font_disabled_color", "Button", METAL)
@@ -94,26 +82,28 @@ static func theme() -> Theme:
 	_theme.set_stylebox("panel", "PanelContainer", card_box())
 	_theme.set_stylebox("panel", "AcceptDialog", glass_box(RADIUS_PANEL, 18))
 	_theme.set_stylebox("panel", "ConfirmationDialog", glass_box(RADIUS_PANEL, 18))
-	# Barra de título das janelas: azul-marinho com a linha ciano embaixo
+	# Barra de título na mesma família creme do conteúdo.
 	var border := glass_box(RADIUS_PANEL, 0, PANEL_EDGE)
-	border.bg_color = NAVY_DEEP
+	border.bg_color = CARD_SOFT
 	border.expand_margin_top = 34
 	border.border_width_top = 2
-	border.border_color = CYAN.darkened(0.25)
+	border.border_color = PANEL_EDGE
 	_theme.set_stylebox("embedded_border", "Window", border)
 	_theme.set_stylebox("embedded_unfocused_border", "Window", border)
-	_theme.set_color("title_color", "Window", WHITE_SOFT)
+	_theme.set_color("title_color", "Window", TEXT)
 	_theme.set_font("title_font", "Window", font(BOLD))
 	_theme.set_font_size("title_font_size", "Window", 18)
 	_theme.set_constant("title_height", "Window", 34)
+	_theme.set_icon("close", "Window", _window_close_icon(TEXT_SOFT))
+	_theme.set_icon("close_pressed", "Window", _window_close_icon(RED))
 	_theme.set_stylebox("normal", "LineEdit", card_box(10, 8))
 	_theme.set_stylebox("focus", "LineEdit", card_box(10, 8, CYAN))
 	_theme.set_color("font_color", "LineEdit", TEXT)
 	_theme.set_color("font_placeholder_color", "LineEdit", TEXT_SOFT)
 	_theme.set_color("caret_color", "LineEdit", CYAN)
-	_theme.set_stylebox("background", "ProgressBar", bar_box(Color(1, 1, 1, 0.08)))
-	_theme.set_stylebox("fill", "ProgressBar", bar_box(CYAN))  # progresso em ciano; concluído, em verde
-	_theme.set_color("font_color", "TooltipLabel", WHITE_SOFT)
+	_theme.set_stylebox("background", "ProgressBar", bar_box(PROGRESS_TRACK))
+	_theme.set_stylebox("fill", "ProgressBar", bar_box(CYAN))  # progresso no acento comum
+	_theme.set_color("font_color", "TooltipLabel", TEXT)
 	_theme.set_stylebox("panel", "TooltipPanel", glass_box(8, 8))
 	_theme.set_constant("buttons_min_width", "AcceptDialog", int(DIALOG_BUTTON_SIZE.x))
 	_theme.set_constant("buttons_min_height", "AcceptDialog", int(DIALOG_BUTTON_SIZE.y))
@@ -140,11 +130,11 @@ static func _button_variation(type: StringName, fill: Color, text: Color) -> voi
 		_theme.set_color(color_name, type, text)
 
 
-## Botão "fantasma" (Fechar, Cancelar, Depois): vidro com borda, acende em ciano ao passar; com foco, o anel ciano.
+## Ação secundária (Fechar, Cancelar, Depois): superfície clara com borda e anel de foco.
 static func _ghost_variation() -> void:
 	_theme.set_type_variation(GHOST_BUTTON, "Button")
 	for state in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
-		var box := button_box(Color(1, 1, 1, 0.04), PANEL_EDGE.lightened(0.2))
+		var box := button_box(CARD, PANEL_EDGE)
 		box.shadow_size = 0
 		box.border_width_top = 1
 		if state.begins_with("hover") or state == "pressed":
@@ -155,18 +145,18 @@ static func _ghost_variation() -> void:
 		_theme.set_stylebox(state, GHOST_BUTTON, box)
 	_theme.set_stylebox("focus", GHOST_BUTTON, _focus_ring())
 	for color_name in ["font_color", "font_focus_color"]:
-		_theme.set_color(color_name, GHOST_BUTTON, WHITE_SOFT)
+		_theme.set_color(color_name, GHOST_BUTTON, TEXT)
 	for color_name in ["font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
 		_theme.set_color(color_name, GHOST_BUTTON, CYAN)
 
 
-## Aba (botão que fica marcado): a escolhida em azul tecnológico com brilho ciano; as outras, transparentes.
+## Aba selecionada em verde profundo; demais abas creme com texto café.
 static func _tab_variation() -> void:
 	_theme.set_type_variation(TAB_BUTTON, "Button")
 	for state in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
 		var active: bool = state == "pressed" or state == "hover_pressed"
 		var box := StyleBoxFlat.new()
-		# as fechadas em vidro escuro: na loja elas ficam por cima do café e precisam aparecer (DT-088)
+		# Abas opacas continuam legíveis sobre qualquer parte do cenário.
 		box.bg_color = TECH_BLUE if active else (PANEL_RAISED if state == "hover" else PANEL)
 		box.border_color = CYAN if active else (Color(CYAN, 0.55) if state == "hover" else Color(PANEL_EDGE, 0.9))
 		box.set_border_width_all(1)
@@ -176,14 +166,14 @@ static func _tab_variation() -> void:
 		box.content_margin_top = 6
 		box.content_margin_bottom = 6
 		if active:
-			box.shadow_color = Color(CYAN, 0.35)
-			box.shadow_size = 8
+			box.shadow_color = SHADOW
+			box.shadow_size = 3
 		box.anti_aliasing = true
 		_theme.set_stylebox(state, TAB_BUTTON, box)
 	_theme.set_stylebox("focus", TAB_BUTTON, StyleBoxEmpty.new())
 	for color_name in ["font_color", "font_focus_color"]:
 		_theme.set_color(color_name, TAB_BUTTON, TEXT_SOFT)
-	_theme.set_color("font_hover_color", TAB_BUTTON, WHITE_SOFT)
+	_theme.set_color("font_hover_color", TAB_BUTTON, TEXT)
 	for color_name in ["font_pressed_color", "font_hover_pressed_color"]:
 		_theme.set_color(color_name, TAB_BUTTON, Color.WHITE)
 
@@ -195,6 +185,8 @@ static func _tab_container_styles() -> void:
 			TAB_BUTTON).duplicate() as StyleBoxFlat
 		box.content_margin_left = 14
 		box.content_margin_right = 14
+		box.content_margin_top = 14
+		box.content_margin_bottom = 14
 		box.shadow_size = 0
 		_theme.set_stylebox(state, "TabContainer", box)
 	_theme.set_stylebox("tab_focus", "TabContainer", StyleBoxEmpty.new())
@@ -204,13 +196,13 @@ static func _tab_container_styles() -> void:
 	_theme.set_constant("tab_separation", "TabContainer", 8)
 	_theme.set_color("font_selected_color", "TabContainer", Color.WHITE)
 	_theme.set_color("font_unselected_color", "TabContainer", TEXT_SOFT)
-	_theme.set_color("font_hovered_color", "TabContainer", WHITE_SOFT)
+	_theme.set_color("font_hovered_color", "TabContainer", TEXT)
 
 
-## Barras de rolagem finas: trilho quase invisível e o puxador em ciano.
+## Barras de rolagem finas: trilho quase invisível e o puxador verde.
 static func _scroll_styles() -> void:
 	for type in ["VScrollBar", "HScrollBar"]:
-		var track := bar_box(Color(1, 1, 1, 0.05), 4)
+		var track := bar_box(PROGRESS_TRACK, 4)
 		track.set_content_margin_all(3)
 		_theme.set_stylebox("scroll", type, track)
 		var alphas := {"grabber": 0.45, "grabber_highlight": 0.7, "grabber_pressed": 0.9}
@@ -220,7 +212,7 @@ static func _scroll_styles() -> void:
 			_theme.set_stylebox(state, type, grabber)
 
 
-## Anel ciano do foco (o botão já selecionado nas perguntas, como o Cancelar).
+## Anel verde do foco (o botão já selecionado nas perguntas, como o Cancelar).
 static func _focus_ring() -> StyleBoxFlat:
 	var ring := StyleBoxFlat.new()
 	ring.draw_center = false
@@ -243,6 +235,7 @@ static func role(button: Button, variation: StringName) -> Button:
 
 ## Janela no padrão (DT-079): o botão de OK com o papel pedido e, nas perguntas, o Cancelar como botão fantasma.
 static func style_dialog(dialog: AcceptDialog, ok_role: StringName) -> void:
+	dialog.transparent_bg = true
 	role(dialog.get_ok_button(), ok_role)
 	if dialog is ConfirmationDialog:
 		role((dialog as ConfirmationDialog).get_cancel_button(), GHOST_BUTTON)
@@ -272,20 +265,20 @@ static func button_box(fill: Color, edge: Color) -> StyleBoxFlat:
 	box.bg_color = fill
 	box.border_color = edge
 	box.set_border_width_all(1)
-	box.border_width_top = 2
+	box.border_width_top = 1
 	box.set_corner_radius_all(RADIUS_CARD)
 	box.content_margin_left = 16
 	box.content_margin_right = 16
 	box.content_margin_top = 8
 	box.content_margin_bottom = 9
-	box.shadow_color = Color(fill.darkened(0.6), 0.55)
+	box.shadow_color = SHADOW
 	box.shadow_size = 3
-	box.shadow_offset = Vector2(0, 3)
+	box.shadow_offset = Vector2(0, 2)
 	box.anti_aliasing = true
 	return box
 
 
-## Cartão dentro de um painel: azul escuro com borda azul e sombra.
+## Cartão elevado: creme claro, borda areia e sombra curta.
 static func card_box(radius := RADIUS_CARD, padding := 12, edge := CARD_EDGE) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
 	box.bg_color = CARD
@@ -294,32 +287,32 @@ static func card_box(radius := RADIUS_CARD, padding := 12, edge := CARD_EDGE) ->
 	box.set_corner_radius_all(radius)
 	box.set_content_margin_all(padding)
 	box.shadow_color = SHADOW
-	box.shadow_size = 5
+	box.shadow_size = 3
 	box.shadow_offset = Vector2(0, 2)
 	box.anti_aliasing = true
 	return box
 
 
-## Painel de vidro escuro (HUD e janelas), com um leve brilho ciano em volta quando [param glow].
+## Painel principal; [param glow] reforça discretamente a borda de seleção.
 static func glass_box(radius := RADIUS_PANEL, padding := 12, edge := PANEL_EDGE, glow := false) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
 	box.bg_color = PANEL
 	box.border_color = edge
 	box.set_border_width_all(1)
-	box.border_width_top = 2
+	box.border_width_top = 1
 	box.set_corner_radius_all(radius)
 	box.set_content_margin_all(padding)
-	box.shadow_color = Color(CYAN, 0.28) if glow else SHADOW
-	box.shadow_size = 10 if glow else 8
+	box.shadow_color = Color(CYAN, 0.12) if glow else SHADOW
+	box.shadow_size = 5 if glow else 4
 	box.shadow_offset = Vector2.ZERO if glow else Vector2(0, 3)
 	box.anti_aliasing = true
 	return box
 
 
-## Contador do HUD (moedas, energia, cupons): pílula de vidro escuro.
+## Contador do HUD (moedas, energia, cupons): pílula creme.
 static func pill_box(radius := 18) -> StyleBoxFlat:
 	var box := glass_box(radius, 0)
-	box.shadow_size = 5
+	box.shadow_size = 3
 	return box
 
 
@@ -349,7 +342,7 @@ static func art(sprite_name: String, size: Vector2) -> TextureRect:
 
 
 ## Texto legível em cima do cenário: contorno fino (um terço do pedido) e sombra leve, no lugar do contorno grosso.
-static func outlined(text: String, size: int, color := Color.WHITE, outline := NAVY, outline_size := 5) -> Label:
+static func outlined(text: String, size: int, color := TEXT, outline := NAVY, outline_size := 5) -> Label:
 	var label := Label.new()
 	label.text = text
 	label.add_theme_font_size_override("font_size", size)
@@ -371,7 +364,7 @@ static func caption(text: String, color := TEXT_SOFT, size := 11) -> Label:
 	return label
 
 
-## Botão quadrado da arte (vidro escuro com o símbolo) com o texto embaixo, ou só o quadrado.
+## Botão quadrado da arte (superfície e símbolo) com o texto embaixo, ou só o quadrado.
 ## Menor área de toque de um botão (px da tela de 1280x720, cerca de 9 mm num celular comum).
 const MIN_TOUCH := 48.0
 
@@ -396,7 +389,7 @@ static func icon_button(button_name: String, kind: String, text := "", icon_size
 	button.add_theme_color_override("font_pressed_color", CYAN.darkened(0.2))
 	button.add_theme_color_override("font_disabled_color", METAL)
 	button.add_theme_color_override("font_outline_color", NAVY_DEEP)
-	button.add_theme_constant_override("outline_size", 2)
+	button.add_theme_constant_override("outline_size", 0)
 	button.add_theme_font_size_override("font_size", 14)
 	button.focus_mode = Control.FOCUS_NONE
 	button.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -411,3 +404,21 @@ static func thousands(value: int) -> String:
 		out = "." + digits.right(3) + out
 		digits = digits.left(digits.length() - 3)
 	return ("-" if value < 0 else "") + digits + out
+
+
+## Texto que mantém contraste sobre as cores culturais das coleções e livros.
+static func text_on(fill: Color) -> Color:
+	var luminance := fill.srgb_to_linear().get_luminance()
+	if luminance < 0.18:
+		return WHITE_SOFT
+	# Cores culturais intermediárias pedem tinta mais escura para preservar contraste.
+	return TEXT if luminance >= 0.30 else Color.BLACK
+
+
+## O X do tema padrão é branco; o título creme precisa de um símbolo escuro.
+static func _window_close_icon(color: Color) -> Texture2D:
+	var svg := '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">' \
+		+ '<path d="M5 5L13 13M13 5L5 13" fill="none" stroke="#%s" stroke-width="2" stroke-linecap="round"/></svg>' % color.to_html(false)
+	var image := Image.new()
+	image.load_svg_from_string(svg)
+	return ImageTexture.create_from_image(image)

@@ -4,6 +4,60 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-105 — Reformulação visual integrada: proporções, coleções e interface (22/11/2026)
+
+**Pedido do PO:** corrigir proporções e pés dos clientes, refazer mesas e cadeiras preservando Japão, Brasil e demais coleções, renovar HUD/central e quase todo o front-end. Execução autônoma autorizada; commit/envio continuam dependendo de "Pode enviar".
+
+**Decisões:**
+- Ajustar móveis e personagens como um conjunto. Assentos de 0,39–0,42 (banquetas 0,34), altura 0,28 e contato dos glúteos 0,265. Tampos de 0,74 (mesa longa 1,54), com alturas próprias para Japão e Club. Geometria 3D nativa, sem deformar PNGs; 25 assentos + 26 mesas resultam em 169 imagens com rotações/encostos e 26 alturas de tampo sincronizadas.
+- Acompanhar os tampos menores com pratos de 24 pixels de mundo e posições aproximadas ao centro por fator 0,76. A mesa longa usa o centro da área ocupada e sua rotação; posições lógicas dos lugares permanecem intactas. Indicadores do salão seguem a paleta da interface.
+- Preservar os 12 clientes e as 216 poses em pé/andando. Remover a ampliação de 15% das cabeças sentadas; registrar o apoio na nova cadeira e corrigir a projeção das pernas em fontes dedicadas. Nenhuma alteração no garçom aprovado, nos IDs ou nas regras.
+- Adotar creme/areia, texto café, ações verdes e acentos de terracota/latão. Nunito no corpo; HUD compacto, objetivo recolhível, recursos/evento separados, cartões e diálogos coerentes. Central mantém filial e vizinhos; não acrescenta funcionalidades de jogo.
+- Substituir os 25 ícones antigos da navegação/ações por desenhos vetoriais reproduzíveis. Renovar as 35 camadas combináveis do avatar, ícone do chef, sete vizinhos e dois retratos de evento, preservando personalização, compras e save.
+- Registrar fontes, prompts e calibração em `art/characters/customers/` e `art/portraits/`. Imagens pela ferramenta integrada da OpenAI; móveis pelo Blender; ícones por geometria vetorial. Os importadores só recortam, registram e empacotam o alfa nativo.
+- Manter um único instalador do manifesto. Staging de móveis/retratos validado por `tools/ia/integrar_visual_codex.py`; nenhum processo de geração escreve em produção. Revisão `Revisar Visual.cmd`: minimizada, dados isolados e navegação real; C alterna coleções, N dia/noite.
+
+**Validação e entrega:** resultados consolidados na seção DT-105 de `status.md`: 764 testes Godot e 27 Python aprovados. O PO aprovou o conjunto e autorizou o envio em 22/11/2026: “Ficou muito bom! Pode enviar”. O contrato novo substitui os tamanhos de assento/tampo documentados nas etapas anteriores, sem mudar área ocupada, caminho, economia ou save. Passagem para o Claude em `passagem-visual-codex.md`.
+
+---
+
+## DT-104 — Primeiro lote de clientes, com fontes sentadas separadas e encaixe em revisão (22/11/2026, candidato v2 do Codex)
+
+**Contexto:** o PO aprovou o garçom da DT-103 dentro do jogo: "ficou bom [...] se for só isso, tá aprovado, pode seguir". A expansão autorizada mantém as identidades dos 12 clientes e o contrato de poses existente.
+
+**Decisão:**
+- Manter as 12 folhas RGBA originais de 24 poses e acrescentar 12 folhas separadas de seis poses sentadas (`cliente_NN_sentados_v2.png`). Selecionar fontes por `group.file`/`group.cells` no importador, preservando as 216 poses em pé/andando nesta revisão dos assentos. O catálogo continua com 288 sprites. Fontes e calibração em `art/characters/customers/`, prompts v2 em `ajuste-assentos-v2.json`; geração pela ferramenta da OpenAI integrada ao Codex, sem créditos do ElevenLabs.
+- Usar `tools/ia/importar_clientes_codex.py`, preservando o alfa nativo e uma escala comum baseada na pose em pé. Ajustes de escala por grupo são explícitos para manter a proporção da cabeça; sentados não são ampliados pela própria altura. O apoio sob os glúteos é registrado no assento da cadeira e convertido para a âncora usada pelo runtime.
+- Selecionar explicitamente o sentido das costas sentadas em cada fonte. As trocas das células 22/23 de 01, 03 e 11 eram das folhas originais; as folhas sentadas v2 têm mapeamento próprio. Manter os nomes das 24 poses, densidade 4 e altura de referência de 96 pixels de mundo; não alterar regras, dados, IDs ou saves.
+- Reutilizar `authored_motion` e a sombra de chão independente nas poses em pé. A revisão usa dados em memória e navegação real; sua janela abre minimizada, com `APPDATA`/`LOCALAPPDATA` isolados. O iniciador deve ser executado fora do sandbox para aparecer na área de trabalho do PO.
+
+**Validação:** passaram 758 testes Godot, 0 falharam (`build/visual-clientes/tests-final.log`), e 15 testes Python (8 do importador de clientes e 7 do garçom). Os 12 clientes estão calibrados e instalados: 288 sprites, incluindo 72 sentados v2; nenhuma pose falta gerar neste primeiro candidato. Após instalação: importação com saída 0, 6 testes focados aprovados, cena principal por 120 quadros com saída 0 e 111 capturas de dia + 1 à noite sem erros. Os 108 detalhes estão reunidos em 13 montagens; preservação e escopo constam de `build/visual-clientes/final-verificacao.json`. Resultado consolidado em `status.md`. A aprovação visual dos clientes permanece pendente; o aceite do garçom não se estende automaticamente ao novo lote.
+
+**Refinamento visual pendente:** pés elevados em algumas poses, chegando a cerca de 12 pixels de mundo no 05; no lote 01–06, 02 ~7, 03 ~9,4 e 05 ~11,8. Os casos mais fortes são 05 e 03. No lote 07–12, os pés ficam 4,8–8,1 pixels elevados e a cabeça varia 13–32% entre frente/costas, mais evidente no 09. Não declarar o encaixe e a consistência das proporções resolvidos.
+
+**Consequência:** entregar o primeiro lote de clientes para avaliação com essa pendência explícita, sem regenerar o garçom aprovado ou os móveis. Outros retratos e interface seguem em etapas próprias. Commit/envio continuam dependendo de "Pode enviar".
+
+---
+
+## DT-103 — Garçom completo com folhas de poses e calibração explícita (22/11/2026, aprovado pelo PO)
+
+**Problema:** a prova herdada da DT-101 usa a imagem parada nos passos de costas e repete os quadros com bandeja nos estados de mãos livres. Recortar ou redimensionar cada pose pelos próprios pés pode apagar o movimento desenhado; somar quique procedural também pode deslocar o corpo e o prato.
+
+**Decisão de implementação:**
+- Produzir quatro folhas transparentes com oito passos e uma pose parada cada: frente/costas, com/sem bandeja. As 36 poses e o retrato do Garçom são originais desta etapa, gerados com a ferramenta de imagem da OpenAI integrada ao Codex, a partir da referência visual aprovada pelo PO. Não foram usados créditos do ElevenLabs.
+- Guardar fontes, prompts e calibração em `art/characters/waiter/`. O `.gdignore` de `art/characters/` deixa essas fontes fora da importação/exportação do jogo; os sprites instalados continuam em `art/sprites/`.
+- Usar `tools/ia/importar_garcom_codex.py` com escala única e âncora fixa por folha, altura de referência de 96 pixels de mundo e densidade 4. O importador recorta a transparência e registra as poses; não inventa caminhada deformando a imagem parada. O ponto e a largura do prato são medidos por quadro em `calibracao.json`.
+- Marcar os novos sprites com `external_shadow` e `authored_motion`. A Godot desenha a sombra no chão, separada do corpo; corpo, prato e silhueta compartilham a transformação, sem acrescentar quique, respiração ou esticamento aos quadros autorados. As flags são opcionais e não alteram os clientes existentes.
+- Conferir no renderizador real com `tools/revisao/garcom_codex.gd`, que só captura depois do desenho do quadro. A revisão interativa alterna os quatro estados e usa simulação em memória; `Revisar Garcom.cmd` abre a janela minimizada com dados isolados do save pessoal.
+
+**Validação da rodada do garçom:** 750 testes Godot e 7 testes do importador passaram; importação e cena principal por 120 quadros com saída 0. A revisão gerou 37 PNGs e uma captura noturna individual, sem erros. O manifesto mudou só as 37 entradas do lote e as duas medidas legadas da bandeja; os 288 PNGs herdados de clientes permaneceram intactos nessa rodada.
+
+**Aceite e ajuste da revisão:** o PO aprovou o visual e autorizou seguir. A lentidão e o caminho atravessando mesas vinham da demonstração: o modo interativo agora usa caminhos da navegação do café e `Agent.follow`/`advance`, a 3,2 células/s, com dois testes focados aprovados. O antigo 0,4 fica apenas nas capturas determinísticas. As regras de produção não mudaram.
+
+**Consequência:** o garçom aprovado orienta os clientes da DT-104. Os experimentos herdados ficam preservados; regras, economia, IDs e formato do save não mudam. Aprovação visual não equivale à autorização para commit/envio.
+
+---
+
 ## DT-102 — Divisão do trabalho entre Claude e Codex (22/11/2026, decisão do PO)
 
 **Problema:** cinco caminhos de personagem foram reprovados (DT-101), e o PO quer outra ferramenta cuidando do visual: "O Codex vai assumir a direção visual, os personagens e a interface."

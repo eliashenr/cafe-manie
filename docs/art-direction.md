@@ -2,7 +2,47 @@
 
 Referência: seções 5, 43, 77, 78, 130–132 do master prompt. Documento vivo: vai ser completado com as impressões do PO sobre as capturas do jogo antigo.
 
-## Direção atual: referência A, "Nova York contemporânea" (31/10/2026, DT-090)
+## Direção visual integrada (22/11/2026, DT-105)
+
+A referência do garçom aprovado passa a orientar os clientes, chef personalizável, vizinhos e personagens de evento. A interface usa creme, areia e café, ações verdes, detalhes de terracota e latão; mantém Fredoka nos títulos e Nunito no corpo. Botões grandes, textos escuros e menos área sobre o salão.
+
+Móveis preservam suas coleções culturais e materiais, com estrutura mais leve: 25 assentos e 26 mesas, 169 imagens incluindo rotações/encostos. O novo contrato é assento z 0,28, contato z 0,265 e recuo 0,06; a cadeira básica tem largura 0,41, temas 0,39–0,42 e banquetas 0,34. Tampos de 0,74, ou 1,54 na mesa longa. Japão usa z 0,43; demais 0,46; Club 0,48. Alturas no manifesto e pratos são integrados juntos. Pratos têm largura de 24 pixels de mundo e distribuição aproximada ao centro por fator 0,76, respeitando a área e a rotação da mesa longa. Os tamanhos legados abaixo são histórico, não o contrato atual.
+
+Fontes: `tools/render3d/moveis_codex.py` (geometria), `tools/ia/gerar_icones_ui.py` (25 ícones), `art/portraits/calibracao.json` + `importar_retratos_codex.py` (45 sprites), `art/characters/customers/calibracao.json` (288 poses). Fontes bitmap, prompts e ajustes ficam no repositório, fora da importação do jogo por `.gdignore`. Preservar o alfa nativo, sem remover fundo por limiar.
+
+Revisão real: `Revisar Visual.cmd`, C para coleções e N para dia/noite. Testes e limites da conferência constam de `status.md`.
+
+## Garçom: visual aprovado pelo PO (22/11/2026, DT-103)
+
+O alvo continua sendo o personagem com acabamento de jogo estilizado integrado ao café, com rosto expressivo e proporções legíveis. **O PO aprovou o garçom dentro do jogo:** "ficou bom [...] se for só isso, tá aprovado, pode seguir". A referência A do ambiente permanece abaixo.
+
+O lote contém quatro folhas de nove poses (oito passos e uma pose parada), para frente/costas com/sem bandeja, mais o retrato do botão Garçom. As imagens transparentes foram geradas com a ferramenta da OpenAI integrada ao Codex; fontes, prompts e medidas ficam em `art/characters/waiter/`. A etapa não usa créditos do ElevenLabs.
+
+**Contrato visual aprovado:**
+
+- Altura de referência de 96 pixels de mundo e densidade 4, com uma escala e uma âncora fixas por folha. O recorte preserva o registro das poses, sem nivelar os pés individualmente e apagar o movimento.
+- O corpo não contém sombra. `external_shadow` pede uma sombra independente no chão; `authored_motion` mantém o movimento dos quadros sem somar quique, respiração ou deformação do jogo.
+- A posição e a largura do prato vêm da bandeja medida em cada quadro, inclusive parado. A comida permanece um sprite separado do personagem.
+- Os 36 desenhos respeitam os nomes e direções que o jogo já usa. Esse acabamento orienta os clientes da DT-104; os outros retratos serão tratados em etapa própria.
+
+**Como avaliar:** ver a foto e os quatro ciclos capturados no renderizador real em `build/visual-garcom/`, ou abrir `Revisar Garcom.cmd` na cópia visual. A revisão usa dados em memória, alterna frente/costas e mãos livres/bandeja, e permite observar o personagem andando e parado. A textura isolada serve para conferir recorte; o aceite considera o tamanho, o andar, o prato e a luz dentro do café.
+
+## Clientes: 12 identidades no estilo aprovado, ainda candidatos (22/11/2026, DT-104)
+
+São 24 poses por cliente (288 sprites), preservando tom de pele, cabelo, roupa e acessórios de cada identidade. O candidato v2 usa 12 folhas originais de 24 poses e 12 folhas separadas de seis poses sentadas, selecionadas por `group.file`/`group.cells`; as 216 poses em pé/andando ficam intactas na revisão dos assentos. Fontes RGBA e calibração em `art/characters/customers/`, prompts v2 em `ajuste-assentos-v2.json`. O alfa nativo é preservado; a geração usa a ferramenta da OpenAI integrada ao Codex, sem créditos do ElevenLabs.
+
+- A escala parte da pose em pé, com referência de 96 pixels de mundo e densidade 4. A cabeça deve manter proporção coerente ao sentar; ajustes por grupo ficam explícitos, sem ampliar a pose pela própria altura sentada.
+- O contato sob os glúteos deve coincidir com o assento da cadeira. Sentados usam essa referência, convertida para a âncora do runtime; isso ainda não garante contato dos pés com o piso. Baixar o corpo inteiro para ocultar a folga pode afundá-lo no assento.
+- Frente tem os quatro humores; costas têm as rotações 1 e 2. Selecionar o sentido do tronco e dos joelhos pelo mapeamento de cada fonte; as antigas trocas 22/23 de 01, 03 e 11 não definem a ordem das folhas v2.
+- Os oito passos de cada direção mantêm o movimento desenhado, sem quique extra; a sombra das poses em pé fica separada no piso. Conferir continuidade do ciclo, contato dos pés, tamanho da cabeça e oclusão pelo encosto no café real.
+
+**Primeiro candidato instalado:** os 12 clientes estão calibrados e instalados, com 288 sprites, incluindo os 72 sentados v2. Nenhuma pose falta gerar para essa primeira avaliação.
+
+**Refinamento visual pendente:** pés elevados em algumas poses, chegando a cerca de 12 pixels de mundo no 05; no lote 01–06, 02 ~7, 03 ~9,4 e 05 ~11,8. Os casos mais fortes são 05 e 03. No lote 07–12, os pés ficam 4,8–8,1 pixels elevados e a cabeça varia 13–32% entre frente/costas, mais evidente no 09. Essas limitações acompanham a avaliação do primeiro candidato; encaixe, proporções e aprovação visual continuam pendentes.
+
+**Revisão visual pendente:** passaram 758 testes Godot e 15 Python. Após instalação, importação e cena principal por 120 quadros terminaram com saída 0; 6 testes focados passaram. Foram geradas 111 capturas de dia + 1 à noite sem erros e 13 montagens dos 108 detalhes (`status.md`). `Revisar Clientes.cmd` abre o mostruário minimizado, com amostra em memória e dados isolados. N troca dia/noite; 1/2 mostram seis clientes por vez e 0 mostra todos. O aceite do garçom não aprova automaticamente os clientes.
+
+## Direção atual do ambiente: referência A, "Nova York contemporânea" (31/10/2026, DT-090)
 
 O PO escolheu a opção A de duas imagens conceituais como **referência de acabamento**. A imagem é um conceito, não uma tela a copiar: ela não entra no repositório e não vira o café inicial.
 
@@ -179,8 +219,8 @@ Para cada captura, anotar em palavras (não copiar):
 | Piso isométrico | 128 × 64 px (proporção 2:1) | `IsoProjection.TILE_SIZE`. Mudar a escala muda tudo |
 | Parede | 152,38 px de altura | `wall_height` no `sprites.json` |
 | Móveis | 1×1, 2×1; giram em 4 direções | Foto 3D de cada rotação; a cadeira também tem o encosto de quem senta de costas (rotações 1 e 2) |
-| Personagens | Foto 3D nos quadros do `sprites.json` | Em pé, andando, sentado de frente e de costas |
-| Resolução base | 1280 × 720, ampliando para telas maiores | Texturas com densidade 2, nítidas em celulares de alta densidade |
+| Personagens | Sprites nos quadros do `sprites.json`; DT-103/104 com 96 px de referência e densidade 4 | Garçom aprovado; 12 clientes com 24 poses cada ainda candidatos |
+| Resolução base | 1280 × 720, ampliando para telas maiores | Cenário com densidade 2; personagens da DT-103/104 com densidade 4 |
 
 ## Como produzir a arte final (decisão para antes da Fase 8)
 
@@ -194,4 +234,4 @@ Para cada captura, anotar em palavras (não copiar):
 
 ## Próximo passo
 
-O PO aprovou a linguagem da 2ª amostra, os personagens, as cadeiras e mesas e os fogões e balcões, e revisa no jogo os enfeites e as máquinas. O resto do catálogo vem por etapas, cada uma com revisão visual, depois da liberação do PO.
+Validar os clientes da DT-104 dentro do jogo e incorporar o retorno do PO. O garçom da DT-103 já foi aprovado; demais retratos e interface continuam em etapas próprias com revisão visual. As aprovações históricas do ambiente permanecem registradas acima.

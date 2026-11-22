@@ -16,6 +16,44 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 | 9 — QA | Testes, performance, segurança, regressão | | ⏳ |
 | 10 — Release | Android, publicação, analytics | | ⏳ |
 
+## Reformulação visual do Codex (22/11/2026, DT-105)
+
+- [x] Reequilibrar 25 assentos e 26 mesas, preservando as coleções e sincronizando encostos/tampos.
+- [x] Renovar HUD, loja, receitas, missões, calendário, central e diálogos.
+- [x] Renovar 35 camadas do chef, ícone, sete vizinhos, dois retratos de eventos e 25 ícones de navegação/ações.
+- [x] Concluir a conferência integrada de clientes, pés, fontes finais e capturas do salão: 764 testes Godot, 27 testes Python e cena principal sem erros; 108 detalhes dos clientes e cinco capturas finais do conjunto conferidos.
+- [x] PO avaliar e aprovar o novo conjunto dentro do jogo: “Ficou muito bom!”, em 22/11/2026.
+- [x] PO autorizar commit/envio: “Pode enviar”.
+- [ ] Registrar a confirmação do envio remoto.
+- [ ] Estender a direção visual à cozinha, janelas, revestimentos e decorações (DT-106).
+
+## Garçom do Codex (22/11/2026, DT-103, ramo `codex/visual-garcom`)
+
+**Visual aprovado pelo PO:** "ficou bom [...] se for só isso, tá aprovado, pode seguir". Base `737f73e`, depois do Natal. A divisão com o Claude permanece na DT-102.
+
+- [x] Quatro ciclos com oito poses próprias cada e quatro poses paradas: frente/costas, com/sem bandeja.
+- [x] Retrato do mesmo garçom para o botão da interface.
+- [x] Fontes, prompts e calibração reproduzível; escala/âncora fixas por folha e prato medido por quadro.
+- [x] Sombra independente no chão e animação autorada sem quique procedural adicional.
+- [x] Testes de apresentação e importador; capturas reais do café, prévia em GIF e abertura da revisão por dois cliques.
+- [x] Validação final: 750 testes Godot, 7 testes do importador, importação e cena principal sem erros; 37 capturas e foto noturna individual conferidas (registro em `status.md`).
+- [x] PO aprovar o garçom no jogo e autorizar seguir com o estilo.
+- [x] Corrigir a revisão interativa para usar navegação real e velocidade de 3,2 células/s; dois testes focados passaram.
+- [ ] Commit e envio somente depois de autorização explícita do PO.
+
+## Clientes do Codex (22/11/2026, DT-104, candidatos)
+
+- [x] Produzir 12 folhas originais de 24 poses e 12 folhas separadas de seis poses sentadas; prompts v2 em `art/characters/customers/ajuste-assentos-v2.json`.
+- [x] Selecionar fontes por `group.file`/`group.cells`, preservando alfa e as 216 poses em pé/andando; catálogo de 288 sprites.
+- [x] Validar os importadores: 15 testes Python passaram (8 de clientes e 7 do garçom).
+- [x] Rodar a suíte Godot: 758 passaram, 0 falharam (`build/visual-clientes/tests-final.log`).
+- [x] Calibrar e instalar 01–12: 288 sprites, incluindo 72 sentados v2; nenhuma pose por gerar neste primeiro candidato.
+- [ ] Refinar pés elevados em algumas poses, chegando a cerca de 12 pixels de mundo no 05 (03 ~9,4; 02 ~7). No lote 07–12: pés em 4,8–8,1 pixels e variação de 13–32% da cabeça entre frente/costas, mais evidente no 09.
+- [x] Conferir o candidato instalado: importação com saída 0, 6 testes focados aprovados, cena por 120 quadros com saída 0 e 111 capturas de dia + 1 à noite sem erros; 108 detalhes em 13 montagens. Resultados em `status.md`.
+- [ ] Apresentar o primeiro candidato no café com os refinamentos visuais pendentes explícitos; obter a avaliação do PO antes de considerar a arte aprovada.
+- [ ] Depois do aceite, seguir aos demais retratos e às próximas etapas de interface.
+- [ ] Commit e envio somente depois de "Pode enviar".
+
 ## Pacote de melhorias do PO (12/10/2026)
 
 O PO pediu um conjunto de melhorias depois de jogar. Elas entram em etapas, cada uma testada e entregue

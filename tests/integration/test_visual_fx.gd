@@ -3,6 +3,15 @@ extends CafeTestCase
 ## pilha que quica, mureta que esmaece, confete do pagamento, esticar e achatar, áreas de toque,
 ## filtro de textura e a ordem de desenho do salão (y-sort).
 
+const LegacyCharacterArt = preload("res://tests/support/legacy_character_art.gd")
+
+var _legacy_art := LegacyCharacterArt.new()
+
+
+func cleanup() -> void:
+	_legacy_art.restore()
+	super()
+
 
 func _place(cafe: Cafe, id: StringName, cell: Vector2i, rotation := 0) -> StringName:
 	return cafe.layout.place(cafe.catalog.get_definition(id), cell, rotation)
@@ -228,6 +237,7 @@ func test_payment_bursts_gold_confetti_that_cleans_itself_up() -> void:
 func test_walking_stretches_and_braking_squashes() -> void:
 	var cafe := await spawn_cafe()
 	var view := _standing_customer(cafe, Vector2(2.0, 2.0))
+	_legacy_art.use_customer(view.agent.serial)
 	assert_eq(view.stretch(), 0.0, "parado: forma normal")
 	view.agent.position = Vector2(6.0, 2.0)
 	view.advance(1.0 / 60.0)

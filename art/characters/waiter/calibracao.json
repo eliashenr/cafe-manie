@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "notes": "Células 418x418, passos 0..7 e parado na nona célula. Altura única por folha, medida no parado; sem corrigir individualmente a altura dos passos. Costas v2 com apoio do pé corrigido na arte e espelhadas para a direção nordeste do jogo. Bandeja medida no centro da superfície; largura do prato próxima de 28 pixels de mundo.",
+  "portrait": {"file": "icone.png", "target_size": 256},
+  "sheets": [
+    {
+      "file": "frente_bandeja.png",
+      "view": "frente",
+      "carrying": true,
+      "anchor": [208, 386],
+      "reference_height_px": 370,
+      "frames": [
+        {"tray": [303, 129.5, 108]},
+        {"tray": [301.5, 133.5, 108]},
+        {"tray": [302.5, 130.5, 108]},
+        {"tray": [303, 129, 108]},
+        {"tray": [303.5, 129.5, 108]},
+        {"tray": [303.5, 137.5, 108]},
+        {"tray": [303, 137.5, 108]},
+        {"tray": [303.5, 130.5, 108]},
+        {"tray": [305.5, 130.5, 108]}
+      ]
+    },
+    {
+      "file": "costas_bandeja_v2.png",
+      "view": "costas",
+      "carrying": true,
+      "mirror": true,
+      "anchor": [224, 386],
+      "reference_height_px": 360,
+      "frames": [
+        {"tray": [139, 110, 108]},
+        {"tray": [140.5, 109.5, 108]},
+        {"tray": [141, 110.5, 108]},
+        {"tray": [139, 108.5, 108]},
+        {"tray": [139.5, 108.5, 108]},
+        {"tray": [139, 111, 108]},
+        {"tray": [138.5, 110, 108]},
+        {"tray": [138.5, 109.5, 108]},
+        {"tray": [138, 111, 108]}
+      ]
+    },
+    {
+      "file": "frente_livre.png",
+      "view": "frente",
+      "carrying": false,
+      "anchor": [214, 379],
+      "reference_height_px": 351
+    },
+    {
+      "file": "costas_livre_v2.png",
+      "view": "costas",
+      "carrying": false,
+      "mirror": true,
+      "anchor": [222, 388],
+      "reference_height_px": 356
+    }
+  ]
+}

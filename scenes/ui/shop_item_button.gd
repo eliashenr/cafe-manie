@@ -10,13 +10,13 @@ extends Button
 const CARD_SIZE := Vector2(130, 140)
 const ART_MARGIN := 7.0
 const ART_BOTTOM := 62.0
-const NAME_SIZE := 12
+const NAME_SIZE := 13
 const PRICE_SIZE := 15
 const NOTE_SIZE := 12
-const TAG_SIZE := 10
-const LOCK_SHADE := Color(0.02, 0.05, 0.11, 0.62)
-const TOO_EXPENSIVE := Color("ff6b78")
-const NOTE_COLOR := Color("4fe0a0")
+const TAG_SIZE := 11
+const LOCK_SHADE := Color(0.94, 0.90, 0.82, 0.68)
+const TOO_EXPENSIVE := UiTheme.RED
+const NOTE_COLOR := UiTheme.GREEN
 
 ## Desenho do item (móvel, piso ou parede) e quanto ampliar além do encaixe.
 var art: ArtSprites.Sprite
@@ -80,7 +80,7 @@ func _draw() -> void:
 		var drawn := texture_size * fit
 		draw_texture_rect(art.texture, Rect2(art_area.get_center() - drawn / 2.0, drawn), false)
 	var font := get_theme_default_font()
-	_draw_centered(font, title, size.y - 46.0, NAME_SIZE, UiTheme.WHITE_SOFT)
+	_draw_centered(font, title, size.y - 46.0, NAME_SIZE, UiTheme.TEXT)
 	if locked_level > 0:
 		draw_rect(art_area, LOCK_SHADE)
 		var lock := ArtSprites.get_sprite("icone_cadeado")
@@ -88,7 +88,7 @@ func _draw() -> void:
 			draw_texture_rect(lock.texture, Rect2(art_area.get_center() - Vector2(16, 24), Vector2(32, 32)), false)
 		var pill := Rect2(Vector2(art_area.get_center().x - 30.0, art_area.get_center().y + 9.0), Vector2(60, 18))
 		var pill_box := UiTheme.card_box(9, 0, UiTheme.GOLD)
-		pill_box.bg_color = UiTheme.NAVY_DEEP
+		pill_box.bg_color = UiTheme.CARD
 		pill_box.shadow_size = 0
 		draw_style_box(pill_box, pill)
 		_draw_centered(font, "Nível %d" % locked_level, pill.get_center().y + 4.0, 11, UiTheme.GOLD)
@@ -107,7 +107,7 @@ func _draw() -> void:
 		var strip := Rect2(Vector2(6.0, size.y - 19.0), Vector2(size.x - 12.0, 14.0))
 		var tag_box := UiTheme.bar_box(Color(tag_color, 0.32), 5)
 		draw_style_box(tag_box, strip)
-		_draw_centered(font, tag_text, strip.position.y + 11.0, TAG_SIZE, tag_color.lightened(0.45))
+		_draw_centered(font, tag_text, strip.position.y + 11.0, TAG_SIZE, UiTheme.TEXT)
 
 
 ## Texto centrado; se não couber no cartão, a letra diminui (até 9).

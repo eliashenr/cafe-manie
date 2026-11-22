@@ -20,6 +20,13 @@ class Sprite:
 	var anchor := Vector2.ZERO
 	## Pixels de textura por pixel de mundo.
 	var density := 1.0
+	## A imagem não contém sombra: o AgentView desenha uma sombra fixa no chão, separada do corpo.
+	var external_shadow := false
+	## O movimento já foi desenhado em cada quadro: não acrescentar quique, respiração nem deformação.
+	var authored_motion := false
+	## Nos quadros do garçom com bandeja desenhada à mão (DT-101): onde vai o prato neste quadro, [x, y, largura] em
+	## pixels de mundo a partir dos pés. Vazio quando a bandeja não muda de lugar (vale o "tray_food" do personagem).
+	var tray: Array = []
 
 	## Retângulo de desenho em coordenadas do nó, com a âncora na origem e escala 1.
 	func draw_rect() -> Rect2:
@@ -53,6 +60,9 @@ static func get_sprite(sprite_name: String) -> Sprite:
 	sprite.anchor = Vector2(anchor[0], anchor[1])
 	# Uma foto pode ter a sua densidade (os retratos têm 4, para aparecerem grandes sem borrar); as outras usam a do manifesto.
 	sprite.density = float(info.get("density", manifest.get("density", 1.0)))
+	sprite.external_shadow = bool(info.get("external_shadow", false))
+	sprite.authored_motion = bool(info.get("authored_motion", false))
+	sprite.tray = info.get("tray", [])
 	_cache[sprite_name] = sprite
 	return sprite
 

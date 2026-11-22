@@ -68,14 +68,16 @@ func test_sample_items_keep_ids_prices_levels_and_footprints() -> void:
 
 ## As medidas do que o jogo desenha por cima: pratos na mesa e no balcão, panela e quem senta.
 func test_sample_art_keeps_the_sprite_contract() -> void:
-	assert_almost_eq(ArtSprites.table_top(&"table_round"), 45.33, 0.01)
+	# DT-105: tampo redesenhado a z0,46, projetado pela câmera isométrica.
+	assert_almost_eq(ArtSprites.table_top(&"table_round"), 36.056489, 0.01)
 	assert_almost_eq(ArtSprites.counter_top(), 62.67, 0.01)
 	assert_almost_eq(ArtSprites.wall_height(), 152.38, 0.01)
 	for rotation in 4:
 		for id: StringName in FURNITURE:
 			var sprite := ArtSprites.furniture(id, rotation)
 			assert_true(sprite != null, "%s na rotação %d" % [id, rotation])
-			assert_almost_eq(sprite.density, 2.0, 0.001)
+			var expected_density := 4.0 if id in [&"chair_wood", &"table_round"] else 2.0
+			assert_almost_eq(sprite.density, expected_density, 0.001)
 	for rotation in [1, 2]:
 		assert_true(ArtSprites.chair_backrest(&"chair_wood", rotation) != null, "encosto de quem senta de costas")
 	for side in ["R", "L"]:
@@ -93,8 +95,12 @@ func test_chair_backrests_are_smaller_than_the_chairs() -> void:
 			var backrest := ArtSprites.chair_backrest(item.id, rotation)
 			if backrest == null:
 				continue  # banquetas não têm encosto
-			var chair := ArtSprites.furniture(item.id, rotation).world_size()
-			assert_true(backrest.world_size().y < chair.y * 0.75, "%s r%d: encosto %s, cadeira %s" % [item.id, rotation, backrest.world_size(), chair])
+			var chair := ArtSprites.furniture(item.id, rotation)
+			assert_true(backrest.world_size().y < chair.world_size().y, "%s r%d: encosto menor que a cadeira" % [item.id, rotation])
+			# Com os pés mais baixos da DT-105, a razão antiga de 75% não representa o recorte.
+			# Conferir o alinhamento real: o overlay não inclui os pés nem chega ao piso.
+			var floor_clearance := chair.draw_rect().end.y - backrest.draw_rect().end.y
+			assert_true(floor_clearance >= 8.0, "%s r%d: encosto termina %.2f acima dos pés" % [item.id, rotation, floor_clearance])
 			checked += 1
 	assert_eq(checked, 42, "21 cadeiras com encosto, em 2 rotações")
 
