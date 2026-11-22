@@ -4,6 +4,18 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-106 — Extensão visual do cenário: cozinha, revestimentos e decoração (22/11/2026)
+
+**Pedido do PO:** após aprovar e autorizar o envio da DT-105, incluir também fogões, janelas, pisos e decorações na mesma direção visual.
+
+**Escopo:** renovar a geometria e os materiais da cozinha, janelas, pisos/paredes e enfeites existentes; manter coleções, IDs, preços, área ocupada e comportamento. Preservar os pontos de apoio de panelas, brilho do forno e pilhas de pratos. Portas, quadros e luminárias acompanham o cenário para não manter acabamentos incompatíveis.
+
+**Execução:** geradores novos em `tools/render3d/*_codex.py`, cada um com saída exclusiva em `build/visual-cenario/`. Um único escritor instala o manifesto depois de conferir os lotes. Nenhuma geração grava diretamente em `art/sprites`. Regras, conteúdo e save permanecem com o Claude; o cenário novo será avaliado separadamente do conjunto DT-105 já aprovado.
+
+**Validação prevista:** conferir cobertura e registro de todos os sprites, mosaicos comparativos, cenas reais com cozinha ativa, janelas/iluminação de dia e noite, pisos sem frestas e decorações de todas as coleções. Testes e resultado serão registrados no status ao concluir.
+
+---
+
 ## DT-105 — Reformulação visual integrada: proporções, coleções e interface (22/11/2026)
 
 **Pedido do PO:** corrigir proporções e pés dos clientes, refazer mesas e cadeiras preservando Japão, Brasil e demais coleções, renovar HUD/central e quase todo o front-end. Execução autônoma autorizada; commit/envio continuam dependendo de "Pode enviar".

@@ -2,7 +2,7 @@
 
 ## Estado e autorização (22/11/2026)
 
-O PO aprovou a reformulação dentro do jogo: “Ficou muito bom! Pode enviar”. A entrega DT-103/104/105 parte da `main` em `737f73e`, após o Natal, e está no ramo `codex/visual-garcom`. Esta passagem acompanha o envio autorizado; o resultado remoto fica registrado no status.
+O PO aprovou a reformulação dentro do jogo: “Ficou muito bom! Pode enviar”, e confirmou “Sim, pode integrar à main”. A entrega DT-103/104/105 partiu de `737f73e`, após o Natal, foi enviada em `a09f8e9` e integrada pela [PR #1](https://github.com/eliashenr/cafe-manie/pull/1) no merge `449e755`. Os testes de push e PR passaram antes da integração. A `main` já contém a reformulação aprovada; o cenário DT-106 continua em desenvolvimento separado na cópia do Codex.
 
 ## O que mudou
 

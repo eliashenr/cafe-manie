@@ -2,6 +2,13 @@
 
 ## CAFÉ MANIE — STATUS (22/11/2026)
 
+🟡 **EXTENSÃO DO CENÁRIO EM EXECUÇÃO — DT-106**
+
+- Pedido do PO: incluir fogões, janelas, pisos e decorações depois da aprovação da DT-105. Cozinha, revestimentos/janelas e enfeites/portas estão sendo trabalhados separadamente; instalação centralizada do manifesto.
+- Geradores em preparação local: `cozinha_codex.py`, `superficies_codex.py` e `decoracoes_codex.py`, em `tools/render3d/`. Saídas em `build/visual-cenario/`; nenhuma geração escreve diretamente em produção. Estes novos arquivos ainda não integram a entrega aprovada DT-105.
+- Nova revisão em preparação local, `Revisar Cenario.cmd`: C troca coleções completas (móveis, cozinha, revestimentos, janelas e porta); N dia/noite. A amostra usa dados em memória e enquadra o alto das paredes. A base anterior tem 13 capturas em `build/visual-cenario/antes/`.
+- **Resultado aprovado integrado:** commit `a09f8e9`, [PR #1](https://github.com/eliashenr/cafe-manie/pull/1), incorporado à `main` em `449e755`. O PO confirmou expressamente “Sim, pode integrar à main”. Os testes de push e PR passaram antes da integração. Nenhuma mudança feita na pasta do Claude.
+
 🟢 **REFORMULAÇÃO VISUAL APROVADA — DT-105**
 
 **Aceite do PO:** “Ficou muito bom! Pode enviar”, em 22/11/2026. Envio autorizado com `eliashenr`. A passagem para o Claude está em [passagem-visual-codex.md](passagem-visual-codex.md). O PO também autorizou continuar com fogões, janelas, pisos e decorações; esse novo lote fica separado da entrega aprovada.
@@ -13,7 +20,7 @@
 - **Validação final:** 764 testes Godot passaram, nenhum falhou; cena principal por 120 quadros com saída 0. Os 27 testes Python dos importadores/instalador passaram. Logs: `build/visual-reformulacao/tests-final-confirmado.log`, `cena-final-confirmada.log` e `python-tests-final.log`. `git diff --check` limpo. O instalador também foi protegido contra falhas parciais, com restauração das imagens e confirmação atômica do manifesto.
 - **Conferência visual:** 111 capturas dos clientes; os 108 detalhes dos 12 personagens foram inspecionados em nove estados, sem cortes, inversões de costas ou encostos cobrindo indevidamente o corpo. Conferidos ainda 22 casos de UI em 1280×720/960×540 e cinco capturas finais do salão de dia/noite, Japão, Brasil e central (`build/visual-reformulacao/revisao-completa/*_final.png`), sem erros nos logs. Pequenas variações de apoio permanecem em algumas poses de costas; o conjunto está pronto para avaliação visual do PO, não é um aceite automático.
 - **Revisão entregue:** `Revisar Visual.cmd` abriu minimizada no desktop, fora da sandbox, com APPDATA/LOCALAPPDATA isolados. Processo 20184; título “Revisão Visual · Mostruário misto · 12 clientes” confirmado. C alterna 12 coleções, N dia/noite, 1/2 lotes e 0 todos. Simulação real, sem gravar.
-- **Próximo passo:** enviar a DT-105 aprovada e executar a extensão visual DT-106. Conteúdo/calendário continuam com o Claude; a pasta dele e seus experimentos locais são preservados.
+- **Envio e integração confirmados:** commit `a09f8e9`, [PR #1](https://github.com/eliashenr/cafe-manie/pull/1), merge `449e755` na `main`, após autorização explícita do PO e CI de push/PR aprovados. Conteúdo/calendário continuam com o Claude; a pasta dele e seus experimentos locais são preservados.
 
 Os registros DT-103/104 abaixo documentam as rodadas anteriores; as pendências do primeiro candidato de clientes são tratadas pela DT-105.
 

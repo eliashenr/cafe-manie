@@ -412,4 +412,6 @@ O corpo, as poses e o andar **não mudam**.
 
 **Validação concluída:** 764 testes Godot, 27 testes Python e cena principal por 120 quadros sem erros. Os 108 detalhes dos clientes e cinco capturas finais do salão/central foram conferidos. Revisão aberta minimizada no desktop (processo 20184), título confirmado, sem salvar. Logs e pequenas variações visuais remanescentes estão no status.
 
-**Aceite e próximo passo:** o PO aprovou (“Ficou muito bom!”) e autorizou o envio (“Pode enviar”) em 22/11/2026. Enviar a DT-105 com a conta `eliashenr` e continuar a extensão DT-106: fogões/cozinha, janelas, pisos/revestimentos e decorações. Passagem detalhada em `passagem-visual-codex.md`. Pendências de conteúdo permanecem com o Claude. A aprovação da DT-105 não é aprovação automática da próxima arte.
+**Entrega confirmada:** o PO aprovou (“Ficou muito bom!”), autorizou o envio e confirmou “Sim, pode integrar à main”. Commit `a09f8e9`, PR #1, merge `449e755`, conta `eliashenr`. CI de push e PR aprovados. A pasta do Claude não foi alterada.
+
+**Próximo passo em execução:** extensão DT-106, fogões/cozinha, janelas, pisos/revestimentos e decorações. Geradores novos e provas locais em `build/visual-cenario/`, ainda fora da entrega aprovada. Passagem detalhada em `passagem-visual-codex.md`. Pendências de conteúdo permanecem com o Claude. A aprovação da DT-105 não é aprovação automática da próxima arte.

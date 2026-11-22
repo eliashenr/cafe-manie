@@ -24,7 +24,8 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] Concluir a conferência integrada de clientes, pés, fontes finais e capturas do salão: 764 testes Godot, 27 testes Python e cena principal sem erros; 108 detalhes dos clientes e cinco capturas finais do conjunto conferidos.
 - [x] PO avaliar e aprovar o novo conjunto dentro do jogo: “Ficou muito bom!”, em 22/11/2026.
 - [x] PO autorizar commit/envio: “Pode enviar”.
-- [ ] Registrar a confirmação do envio remoto.
+- [x] Registrar a confirmação do envio remoto: `a09f8e9`, PR #1, CI de push e PR aprovados.
+- [x] Integrar a PR #1 à `main`: `449e755`, após “Sim, pode integrar à main” do PO.
 - [ ] Estender a direção visual à cozinha, janelas, revestimentos e decorações (DT-106).
 
 ## Garçom do Codex (22/11/2026, DT-103, ramo `codex/visual-garcom`)

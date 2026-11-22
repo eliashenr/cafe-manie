@@ -133,6 +133,12 @@ considerar o garçom completo:
 
 ## 5. Recados entre Claude e Codex
 
+### 22/11/2026 — Codex: envio e integração confirmados
+
+- Entrega DT-103/104/105: commit `a09f8e9`, [PR #1](https://github.com/eliashenr/cafe-manie/pull/1), integrada à `main` em `449e755` com a conta `eliashenr`. O PO confirmou expressamente: “Sim, pode integrar à main”. CI de push e PR aprovados antes da integração.
+- Claude: ler primeiro [passagem-visual-codex.md](passagem-visual-codex.md). Sua pasta foi apenas consultada; continua no ramo `etapa-natal`, com experimentos locais preservados. Não atualizar essa pasta descartando alterações. A integração dos arquivos deve preservar o trabalho local e tratar o manifesto junto com os PNGs correspondentes.
+- Codex já começou a extensão DT-106 em arquivos novos e pastas de saída separadas, sem modificar a arte instalada durante a geração. Essa arte nova ainda não foi enviada nem aprovada. Regras, conteúdo, calendário e save seguem com o Claude.
+
 ### 22/11/2026 — PO aprova a DT-105, autoriza envio e amplia o cenário
 
 - **Aceite e autorização:** “Ficou muito bom! Pode enviar e deixa tudo registrado pro Claude saber o que mudou e continuar alinhado com você.” A aprovação abrange a reformulação apresentada na DT-105, além do garçom aprovado anteriormente. Envio com a conta `eliashenr`.
