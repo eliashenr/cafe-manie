@@ -44,6 +44,32 @@ func test_cards_per_page_follow_the_screen_width() -> void:
 	assert_eq(cafe.build_bar.shop_page_count(), ceili(cafe.build_bar.shop_item_ids().size() / float(per_page)))
 
 
+func test_one_shop_entry_reaches_floors_and_walls_and_returns_after_cancelling() -> void:
+	var cafe := await spawn_cafe()
+	await settle()
+	assert_true(cafe.build_bar.find_button("RenovateButton") == null, "a barra tem uma única entrada para a loja")
+	cafe.build_bar.find_button("ShopButton").pressed.emit()
+	await settle()
+	assert_true(cafe.build_bar.message_text().contains("pisos") and cafe.build_bar.message_text().contains("paredes"),
+		"a loja explica onde encontrar os revestimentos")
+	for tab in ["SALON", "KITCHEN", "DECOR", "FLOOR", "WALL", "COUPONS"]:
+		assert_true(cafe.build_bar.find_button("Tab_" + tab) != null, "a loja mantém a seção " + tab)
+	for choice in [["FLOOR", "floor_wood"], ["WALL", "wall_brick"]]:
+		cafe.build_bar.find_button("Tab_" + choice[0]).pressed.emit()
+		await settle()
+		cafe.build_bar.find_button("Collection_classico").pressed.emit()
+		await settle()
+		buy_in_shop(cafe, cafe.build_bar.find_button("Surface_" + choice[1]))
+		await settle()
+		assert_eq(cafe.mode, Cafe.Mode.PAINT, "escolher o revestimento pela Loja inicia a aplicação")
+		assert_eq(cafe.painting.id, StringName(choice[1]))
+		cafe.build_bar.find_button("CancelButton").pressed.emit()
+		await settle()
+		assert_true(cafe.build_bar._shop.visible, "cancelar volta para a Loja")
+		assert_true(cafe.build_bar.find_button("Tab_" + choice[0]).button_pressed, "volta à seção escolhida")
+	assert_eq(cafe.simulation.wallet.balance(Wallet.SOFT), 200, "cancelar não cobra a aplicação")
+
+
 func test_swiping_the_cards_turns_the_page_without_buying() -> void:
 	var cafe := await spawn_cafe()
 	cafe.build_bar.open_shop(BuildBar.ShopTab.SALON)

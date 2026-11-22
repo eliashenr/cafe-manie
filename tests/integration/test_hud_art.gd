@@ -95,7 +95,7 @@ func test_zoom_buttons_change_the_camera() -> void:
 	assert_true(cafe.camera.zoom.x > before, "aproximou")
 
 
-func test_mission_card_hides_on_tap_and_the_medallion_opens_the_missions() -> void:
+func test_mission_details_collapse_and_the_medallion_opens_the_missions() -> void:
 	var cafe := await spawn_cafe()
 	cafe.simulation.set_missions(CafeSimulation.default_missions())
 	await settle()
@@ -103,7 +103,8 @@ func test_mission_card_hides_on_tap_and_the_medallion_opens_the_missions() -> vo
 	assert_true(card.visible, "o cartão da missão começa à vista (tutorial)")
 	click(card.get_global_rect().get_center())
 	await settle()
-	assert_false(card.visible, "tocar no cartão esconde")
+	assert_false(card.visible, "tocar na dica a recolhe")
+	assert_true((_find(cafe, "MissionToggle") as Control).is_visible_in_tree(), "o resumo mantém o objetivo acessível")
 	assert_false(cafe.hud.mission_text().is_empty(), "a missão continua valendo")
 	(_find(cafe, "MissionsButton") as Button).pressed.emit()
 	await settle()
@@ -114,9 +115,9 @@ func test_mission_card_hides_on_tap_and_the_medallion_opens_the_missions() -> vo
 func test_icon_bar_opens_the_shop_and_the_achievements() -> void:
 	var cafe := await spawn_cafe()
 	await settle()
-	cafe.build_bar.find_button("RenovateButton").pressed.emit()
+	cafe.build_bar.find_button("ShopButton").pressed.emit()
 	await settle()
-	assert_true(cafe.build_bar.shop_open and cafe.build_bar.shop_tab == BuildBar.ShopTab.FLOOR, "Reformar abre os pisos")
+	assert_true(cafe.build_bar.shop_open and cafe.build_bar.shop_tab == BuildBar.ShopTab.SALON, "Loja abre o catálogo")
 	cafe.build_bar.close_shop()
 	await settle()
 	(_find(cafe, "AchievementsButton") as Button).pressed.emit()

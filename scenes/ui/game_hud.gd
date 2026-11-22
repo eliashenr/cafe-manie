@@ -1,6 +1,6 @@
 class_name GameHud
 extends CanvasLayer
-## Perfil e recursos no topo; objetivo compacto e atalhos nas laterais.
+## Perfil e recursos no topo; objetivo recolhível e controles agrupados nas laterais.
 ## O evento ocupa uma faixa própria, sem disputar espaço com os contadores.
 ## Avisos ficam acima do HUD e mudam para a base durante os diálogos.
 ##
@@ -47,17 +47,17 @@ const AVATAR_SIZE := 60.0
 const CITY_TEXT := "Nova York"
 const RATING_CAPTION := "Popularidade"
 const RATING_FORMAT := "%d/100"
-## Menu lateral e botões quadrados da direita.
+## Menu lateral e painel de operação à direita.
 const SIDE_TILE_SIZE := Vector2(64, 64)
 const SIDE_TILE_GAP := 8.0
 const SIDE_TILES_TOP := 100.0
-const SIDE_BUTTONS_TOP := 132.0
-const SIDE_BUTTON_STEP := 52.0
+const CONTROLS_TOP := 148.0
+const CONTROLS_WIDTH := 144.0
 const DAILY_TITLE := "PRESENTE DIÁRIO EM"
 const DAILY_READY_TITLE := "PRESENTE DIÁRIO"
 const DAILY_READY := "Receber!"
-const PAUSE_TEXT := "JOGO PAUSADO: mexa à vontade. Toque em ▶ para continuar."
-const CLOSED_TEXT := "CAFÉ FECHADO: ninguém novo entra. Toque na porta para abrir."
+const PAUSE_TEXT := "Jogo pausado · mexa à vontade e toque em Continuar para retomar."
+const CLOSED_TEXT := "Café fechado · ninguém novo entra. Toque em Abrir para receber clientes."
 ## Janelas (DT-079): o fundo escurecido atrás delas, numa camada acima do HUD e da barra (os avisos ficam por cima).
 const OVERLAY_LAYER := 2
 const DIM_COLOR := Color(0.16, 0.11, 0.08, 0.50)
@@ -83,10 +83,14 @@ var _sound_button: Button
 var _muted := false
 var _music_button: Button
 var _music_muted := false
+var _settings_dialog: AcceptDialog
+var _restart_returns_to_settings := false
 var _pause_button: Button
 var _pause_banner: PanelContainer
 var _closed_button: Button
 var _closed_banner: PanelContainer
+var _operation_status: Label
+var _team_status: Label
 var _name_dialog: ConfirmationDialog
 var _name_edit: LineEdit
 var _gold_label: Label
@@ -142,13 +146,17 @@ var _achievements_list: VBoxContainer
 ## Avisos esperando a vez: um aviso nunca apaga o outro.
 var _toast_queue: Array[String] = []
 var _mission_card: PanelContainer
+var _mission_dock: VBoxContainer
+var _mission_toggle: Button
+var _mission_summary: Label
+var _mission_toggle_label: Label
 var _mission_header: Label
 var _mission_title: Label
 var _mission_bar: ProgressBar
 var _mission_count: Label
 var _mission_reward: Label
 var _mission_hint: Label
-## O jogador escondeu o cartão da missão (tocando nele)? Abrir as missões mostra de novo.
+## Só os detalhes recolhem; o resumo mantém título, progresso e acesso à dica.
 var _mission_collapsed := false
 
 
@@ -439,14 +447,14 @@ func _build_profile() -> void:
 	_place(card, _xp_bar, Vector2(78, 52), Vector2(PROFILE_SIZE.x - 90, 18))
 
 
-## No alto à direita: o presente diário com o cronômetro, o evento com os dias que faltam e a engrenagem.
+## Presente e evento no topo; a engrenagem abre Configurações, nunca apaga o progresso.
 func _build_top_right() -> void:
 	var row := HBoxContainer.new()
 	row.name = "TopRight"
 	row.alignment = BoxContainer.ALIGNMENT_END
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_theme_constant_override("separation", 10)
-	_anchored(row, Vector2(1.0, 0.0), Vector2(-274, 12), Vector2(262, 56))
+	row.add_theme_constant_override("separation", 8)
+	_anchored(row, Vector2(1.0, 0.0), Vector2(-278, 12), Vector2(266, 56))
 	row.add_child(_build_daily_timer())
 	_event_timer = _top_panel("EventTimer", "medalhao_evento", "EVENTO ESPECIAL", func() -> void: event_requested.emit())
 	_event_timer_value = UiTheme.outlined("", 20, UiTheme.TEXT, UiTheme.NAVY, 0)
@@ -455,9 +463,11 @@ func _build_top_right() -> void:
 	_event_timer.custom_minimum_size = Vector2(176, 56)
 	_event_timer.visible = false
 	_anchored(_event_timer, Vector2(1.0, 0.0), Vector2(-244, 76), Vector2(176, 56))
-	var settings := UiTheme.icon_button("RestartButton", "gear", "", 46)
-	settings.tooltip_text = "Recomeçar o jogo"
-	settings.pressed.connect(ask_restart)
+	var settings := UiTheme.icon_button("SettingsButton", "gear", "Ajustes", 28)
+	settings.custom_minimum_size = Vector2(54, 56)
+	settings.add_theme_font_size_override("font_size", 11)
+	settings.tooltip_text = "Configurações de som, música e progresso"
+	settings.pressed.connect(show_settings)
 	settings.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(settings)
 
@@ -497,38 +507,58 @@ func _build_daily_timer() -> Button:
 	return button
 
 
-## Botões quadrados da direita: pausa, porta, zoom, som e música (a engrenagem fica no alto, DT-077).
+## Operação e enquadramento no mesmo painel; áudio fica em Configurações.
 func _build_side_buttons() -> void:
-	var y := SIDE_BUTTONS_TOP
-	_pause_button = UiTheme.icon_button("PauseButton", "pause", "", 44)
+	var panel := PanelContainer.new()
+	panel.name = "CafeControls"
+	panel.add_theme_stylebox_override("panel", UiTheme.glass_box(16, 8))
+	_anchored(panel, Vector2(1.0, 0.0), Vector2(-CONTROLS_WIDTH - 12, CONTROLS_TOP),
+		Vector2(CONTROLS_WIDTH, 0), _side_layer)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 6)
+	panel.add_child(column)
+	_operation_status = UiTheme.caption("Café aberto", UiTheme.GREEN, 13)
+	_operation_status.name = "OperationStatus"
+	_operation_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(_operation_status)
+	var operation := HBoxContainer.new()
+	operation.name = "OperationButtons"
+	operation.add_theme_constant_override("separation", 8)
+	operation.alignment = BoxContainer.ALIGNMENT_CENTER
+	column.add_child(operation)
+	_pause_button = UiTheme.icon_button("PauseButton", "pause", "Pausar", 32)
+	_pause_button.custom_minimum_size = Vector2(56, 60)
+	_pause_button.add_theme_font_size_override("font_size", 12)
 	_pause_button.pressed.connect(func() -> void: pause_toggled.emit())
-	_anchored(_pause_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
+	operation.add_child(_pause_button)
 	_build_pause_banner()
-	y += SIDE_BUTTON_STEP
-	_closed_button = UiTheme.icon_button("ClosedButton", "door_close", "", 44)
+	_closed_button = UiTheme.icon_button("ClosedButton", "door_close", "Fechar", 32)
+	_closed_button.custom_minimum_size = Vector2(56, 60)
+	_closed_button.add_theme_font_size_override("font_size", 12)
 	_closed_button.pressed.connect(func() -> void: closed_toggled.emit())
-	_anchored(_closed_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
+	operation.add_child(_closed_button)
 	_closed_banner = _banner("ClosedBanner", "ClosedText", CLOSED_TEXT, UiTheme.RED, -248)  # acima da faixa da pausa
-	y += SIDE_BUTTON_STEP
-	var zoom_in := UiTheme.icon_button("ZoomInButton", "zoom_in", "", 44)
-	zoom_in.tooltip_text = "Aproximar"
-	zoom_in.pressed.connect(func() -> void: zoom_requested.emit(ZOOM_STEP))
-	_anchored(zoom_in, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
-	y += SIDE_BUTTON_STEP
-	var zoom_out := UiTheme.icon_button("ZoomOutButton", "zoom_out", "", 44)
+	_team_status = UiTheme.caption("", UiTheme.TEXT_SOFT, 11)
+	_team_status.name = "TeamStatus"
+	_team_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(_team_status)
+	column.add_child(HSeparator.new())
+	var zoom_title := UiTheme.caption("Zoom", UiTheme.TEXT_SOFT, 11)
+	zoom_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(zoom_title)
+	var zoom := HBoxContainer.new()
+	zoom.name = "ZoomButtons"
+	zoom.alignment = BoxContainer.ALIGNMENT_CENTER
+	zoom.add_theme_constant_override("separation", 12)
+	column.add_child(zoom)
+	var zoom_out := UiTheme.icon_button("ZoomOutButton", "zoom_out", "", 32)
 	zoom_out.tooltip_text = "Afastar"
 	zoom_out.pressed.connect(func() -> void: zoom_requested.emit(1.0 / ZOOM_STEP))
-	_anchored(zoom_out, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
-	y += SIDE_BUTTON_STEP
-	_sound_button = UiTheme.icon_button("SoundButton", "sound", "", 44)
-	_sound_button.pressed.connect(func() -> void: mute_toggled.emit(not _muted))
-	_anchored(_sound_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
-	y += SIDE_BUTTON_STEP
-	_music_button = UiTheme.icon_button("MusicButton", "music", "", 44)
-	_music_button.pressed.connect(func() -> void: music_toggled.emit(not _music_muted))
-	_anchored(_music_button, Vector2(1.0, 0.0), Vector2(-60, y), Vector2(50, 50), _side_layer)
-	show_sound_state(false)
-	show_music_state(false)
+	zoom.add_child(zoom_out)
+	var zoom_in := UiTheme.icon_button("ZoomInButton", "zoom_in", "", 32)
+	zoom_in.tooltip_text = "Aproximar"
+	zoom_in.pressed.connect(func() -> void: zoom_requested.emit(ZOOM_STEP))
+	zoom.add_child(zoom_in)
 	show_pause_state(false)
 	show_closed_state(false)
 
@@ -563,6 +593,7 @@ func show_pause_state(paused: bool) -> void:
 	if sprite != null:
 		_pause_button.icon = sprite.texture
 	_pause_button.tooltip_text = "Continuar o jogo (P)" if paused else "Pausar o jogo (P)"
+	_pause_button.text = "Continuar" if paused else "Pausar"
 	_pause_banner.visible = paused
 
 
@@ -576,6 +607,9 @@ func show_closed_state(closed: bool) -> void:
 	if sprite != null:
 		_closed_button.icon = sprite.texture
 	_closed_button.tooltip_text = "Abrir o café (F)" if closed else "Fechar o café (F)"
+	_closed_button.text = "Abrir" if closed else "Fechar"
+	_operation_status.text = "Café fechado" if closed else "Café aberto"
+	_operation_status.add_theme_color_override("font_color", UiTheme.RED if closed else UiTheme.GREEN)
 	_closed_banner.visible = closed
 
 
@@ -639,9 +673,39 @@ func _badge(text: String) -> Control:
 	return badge
 
 
-## Cartão da missão atual, ao lado do medalhão: as missões iniciais são o tutorial
-## (seção 143), então a dica fica à vista. Tocar no cartão esconde; abrir as missões mostra de novo.
+## O resumo continua acessível após recolher; a ação e a dica não dependem de tooltip.
 func _build_mission_card() -> void:
+	_mission_dock = VBoxContainer.new()
+	_mission_dock.name = "MissionDock"
+	_mission_dock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_mission_dock.add_theme_constant_override("separation", 4)
+	_anchored(_mission_dock, Vector2.ZERO, Vector2(12 + SIDE_TILE_SIZE.x + 10, SIDE_TILES_TOP),
+		Vector2(MISSION_CARD_WIDTH, 0), _side_layer)
+	_mission_toggle = Button.new()
+	_mission_toggle.name = "MissionToggle"
+	_mission_toggle.custom_minimum_size = Vector2(MISSION_CARD_WIDTH, 68)
+	_mission_toggle.pressed.connect(func() -> void:
+		_mission_collapsed = not _mission_collapsed
+		_refresh_mission())
+	for state in ["normal", "focus"]:
+		_mission_toggle.add_theme_stylebox_override(state, UiTheme.glass_box(14, 0))
+	for state in ["hover", "pressed", "hover_pressed"]:
+		_mission_toggle.add_theme_stylebox_override(state, UiTheme.glass_box(14, 0, UiTheme.CYAN, true))
+	_mission_dock.add_child(_mission_toggle)
+	_mission_title = UiTheme.outlined("", 14, UiTheme.TEXT, Color(0, 0, 0, 0), 0)
+	_mission_title.name = "MissionTitle"
+	_mission_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_mission_title.max_lines_visible = 2
+	_mission_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_place(_mission_toggle, _mission_title, Vector2(12, 6), Vector2(190, 36))
+	_mission_summary = UiTheme.caption("", UiTheme.TEXT_SOFT, 12)
+	_mission_summary.name = "MissionSummary"
+	_place(_mission_toggle, _mission_summary, Vector2(12, 46), Vector2(190, 18))
+	_mission_toggle_label = UiTheme.caption("", UiTheme.CYAN, 11)
+	_mission_toggle_label.name = "MissionToggleLabel"
+	_mission_toggle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_mission_toggle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_place(_mission_toggle, _mission_toggle_label, Vector2(206, 8), Vector2(58, 52))
 	_mission_card = PanelContainer.new()
 	_mission_card.name = "MissionCard"
 	_mission_card.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -653,21 +717,18 @@ func _build_mission_card() -> void:
 			_refresh_mission()
 			_mission_card.accept_event())
 	_mission_card.add_theme_stylebox_override("panel", UiTheme.glass_box(14, 12))
-	_anchored(_mission_card, Vector2.ZERO, Vector2(12 + SIDE_TILE_SIZE.x + 10, SIDE_TILES_TOP), Vector2(MISSION_CARD_WIDTH, 0),
-		_side_layer)
+	_mission_dock.add_child(_mission_card)
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_theme_constant_override("separation", 3)
 	_mission_card.add_child(column)
 	_mission_header = UiTheme.caption("", UiTheme.CYAN, 11)
 	_mission_header.name = "MissionHeader"
+	_mission_header.visible = false
 	column.add_child(_mission_header)
-	_mission_title = UiTheme.outlined("", 16, UiTheme.TEXT, Color(0, 0, 0, 0), 0)
-	_mission_title.name = "MissionTitle"
-	_mission_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_mission_title.custom_minimum_size = Vector2(MISSION_CARD_WIDTH - 24, 0)
-	column.add_child(_mission_title)
 	var progress := HBoxContainer.new()
+	# Título, contagem e prêmio já estão no resumo; o corpo recolhível reserva espaço para a dica.
+	progress.visible = false
 	progress.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	progress.add_theme_constant_override("separation", 6)
 	column.add_child(progress)
@@ -695,8 +756,7 @@ func _build_mission_card() -> void:
 	_mission_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_mission_hint.custom_minimum_size = Vector2(MISSION_CARD_WIDTH - 24, 0)
 	column.add_child(_mission_hint)
-	# A instrução completa continua nas Missões e na dica do cartão.
-	_mission_hint.visible = false
+	_mission_hint.visible = true
 
 
 ## Popularidade do café (DT-090): o nome, o valor de 0 a 100 e as estrelas. Ela sobe e desce com o atendimento; não é
@@ -799,7 +859,82 @@ func _build_dialogs() -> void:
 	_restart_dialog.ok_button_text = "Apagar e recomeçar"
 	_restart_dialog.cancel_button_text = "Cancelar"
 	_restart_dialog.confirmed.connect(func() -> void: restart_requested.emit())
+	_restart_dialog.canceled.connect(func() -> void:
+		if _restart_returns_to_settings:
+			show_settings.call_deferred())
 	_add_dialog(_restart_dialog, UiTheme.DANGER_BUTTON)
+	_build_settings_dialog()
+
+
+## Preferências já persistidas pelo SoundBoard; o HUD continua emitindo os mesmos sinais.
+func _build_settings_dialog() -> void:
+	_settings_dialog = AcceptDialog.new()
+	_settings_dialog.name = "SettingsDialog"
+	_settings_dialog.title = "Configurações"
+	_settings_dialog.ok_button_text = "Fechar"
+	var column := VBoxContainer.new()
+	column.custom_minimum_size.x = 360
+	column.add_theme_constant_override("separation", 12)
+	_settings_dialog.add_child(column)
+	column.add_child(UiTheme.caption("ÁUDIO", UiTheme.TEXT_SOFT, 12))
+	_sound_button = _settings_button("SoundButton", column)
+	_sound_button.pressed.connect(func() -> void: mute_toggled.emit(not _muted))
+	_music_button = _settings_button("MusicButton", column)
+	_music_button.pressed.connect(func() -> void: music_toggled.emit(not _music_muted))
+	column.add_child(HSeparator.new())
+	column.add_child(UiTheme.caption("SEU CAFÉ", UiTheme.TEXT_SOFT, 12))
+	var restart := _settings_button("RestartButton", column)
+	restart.text = "Recomeçar do zero…"
+	restart.tooltip_text = "Pedir confirmação para apagar o progresso e começar outro café"
+	UiTheme.role(restart, UiTheme.DANGER_BUTTON)
+	restart.pressed.connect(ask_restart)
+	var note := UiTheme.outlined("Recomeçar apaga o progresso. Você confirma antes de continuar.", 13,
+		UiTheme.TEXT_SOFT, Color(0, 0, 0, 0), 0)
+	note.custom_minimum_size.x = 360
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(note)
+	_add_dialog(_settings_dialog)
+	show_sound_state(_muted)
+	show_music_state(_music_muted)
+
+
+func _settings_button(button_name: String, parent: Control) -> Button:
+	var button := Button.new()
+	button.name = button_name
+	button.custom_minimum_size = Vector2(360, 56)
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.add_theme_constant_override("icon_max_width", 30)
+	button.expand_icon = true
+	UiTheme.role(button, UiTheme.GHOST_BUTTON)
+	parent.add_child(button)
+	return button
+
+
+func settings_dialog() -> AcceptDialog:
+	return _settings_dialog
+
+
+func show_settings() -> void:
+	if not _can_open_dialog(_settings_dialog):
+		return
+	_settings_dialog.popup_centered()
+	_fit_settings_dialog.call_deferred()
+	_settings_dialog.get_ok_button().grab_focus()
+
+
+func _fit_settings_dialog() -> void:
+	_settings_dialog.reset_size()
+	if _settings_dialog.visible:
+		_settings_dialog.move_to_center()
+
+
+## Inclui a confirmação de compras, que pertence à barra e não é filha do HUD.
+func _can_open_dialog(target: Window) -> bool:
+	for dialog: Window in get_parent().find_children("*", "Window", true, false):
+		if dialog.visible and dialog != target:
+			return false
+	return true
 
 
 ## Janela no padrão (DT-079): [param ok_role] é o papel do botão de OK (fantasma para Fechar, verde para receber e
@@ -919,9 +1054,10 @@ func show_sound_state(muted: bool) -> void:
 	if sprite != null:
 		_sound_button.icon = sprite.texture
 	_sound_button.tooltip_text = sound_text()
+	_sound_button.text = sound_text()
 
 
-## "Som: ligado" ou "Som: desligado" (o botão mostra só o símbolo; o texto vai na dica).
+## "Som: ligado" ou "Som: desligado", no botão e na dica.
 func sound_text() -> String:
 	return "Som: desligado" if _muted else "Som: ligado"
 
@@ -932,6 +1068,7 @@ func show_music_state(muted: bool) -> void:
 	if sprite != null:
 		_music_button.icon = sprite.texture
 	_music_button.tooltip_text = music_text()
+	_music_button.text = music_text()
 
 
 ## "Música: ligada" ou "Música: desligada".
@@ -1263,6 +1400,10 @@ func show_missions() -> void:
 
 
 func ask_restart() -> void:
+	_restart_returns_to_settings = _settings_dialog.visible
+	_settings_dialog.hide()
+	if not _can_open_dialog(_restart_dialog):
+		return
 	_restart_dialog.popup_centered()
 	# O botão já selecionado é o seguro: um Enter sem querer não apaga nada.
 	_restart_dialog.get_cancel_button().grab_focus()
@@ -1326,6 +1467,8 @@ func refresh() -> void:
 	_refresh_event()
 	_refresh_daily()
 	_refresh_mission()
+	var waiter_count := simulation.waiters.size()
+	_team_status.text = "Equipe: %d %s" % [waiter_count, "garçom" if waiter_count == 1 else "garçons"]
 
 
 func _xp_text() -> String:
@@ -1370,6 +1513,7 @@ func _refresh_daily() -> void:
 func _refresh_mission() -> void:
 	var missions := simulation.missions
 	var mission := missions.current()
+	_mission_dock.visible = mission != null
 	_mission_card.visible = mission != null and not _mission_collapsed
 	if mission == null:
 		return
@@ -1379,6 +1523,9 @@ func _refresh_mission() -> void:
 	_mission_bar.value = float(progress) / mission.target
 	_mission_count.text = "%d/%d" % [progress, mission.target]
 	_mission_reward.text = "+%d" % mission.reward_gold
+	_mission_summary.text = "%d/%d · +%d ouro" % [progress, mission.target, mission.reward_gold]
+	_mission_toggle_label.text = "▾\nVer dica" if _mission_collapsed else "▴\nRecolher"
+	_mission_toggle.tooltip_text = "Mostrar como fazer esta missão" if _mission_collapsed else "Recolher a dica da missão"
 	_mission_hint.text = mission.hint
 	_mission_card.tooltip_text = mission.hint
 	_mission_card.reset_size()

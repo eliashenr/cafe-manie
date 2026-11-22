@@ -30,7 +30,21 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] Concluir a validação no jogo e apresentar a revisão DT-106 ao PO: 764 testes Godot + 27 Python, cena principal e 70 capturas conferidas; janela aberta minimizada.
 - [x] PO avaliar o novo cenário e autorizar envio e integração: “Pode enviar esse novo cenário e integrar à main”, em 22/11/2026.
 - [x] Registrar a confirmação remota da DT-106 na `main`: `26c873f`, PR #2, merge `71489f0`, CI aprovado.
-- [ ] DT-107: melhorar continuidade e movimento do chef; unificar os acessos Loja/Reforma.
+- [x] DT-107: implementar rosto contínuo, expressões e resposta ao toque; unificar Loja/Reforma em um acesso à Loja.
+- [x] Conferir 85 capturas reais da DT-107 em 1280×720/960×540, incluindo as peças do avatar, Loja/Pisos/Paredes e movimento.
+- [x] Validar a DT-107: 775 testes Godot, 30 Python e cena principal sem erros; revisão aberta minimizada no desktop.
+- [ ] PO avaliar a interação do chef e a Loja na revisão local; registrar o aceite.
+- [ ] Enviar/integrar a DT-107 depois da autorização específica do PO.
+- [x] DT-108: estudar Café Mania/Vostu, registrar fontes, datas, limites e propostas graduais em `estudo-cafe-mania-original.md`.
+- [x] DT-109: produzir chef vestido como fonte única e preparar prova parada no café real, tamanho normal e ampliado.
+- [x] PO validar o encaixe do chef parado DT-109: “Agora sim, ficou muito bom!”
+- [x] DT-110: animar o chef aprovado e validar no jogo, mantendo identidade/encaixes; 779 testes, 22 verificações de interação, comparação de pixels e sequência final conferidos.
+- [x] PO aprovar a animação DT-110 e autorizar concluir Loja, HUD e Central sem aceites intermediários.
+- [x] DT-111: Loja única com tipos/busca/coleções, objetivo recolhível, Configurações e Cidade organizada em Filial/Vizinhos; chef canônico integrado ao retrato real.
+- [x] PO testar e aprovar o conjunto na revisão integrada: “Ficou muito bom! Pode enviar essa reformulação da Loja, HUD e Cidade e integrar à main.”
+- [ ] Variantes completas do chef com encaixe aprovado; a personalização anterior permanece compatível, sem aceite visual.
+- [x] PO autorizar envio e integração da DT-111 à main em 22/11/2026.
+- [ ] Confirmar publicação remota e integração da DT-111, com testes aprovados e passagem atualizada.
 
 ## Garçom do Codex (22/11/2026, DT-103, ramo `codex/visual-garcom`)
 

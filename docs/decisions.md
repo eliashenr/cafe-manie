@@ -4,6 +4,80 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-111 — Loja única, HUD e Cidade em uma revisão integrada (22/11/2026)
+
+**Aceite posterior e publicação:** o PO aprovou a revisão integrada e pediu explicitamente enviar e integrar à main. O pacote publicado preserva somente o chef canônico aprovado e o desenho legado da main para outras combinações. O compositor modular reprovado, suas fontes/testes/importador e experimentos herdados ficam fora do envio. Preparação e validação em uma cópia limpa; a revisão local anterior continua preservada. Confirmação de commits, revisão e testes remotos no topo de `status.md`.
+
+**Autorização do PO:** aprovou a animação DT-110 e pediu concluir Loja/Reforma, HUD e Central, sem novas pausas por autorização. Entregar o conjunto jogável para testar quando voltar. Esse pedido substitui a sequência anterior de aceites intermediários; não contém nova autorização de commit/envio.
+
+**Loja:** um acesso e seis abas existentes. Tipos separam Mesas/Assentos, Fogões/Balcões/Bebidas e Revestimentos/Janelas/Portas/Enfeites. Coleções culturais continuam independentes; busca aceita acentos e nomes de coleção, com contagem, estado vazio e limpeza dos filtros. Posicionar/cancelar e fechar/reabrir preservam o contexto de navegação. Os cinco acessos inferiores têm dimensões consistentes.
+
+**HUD:** objetivo com resumo persistente e botão explícito Ver dica/Recolher. Pausa, funcionamento do café, equipe e zoom agrupados. A engrenagem abre Configurações, com Som/Música e Recomeçar do zero separado por confirmação, Cancelar focado e retorno à janela anterior. `Cafe.is_dialog_open()` reconhece Configurações; nenhuma lógica de domínio foi alterada.
+
+**Cidade:** Central passa a Cidade, com Filial e Vizinhos. Saldo, bloqueio, custo, reserva, capacidade e próxima melhoria vêm das mesmas regras. Vizinhos mostram café, amizade, recompensa, visita concluída e próxima disponibilidade; a tela explica que são personagens da cidade. Cartões não são recriados a cada atualização.
+
+**Chef aprovado:** `AvatarPortrait` usa `ChefAnimatedPortrait` para a combinação completa clara/curto castanho/branca/toque. No HUD e nos cartões fica estático; no retrato principal respira, pisca e responde ao toque. A imagem base permanece intacta e nenhuma camada modular cobre gola/chapéu. IDs e escolhas de personalização são mantidos; outras combinações continuam com a arte anterior e não ganham aceite visual por essa integração.
+
+**Reprodução e limites:** `Revisar Interface Completa.cmd`, com a cena real e uma simulação isolada em memória, loja liberada e sem persistência. Foto automatizada oculta em 1280×720/960×540; janela final minimizada. `core/`, `data/`, autoloads, configuração, sprites aprovados e experimentos herdados preservados. A única ligação compartilhada de runtime é a inclusão de Configurações na lista de janelas do café, reservada na seção 5 da divisão. Resultados finais e caminhos dos registros no topo de `status.md`.
+
+---
+
+## DT-110 — Animar o chef aprovado sem remontar as peças (22/11/2026)
+
+**Aceite e pedido do PO:** “Agora sim, ficou muito bom! Pode seguir com a animação, mantendo esse rosto e o encaixe da roupa e do chapéu. Depois vamos para a loja, o HUD e a central.” A DT-109 está aprovada como chef parado.
+
+**Decisão:** a imagem aprovada permanece intacta. O retrato inteiro recebe uma deformação contínua discreta para respiração e cumprimento, preservando a conexão entre crânio, chapéu, pescoço e gola. A piscada usa pálpebras geradas a partir da referência aprovada, amostradas somente em duas regiões delimitadas dos olhos; sobrancelhas, boca, roupa, chapéu e alfa vêm da base aprovada. Não trocar retratos inteiros para piscar.
+
+**Escopo:** componente novo `chef_animated_portrait.gd`, shader, fontes de piscada, revisão `Revisar Chef Animado.cmd` e testes de apresentação próprios. Prova estática DT-109 preservada para comparação. A personalização legada não é alterada nesta rodada; não presumir todas as variantes prontas. Loja/HUD/Central ficam para depois.
+
+**Critérios:** pose neutra reproduz a imagem aprovada, sem deformação acumulada; pausa e comparação estática têm comportamentos distintos; ocultar interrompe processamento; cada instância tem seu material/tempo. Conferir olhos, gola e chapéu nos extremos da animação e no tamanho real, além da suíte/cena com dados isolados. A animação aguarda avaliação própria, sem commit/envio autorizado.
+
+---
+
+## DT-109 — Chef vestido como referência estática antes de animar (22/11/2026)
+
+**Atualização posterior:** chef parado aprovado pelo PO em 22/11: “Agora sim, ficou muito bom!” Continuação autorizada na DT-110, mantendo identidade e encaixes.
+
+**Pedido do PO:** “Primeiro refaz o chef completo e me mostra parado no jogo, com a roupa e o chapéu bem encaixados. Depois a gente segue com a animação e os ajustes na loja, no HUD e na central.”
+
+**Decisão:** produzir uma única imagem coerente de cabeça, toque, pescoço, gola e roupa. A base do pescoço fica dentro da gola; o chapéu segue a perspectiva do crânio e envolve o cabelo. Gerada pela ferramenta de imagens integrada da OpenAI, preservando a identidade do chef. PNG canônica em `art/avatar/chef_vestido_v1.png`; prompt, origem e hash em `art/portraits/chef_vestido/`.
+
+**Apresentação:** ferramenta nova `Revisar Chef Vestido.cmd` usa o café real, tema existente e retrato estático no tamanho lógico 210×255, com detalhe 336×408. Não usa a montagem DT-107 reprovada para a prova nem altera o runtime da personalização. Capturas ocultas e revisão minimizada com dados isolados.
+
+**Limite:** aguardando avaliação visual do PO. Não equivale a todas as variantes corrigidas; animação, Loja, HUD e Central foram explicitamente adiados. Preservar IDs, saves e coleções. Sem commit/envio nesta rodada.
+
+---
+
+## DT-108 — Estudo do original e revisão gradual da apresentação (22/11/2026)
+
+**Pedido do PO:** estudar a página oficial do Café Mania no Facebook e os artigos Café Mania/Vostu da Wikipédia. A estrutura do Café Manie foi considerada boa; a intenção é reorganizar alguns pontos. O PO também reprovou o encaixe do avatar DT-107.
+
+**Resultado da pesquisa:** [estudo-cafe-mania-original.md](estudo-cafe-mania-original.md), com nove publicações oficiais identificadas, datas/valores e limites de acesso, portfólios de artistas, entrevista de fundador e comparação com o código atual. Fatos históricos, fontes secundárias e propostas estão separados. Não foi recuperado todo o acervo do Facebook nem uma tabela completa da economia original.
+
+**Direção:** preservar o cenário e a estrutura aprovados; começar a correção do chef por uma composição completa vestida, parada, com oclusão de gola/cabelo/chapéu. Depois avaliar pequenos ajustes de descoberta na Loja, missão recolhível explícita, navegação inferior, significado dos controles e rótulo Cidade. Testes funcionais não validam caimento visual. Nenhum preço, conteúdo ou regra muda por constar da referência histórica.
+
+**Estado:** somente pesquisa e documentação nesta rodada. Propostas de interface ainda não implementadas; avatar reprovado, Loja local sem aceite próprio. Codex mantém apresentação; Claude mantém regras, economia, conteúdo e calendário. Sem commit/envio novo.
+
+---
+
+## DT-107 — Chef com identidade contínua e acesso único à Loja (22/11/2026)
+
+**Retorno posterior:** avatar reprovado pelo PO por pescoço sobre a gola e chapéu sem encaixe. A implementação abaixo é histórica, não um resultado visual aprovado. Diagnóstico e próximo critério de aceite na DT-108 e em `estudo-cafe-mania-original.md`. Não publicar a montagem atual.
+
+**Pedido do PO:** depois de aprovar o cenário, melhorar a interação do avatar, que trocava de rosto e mantinha o chapéu estático, e eliminar a duplicação Loja/Reforma.
+
+**Decisão:** separar rosto, cabelo, chapéu e roupa somente na apresentação. Quatro expressões próprias compartilham o mesmo rosto; os quatro tons de pele são aplicados apenas à face, sem trocar seus traços. Seis cabelos separados reutilizam roupas e chapéus aprovados. Os nomes públicos das camadas, IDs, inventário, preços e formato do save permanecem iguais.
+
+**Interação:** a prévia grande pisca, respira suavemente e sorri/faz um pequeno cumprimento ao toque ou à escolha de uma peça. Cabeça, cabelo e chapéu seguem o mesmo pivô; a área clicável permanece fixa. Ao ocultar a janela, o processo visual para. Miniaturas e HUD ficam estáticos. A aba Pele usa amostras de cor; as demais mostram a combinação atual e distinguem “Usando” de “Experimentando”, com compra e cancelamento preservados.
+
+**Loja:** remover apenas o acesso redundante Reforma. Loja reúne Salão, Cozinha, Decoração, Pisos, Paredes e Cupons. As ações de aplicar/cancelar revestimentos continuam no fluxo existente.
+
+**Fontes e compatibilidade:** duas folhas RGBA criadas com a ferramenta de imagem integrada da OpenAI, fontes/prompts/calibração em `art/portraits/avatar_modular/`; importador novo gera 10 PNGs em `art/avatar/`. Nenhum dos 1.167 PNGs de `art/sprites/`, nem o manifesto, muda. Retrato legado é o fallback se faltar uma fonte modular. `core/`, `data/`, autoloads, configuração e `cafe.gd/tscn` não precisam mudar.
+
+**Entrega:** ramo local `codex/chef-loja`, base `cac07e8`, separado do cenário já integrado pela PR #2. Revisão `Revisar Chef e Loja.cmd`, minimizada e com dados isolados. Resultados de validação no topo de `status.md`. Avaliação visual e autorização de envio desta etapa continuam pendentes.
+
+---
+
 ## DT-106 — Extensão visual do cenário: cozinha, revestimentos e decoração (22/11/2026)
 
 **Pedido do PO:** após aprovar e autorizar o envio da DT-105, incluir também fogões, janelas, pisos e decorações na mesma direção visual.

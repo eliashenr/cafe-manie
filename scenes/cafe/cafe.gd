@@ -471,7 +471,7 @@ func _on_daily_requested() -> void:
 func is_dialog_open() -> bool:
 	for dialog: Window in [hud.daily_dialog(), hud.restart_dialog(), hud.achievements_dialog(), hud.missions_dialog(),
 			hud.name_dialog(), build_bar.confirm_dialog(), hud.coin_dialog(), hud.coin_info_dialog(), hud.event_dialog(),
-			hud.avatar_dialog(), hud.city_dialog()]:
+			hud.avatar_dialog(), hud.city_dialog(), hud.settings_dialog()]:
 		if dialog.visible:
 			return true
 	return false

@@ -19,7 +19,7 @@ func test_all_optional_resources_fit_beside_daily_and_event() -> void:
 	simulation.layout.place(simulation.furniture.get_definition(&"machine_coffee"), Vector2i(0, 0))
 	var cafe := await spawn_cafe(simulation)
 	await settle()
-	var names := ["Profile", "Gold", "EnergyButton", "CouponPill", "Beauty", "DailyButton", "RestartButton", "EventTimer"]
+	var names := ["Profile", "Gold", "EnergyButton", "CouponPill", "Beauty", "DailyButton", "SettingsButton", "EventTimer"]
 	var viewport := Rect2(Vector2.ZERO, cafe.get_viewport_rect().size)
 	for i in names.size():
 		var control := _control(cafe, names[i])

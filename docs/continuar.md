@@ -5,7 +5,7 @@ Atualizado em 22/11/2026. Se este guia e o [status.md](status.md) discordarem, v
 
 > **22/11/2026: leia antes [divisao-claude-codex.md](divisao-claude-codex.md).** O Codex assumiu a direção visual, os personagens e a interface; o Claude ficou com regras, economia, saves e conteúdo. O estado do ramo `etapa-natal` e as pendências estão lá. As rodadas de personagem abaixo (DT-101) ficam como histórico.
 
-> **Retomada visual atual:** leia a última seção, "Onde paramos — garçom aprovado e clientes candidatos, DT-103/104". Ela substitui os comandos e pendências antigas de produção dos personagens; os relatos anteriores são histórico.
+> **Retomada visual atual:** leia a última seção, "Onde paramos — revisão integrada DT-111". DT-105/106 estão na main; o chef parado DT-109 e a animação DT-110 foram aprovados. O PO autorizou concluir Loja, HUD e Central sem novas pausas. A revisão integrada mantém a arte aprovada, os contratos de regras e o save pessoal.
 
 ## 1. Regras que não podem ser quebradas
 
@@ -419,3 +419,53 @@ O corpo, as poses e o andar **não mudam**.
 **Atualização posterior do PO (22/11):** DT-106 aprovada, com autorização expressa para enviar e integrar à main. Codex publica este lote e registra a confirmação no status/passagem. Depois segue DT-107: avatar do chef com continuidade e movimento; Loja/Reforma com um único acesso. Conteúdo e Ano Novo continuam com Claude. Os registros anteriores de “aguarda aceite” são históricos e estão superados por esta autorização.
 
 **Publicação concluída:** commit `26c873f`, PR #2, merge `71489f0` na main, conta `eliashenr`; CI de push e PR aprovados. A passagem do cenário está publicada. Os ajustes DT-107 seguem em ramo próprio, mantendo os IDs e contratos dos saves.
+
+### Onde paramos — chef e Loja em revisão local, DT-107 (22/11/2026)
+
+- Cópia ativa: `C:\Users\Elias\.codex\worktrees\visual-garcom\cafe-manie`, ramo `codex/chef-loja`, base `cac07e8`. A DT-106 está na main pela PR #2; o CI do registro final da passagem também passou. Não trocar o ramo nem descartar alterações na pasta do Claude.
+- Implementados rosto contínuo nos quatro tons de pele, seis cabelos separados, expressões próprias, piscada e cumprimento ao toque, chapéu solidário à cabeça e respiração discreta. Pele usa amostras de cor; compra/experimentação/cancelamento mantêm as regras. Loja é o único acesso ao catálogo; Pisos e Paredes continuam dentro dele.
+- Dez PNGs novos em `art/avatar/`; fontes/prompts/calibração e reprodução em `art/portraits/avatar_modular/README.md`. Não regenerar os retratos antigos para reconstruir esta etapa. O importador novo é `tools/ia/importar_avatar_modular.py`; ele não escreve no manifesto.
+- Revisão sem terminal: `Revisar Chef e Loja.cmd`. Restaurar a janela minimizada e tocar no chef para cumprimentar. Fechar o diálogo permite acessar a Loja no café. Dados somente em memória, APPDATA/LOCALAPPDATA em `build/chef-loja/interactive`; iniciar fora da sandbox para aparecer no desktop.
+- Validação e evidências no topo de `status.md`: fotos em `build/chef-loja/capturas/candidato1/`; GIF real em `build/visual-avatar/movimento.gif`. Novos testes verificam identidade, movimento, pausa, materiais separados, compra/cancelamento e navegação da Loja.
+- **Pendente:** avaliação visual do PO e autorização específica para commit/envio da DT-107. Nenhum arquivo deste lote foi enviado. Os experimentos herdados continuam preservados e fora do lote. Ano Novo, conteúdo, economia e saves permanecem com Claude.
+
+### Onde paramos — avatar reprovado e estudo do original, DT-108 (22/11/2026)
+
+- O PO reprovou a composição do chef: pescoço por cima da roupa e chapéu sem encaixe. Não reenviar a montagem nem tratá-la como aprovada porque a suíte passou. A arte instalada continua local no ramo `codex/chef-loja`; a DT-106 segue publicada na main.
+- Pesquisa solicitada concluída com limites explícitos em [estudo-cafe-mania-original.md](estudo-cafe-mania-original.md): Facebook público, dois artigos da Wikipédia, fontes dos artistas e entrevista da Vostu; preços e recompensas históricos separados de inferências. Não afirmar que todo o Facebook foi lido ou que todos os números foram recuperados.
+- **Próxima execução visual:** produzir um chef vestido completo e parado para corrigir contato entre gola, pescoço, cabelo e chapéu. Derivar camadas somente quando conservarem a composição; avaliar no tamanho real antes de animar e multiplicar variantes. IDs/save devem continuar compatíveis.
+- Reorganização proposta, ainda não executada: filtros de tipo na aba Paredes; controle explícito da missão compacta; barra inferior alinhada; esclarecer engrenagem que hoje significa Recomeçar; Cidade/Filial/Vizinhos. Preservar a estrutura aprovada e trabalhar em rodadas pequenas.
+- Esta rodada modificou só documentos. Não repetir a suíte por mudança documental; os resultados DT-107 são históricos da implementação reprovada. Não houve nova geração, commit/envio ou alteração da pasta do Claude. Ano Novo permanece com Claude.
+
+### Onde paramos — chef vestido parado, DT-109 (22/11/2026)
+
+- Pedido atual do PO: primeiro mostrar chef completo parado no jogo, gola e chapéu encaixados. Animação e ajustes de Loja/HUD/Central somente depois. Não há novo aceite ou “Pode enviar”.
+- Cópia e ramo continuam `C:\Users\Elias\.codex\worktrees\visual-garcom\cafe-manie`, `codex/chef-loja`, base `cac07e8`. Nenhuma mudança na pasta do Claude. Preservar DT-107 local e experimentos herdados.
+- Fonte única original `art/avatar/chef_vestido_v1.png`, RGBA 1122×1402, gerada pela ferramenta integrada da OpenAI. Prompt, proveniência e contrato em `art/portraits/chef_vestido/README.md`. Não remontar esta prova com as peças antigas nem mudar sua anatomia ao derivar futuras variantes.
+- `Revisar Chef Vestido.cmd` abre minimizado no desktop, dados isolados em `build/chef-vestido/interactive`. Diálogo estático 210×255 com botão de detalhe 336×408; C reabre, D amplia, N alterna período. A janela é uma prova no café real; a personalização de produção permanece pendente.
+- Capturas, logs e resultado atual no topo de `status.md` e em `build/chef-vestido/`. Próximo passo é a avaliação visual do PO. Somente depois trabalhar variantes/animação e reorganização gradual, mantendo IDs e saves.
+
+### Onde paramos — animação do chef aprovado, DT-110 (22/11/2026)
+
+- O PO aprovou o chef parado DT-109 e pediu animação mantendo o mesmo rosto, roupa e chapéu encaixados. Loja/HUD/Central continuam para depois. Não houve autorização nova de commit/envio.
+- Base estática `art/avatar/chef_vestido_v1.png` preservada. Componente novo `scenes/ui/chef_animated_portrait.gd` e shader próprio usam malha contínua; novas fontes de pálpebras afetam somente regiões dos olhos. Contrato, prompts e hashes em `art/portraits/chef_animado/` e mapeamento em `art/avatar/chef_blink_v1.json`.
+- Revisão nova `Revisar Chef Animado.cmd`, com comparação ao original, pausa e cumprimento. Dados isolados em `build/chef-animado/`; abrir uma vez minimizada no desktop, fotos ocultas. Ferramenta não altera o runtime da personalização nem a prova estática aprovada.
+- Estado de validação e entrega no topo de `status.md`; capturas/logs em `build/chef-animado/`. A animação requer avaliação própria, sem presumir aceite das variantes. Manter a divisão de arquivos e preservar DT-107/experimentos herdados; nenhuma edição na pasta original do Claude.
+- Entrega confirmada: 779 testes + quatro focados finais, cena120 e 22 verificações de interação passaram; 203 capturas finais e comparação pixel a pixel conferidas. Revisão animada aberta minimizada no desktop (processo 11580), com log sem erros. Próximo passo é o PO avaliar o movimento; nenhuma publicação feita.
+
+### Onde paramos — revisão integrada DT-111 (22/11/2026)
+
+- O PO aprovou a animação DT-110 e pediu concluir Loja/Reforma, HUD e Central sem novas autorizações intermediárias. O conjunto foi implementado na cópia `C:\Users\Elias\.codex\worktrees\visual-garcom\cafe-manie`, ramo `codex/chef-loja`, base `cac07e8`. Nenhum commit/envio novo.
+- **Para o PO testar:** abrir `Revisar Interface Completa.cmd`. Começa no café com Loja, Configurações (engrenagem), Chef e Cidade pelos botões reais. A janela abre minimizada; nível/ouro liberam o catálogo, tudo em memória e sem salvar. N alterna dia/noite, exceto durante a busca. A oferta automática de presente fica desativada apenas nessa amostra.
+- **Para reproduzir as fotos:** `tools/revisao/revisar_frontend.ps1 -Mode foto -View suite -Resolution 1280x720` (ou `960x540`). A janela fica oculta, os dados isolados em `build/frontend/capture-<resolução>`. Cada suíte gera 30 fotos: café, seis abas, nove tipos, duas coleções, busca/vazio, missão recolhida, configurações, confirmação de recomeço, chef e seis estados da Cidade.
+- **Resultado:** Loja única mantém seis abas e acrescenta tipos, busca, contador/vazio e contexto ao cancelar/reabrir. Coleção ativa rola para ficar visível. HUD mantém objetivo acessível e agrupa operação/zoom; áudio fica em Configurações, com recomeço separado e Cancelar focado. Cidade organiza Filial/Vizinhos, custos, renda e disponibilidade de visitas. Chef canônico aprovado integrado ao HUD e ao diálogo real; outras combinações continuam com as artes anteriores, ainda sem aceite visual.
+- **Arquivos e contratos:** passagem atual em `passagem-visual-codex.md`; `Cafe.is_dialog_open()` recebe somente `hud.settings_dialog()`. Nenhuma alteração em regras, conteúdo, configuração, executor/base dos testes, sprites aprovados ou save pessoal. Evidência de escopo em `build/frontend/escopo-final.json`.
+- **Conferência:** 60 fotos finais em `build/frontend/capturas/final/`, duas resoluções, revisão visual independente sem defeito material restante. A primeira candidata revelou altura inflada de Configurações e coleção Brasil fora da rolagem; ambos corrigidos e recapturados. Resultados da suíte geral, testes focados e janela final no topo de `status.md`.
+- **Claude:** continuar calendário/conteúdo/economia/save; não restaurar o botão Reforma nem confundir o aceite do chef canônico com o da montagem modular DT-107. Não mover ou descartar experimentos herdados. Logs temporários de Cidade ficaram no `build/city-presentation-tests` da cópia original porque a limpeza foi bloqueada automaticamente; nenhum código daquela cópia mudou e esses logs não são dependência.
+
+### Onde paramos — publicação autorizada da DT-111 (22/11/2026)
+
+- O PO aprovou Loja/HUD/Cidade e pediu explicitamente enviar e integrar à main. Conta autorizada: `eliashenr`. O pacote de publicação usa o ramo `codex/loja-hud-cidade` em `build/publicacao-dt111/repo`; a pasta `codex/chef-loja` mantém as experiências intactas.
+- O pacote contém o chef canônico aprovado e usa a composição legada da main nas outras combinações. Não copiar o compositor modular DT-107, suas fontes/shader/importador/teste ou `Revisar Chef e Loja.cmd` para a main. A revisão antiga não é o pacote publicado.
+- Conferir o topo de `status.md` e `passagem-visual-codex.md` para o resultado final, commit, PR e merge. Os números 797/60 da revisão original são históricos; a validação limpa do pacote tem conjunto de testes próprio, sem os testes do experimento modular.
+- Para o Claude continuar: preservar as mudanças locais na sua própria pasta antes de buscar a main; integrar pelo Git, sem copiar este diretório inteiro. `cafe.gd` mudou somente para reconhecer Configurações entre as janelas abertas. Regras/conteúdo/economia/save seguem com Claude; apresentação, chef e Loja/HUD/Cidade com Codex. Ano Novo continua como pendência de conteúdo já registrada no calendário, sem alteração nesta publicação.

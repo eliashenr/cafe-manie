@@ -37,6 +37,46 @@ func test_the_chef_button_opens_the_portrait() -> void:
 	assert_true(dialog.card(&"hair_curto_castanho").text.contains("Usando"))
 
 
+func test_approved_chef_is_used_in_the_real_dialog_and_static_hud() -> void:
+	var cafe := await spawn_cafe()
+	var dialog := await _open(cafe)
+	var hero := dialog.find_child("Portrait", true, false) as AvatarPortrait
+	var approved := hero.get_node("ApprovedChef") as ChefAnimatedPortrait
+	assert_true(hero.uses_approved_chef())
+	assert_true(approved.visible and approved.is_processing(), "a janela real usa o chef animado aprovado")
+	assert_false((hero.get_node("Layers") as CanvasItem).visible, "nenhuma peça antiga cobre gola ou chapéu")
+	assert_eq(approved.visual_state()["base_path"], ChefAnimatedPortrait.BASE_PATH)
+	var before := SaveCodec.encode(cafe.simulation)
+	await _tap_in_dialog(dialog, dialog.find_child("GreetChefButton", true, false))
+	assert_true(float(approved.visual_state()["greeting_age"]) >= 0.0)
+	assert_eq(SaveCodec.encode(cafe.simulation), before)
+	var profile := cafe.hud.find_child("ChefPortrait", true, false) as AvatarPortrait
+	assert_true(profile.uses_approved_chef(), "o HUD também usa a base aprovada")
+	assert_false((profile.get_node("ApprovedChef") as ChefAnimatedPortrait).is_processing(), "HUD estático")
+	dialog.hide()
+	await settle()
+	assert_false(approved.is_processing(), "fechar a janela interrompe o movimento")
+
+
+func test_trying_another_hat_and_cancelling_restores_the_approved_chef() -> void:
+	var cafe := await spawn_cafe()
+	cafe.simulation.progression.add_xp(99999)
+	var dialog := await _open(cafe)
+	var hero := dialog.find_child("Portrait", true, false) as AvatarPortrait
+	var before := SaveCodec.encode(cafe.simulation)
+	dialog.show_slot(Slot.HAT)
+	dialog.card(&"hat_boina").pressed.emit()
+	await settle()
+	assert_false(hero.uses_approved_chef(), "outro chapéu mantém sua aparência e contrato de personalização")
+	assert_true((hero.get_node("Layers") as CanvasItem).visible)
+	assert_eq(SaveCodec.encode(cafe.simulation), before, "provar não compra")
+	dialog.cancel_try()
+	await settle()
+	assert_true(hero.uses_approved_chef())
+	assert_false((hero.get_node("Layers") as CanvasItem).visible)
+	assert_true((hero.get_node("ApprovedChef") as ChefAnimatedPortrait).is_processing())
+
+
 func test_an_owned_or_free_part_is_worn_at_once() -> void:
 	var cafe := await spawn_cafe()
 	var dialog := await _open(cafe)
@@ -80,3 +120,89 @@ func test_a_new_part_is_tried_on_and_bought_after_confirming() -> void:
 	assert_eq(sim.wallet.balance(Wallet.SOFT), gold - sim.avatar_parts.get_definition(&"hat_boina").price)
 	assert_true(all_messages(cafe).contains("Novo visual"), all_messages(cafe))
 	assert_true(dialog.card(&"hat_boina").text.contains("Usando"))
+
+
+func _tap_in_dialog(dialog: AvatarDialog, control: Control) -> void:
+	var at := Vector2(dialog.position) + control.get_global_rect().get_center()
+	touch(0, at, true)
+	touch(0, at, false)
+	await settle()
+
+
+func test_skin_choices_are_swatches_and_a_touch_changes_only_the_skin() -> void:
+	var cafe := await spawn_cafe()
+	var dialog := await _open(cafe)
+	dialog.show_slot(Slot.SKIN)
+	await settle()
+	var equipped := dialog.shown_parts()
+	for part in cafe.simulation.avatar_parts_for(Slot.SKIN):
+		var swatch := dialog.card(part.id)
+		assert_true(swatch.get("skin_swatch"), "a pele é representada por uma amostra de cor")
+		assert_eq(swatch.get("swatch_color"), AvatarPortrait.skin_color(part.art))
+		var preview := swatch.find_child("PartPreview", true, false) as AvatarPortrait
+		assert_false(preview.visible, "não repete a cabeça do chef nos tons de pele")
+		assert_true(preview.layers.is_empty())
+	await _tap_in_dialog(dialog, dialog.card(&"skin_negra"))
+	assert_eq(cafe.simulation.avatar_part(Slot.SKIN).id, &"skin_negra")
+	for other in [Slot.HAIR, Slot.HAT, Slot.OUTFIT]:
+		assert_eq(cafe.simulation.avatar_part(other), equipped[other], "mudar a pele preserva as demais escolhas")
+	assert_true(dialog.card(&"skin_negra").get("equipped"), "o tom equipado tem destaque")
+	assert_true(dialog.card(&"skin_negra").text.contains("Usando"))
+
+
+func test_part_cards_show_static_portrait_previews_and_accept_touch() -> void:
+	var cafe := await spawn_cafe()
+	var dialog := await _open(cafe)
+	var hero := dialog.find_child("Portrait", true, false) as AvatarPortrait
+	assert_true(hero.animated, "só o retrato principal tem animação contínua")
+	for part in cafe.simulation.avatar_parts_for(Slot.HAIR):
+		var card := dialog.card(part.id)
+		var preview := card.find_child("PartPreview", true, false) as AvatarPortrait
+		var expected := dialog.shown_parts()
+		expected[Slot.HAIR] = part
+		assert_eq(preview.layers, AvatarPortrait.layer_names(expected), "a miniatura mostra a combinação atual com este cabelo")
+		assert_false(preview.animated, "a grade não tem animações concorrentes")
+		assert_true(card.art == null, "a miniatura não desenha a antiga cabeça fundida")
+	await _tap_in_dialog(dialog, dialog.card(&"hair_rabo_preto"))
+	assert_eq(cafe.simulation.avatar_part(Slot.HAIR).id, &"hair_rabo_preto", "o filho de prévia não engole o toque")
+
+
+func test_greeting_by_touch_does_not_change_the_saved_game() -> void:
+	var cafe := await spawn_cafe()
+	var dialog := await _open(cafe)
+	var before := SaveCodec.encode(cafe.simulation)
+	var greeting := dialog.find_child("GreetChefButton", true, false) as Button
+	var greeted := [false]
+	greeting.pressed.connect(func() -> void: greeted[0] = true)
+	await _tap_in_dialog(dialog, greeting)
+	assert_true(greeted[0], "o retrato responde ao toque")
+	assert_eq(SaveCodec.encode(cafe.simulation), before, "cumprimentar não compra, equipa, gasta ou muda o save")
+	assert_eq(dialog.confirm_text(), "")
+
+
+func test_closing_an_unbought_preview_restores_the_equipped_look_on_reopening() -> void:
+	var cafe := await spawn_cafe()
+	cafe.simulation.progression.add_xp(99999)
+	var dialog := await _open(cafe)
+	var before := SaveCodec.encode(cafe.simulation)
+	dialog.show_slot(Slot.HAT)
+	dialog.card(&"hat_boina").pressed.emit()
+	await settle()
+	assert_eq((dialog.find_child("PortraitStatus", true, false) as Label).text, "Experimentando")
+	var title_height := dialog.get_theme_constant("title_height", "Window")
+	var framed := Rect2(Vector2(dialog.position) - Vector2(0, title_height),
+		Vector2(dialog.size) + Vector2(0, title_height))
+	assert_true(cafe.get_viewport_rect().encloses(framed),
+		"a janela e seu título cabem na área lógica, antes da escala para a tela: " + str(framed))
+	var bounds := Rect2(Vector2.ZERO, Vector2(dialog.size))
+	for control_name in ["Stage", "AvatarBuy", "AvatarCancel"]:
+		var control := dialog.find_child(control_name, true, false) as Control
+		assert_true(bounds.encloses(control.get_global_rect()), control_name + " não é cortado")
+	dialog.get_ok_button().pressed.emit()
+	await settle()
+	assert_false(dialog.visible)
+	dialog = await _open(cafe)
+	assert_eq(dialog.portrait_layers()[2], "avatar_chapeu_toque")
+	assert_eq(dialog.confirm_text(), "")
+	assert_eq((dialog.find_child("PortraitStatus", true, false) as Label).text, "Seu visual")
+	assert_eq(SaveCodec.encode(cafe.simulation), before)

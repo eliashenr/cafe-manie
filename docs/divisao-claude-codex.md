@@ -133,6 +133,52 @@ considerar o garçom completo:
 
 ## 5. Recados entre Claude e Codex
 
+### 22/11/2026 — PO autoriza publicar a DT-111 e integrar à main
+
+- **Aceite e autorização:** “Ficou muito bom! Pode enviar essa reformulação da Loja, HUD e Cidade e integrar à main. Deixa tudo registrado pro Claude saber o que mudou e continuar alinhado com você.” Publicação e merge autorizados, sem nova confirmação.
+- **Preparação:** Codex reserva as notas de status/passagem/continuação/roadmap/decisões para registrar o envio. Pacote em uma cópia limpa sob `build/publicacao-dt111/repo`, branch `codex/loja-hud-cidade`, base publicada `cac07e8`; preservar integralmente os experimentos e a revisão local em `codex/chef-loja`.
+- **Limite da publicação:** Loja/HUD/Cidade, integração do chef canônico aprovado, testes e ferramentas correspondentes. A montagem modular DT-107 reprovada, seus PNGs/shader/importador e experimentos herdados não serão publicados. Para variantes, o pacote mantém o desenho legado da main e os mesmos IDs/compras, sem alterar o chef aprovado. Conferir o pacote isolado antes de enviar com `eliashenr` e acompanhar a integração até os testes remotos terminarem.
+
+### 22/11/2026 — PO aprova animação e autoriza concluir Loja, HUD e Cidade (DT-111)
+
+- **Autorização expressa:** “Ficou muito bom! Pode seguir pra loja agora, juntando Loja e Reforma e organizando melhor as categorias. Depois vamos pro HUD e pra central sem precisar da minha autorização. Quero tudo isso feito [...] Finaliza todo esse meu pedido e quando eu voltar quero só testar ele completo”. A animação DT-110 está aprovada; executar o conjunto restante sem parar por aceites intermediários.
+- **Escopo:** Loja única com categorias/subfiltros claros, coleções preservadas; HUD com hierarquia e controles compreensíveis; Central reorganizada como Cidade, mantendo Filial e Vizinhos e suas regras. Entregar uma revisão integrada jogável para o PO testar.
+- **Responsabilidades nesta cópia:** apoio UI edita `build_bar.gd`, `shop_item_button.gd` e testes de apresentação da Loja; apoio arte edita `city_dialog.gd` e teste próprio de Cidade; apoio de engenharia edita `game_hud.gd`, `missions_panel.gd` se necessário e testes de apresentação do HUD. Codex principal integra a revisão, registra a passagem e faz a conferência final.
+- **Arquivo compartilhado reservado ao principal:** somente ligações de apresentação em `scenes/cafe/cafe.gd` caso seja necessário reconhecer Configurações/novo diálogo no bloqueio de interação; nenhuma regra, persistência, preço ou conteúdo muda. O principal pode editar apresentação do chef apenas para integrar a arte aprovada com contratos preservados, sem gerar variantes completas não solicitadas nesta etapa.
+- Preservar `core/`, `data/`, configurações do projeto, sprites aprovados, saves e experimentos herdados; não modificar a pasta original do Claude. Testes/capturas isolados, janela final minimizada. O pedido dispensa confirmações de implementação/revisão; não contém novo pedido de publicação, portanto esta entrega permanece local.
+- **Entrega concluída:** Loja unificada com tipos/busca/coleções, HUD reorganizado com Configurações e Cidade com Filial/Vizinhos. Chef canônico integrado ao retrato real, preservando os contratos de personalização. **797 testes passaram, zero falhas**, importação/cena120 sem erros, 60 capturas finais e QA independente em duas resoluções. `Revisar Interface Completa.cmd` aberto minimizado, processo 30404 e título confirmados no desktop; log limpo e dados isolados em `build/frontend/interactive`. Detalhes no topo de `status.md` e em `passagem-visual-codex.md`. Nenhum novo commit/envio; variantes de personalização continuam sem aceite visual. Apenas logs temporários da auditoria ficaram em `C:\Projetos\cafe-manie\build\city-presentation-tests`, após bloqueio automático da limpeza; nenhum código do Claude mudou.
+
+### 22/11/2026 — PO aprova o chef vestido e autoriza animação (DT-110)
+
+- **Aceite expresso da DT-109:** “Agora sim, ficou muito bom!” O PO autorizou seguir com animação mantendo esse rosto e o encaixe de roupa/chapéu. Loja, HUD e Central continuam para depois.
+- **Contrato desta rodada:** preservar intacta `art/avatar/chef_vestido_v1.png`; movimento por malha contínua do retrato completo, sem voltar à montagem de pescoço/roupa/chapéu independentes. Novas pálpebras podem substituir somente a região dos olhos durante a piscada; nenhuma regeneração do rosto inteiro em execução.
+- **Responsáveis nesta cópia:** principal gera/integra fontes dos olhos e registra apenas a etapa do Codex nos documentos; apoio UI escreve novo `scenes/ui/chef_animated_portrait.gd`, shader `art/shaders/chef_portrait_motion.gdshader`, revisão `tools/revisao/chef_animado_codex.gd`, `revisar_chef_animado.ps1` e `Revisar Chef Animado.cmd`; auditorias conferem arte e comportamento. Não editar personalização legada ou a prova estática aprovada.
+- **Limites:** dados isolados, capturas ocultas e revisão minimizada; manter regras, conteúdo, save, 1.167 sprites aprovados e experimentos herdados. Aprovação visual do chef parado autoriza esta continuação, não commit/envio.
+- **Entrega DT-110:** renderer e fontes novos concluídos; 779 testes, quatro focados finais, cena principal e 22 verificações de interação passaram. Recorte do retrato neutro idêntico à captura aprovada; área fora dos olhos/alfa intactos na prova GPU. 22 capturas finais em duas resoluções, 180 quadros de movimento + capa e GIF em `build/chef-animado/`; auditoria visual independente sem defeito material restante. Revisão aberta minimizada, processo 11580 e título confirmados no desktop, log sem erros. Contratos/prompts/hashes em `art/portraits/chef_animado/README.md`; detalhes no topo de `status.md`. O PO ainda precisa avaliar a animação; Loja/HUD/Central e personalização completa continuam para depois.
+
+### 22/11/2026 — PO reprova o encaixe do chef e pede estudo do Café Mania original
+
+- **Retorno do PO:** pescoço sobrepondo a roupa e chapéu com aparência de imagem sobreposta, sem vestir a cabeça. O avatar DT-107 foi reprovado; os resultados funcionais anteriores não validam o caimento visual. Não publicar essa montagem.
+- **Diagnóstico Codex:** roupa inteira antes do pescoço inteiro, chapéu inteiro sobre todo o cabelo e ausência de oclusão dianteira/traseira nas peças. Registro e pivô comuns não resolvem esses contatos. A próxima prova deve começar por um chef completo vestido, parado, antes de derivar camadas e animações.
+- **Pedido atual:** estudar a página oficial `facebook.com/cafemania`, o artigo Café Mania e o artigo Vostu da Wikipédia; comparar fotos, campanhas, valores, tarefas e missões com o projeto. O PO reafirmou que a estrutura está boa e quer reorganização gradual. Codex registra a pesquisa e suas próprias notas visuais nos documentos compartilhados; regras, economia e conteúdo continuam com Claude.
+- A DT-106 aprovada permanece na main. Loja unificada continua local; a crítica ao avatar não equivale a aceite ou rejeição separados da Loja. Sem novo commit/envio nesta rodada.
+
+### 22/11/2026 — PO autoriza primeiro o chef vestido e parado (DT-109)
+
+- **Prioridade expressa:** refazer o chef completo e apresentar parado dentro do jogo, com roupa e chapéu encaixados. Animação, Loja, HUD e Central ficam para depois da avaliação desta prova.
+- **Escopo reservado ao Codex:** retrato único `art/avatar/chef_vestido_v1.png`, fonte/prompt em `art/portraits/chef_vestido/` e ferramenta nova de revisão isolada. A prova usa o café real e o tema existente; não altera a personalização de produção nem representa conclusão das variantes modulares.
+- **Coordenação:** Codex principal gera/confere a arte e atualiza apenas sua passagem nos documentos compartilhados; apoio de interface escreve somente `tools/revisao/chef_vestido_codex.gd`, `tools/revisao/revisar_chef_vestido.ps1` e `Revisar Chef Vestido.cmd`. Auditorias não editam arquivos. Preservar experimentos herdados e o lote DT-107 local.
+- Dados isolados, capturas ocultas, revisão minimizada. Não houve novo “Pode enviar”; sem commit/publicação desta etapa.
+- **Entrega local:** fonte única gerada, quatro capturas finais normais/ampliadas em 1280/960 conferidas; 775 testes Godot e cena principal por 120 quadros passaram. Revisão aberta minimizada, processo 3196 e título confirmados no desktop. Auditoria independente do encaixe sem falha impeditiva; aceite visual continua com o PO. Arte/prompt/hash em `art/portraits/chef_vestido/`, PNG canônica em `art/avatar/chef_vestido_v1.png`. Não avançar animação ou novas telas antes desta avaliação.
+
+### 22/11/2026 — Codex: chef e Loja implementados localmente (DT-107)
+
+- Ramo `codex/chef-loja`, base `cac07e8` da main, após publicar cenário e passagem. Este lote novo está local, separado da DT-106 aprovada e integrada. Próximo passo do PO: avaliar a interação na revisão; nenhum aceite novo presumido.
+- Chef: rosto único com quatro expressões, pele aplicada apenas à face, seis cabelos separados, chapéu acompanhando o movimento. Aba Pele com amostras; toque no retrato provoca cumprimento. Miniaturas/HUD estáticos; animação interrompida ao ocultar a janela. Compra, cancelamento e saves preservados.
+- Loja: um acesso reúne os seis grupos existentes; removido o botão duplicado Reforma. Teste cobre entrar em Pisos/Paredes, aplicar/cancelar e retornar sem cobrança indevida.
+- Arquivos do Codex: `scenes/ui/avatar_portrait.gd`, `avatar_dialog.gd`, `avatar_part_button.gd`, `build_bar.gd`; fontes em `art/portraits/avatar_modular/`, 10 PNGs em `art/avatar/`, shader, importador, testes de apresentação e revisão novos. **Não foi necessário usar a reserva de `cafe.gd`.** Manifesto, 1.167 sprites aprovados, regras, conteúdo e configuração permanecem intactos.
+- Reprodução, contratos e validação: `passagem-visual-codex.md`, README das fontes e topo de `status.md`. Revisão `Revisar Chef e Loja.cmd` abre minimizada com dados isolados. Não misturar os experimentos antigos herdados no eventual envio desta etapa.
+
 ### 22/11/2026 — Codex: cenário publicado e integrado
 
 - DT-106 enviada em `26c873f`, [PR #2](https://github.com/eliashenr/cafe-manie/pull/2), integrada à main em `71489f0`, com `eliashenr`. Os dois testes remotos passaram antes do merge. As notas anteriores de aguardar aceite/envio desta etapa estão superadas.
