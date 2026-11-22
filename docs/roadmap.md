@@ -127,6 +127,13 @@ O PO mostrou fotos de dois problemas e pediu mais conteúdo. As etapas entram um
 - [x] **6. Toque futurista:** robô garçom, máquina de café inteligente e painéis digitais (DT-082).
 - [x] **7. Revisão visual e QA** comparando com a referência (DT-083).
 
+## Eventos do calendário (20/11/2026, regra do PO; ver [eventos.md](eventos.md))
+
+- [x] **Natal** (DT-100): 01/12 a 26/12, Papai Noel, Forno do Papai Noel e Árvore de Natal.
+- [x] **Revisão visual do PO** do Natal, no jogo: aprovado (20/11/2026).
+- [ ] **Ano Novo** (27/12 a 06/01), atrasado pelo calendário.
+- [ ] Carnaval, Páscoa, Festa Junina e Dia das Crianças, cada um até 6 semanas antes.
+
 ## Referência A: "Nova York contemporânea" (31/10/2026, DT-090, ramo `arte-3d`)
 
 - [x] **Marco 1, direção:** referência, implementado e pendente separados em [art-direction.md](art-direction.md).

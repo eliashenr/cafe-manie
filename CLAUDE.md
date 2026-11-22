@@ -10,6 +10,8 @@ Instruções para qualquer sessão do Claude (Claude Code ou chat) que trabalhe 
 - Em **CONTINUE**, comece lendo [docs/continuar.md](docs/continuar.md) (onde o trabalho parou e os comandos prontos), depois [docs/status.md](docs/status.md) e [docs/roadmap.md](docs/roadmap.md). Não recomece o projeto.
 - Ao terminar uma sessão, reescreva a seção "Onde paramos" de [docs/continuar.md](docs/continuar.md).
 - O plano geral (código, arte, jogabilidade e processo) está em [docs/revisao-geral.md](docs/revisao-geral.md).
+- **Eventos do calendário:** no início de toda sessão, confira a data de hoje com [docs/eventos.md](docs/eventos.md). Se um evento começa em menos de 6 semanas e ainda não está em `data/events/`, avise o PO e proponha prepará-lo antes de qualquer outra tarefa (regra do PO, 20/11/2026).
+- **Divisão com o Codex (regra do PO, 22/11/2026):** o Codex cuida da direção visual, dos personagens e da interface; o Claude, das regras, da economia, dos saves e do conteúdo. Antes de alterar sprites, geradores de arte ou arquivos de apresentação, combine quais arquivos cada um vai editar. A divisão, o estado e as pendências ficam em [docs/divisao-claude-codex.md](docs/divisao-claude-codex.md); leia no início de toda sessão.
 - **Primeira sessão no PC do PO?** Leia antes [docs/passagem.md](docs/passagem.md): o que veio da conversa na nuvem e o que muda no Windows.
 - O PO não usa terminal. Toda instrução para ele explica o que cada passo faz e por quê.
 

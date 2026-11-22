@@ -1,8 +1,42 @@
 # Status
 
-## CAFÉ MANIE — STATUS (19/11/2026)
+## CAFÉ MANIE — STATUS (22/11/2026)
+
+🔵 **DIVISÃO DO TRABALHO (DT-102, decisão do PO)**
+
+- **O Codex** cuida da direção visual, dos personagens e da interface. **O Claude** cuida das regras, da economia, dos saves e do conteúdo.
+- **Combinar antes:** quem edita cada arquivo de apresentação, sprite ou gerador de arte. A proposta está em [divisao-claude-codex.md](divisao-claude-codex.md).
+- **Primeiro:** um garçom completo validado no jogo, antes de expandir o estilo.
+- **Conteúdo:** o Natal foi enviado em 22/11 (o PO disse "Pode enviar o Natal"), num commit só dele, e entrou na `main`. Falta o build novo para o celular. O Ano Novo está atrasado.
+
+🟡 **AGUARDANDO A REVISÃO VISUAL DO PO**
+
+**Prova do garçom pela IA, no visual da imagem-alvo** (DT-101, no ramo `etapa-natal`, sem commit). O PO reprovou o Blender e pediu: "segue pelo elevenlabs o garçom, se ficar bom, vemos de seguir com os outros".
+
+- **O garçom da imagem-alvo virou sprite:** uma imagem de frente, uma de costas e um vídeo dele andando no lugar. O andar sai do vídeo, então os passos emendam.
+- **`tools/ia/montar_video.py`:**
+  - acha o ciclo do andar no vídeo;
+  - escolhe os 8 quadros;
+  - recorta o fundo;
+  - mede a bandeja em cada passo, para o prato cair certo.
+- **Tamanho igual ao da imagem-alvo.**
+- **Testes:** 745 passaram e a cena principal subiu sem erros, com dados separados do save do PO.
+- **Limites da prova:**
+  - de costas, ele ainda não anda (é a foto parada);
+  - ele sempre leva a bandeja, mesmo vazia.
+- **Gasto:** 2.987 créditos nesta prova (6.641 no total dos personagens).
+- **Ainda fora do visual novo:** os 12 clientes e os retratos.
 
 🟢 **CONCLUÍDO**
+
+**Evento de Natal e o calendário de eventos, aprovados pelo PO** (DT-100; enviado em 22/11/2026, num commit só dele, e junto na `main`). Nenhum preço, nível ou save existente mudou.
+
+- **Regra do PO registrada:** todo evento do calendário é preparado com antecedência, sem o PO lembrar. O calendário fica em [eventos.md](eventos.md).
+- **Natal de 01/12 a 26/12:** historinha do Papai Noel, 5 missões, o Forno do Papai Noel que sobe de nível e a Árvore de Natal no fim.
+- **Medalhão por evento:** o Natal mostra uma bola de árvore, e o Halloween continua com a abóbora.
+- **Testes:** 744 passaram (5 novos do Natal) e a cena principal subiu sem erros. Dois testes antigos usavam 01/12 como "dia sem evento" e passaram a usar 20/11.
+- **Conferido no jogo, por fotos:** a história do Natal, o café em dezembro com o forno e a árvore, e o Halloween ainda funcionando.
+- **Próximo da fila:** o Ano Novo (27/12 a 06/01), já atrasado pelo calendário.
 
 **Redesenho da referência A na versão principal e testes automáticos no GitHub** (19/11/2026, pedido do PO).
 

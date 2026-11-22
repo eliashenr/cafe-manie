@@ -4,6 +4,103 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ---
 
+## DT-102 — Divisão do trabalho entre Claude e Codex (22/11/2026, decisão do PO)
+
+**Problema:** cinco caminhos de personagem foram reprovados (DT-101), e o PO quer outra ferramenta cuidando do visual: "O Codex vai assumir a direção visual, os personagens e a interface."
+
+**Decisão:**
+- **Codex:** direção visual, personagens e interface (arte, geradores de arte, telas e efeitos).
+- **Claude:** regras, economia, saves e conteúdo (`core/`, `data/`, calendário de eventos e os testes de regras).
+- **Arquivos de apresentação, sprites e geradores de arte:** antes de alterar, os dois combinam quem edita o quê. A proposta de divisão por pasta e a lista dos arquivos compartilhados ficam em [divisao-claude-codex.md](divisao-claude-codex.md).
+- **Primeiro passo:** validar um garçom completo no jogo antes de expandir o estilo para clientes, retratos e interface.
+
+**Consequência:**
+- Conteúdo novo que precisa de arte (os eventos) passa a ter duas partes: os dados, do Claude, e a arte, do Codex.
+- Os dois não devem trabalhar na mesma pasta ao mesmo tempo. A sugestão é o Codex usar outra cópia, com `git worktree`, e um ramo próprio.
+
+## DT-101 — Personagens estilizados de jogo, com expressão (ramo etapa-natal, aguardando a revisão do PO)
+
+**Problema:** o PO achou os personagens "muito feios... não parece um jogo... NPC total, sem vida, sem expressão", e pediu urgência, mesmo que fosse preciso sair do padrão 3D realista. As pessoas do MakeHuman, no tamanho pequeno do salão, viravam rostos sem leitura.
+
+**Decisão:**
+- **Personagens modelados por código** em `tools/render3d/personagens_toon.py`, no lugar do MakeHuman: cabeça grande (quase metade da altura), olhos grandes com íris colorida e brilho, bochechas rosadas, sobrancelhas e boca que mudam com o humor, cabelo em mechas, cores vivas e contorno fino.
+- **O humor aparece no corpo também:** feliz de braços para o alto, esperando com o queixo na mão, bravo de braços cruzados e pálpebra caída, comendo de olhos fechados e bochecha estufada.
+- **De frente, a cabeça vira para a câmera** (`HEAD_TURN`): o rosto lê inteiro mesmo de perfil 3/4.
+- **Cada pessoa mantém o que já era:** tom de pele, cor e estilo do cabelo, cor da camiseta, óculos, bigode e barba.
+- **O contrato com o jogo não mudou:** mesmos nomes de foto, mesmas poses, âncora nos pés e `tray_food`. Nenhuma linha do jogo mudou.
+
+**Consequência:** o retrato do chef, o ícone do Garçom, os vizinhos, a bruxa e o Papai Noel ainda são do MakeHuman e destoam dos personagens novos. Se o PO aprovar o caminho, eles são a próxima etapa.
+**Ajuste pedido pelo PO (20/11), com duas imagens de referência:** "O corpo eu gostei, o andar, está ótimo. Mas o rosto, muito redondo e feio". O rosto passou para o estilo das referências, em homem e mulher adultos:- cabeça oval de desenho (mais larga nas bochechas, queixo arredondado), com o rosto colado por raios na superfície;- olhos grandes com o traço grosso da pálpebra, cílios nas mulheres, sobrancelhas grossas, nariz de bolinha, orelhas e sorriso aberto com dentes;- o queixo levantado (`HEAD_LIFT`), porque a câmera do jogo é alta;- cabelo em mechas grossas com a franja caindo para o lado;- contorno escuro só na silhueta: as pecinhas do rosto e o chão da sombra levam a marca que o contorno ignora.As referências ficam em `docs/referencias/`, fora do git, porque a licença delas é desconhecida.
+
+**Segundo ajuste do PO (20/11):** "O rosto ainda está redondo demais... Parece que os bonecos estão sendo criados com MASSINHAS... quero que pareça um DESENHO real, tipo anime." Decisão:
+- **Sombreado de desenho (cel shading)** no lugar do sombreado 3D suave: cada material vira cor chapada, com uma faixa de sombra recortada e, no cabelo e no verniz, uma faixa de brilho. Os olhos, a boca e as bochechas ficam em cor pura, sem luz.
+- **Render no EEVEE** (o nó que recorta a luz só existe nele), com uma luz própria de desenho e a sombra no chão desenhada como uma mancha oval.
+- **Rosto anguloso:** maçãs do rosto marcadas e o rosto afinando até um queixo fino, como nas referências.
+- **Contorno de lápis** na silhueta, mais grosso.
+
+**Terceiro retorno do PO (21/11):** "Não quero que pareçam bonecos de ARGILA!!!... copia um Anime mano, um naruto, um dragonball z. Algo que seja mais realista em forma de desenho." Decisão:
+- O corpo de bolas e tubos parecia argila com qualquer sombreado, então foi abandonado. **Volta o corpo humano do MakeHuman**, com proporção de gente e o andar e as poses que já funcionavam.
+- **Visual de anime** (`tools/render3d/anime3d.py`, argumento `anime` de `personagens3d.py`), a técnica de jogos como Dragon Ball FighterZ:
+  - cada textura reduzida a 4 cores chapadas e mais vivas;
+  - pele numa cor só;
+  - sombra recortada em duas faixas;
+  - traço preto na silhueta e nas divisas entre pele, roupa e cabelo;
+  - olhos um pouco maiores;
+  - sombra no chão desenhada.
+- **Só o estilo:** nenhum personagem das séries foi copiado, por causa de direitos autorais.
+- `personagens_toon.py` fica no repositório como histórico, mas não gera mais as fotos do jogo.
+
+**Quarto caminho, escolhido pelo PO (21/11): "Desenho 2D com IA".** Os três caminhos procedurais não chegaram a desenho de anime de verdade. Decisão:
+- **Os personagens passam a ser desenhos 2D** feitos por gerador de imagem (ElevenLabs, `gpt-image-2.5-sunburst`). Para manter a mesma pessoa, cada pose nova é gerada com o desenho anterior como referência.
+- **Prova com o garçom** (só ela foi liberada): 4 desenhos (de frente e de costas, com e sem bandeja).
+- **`tools/ia/montar_personagem.py`** transforma os desenhos nas fotos do jogo, sem mudar o código:
+  - tira o fundo branco;
+  - acha os pés;
+  - usa densidade 4, para o traço ficar nítido;
+  - desenha a sombra oval;
+  - faz os 8 passos com um balanço leve;
+  - mede a bandeja para o prato.
+- **Estilo, não cópia:** o pedido descreve "anime dos anos 90"; nenhum personagem de série é reproduzido.
+- **Os originais ficam fora do git** (`build/ia/`). Só as fotos finais entram.
+- **Ajuste do PO (21/11): "O andar".** O balanço do desenho parado virou **passos desenhados**: uma folha de 4 passos por lado, com e sem bandeja, em 8 quadros (cada passo dura 2). Os desenhos olham para a esquerda e saem espelhados, porque o jogo quer a arte olhando para a direita.
+- **O prato acompanha a bandeja em cada passo:** o quadro andando com bandeja guarda a sua medida (`"tray"`), e `AgentView.tray_food()` usa essa medida antes da do personagem. É a única mudança no código do jogo.
+
+**Quinto caminho (22/11): imagem-alvo e Blender.** O PO achou os desenhos da IA "muito falso" no andar, no desenho, no tamanho e por parecerem colados no cenário. A causa: um desenho chapado sobre um café renderizado em 3D nunca combina. Decisão:
+- **Primeiro o visual, numa imagem só:** a IA desenhou o garçom dentro de uma foto do próprio café. O PO aprovou: "É esse o visual". É 3D estilizado de jogo de celular, não anime.
+- **O PO escolheu fazer no Blender**, sem custo, em vez de vídeo por IA (uns US$ 20 para o elenco).
+- **Modo `estilo` de `personagens3d.py` (`estilo3d.py`):** o corpo, o esqueleto e o andar do MakeHuman, com o acabamento da imagem-alvo:
+  - pele lisa;
+  - roupas sem trama;
+  - olhos grandes e escuros, sobrancelhas grossas e sorriso;
+  - rosto jovem e redondo, cabeça maior e virada para a câmera;
+  - roupa pintada por regiões da textura.
+- **A medida da bandeja por quadro** (do caminho anterior) fica no jogo: é genérica e não atrapalha.
+- **O Blender também foi reprovado** ("tá bem feio"). O PO pediu o garçom pela IA, no visual da imagem-alvo. Decisão:
+  - **imagens paradas** (frente e costas) tiradas da imagem-alvo;
+  - **andar feito com vídeo** (`kling-2.5-turbo`, o personagem andando no lugar), no lugar das folhas de passos: num vídeo os passos emendam;
+  - `tools/ia/montar_video.py` acha o ciclo e tira os 8 quadros.
+- **Ainda vale:** a medida da bandeja por quadro (`"tray"`), porque no vídeo a bandeja sobe e desce com o passo.
+
+---
+
+## DT-100 — Evento de Natal e o calendário de eventos (ramo etapa-natal, aprovado pelo PO em 20/11/2026)
+
+**Problema:** o Halloween acabou em 03/11 e o jogo ficou sem evento. O PO pediu o Natal e uma regra fixa: "Todo evento que for acontecer, você tem que saber através do calendário e preparar evento dentro do jogo. Natal, ano novo, pascoa e etc."
+
+**Decisão:**
+- **Calendário em [eventos.md](eventos.md)**, com as datas de cada evento e até quando prepará-lo (6 semanas antes). O `CLAUDE.md` manda conferir a data no início de toda sessão e avisar o PO quando um evento estiver perto.
+- **Natal de 01/12 a 26/12**, no mesmo sistema do Halloween (DT-063), só com dados e arte:
+  - historinha do Papai Noel, cujo forno de biscoitos esfriou na véspera da ceia;
+  - 5 missões: assar pratos, servir clientes, clientes satisfeitos, Café Ouro e receitas diferentes (limitada ao cardápio do jogador);
+  - o **Forno do Papai Noel** (`santa_oven`), que chega na 1ª missão e sobe de nível na 3ª e na 5ª;
+  - a **Árvore de Natal** (`christmas_tree`) para quem completa tudo.
+- **Cada evento tem o seu ícone** no medalhão do HUD (`EventDefinition.icon`): a abóbora continua no Halloween, e o Natal mostra uma bola de árvore. O aviso de início deixou de falar em "abóbora".
+- **Teste novo** (`tests/unit/test_christmas_event.gd`): dados válidos, datas, nenhum par de eventos com dias em comum, arte de cada evento e o forno chegando na 1ª missão.
+
+**Consequência:** o Ano Novo (27/12 a 06/01) é o próximo da fila. Pelo calendário, ele já devia estar em preparação desde 15/11.
+
+---
+
 ## DT-099 — Vizinhos, bruxa, ícone do Garçom, bebidas e frutas em 3D (ramo amostra-a-2, aprovados pelo PO em 19/11/2026)
 
 **Problema:** depois do retrato do chef (DT-097), os outros rostos do jogo (vizinhos, a bruxa do evento, o ícone do Garçom) e os ícones de bebida e fruta continuavam desenhados a traço e destoavam.
