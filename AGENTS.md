@@ -4,7 +4,7 @@ Instruções para o Codex neste repositório. O Codex pode reescrever este arqui
 apontar o caminho na passagem de 22/11/2026.
 
 - **Leia primeiro [docs/divisao-claude-codex.md](docs/divisao-claude-codex.md).** Ali estão a divisão de trabalho que o PO decidiu, os arquivos de cada um, os arquivos compartilhados, o estado do ramo `etapa-natal` e as pendências.
-- **Passagem visual atual:** [docs/passagem-visual-codex.md](docs/passagem-visual-codex.md). O PO aprovou a DT-105 e autorizou seu envio em 22/11/2026. A continuação visual autorizada abrange cozinha, janelas, revestimentos e decorações (DT-106); preservar o conjunto aprovado e combinar a integração do manifesto.
+- **Passagem visual atual:** [docs/passagem-visual-codex.md](docs/passagem-visual-codex.md). O PO aprovou a DT-105 e a DT-106 (cenário), autorizando envio e integração à main em 22/11/2026. A continuação autorizada é melhorar a interação do avatar e unificar os acessos Loja/Reforma (DT-107); preservar os conjuntos aprovados e combinar arquivos compartilhados.
 - **O contrato do projeto** é [docs/master-prompt.md](docs/master-prompt.md). As regras de engenharia e os comandos (testes, cena principal, exportação) estão no [CLAUDE.md](CLAUDE.md) e valem para os dois.
 - **O PO não usa terminal.** Explique em português, sem jargão, o que cada passo faz e por quê.
 - **O save pessoal do PO nunca muda.** A Godot roda com `APPDATA` apontando para outra pasta; os scripts de `tools/revisao/` já fazem isso.

@@ -52,93 +52,108 @@
   },
   "stove_basic_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    565.12
+   ],
+   "density": 4
   },
   "stove_basic_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_basic_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_basic_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    565.12
+   ],
+   "density": 4
   },
   "counter_basic_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_basic_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_basic_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_basic_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "bookshelf_r0": {
    "anchor": [
-    225.0,
-    389.87
-   ]
+    418.0,
+    687.44
+   ],
+   "density": 4
   },
   "bookshelf_r1": {
    "anchor": [
-    118.0,
-    389.87
-   ]
+    163.0,
+    687.44
+   ],
+   "density": 4
   },
   "bookshelf_r2": {
    "anchor": [
-    225.0,
-    389.87
-   ]
+    418.0,
+    687.44
+   ],
+   "density": 4
   },
   "bookshelf_r3": {
    "anchor": [
-    118.0,
-    389.87
-   ]
+    163.0,
+    687.44
+   ],
+   "density": 4
   },
   "plant_pot_r0": {
    "anchor": [
-    87.0,
-    193.87
-   ]
+    109.0,
+    387.44
+   ],
+   "density": 4
   },
   "flower_vase_r0": {
    "anchor": [
-    48.0,
-    227.87
-   ]
+    84.0,
+    410.44
+   ],
+   "density": 4
   },
   "floor_lamp_r0": {
    "anchor": [
-    41.0,
-    298.87
-   ]
+    90.0,
+    518.44
+   ],
+   "density": 4
   },
   "chair_70s_r0": {
    "anchor": [
@@ -982,1059 +997,1235 @@
   },
   "lava_lamp_r0": {
    "anchor": [
-    34.0,
-    234.87
-   ]
+    117.0,
+    436.44
+   ],
+   "density": 4
   },
   "macrame_plant_r0": {
    "anchor": [
-    64.0,
-    277.87
-   ]
+    136.0,
+    501.44
+   ],
+   "density": 4
   },
   "hay_bale_r0": {
    "anchor": [
-    99.0,
-    235.87
-   ]
+    163.0,
+    425.44
+   ],
+   "density": 4
   },
   "wagon_wheel_r0": {
    "anchor": [
-    98.0,
-    221.87
-   ]
+    159.0,
+    400.44
+   ],
+   "density": 4
   },
   "balloons_r0": {
    "anchor": [
-    70.0,
-    310.87
-   ]
+    120.0,
+    555.44
+   ],
+   "density": 4
   },
   "party_cake_r0": {
    "anchor": [
-    70.0,
-    220.87
-   ]
+    147.0,
+    384.44
+   ],
+   "density": 4
   },
   "jukebox_r0": {
    "anchor": [
-    89.0,
-    287.87
-   ]
+    157.0,
+    498.44
+   ],
+   "density": 4
   },
   "neon_diner_r0": {
    "anchor": [
-    58.0,
-    283.87
-   ]
+    99.0,
+    508.44
+   ],
+   "density": 4
   },
   "cactus_r0": {
    "anchor": [
-    48.0,
-    225.87
-   ]
+    84.0,
+    406.44
+   ],
+   "density": 4
   },
   "pinata_r0": {
    "anchor": [
-    58.0,
-    314.87
-   ]
+    99.0,
+    562.44
+   ],
+   "density": 4
   },
   "arcade_r0": {
    "anchor": [
-    100.0,
-    344.87
-   ]
+    170.0,
+    564.44
+   ],
+   "density": 4
   },
   "boombox_r0": {
    "anchor": [
-    82.0,
-    202.87
-   ]
+    141.0,
+    381.44
+   ],
+   "density": 4
   },
   "wine_barrel_r0": {
    "anchor": [
-    76.0,
-    229.87
-   ]
+    155.0,
+    414.44
+   ],
+   "density": 4
   },
   "olive_tree_r0": {
    "anchor": [
-    65.0,
-    263.87
-   ]
+    100.0,
+    476.44
+   ],
+   "density": 4
   },
   "bonsai_r0": {
    "anchor": [
-    79.0,
-    195.87
-   ]
+    112.0,
+    386.44
+   ],
+   "density": 4
   },
   "paper_lantern_r0": {
    "anchor": [
-    46.0,
-    299.87
-   ]
+    84.0,
+    464.44
+   ],
+   "density": 4
   },
   "eiffel_r0": {
    "anchor": [
-    81.0,
-    325.87
-   ]
+    157.0,
+    581.44
+   ],
+   "density": 4
   },
   "paris_lamp_r0": {
    "anchor": [
-    48.0,
-    317.87
-   ]
+    92.0,
+    557.44
+   ],
+   "density": 4
   },
   "banana_tree_r0": {
    "anchor": [
-    124.0,
-    294.87
-   ]
+    207.0,
+    531.44
+   ],
+   "density": 4
   },
   "parrot_r0": {
    "anchor": [
-    53.0,
-    278.87
-   ]
+    117.0,
+    513.44
+   ],
+   "density": 4
   },
   "edison_lamp_r0": {
    "anchor": [
-    34.0,
-    276.87
-   ]
+    84.0,
+    484.44
+   ],
+   "density": 4
   },
   "succulents_r0": {
    "anchor": [
-    89.0,
-    154.87
-   ]
+    140.0,
+    282.44
+   ],
+   "density": 4
   },
   "disco_ball_r0": {
    "anchor": [
-    36.0,
-    286.87
-   ]
+    207.0,
+    513.44
+   ],
+   "density": 4
   },
   "stove_steel_r0": {
    "anchor": [
-    128.0,
-    301.84
-   ]
+    249.0,
+    599.12
+   ],
+   "density": 4
   },
   "stove_steel_r1": {
    "anchor": [
-    128.0,
-    253.84
-   ]
+    249.0,
+    504.12
+   ],
+   "density": 4
   },
   "stove_steel_r2": {
    "anchor": [
-    129.0,
-    253.84
-   ]
+    252.0,
+    504.12
+   ],
+   "density": 4
   },
   "stove_steel_r3": {
    "anchor": [
-    129.0,
-    301.84
-   ]
+    252.0,
+    599.12
+   ],
+   "density": 4
   },
   "stove_mint_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_mint_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_mint_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_mint_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_black_r0": {
    "anchor": [
-    128.0,
-    288.84
-   ]
+    251.0,
+    571.12
+   ],
+   "density": 4
   },
   "stove_black_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    251.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_black_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_black_r3": {
    "anchor": [
-    129.0,
-    288.84
-   ]
+    252.0,
+    571.12
+   ],
+   "density": 4
   },
   "stove_cream_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_cream_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_cream_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_cream_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_copper_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_copper_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_copper_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_copper_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_blue_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_blue_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_blue_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_blue_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_yellow_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_yellow_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_yellow_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_yellow_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_arcade_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_arcade_r1": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_arcade_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_arcade_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_disco_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_disco_r1": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_disco_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_disco_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_samba_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_samba_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_samba_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_samba_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_wood_r0": {
    "anchor": [
-    128.0,
-    325.84
-   ]
+    249.0,
+    647.12
+   ],
+   "density": 4
   },
   "stove_wood_r1": {
    "anchor": [
-    128.0,
-    275.84
-   ]
+    249.0,
+    547.12
+   ],
+   "density": 4
   },
   "stove_wood_r2": {
    "anchor": [
-    129.0,
-    310.84
-   ]
+    252.0,
+    618.12
+   ],
+   "density": 4
   },
   "stove_wood_r3": {
    "anchor": [
-    129.0,
-    359.84
-   ]
+    252.0,
+    718.12
+   ],
+   "density": 4
   },
   "stove_talavera_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_talavera_r1": {
    "anchor": [
-    128.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_talavera_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_talavera_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "counter_steel_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_steel_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_steel_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_steel_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_wood_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_wood_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_wood_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_wood_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_pastel_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_pastel_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_pastel_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_pastel_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_marble_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_marble_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_marble_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_marble_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_tile_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_tile_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_tile_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_tile_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_neon_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_neon_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_neon_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_neon_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_red_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_red_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_red_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_red_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_groovy_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_groovy_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_groovy_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_groovy_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_arcade_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_arcade_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_arcade_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_arcade_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_samba_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_samba_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_samba_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_samba_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_bistro_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_bistro_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_bistro_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_bistro_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_bamboo_r0": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_bamboo_r1": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_bamboo_r2": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "counter_bamboo_r3": {
    "anchor": [
-    139.0,
-    259.84
-   ]
+    275.0,
+    516.12
+   ],
+   "density": 4
   },
   "machine_coffee_r0": {
    "anchor": [
-    128.0,
-    266.87
-   ]
+    228.0,
+    495.12
+   ],
+   "density": 4
   },
   "machine_coffee_r1": {
    "anchor": [
-    128.0,
-    263.87
-   ]
+    228.0,
+    490.12
+   ],
+   "density": 4
   },
   "machine_coffee_r2": {
    "anchor": [
-    127.0,
-    263.87
-   ]
+    228.0,
+    490.12
+   ],
+   "density": 4
   },
   "machine_coffee_r3": {
    "anchor": [
-    127.0,
-    266.87
-   ]
+    228.0,
+    495.12
+   ],
+   "density": 4
   },
   "machine_juice_r0": {
    "anchor": [
-    128.0,
-    259.87
-   ]
+    228.0,
+    483.12
+   ],
+   "density": 4
   },
   "machine_juice_r1": {
    "anchor": [
-    128.0,
-    254.87
-   ]
+    228.0,
+    474.12
+   ],
+   "density": 4
   },
   "machine_juice_r2": {
    "anchor": [
-    127.0,
-    254.87
-   ]
+    228.0,
+    474.12
+   ],
+   "density": 4
   },
   "machine_juice_r3": {
    "anchor": [
-    127.0,
-    259.87
-   ]
+    228.0,
+    483.12
+   ],
+   "density": 4
   },
   "machine_coffee_smart_r0": {
    "anchor": [
-    127.0,
-    305.87
-   ]
+    228.0,
+    553.12
+   ],
+   "density": 4
   },
   "machine_coffee_smart_r1": {
    "anchor": [
-    128.0,
-    295.87
-   ]
+    228.0,
+    531.12
+   ],
+   "density": 4
   },
   "machine_coffee_smart_r2": {
    "anchor": [
-    128.0,
-    295.87
-   ]
+    228.0,
+    530.12
+   ],
+   "density": 4
   },
   "machine_coffee_smart_r3": {
    "anchor": [
-    127.0,
-    305.87
-   ]
+    228.0,
+    553.12
+   ],
+   "density": 4
   },
   "trophy_bronze_r0": {
    "anchor": [
-    63.0,
-    239.87
-   ]
+    117.0,
+    444.44
+   ],
+   "density": 4
   },
   "trophy_silver_r0": {
    "anchor": [
-    63.0,
-    239.87
-   ]
+    117.0,
+    444.44
+   ],
+   "density": 4
   },
   "trophy_gold_r0": {
    "anchor": [
-    63.0,
-    239.87
-   ]
+    117.0,
+    444.44
+   ],
+   "density": 4
   },
   "train_locomotive_r0": {
    "anchor": [
-    136.0,
-    298.87
-   ]
+    268.0,
+    590.12
+   ],
+   "density": 4
   },
   "train_locomotive_r1": {
    "anchor": [
-    136.0,
-    248.87
-   ]
+    268.0,
+    492.12
+   ],
+   "density": 4
   },
   "train_locomotive_r2": {
    "anchor": [
-    129.0,
-    300.87
-   ]
+    252.0,
+    597.12
+   ],
+   "density": 4
   },
   "train_locomotive_r3": {
    "anchor": [
-    133.0,
-    347.87
-   ]
+    252.0,
+    692.12
+   ],
+   "density": 4
   },
   "train_wagon_r0": {
    "anchor": [
-    128.0,
-    298.87
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "train_wagon_r1": {
    "anchor": [
-    133.0,
-    248.87
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "train_wagon_r2": {
    "anchor": [
-    129.0,
-    248.87
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "train_wagon_r3": {
    "anchor": [
-    133.0,
-    298.87
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "train_dining_r0": {
    "anchor": [
-    128.0,
-    298.87
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "train_dining_r1": {
    "anchor": [
-    133.0,
-    248.87
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "train_dining_r2": {
    "anchor": [
-    129.0,
-    248.87
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "train_dining_r3": {
    "anchor": [
-    133.0,
-    298.87
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "station_clock_r0": {
    "anchor": [
-    43.0,
-    302.87
-   ]
+    91.0,
+    536.44
+   ],
+   "density": 4
   },
   "critic_statue_r0": {
    "anchor": [
-    76.0,
-    249.87
-   ]
+    157.0,
+    448.44
+   ],
+   "density": 4
   },
   "chocolate_fountain_r0": {
    "anchor": [
-    66.0,
-    221.87
-   ]
+    147.0,
+    399.44
+   ],
+   "density": 4
   },
   "cupcake_tree_r0": {
    "anchor": [
-    63.0,
-    230.87
-   ]
+    147.0,
+    415.44
+   ],
+   "density": 4
   },
   "popcorn_cart_r0": {
    "anchor": [
-    90.0,
-    290.87
-   ]
+    155.0,
+    519.44
+   ],
+   "density": 4
   },
   "witch_cauldron_r0": {
    "anchor": [
-    128.0,
-    341.87
-   ]
+    249.0,
+    679.12
+   ],
+   "density": 4
   },
   "witch_cauldron_r1": {
    "anchor": [
-    128.0,
-    291.87
-   ]
+    249.0,
+    579.12
+   ],
+   "density": 4
   },
   "witch_cauldron_r2": {
    "anchor": [
-    129.0,
-    284.87
-   ]
+    252.0,
+    565.12
+   ],
+   "density": 4
   },
   "witch_cauldron_r3": {
    "anchor": [
-    129.0,
-    333.87
-   ]
+    252.0,
+    665.12
+   ],
+   "density": 4
   },
   "giant_pumpkin_r0": {
    "anchor": [
-    102.0,
-    218.87
-   ]
+    176.0,
+    362.44
+   ],
+   "density": 4
   },
   "stove_moon_r0": {
    "anchor": [
-    128.0,
-    298.84
-   ]
+    249.0,
+    590.12
+   ],
+   "density": 4
   },
   "stove_moon_r1": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    249.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_moon_r2": {
    "anchor": [
-    129.0,
-    248.84
-   ]
+    252.0,
+    492.12
+   ],
+   "density": 4
   },
   "stove_moon_r3": {
    "anchor": [
-    129.0,
-    298.84
-   ]
+    252.0,
+    590.12
+   ],
+   "density": 4
   },
   "tree_strawberry_r0": {
    "anchor": [
-    75.0,
-    270.87
-   ]
+    115.0,
+    485.44
+   ],
+   "density": 4
   },
   "tree_mango_r0": {
    "anchor": [
-    76.0,
-    271.87
-   ]
+    119.0,
+    487.44
+   ],
+   "density": 4
   },
   "tree_blueberry_r0": {
    "anchor": [
-    78.0,
-    270.87
-   ]
+    118.0,
+    485.44
+   ],
+   "density": 4
   },
   "machine_frozen_r0": {
    "anchor": [
-    127.0,
-    287.87
-   ]
+    228.0,
+    531.12
+   ],
+   "density": 4
   },
   "machine_frozen_r1": {
    "anchor": [
-    128.0,
-    277.87
-   ]
+    228.0,
+    512.12
+   ],
+   "density": 4
   },
   "machine_frozen_r2": {
    "anchor": [
-    127.0,
-    277.87
-   ]
+    228.0,
+    512.12
+   ],
+   "density": 4
   },
   "machine_frozen_r3": {
    "anchor": [
-    127.0,
-    287.87
-   ]
+    228.0,
+    531.12
+   ],
+   "density": 4
   },
   "claw_machine_r0": {
    "anchor": [
-    109.0,
-    323.87
-   ]
+    187.0,
+    547.44
+   ],
+   "density": 4
   },
   "ring_toss_r0": {
    "anchor": [
-    112.0,
-    339.87
-   ]
+    193.0,
+    606.44
+   ],
+   "density": 4
   },
   "stage_r0": {
    "anchor": [
-    259.0,
-    508.87
-   ]
+    481.0,
+    883.44
+   ],
+   "density": 4
   },
   "delivery_counter_r0": {
    "anchor": [
-    139.0,
-    273.87
-   ]
+    275.0,
+    543.12
+   ],
+   "density": 4
   },
   "delivery_counter_r1": {
    "anchor": [
-    139.0,
-    313.87
-   ]
+    275.0,
+    623.12
+   ],
+   "density": 4
   },
   "delivery_counter_r2": {
    "anchor": [
-    139.0,
-    264.87
-   ]
+    275.0,
+    526.12
+   ],
+   "density": 4
   },
   "delivery_counter_r3": {
    "anchor": [
-    139.0,
-    294.87
-   ]
+    275.0,
+    585.12
+   ],
+   "density": 4
   },
   "dj_booth_r0": {
    "anchor": [
-    237.0,
-    302.87
-   ]
+    432.0,
+    535.44
+   ],
+   "density": 4
   },
   "dj_booth_r1": {
    "anchor": [
-    109.0,
-    302.87
-   ]
+    176.0,
+    535.44
+   ],
+   "density": 4
   },
   "encosto_chair_wood_r1": {
    "anchor": [
@@ -2566,15 +2757,17 @@
   },
   "fogao_aceso_r0": {
    "anchor": [
-    103.0,
-    110.84
-   ]
+    202.0,
+    218.12
+   ],
+   "density": 4
   },
   "fogao_aceso_r3": {
    "anchor": [
-    -25.0,
-    110.84
-   ]
+    -54.0,
+    218.12
+   ],
+   "density": 4
   },
   "cliente_01_frente_em_pe": {
    "anchor": [
@@ -6197,225 +6390,262 @@
   },
   "piso_floor_beige_a": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_beige_b": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_bistro_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_blue_tiles_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_marble_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_marble_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_marble_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_wood_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_wood_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_wood_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_wood_3": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_70s_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_country_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_country_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_country_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_party_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_party_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_diner_a": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_diner_b": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_mexican_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_mexican_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_mexican_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_80s_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_80s_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_italian_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_italian_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_italian_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_japanese_a": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_japanese_b": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_french_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_brazil_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_2010s_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_2010s_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_2010s_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_club_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_club_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_club_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_entrada": {
    "anchor": [
@@ -6467,831 +6697,969 @@
   },
   "parede_wall_cream_R": {
    "anchor": [
-    15.0,
-    312.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_cream_L": {
    "anchor": [
-    11.0,
-    376.38
-   ]
+    18.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_mint_stripes_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_mint_stripes_L": {
    "anchor": [
-    11.0,
-    374.38
-   ]
+    18.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_brick_R": {
    "anchor": [
-    15.0,
-    312.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_brick_L": {
    "anchor": [
-    11.0,
-    376.38
-   ]
+    12.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_navy_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_navy_L": {
    "anchor": [
-    11.0,
-    374.38
-   ]
+    18.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_70s_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_70s_L": {
    "anchor": [
-    11.0,
-    374.38
-   ]
+    18.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_country_R": {
    "anchor": [
-    22.0,
-    311.38
-   ]
+    39.0,
+    617.76
+   ],
+   "density": 4.0
   },
   "parede_wall_country_L": {
    "anchor": [
-    22.0,
-    375.38
-   ]
+    39.0,
+    745.76
+   ],
+   "density": 4.0
   },
   "parede_wall_party_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_party_L": {
    "anchor": [
-    11.0,
-    374.38
-   ]
+    18.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_diner_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_diner_L": {
    "anchor": [
-    11.0,
-    374.38
-   ]
+    18.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_mexican_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_mexican_L": {
    "anchor": [
-    9.0,
-    374.38
-   ]
+    14.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_80s_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_80s_L": {
    "anchor": [
-    11.0,
-    374.38
-   ]
+    18.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_italian_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_italian_L": {
    "anchor": [
-    10.0,
-    374.38
-   ]
+    15.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_japanese_R": {
    "anchor": [
-    15.0,
-    313.38
-   ]
+    26.0,
+    621.76
+   ],
+   "density": 4.0
   },
   "parede_wall_japanese_L": {
    "anchor": [
-    10.0,
-    377.38
-   ]
+    15.0,
+    748.76
+   ],
+   "density": 4.0
   },
   "parede_wall_french_R": {
    "anchor": [
-    15.0,
-    312.38
-   ]
+    26.0,
+    619.76
+   ],
+   "density": 4.0
   },
   "parede_wall_french_L": {
    "anchor": [
-    11.0,
-    376.38
-   ]
+    17.0,
+    747.76
+   ],
+   "density": 4.0
   },
   "parede_wall_brazil_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_brazil_L": {
    "anchor": [
-    11.0,
-    374.38
-   ]
+    18.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_2010s_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_2010s_L": {
    "anchor": [
-    8.0,
-    374.38
-   ]
+    12.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "parede_wall_club_R": {
    "anchor": [
-    15.0,
-    310.38
-   ]
+    26.0,
+    615.76
+   ],
+   "density": 4.0
   },
   "parede_wall_club_L": {
    "anchor": [
-    8.0,
-    374.38
-   ]
+    12.0,
+    743.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_R": {
    "anchor": [
-    4.0,
-    270.38
-   ]
+    -6.0,
+    529.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_L": {
    "anchor": [
-    -10.0,
-    336.38
-   ]
+    -32.0,
+    659.76
+   ],
+   "density": 4.0
   },
   "enfeite_quadro_cupcake_R": {
    "anchor": [
-    -12.0,
-    255.38
-   ]
+    -33.0,
+    478.76
+   ],
+   "density": 4
   },
   "enfeite_quadro_cupcake_L": {
    "anchor": [
-    -15.0,
-    319.38
-   ]
+    -42.0,
+    606.76
+   ],
+   "density": 4
   },
   "enfeite_quadro_paisagem_R": {
    "anchor": [
-    -12.0,
-    255.38
-   ]
+    -33.0,
+    478.76
+   ],
+   "density": 4
   },
   "enfeite_quadro_paisagem_L": {
    "anchor": [
-    -15.0,
-    319.38
-   ]
+    -42.0,
+    606.76
+   ],
+   "density": 4
   },
   "enfeite_relogio_R": {
    "anchor": [
-    -28.0,
-    234.38
-   ]
+    -61.0,
+    464.76
+   ],
+   "density": 4
   },
   "enfeite_relogio_L": {
    "anchor": [
-    -31.0,
-    299.38
-   ]
+    -68.0,
+    592.76
+   ],
+   "density": 4
   },
   "enfeite_prateleira_R": {
    "anchor": [
-    22.0,
-    196.38
-   ]
+    39.0,
+    386.76
+   ],
+   "density": 4
   },
   "enfeite_prateleira_L": {
    "anchor": [
-    -1.0,
-    258.38
-   ]
+    -10.0,
+    514.76
+   ],
+   "density": 4
   },
   "enfeite_tv_R": {
    "anchor": [
-    3.0,
-    235.38
-   ]
+    -5.0,
+    475.76
+   ],
+   "density": 4
   },
   "enfeite_tv_L": {
    "anchor": [
-    -0.0,
-    300.38
-   ]
+    -16.0,
+    604.76
+   ],
+   "density": 4
   },
   "enfeite_radio_R": {
    "anchor": [
-    18.0,
-    200.38
-   ]
+    9.0,
+    384.76
+   ],
+   "density": 4
   },
   "enfeite_radio_L": {
    "anchor": [
-    -5.0,
-    266.38
-   ]
+    -20.0,
+    512.76
+   ],
+   "density": 4
   },
   "enfeite_janela_redonda_R": {
    "anchor": [
-    -2.0,
-    245.38
-   ]
+    -15.0,
+    480.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_redonda_L": {
    "anchor": [
-    -8.0,
-    310.38
-   ]
+    -25.0,
+    611.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_R": {
    "anchor": [
-    3.0,
-    239.38
-   ]
+    -5.0,
+    470.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_L": {
    "anchor": [
-    -10.0,
-    303.38
-   ]
+    -29.0,
+    598.76
+   ],
+   "density": 4.0
   },
   "enfeite_lousa_R": {
    "anchor": [
-    -1.0,
-    248.38
-   ]
+    -5.0,
+    484.76
+   ],
+   "density": 4
   },
   "enfeite_lousa_L": {
    "anchor": [
-    -4.0,
-    312.38
-   ]
+    -29.0,
+    612.76
+   ],
+   "density": 4
   },
   "enfeite_neon_xicara_R": {
    "anchor": [
-    -14.0,
-    252.38
-   ]
+    -23.0,
+    488.76
+   ],
+   "density": 4
   },
   "enfeite_neon_xicara_L": {
    "anchor": [
-    -15.0,
-    316.38
-   ]
+    -33.0,
+    616.76
+   ],
+   "density": 4
   },
   "enfeite_espelho_R": {
    "anchor": [
-    -12.0,
-    247.38
-   ]
+    -28.0,
+    473.76
+   ],
+   "density": 4
   },
   "enfeite_espelho_L": {
    "anchor": [
-    -16.0,
-    312.38
-   ]
+    -37.0,
+    601.76
+   ],
+   "density": 4
   },
   "enfeite_planta_pendurada_R": {
    "anchor": [
-    11.0,
-    272.38
-   ]
+    -25.0,
+    530.76
+   ],
+   "density": 4
   },
   "enfeite_planta_pendurada_L": {
    "anchor": [
-    -25.0,
-    336.38
-   ]
+    -71.0,
+    659.76
+   ],
+   "density": 4
   },
   "enfeite_janela_diner_R": {
    "anchor": [
-    -2.0,
-    243.38
-   ]
+    -15.0,
+    476.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_diner_L": {
    "anchor": [
-    -9.0,
-    308.38
-   ]
+    -28.0,
+    606.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_neon_R": {
    "anchor": [
-    -2.0,
-    246.38
-   ]
+    -15.0,
+    481.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_neon_L": {
    "anchor": [
-    -7.0,
-    311.38
-   ]
+    -23.0,
+    612.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_country_R": {
    "anchor": [
-    -2.0,
-    266.38
-   ]
+    -19.0,
+    523.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_country_L": {
    "anchor": [
-    -17.0,
-    331.38
-   ]
+    -44.0,
+    653.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_festa_R": {
    "anchor": [
-    -0.0,
-    267.38
-   ]
+    -8.0,
+    524.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_festa_L": {
    "anchor": [
-    -10.0,
-    331.38
-   ]
+    -23.0,
+    654.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_italiano_R": {
    "anchor": [
-    3.0,
-    242.38
-   ]
+    -3.0,
+    476.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_italiano_L": {
    "anchor": [
-    -0.0,
-    307.38
-   ]
+    -8.0,
+    607.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_shoji_R": {
    "anchor": [
-    -2.0,
-    246.38
-   ]
+    -15.0,
+    481.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_shoji_L": {
    "anchor": [
-    -7.0,
-    311.38
-   ]
+    -24.0,
+    612.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_mexicano_R": {
    "anchor": [
-    3.0,
-    240.38
-   ]
+    -5.0,
+    472.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_mexicano_L": {
    "anchor": [
-    -12.0,
-    305.38
-   ]
+    -31.0,
+    602.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_groovy_R": {
    "anchor": [
-    -2.0,
-    242.38
-   ]
+    -15.0,
+    474.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_groovy_L": {
    "anchor": [
-    -11.0,
-    307.38
-   ]
+    -31.0,
+    603.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_arcade_R": {
    "anchor": [
-    -2.0,
-    246.38
-   ]
+    -15.0,
+    481.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_arcade_L": {
    "anchor": [
-    -7.0,
-    311.38
-   ]
+    -23.0,
+    612.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_brasileiro_R": {
    "anchor": [
-    3.0,
-    241.38
-   ]
+    -3.0,
+    474.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_brasileiro_L": {
    "anchor": [
-    -0.0,
-    307.38
-   ]
+    -8.0,
+    605.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_industrial_R": {
    "anchor": [
-    6.0,
-    273.38
-   ]
+    -1.0,
+    536.76
+   ],
+   "density": 4.0
   },
   "enfeite_janela_industrial_L": {
    "anchor": [
-    -5.0,
-    338.38
-   ]
+    -21.0,
+    666.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_frances_R": {
    "anchor": [
-    9.0,
-    243.38
-   ]
+    3.0,
+    478.76
+   ],
+   "density": 4.0
   },
   "enfeite_janelao_frances_L": {
    "anchor": [
-    -11.0,
-    308.38
-   ]
+    -33.0,
+    608.76
+   ],
+   "density": 4.0
   },
   "enfeite_arandela_R": {
    "anchor": [
-    -25.0,
-    217.38
-   ]
+    -48.0,
+    413.76
+   ],
+   "density": 4
   },
   "enfeite_arandela_L": {
    "anchor": [
-    -54.0,
-    281.38
-   ]
+    -97.0,
+    541.76
+   ],
+   "density": 4
   },
   "enfeite_painel_digital_R": {
    "anchor": [
-    1.0,
-    263.38
-   ]
+    -5.0,
+    475.76
+   ],
+   "density": 4
   },
   "enfeite_painel_digital_L": {
    "anchor": [
-    -1.0,
-    327.38
-   ]
+    -16.0,
+    604.76
+   ],
+   "density": 4
   },
   "enfeite_porta_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_fechada_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_frances_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_frances_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_frances_fechada_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_frances_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_japones_R": {
    "anchor": [
-    56.0,
-    276.38
-   ]
+    98.0,
+    537.76
+   ],
+   "density": 4
   },
   "enfeite_porta_japones_L": {
    "anchor": [
-    18.0,
-    340.38
-   ]
+    28.0,
+    665.76
+   ],
+   "density": 4
   },
   "enfeite_porta_japones_fechada_R": {
    "anchor": [
-    56.0,
-    276.38
-   ]
+    98.0,
+    537.76
+   ],
+   "density": 4
   },
   "enfeite_porta_japones_fechada_L": {
    "anchor": [
-    18.0,
-    340.38
-   ]
+    28.0,
+    665.76
+   ],
+   "density": 4
   },
   "enfeite_porta_italiano_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_italiano_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_italiano_fechada_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_italiano_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos70_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos70_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos70_fechada_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos70_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_americano_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_americano_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_americano_fechada_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_americano_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos2010_R": {
    "anchor": [
-    66.0,
-    288.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos2010_L": {
    "anchor": [
-    18.0,
-    352.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos2010_fechada_R": {
    "anchor": [
-    66.0,
-    288.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos2010_fechada_L": {
    "anchor": [
-    18.0,
-    352.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_festa_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_festa_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_festa_fechada_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_festa_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos80_R": {
    "anchor": [
-    67.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos80_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos80_fechada_R": {
    "anchor": [
-    67.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_anos80_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_balada_R": {
    "anchor": [
-    41.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_balada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_balada_fechada_R": {
    "anchor": [
-    41.0,
-    268.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_balada_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_brasileiro_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    111.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_brasileiro_L": {
    "anchor": [
-    32.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_brasileiro_fechada_R": {
    "anchor": [
-    58.0,
-    268.38
-   ]
+    111.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_brasileiro_fechada_L": {
    "anchor": [
-    32.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_country_R": {
    "anchor": [
-    67.0,
-    268.38
-   ]
+    111.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_country_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_country_fechada_R": {
    "anchor": [
-    67.0,
-    268.38
-   ]
+    111.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_country_fechada_L": {
    "anchor": [
-    18.0,
-    332.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_mexicano_R": {
    "anchor": [
-    56.0,
-    276.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_mexicano_L": {
    "anchor": [
-    20.0,
-    340.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "enfeite_porta_mexicano_fechada_R": {
    "anchor": [
-    56.0,
-    276.38
-   ]
+    109.0,
+    527.76
+   ],
+   "density": 4
   },
   "enfeite_porta_mexicano_fechada_L": {
    "anchor": [
-    20.0,
-    340.38
-   ]
+    28.0,
+    654.76
+   ],
+   "density": 4
   },
   "gramado": {
    "anchor": [
@@ -8004,273 +8372,318 @@
   },
   "piso_floor_oak_light_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_oak_light_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_oak_light_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_70s_carpet_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_party_pastel_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_diner_red_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_country_stone_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_country_stone_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_cabochon_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_italian_cotto_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_italian_cotto_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_porcelain_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_talavera_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_dark_parquet_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_80s_grid_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_hinoki_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_hinoki_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_hinoki_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_hydraulic_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_paris_cabochon_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_reclaimed_wood_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_reclaimed_wood_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_reclaimed_wood_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_black_marble_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_black_marble_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_black_marble_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_mirror_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_rose_terrazzo_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_rose_terrazzo_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_rose_terrazzo_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_gold_mosaic_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_chevron_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_onyx_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_onyx_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_onyx_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_galaxy_0": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_galaxy_1": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "piso_floor_galaxy_2": {
    "anchor": [
-    135.0,
-    6.0
-   ]
+    266.0,
+    7.0
+   ],
+   "density": 4.0
   },
   "parede_pilar_R": {
    "anchor": [
-    26.0,
-    315.38
-   ]
+    34.0,
+    621.76
+   ],
+   "density": 4.0
   },
   "parede_pilar_L": {
    "anchor": [
-    17.0,
-    315.38
-   ]
+    21.0,
+    621.76
+   ],
+   "density": 4.0
   },
   "santa_oven_r0": {
    "anchor": [
-    128.0,
-    301.87
-   ]
+    249.0,
+    600.12
+   ],
+   "density": 4
   },
   "santa_oven_r1": {
    "anchor": [
-    128.0,
-    251.87
-   ]
+    249.0,
+    500.12
+   ],
+   "density": 4
   },
   "santa_oven_r2": {
    "anchor": [
-    129.0,
-    268.87
-   ]
+    252.0,
+    533.12
+   ],
+   "density": 4
   },
   "santa_oven_r3": {
    "anchor": [
-    129.0,
-    318.87
-   ]
+    252.0,
+    633.12
+   ],
+   "density": 4
   },
   "christmas_tree_r0": {
    "anchor": [
-    89.0,
-    281.87
-   ]
+    143.0,
+    517.44
+   ],
+   "density": 4
   },
   "retrato_papai_noel": {
    "anchor": [

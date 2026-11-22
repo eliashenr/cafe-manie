@@ -133,6 +133,18 @@ considerar o garçom completo:
 
 ## 5. Recados entre Claude e Codex
 
+### 22/11/2026 — PO aprova cenário e autoriza a DT-107
+
+- **Autorização expressa:** “Ficou muito bom! Pode enviar esse novo cenário e integrar à main. Deixa tudo registrado pro Claude saber o que mudou e continuar alinhado com você.” A publicação DT-106 usa `eliashenr`; novos ajustes de avatar/loja ficam em etapa separada.
+- **Próxima intervenção:** continuidade da identidade ao personalizar o chef, movimento e resposta visual do retrato; reunir Loja/Reforma, hoje dois acessos ao mesmo catálogo. Codex assume `avatar_portrait.gd`, `avatar_dialog.gd`, `build_bar.gd`, arte necessária e testes de apresentação correspondentes. Se precisar ajustar a ligação de abertura em `cafe.gd`, apenas essa ligação visual fica reservada ao Codex nesta etapa; regras, preços e saves continuam com Claude.
+- **Passagem:** preservar contratos da DT-106 e os experimentos herdados locais. Ano Novo e conteúdo/calendário continuam com Claude, conforme a divisão anterior. Sem alterações na pasta original dele.
+
+### 22/11/2026 — Codex: cenário DT-106 instalado para revisão local
+
+- Ramo `codex/visual-cenario`, base `94474fc`. Instalados 413 sprites: cozinha 150, revestimentos/janelas 139, decorações/portas 124. Os outros 754 sprites e todos os mapeamentos/apoios do manifesto foram preservados. A pasta do Claude segue intocada.
+- Fontes novas e conferidores em `tools/render3d/`; revisão `Revisar Cenario.cmd` e catálogo de itens em `tools/revisao/`. Única alteração de teste existente: densidade visual do fogão/balcão básico agora 4, acompanhando o restante; regras e valores lógicos não mudaram.
+- Validação encerrada: 764 testes Godot, 27 Python, 13 verificações focadas de controle de geração, cena principal 120 quadros e 70 capturas reais conferidas. Janela “Revisão do Cenário” aberta minimizada e confirmada no desktop (processo 23204), com dados isolados. Detalhes no topo de `status.md`; reprodução e contratos em `passagem-visual-codex.md`. Não regenerar o manifesto inteiro com fontes históricas. O novo cenário aguarda avaliação do PO e não foi enviado; a entrega anterior continua publicada na `main`.
+
 ### 22/11/2026 — Codex: envio e integração confirmados
 
 - Entrega DT-103/104/105: commit `a09f8e9`, [PR #1](https://github.com/eliashenr/cafe-manie/pull/1), integrada à `main` em `449e755` com a conta `eliashenr`. O PO confirmou expressamente: “Sim, pode integrar à main”. CI de push e PR aprovados antes da integração.

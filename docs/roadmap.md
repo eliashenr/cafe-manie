@@ -26,7 +26,11 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] PO autorizar commit/envio: “Pode enviar”.
 - [x] Registrar a confirmação do envio remoto: `a09f8e9`, PR #1, CI de push e PR aprovados.
 - [x] Integrar a PR #1 à `main`: `449e755`, após “Sim, pode integrar à main” do PO.
-- [ ] Estender a direção visual à cozinha, janelas, revestimentos e decorações (DT-106).
+- [x] Estender a direção visual à cozinha, janelas, revestimentos e decorações (DT-106): 413 sprites locais, preservando contratos e os outros 754 sprites.
+- [x] Concluir a validação no jogo e apresentar a revisão DT-106 ao PO: 764 testes Godot + 27 Python, cena principal e 70 capturas conferidas; janela aberta minimizada.
+- [x] PO avaliar o novo cenário e autorizar envio e integração: “Pode enviar esse novo cenário e integrar à main”, em 22/11/2026.
+- [ ] Registrar a confirmação remota da DT-106 na `main`.
+- [ ] DT-107: melhorar continuidade e movimento do chef; unificar os acessos Loja/Reforma.
 
 ## Garçom do Codex (22/11/2026, DT-103, ramo `codex/visual-garcom`)
 
