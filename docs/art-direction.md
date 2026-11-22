@@ -20,6 +20,8 @@ Preservar a base aprovada byte a byte. Animar por malha contínua, sem separar a
 
 ### Organização integrada — DT-111
 
+**Aprovada e publicada:** commit `2d91d83`, PR #3, merge `5c35ce0`; 793 testes do pacote limpo passaram no GitHub. O pacote exclui o compositor modular DT-107 e usa os sprites/desenho legados da main para variantes não canônicas. Chef canônico e encaixes aprovados permanecem intactos.
+
 Manter creme, verde e os temas das coleções. A Loja reúne móveis e reforma, com separação por tipo, coleção e busca; o filtro ativo fica à vista mesmo depois de reabrir. No HUD, objetivo e progresso permanecem visíveis ao recolher a dica; controles de funcionamento/zoom ficam agrupados e áudio em Configurações. Cidade separa Filial e Vizinhos com estados e ações legíveis. Nenhuma arte de cenário foi substituída nesta reorganização.
 
 O chef canônico aprovado agora aparece no HUD, nas miniaturas correspondentes e no diálogo real: estático nas áreas pequenas e animado no retrato principal. A integração escolhe a pintura completa para os mesmos IDs; nunca recobre sua gola ou chapéu com partes antigas. Outras combinações continuam compatíveis, mas seus encaixes ainda não foram aprovados. Revisão integrada em `Revisar Interface Completa.cmd`; conferência em 1280×720 e 960×540.

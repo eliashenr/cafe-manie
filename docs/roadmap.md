@@ -33,8 +33,8 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] DT-107: implementar rosto contínuo, expressões e resposta ao toque; unificar Loja/Reforma em um acesso à Loja.
 - [x] Conferir 85 capturas reais da DT-107 em 1280×720/960×540, incluindo as peças do avatar, Loja/Pisos/Paredes e movimento.
 - [x] Validar a DT-107: 775 testes Godot, 30 Python e cena principal sem erros; revisão aberta minimizada no desktop.
-- [ ] PO avaliar a interação do chef e a Loja na revisão local; registrar o aceite.
-- [ ] Enviar/integrar a DT-107 depois da autorização específica do PO.
+- [x] PO avaliar a DT-107: montagem do chef reprovada; chef canônico corrigido/aprovado nas DT-109/110 e Loja aprovada na DT-111.
+- [x] Excluir a montagem DT-107 reprovada do envio; publicar o conjunto aprovado como DT-111, preservando os experimentos locais.
 - [x] DT-108: estudar Café Mania/Vostu, registrar fontes, datas, limites e propostas graduais em `estudo-cafe-mania-original.md`.
 - [x] DT-109: produzir chef vestido como fonte única e preparar prova parada no café real, tamanho normal e ampliado.
 - [x] PO validar o encaixe do chef parado DT-109: “Agora sim, ficou muito bom!”
@@ -44,7 +44,7 @@ Baseado na seção 82 do master prompt. Uma fase só termina quando cumpre seu m
 - [x] PO testar e aprovar o conjunto na revisão integrada: “Ficou muito bom! Pode enviar essa reformulação da Loja, HUD e Cidade e integrar à main.”
 - [ ] Variantes completas do chef com encaixe aprovado; a personalização anterior permanece compatível, sem aceite visual.
 - [x] PO autorizar envio e integração da DT-111 à main em 22/11/2026.
-- [ ] Confirmar publicação remota e integração da DT-111, com testes aprovados e passagem atualizada.
+- [x] DT-111 publicada e integrada: commit `2d91d83`, [PR #3](https://github.com/eliashenr/cafe-manie/pull/3), merge `5c35ce0`, conta `eliashenr`; 793 testes e cena principal aprovados no GitHub, passagem atualizada.
 
 ## Garçom do Codex (22/11/2026, DT-103, ramo `codex/visual-garcom`)
 

@@ -5,7 +5,7 @@ Atualizado em 22/11/2026. Se este guia e o [status.md](status.md) discordarem, v
 
 > **22/11/2026: leia antes [divisao-claude-codex.md](divisao-claude-codex.md).** O Codex assumiu a direção visual, os personagens e a interface; o Claude ficou com regras, economia, saves e conteúdo. O estado do ramo `etapa-natal` e as pendências estão lá. As rodadas de personagem abaixo (DT-101) ficam como histórico.
 
-> **Retomada visual atual:** leia a última seção, "Onde paramos — revisão integrada DT-111". DT-105/106 estão na main; o chef parado DT-109 e a animação DT-110 foram aprovados. O PO autorizou concluir Loja, HUD e Central sem novas pausas. A revisão integrada mantém a arte aprovada, os contratos de regras e o save pessoal.
+> **Retomada visual atual:** leia a última seção, "Onde paramos — DT-111 integrada à main". DT-105/106 e Loja/HUD/Cidade DT-111 estão na main; o chef parado DT-109 e a animação DT-110 foram aprovados e publicados junto da interface. PR #3, merge `5c35ce0`, com 793 testes aprovados. A pasta ativa mantém experimentos fora do pacote; preservar essa separação e os contratos de regras/save.
 
 ## 1. Regras que não podem ser quebradas
 
@@ -469,3 +469,10 @@ O corpo, as poses e o andar **não mudam**.
 - O pacote contém o chef canônico aprovado e usa a composição legada da main nas outras combinações. Não copiar o compositor modular DT-107, suas fontes/shader/importador/teste ou `Revisar Chef e Loja.cmd` para a main. A revisão antiga não é o pacote publicado.
 - Conferir o topo de `status.md` e `passagem-visual-codex.md` para o resultado final, commit, PR e merge. Os números 797/60 da revisão original são históricos; a validação limpa do pacote tem conjunto de testes próprio, sem os testes do experimento modular.
 - Para o Claude continuar: preservar as mudanças locais na sua própria pasta antes de buscar a main; integrar pelo Git, sem copiar este diretório inteiro. `cafe.gd` mudou somente para reconhecer Configurações entre as janelas abertas. Regras/conteúdo/economia/save seguem com Claude; apresentação, chef e Loja/HUD/Cidade com Codex. Ano Novo continua como pendência de conteúdo já registrada no calendário, sem alteração nesta publicação.
+
+### Onde paramos — DT-111 integrada à main (22/11/2026)
+
+- Entrega aprovada e publicada: commit `2d91d83`, [PR #3](https://github.com/eliashenr/cafe-manie/pull/3), merge `5c35ce0`, conta `eliashenr`. Workflows de push e PR aprovados antes do merge, com **793 testes** e cena principal sem erros. A confirmação documental posterior não altera o runtime.
+- O pacote inclui Loja/HUD/Cidade e chef canônico. Variantes usam o renderer legado da main; experimentos DT-107 ficam preservados fora do envio. A pasta ativa `codex/chef-loja` ainda contém esses experimentos; a cópia limpa publicada fica em `build/publicacao-dt111/repo`. Não enviar todas as alterações locais automaticamente.
+- Claude deve atualizar sua cópia pelo Git preservando as mudanças locais, ler `passagem-visual-codex.md` e continuar regras/conteúdo/calendário/economia/save. Nada no código da pasta original do Claude foi alterado por esta publicação. Novas telas/arte continuam com Codex e os compartilhados seguem a combinação da seção 5 da divisão.
+- Revisão da versão publicada: `Revisar Interface Completa.cmd` na cópia atualizada, sempre minimizada e com dados isolados. Capturas de publicação em `build/publicacao-dt111/capturas/`. Nenhum save pessoal foi usado.

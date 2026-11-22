@@ -7,7 +7,10 @@
     "date": "2026-11-22",
     "together_with": "DT-111",
     "scope": "Chef canônico aprovado; não inclui variantes modulares DT-107",
-    "execution_status": "autorizada; commit, envio e integração ainda não registrados"
+    "execution_status": "publicada e integrada à main",
+    "commit": "2d91d83c94891c3c9d00d0ab6b164d61b2a9b6b4",
+    "pull_request": "https://github.com/eliashenr/cafe-manie/pull/3",
+    "merge_commit": "5c35ce07691ef28ab0f5f6bd8c117725917a9a7c"
   },
   "approved_base": {
     "path": "art/avatar/chef_vestido_v1.png",
@@ -31,7 +34,10 @@
       "sha256": "657a6fa777d588b655be09f3310da20e1960a241fdaf3482a5c7769ef7877169"
     }
   ],
-  "size_each": [1122, 1402],
+  "size_each": [
+    1122,
+    1402
+  ],
   "mode": "RGBA",
   "transparent_background": true,
   "postprocessing": "none; generated PNG bytes copied unchanged",

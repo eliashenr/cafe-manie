@@ -1,6 +1,6 @@
 # Chef vestido — prova estática DT-109
 
-Pedido do PO em 22/11/2026: primeiro refazer o chef completo e mostrá-lo parado no jogo, com roupa e chapéu encaixados. Essa prova estática foi aprovada, seguida pelo aceite da animação DT-110. A publicação do chef junto à interface DT-111 (Loja/Reforma, HUD e Cidade) está autorizada; este documento ainda não registra commit, envio ou integração.
+Pedido do PO em 22/11/2026: primeiro refazer o chef completo e mostrá-lo parado no jogo, com roupa e chapéu encaixados. Essa prova estática foi aprovada, seguida pelo aceite da animação DT-110. O chef foi publicado junto à interface DT-111 (Loja/Reforma, HUD e Cidade) e integrado à main pela PR #3; commit e merge estão no fim deste documento e em `proveniencia.json`.
 
 ## Arte
 
@@ -20,3 +20,5 @@ Capturas ocultas reproduzíveis, a partir da raiz:
 ```
 
 O PO **aprovou o retrato parado em 22/11/2026**: “Agora sim, ficou muito bom!” Depois aprovou a animação DT-110 mantendo esse rosto e os encaixes, e autorizou sua publicação junto à DT-111. Esses aceites não concluem todas as peças, cores ou expressões. A prova DT-109 não alterou save, IDs, compras, runtime de personalização ou sprites aprovados; a integração DT-111 reutiliza a composição canônica no jogo. As opções modulares reprovadas permanecem fora do aceite desta arte.
+
+**Publicação confirmada junto à DT-111:** commit `2d91d83`, [PR #3](https://github.com/eliashenr/cafe-manie/pull/3), merge `5c35ce0`, conta `eliashenr`. Chef canônico aprovado; fontes modulares reprovadas permanecem fora do pacote.

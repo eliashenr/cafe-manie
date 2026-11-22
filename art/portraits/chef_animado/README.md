@@ -1,6 +1,6 @@
 # Chef animado — DT-110
 
-O PO aprovou o chef parado DT-109 e a animação DT-110 em 22/11/2026, mantendo o rosto e os encaixes. Também autorizou a publicação do chef junto à interface DT-111 (Loja/Reforma, HUD e Cidade). O aceite abrange este chef canônico; não aprova as variantes do compositor modular DT-107. Commit, envio e integração ainda não são resultados registrados neste documento.
+O PO aprovou o chef parado DT-109 e a animação DT-110 em 22/11/2026, mantendo o rosto e os encaixes. Autorizou sua publicação junto à interface DT-111 (Loja/Reforma, HUD e Cidade), agora integrada à main pela PR #3. O aceite abrange este chef canônico; não aprova as variantes do compositor modular DT-107. Commit e merge estão registrados no fim deste documento e em `proveniencia.json`.
 
 ## Fonte preservada
 
@@ -40,3 +40,5 @@ Reprodução das provas, a partir da raiz (dados isolados automaticamente):
 `suite` grava 11 fotos por resolução; `movimento`, capa e 180 quadros a 30 fps, com cumprimento em 0,8 s e piscada automática. A revisão interativa oferece Pausar/Retomar, Cumprimentar e Ver original aprovado; espaço pausa, G cumprimenta, D amplia, C reabre e N alterna dia/noite. Os atalhos de movimento são consumidos antes da GUI, para não acionar simultaneamente um botão focado.
 
 Validação da DT-110: 779 testes gerais, quatro focados repetidos após filtro final, cena principal e 22 verificações de interação passaram. A pose neutra final coincide pixel a pixel com o retrato histórico aprovado; alfa e área fora dos olhos permanecem idênticos na prova GPU. 203 capturas finais do café (incluindo capas) e verificação independente dos extremos do movimento. Animação aprovada pelo PO; publicação autorizada junto à DT-111. Os resultados posteriores da interface ficam nos documentos da DT-111.
+
+**Publicação confirmada junto à DT-111:** commit `2d91d83`, [PR #3](https://github.com/eliashenr/cafe-manie/pull/3), merge `5c35ce0`, conta `eliashenr`. Chef canônico aprovado; fontes modulares reprovadas permanecem fora do pacote.

@@ -6,6 +6,8 @@ Registro no formato da seção 99 do master prompt. As mais recentes ficam no to
 
 ## DT-111 — Loja única, HUD e Cidade em uma revisão integrada (22/11/2026)
 
+**Resultado da publicação:** commit `2d91d83`, [PR #3](https://github.com/eliashenr/cafe-manie/pull/3), merge `5c35ce0`, conta `eliashenr`. Workflows de envio/PR aprovados antes da integração; 793 testes no pacote limpo e cena principal sem erros. Fontes modulares DT-107 e experimentos não enviados.
+
 **Aceite posterior e publicação:** o PO aprovou a revisão integrada e pediu explicitamente enviar e integrar à main. O pacote publicado preserva somente o chef canônico aprovado e o desenho legado da main para outras combinações. O compositor modular reprovado, suas fontes/testes/importador e experimentos herdados ficam fora do envio. Preparação e validação em uma cópia limpa; a revisão local anterior continua preservada. Confirmação de commits, revisão e testes remotos no topo de `status.md`.
 
 **Autorização do PO:** aprovou a animação DT-110 e pediu concluir Loja/Reforma, HUD e Central, sem novas pausas por autorização. Entregar o conjunto jogável para testar quando voltar. Esse pedido substitui a sequência anterior de aceites intermediários; não contém nova autorização de commit/envio.
